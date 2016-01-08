@@ -1,26 +1,17 @@
 
 1)
-#Cd into mounted LFS partition.
-cd $LFS
-#Download complete.tar.gz from here:
-sudo wget https://dl.dropboxusercontent.com/s/zn0qtwx945yotfp/complete.tar.gz
-#Untar complete
-sudo tar -xvf complete.tar.gz
-sudo chown -R $USER:$USER ./LFSPkgBuildScripts
-sudo rm ./complete.tar.gz
-
-#And the same for the helper scripts
-sudo wget https://dl.dropboxusercontent.com/s/zavw5zw0vkhq3mu/lfsscripts.tar.gz
-#Untar lfsscripts
-sudo tar -xvf lfsscripts.tar.gz
-sudo chown -R $USER:$USER ./LFSScripts
-sudo rm ./lfsscripts.tar.gz
+#Get the build scripts and helper scripts from:
+#https://github.com/KeithDHedger/LFSPkgBuilds
+#either via git clone or downloading the zip file and unpacking it.
+#you should place the LFSPkgBuildScripts and LFSScripts folder in the root of what will be your new LFS eg /mnt/lfs/LFSPkgBuildScripts
 
 #cd into the lfsscripts folder
 cd ./LFSScripts
 2)
-Set variables in ./SystemData
-Run ./ShowSystemData to check all ok.
+#Set variables in ./SystemData !!IMPORTANT!!
+#Run
+./ShowSystemData
+#to check all ok.
 
 3)
 #Run BuildTools script.
@@ -31,13 +22,9 @@ Run ./ShowSystemData to check all ok.
 ./BuildFileSystem
 
 5)
-#Download LFSPkg source to LFSPkg build folder in LFS.
-pushd ../LFSPkgBuildScripts/admin/LFSPkg
-	wget https://dl.dropboxusercontent.com/s/7pyibn4f9g8msfk/LFSPkg.tar.gz
-popd
+**********
 
 6)
-#cd back to where these scripts are sved
 #Chroot into tempory system.
 sudo ./Chroot system
 
@@ -49,7 +36,7 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 #Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $ SOURCEARCHIVES from SystemData as that's where the main LFS sytem source files are, you can do this either from in the chroot environment or from the host with root permisions.
 #The default SOURCEARCHIVES vaiable is set to /tmp/LFSSourceArchives.
 #You may also want to save built packages by setting the OUTPUT variable in lfspkg.rc, you may want to mount another folder in the chroot environment from the host for this, as you will need a fair amount of storage space for all the built packages for a full desktop system, you don't of course need to keep the built packages you can if space is short just delete them, in which case leave the OUTPUT variable as is and periodically delete everything in it.
-#It is handy to keep the built packages as if somthing goes wrong its's usually simpler and quicker to reinstall the binary package rather than building from sourcse again, things like qt5 and firefox take a LOOooooonnng time to build from source.
+#It is handy to keep the built packages as if somthing goes wrong its's usually simpler and quicker to reinstall the binary package rather than building from source again, things like qt5 and firefox take a LOOooooonnng time to build from source.
 #
 #after first installing lfspkg and setting up $LFS/etc/lfspkg.rc you may want to manually move the lfspkg source and built package tarballs to the folders set in the rc file, if you have changed them that is.
 
@@ -60,7 +47,7 @@ cd /LFSPkgBuildScripts/system/system-meta
 #for standard sysvinit like so:
 ./system-meta.LFSBuild install
 #Or use system-bbinit-meta.LFSBuild
-#for a busy box init system ( non standard ) like so:
+#for a RECOMMENDED busy box init system ( non standard ) like so:
 ./system-bbinit-meta.LFSBuild install
 
 9)

@@ -15,7 +15,7 @@ MANPAGE=${PROGRAM}.1
 RCFILE=lfspkg.rc
 DOWHAT=${1:-"build"}
 
-wget -c --no-check-certificate "https://dl.dropboxusercontent.com/s/7pyibn4f9g8msfk/${TARBALL}" ||true
+wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/v0.4.17.tar.gz" -O  $TARBALL||true
 tar -xvf "$TARBALL"
 
 pushd "${TARNAME}-${VERSION}"
@@ -29,12 +29,7 @@ pushd "${TARNAME}-${VERSION}"
 	rm -rf "$PKG" || true
 	mkdir -p "$PKG"
 
-	g++ -o $HELPER $HELPERCODE
-	mkdir -p ${PKG}/usr/bin ${PKG}/usr/share/LFSPkg ${PKG}/etc ${PKG}/share/man/man1||true
-	cp $HELPER $PROGRAM ${PKG}/usr/bin
-	cp $MANPAGE ${PKG}/share/man/man1
-	cp $RCFILE ${PKG}/etc
-	cp $FUNCTIONS ${PKG}/usr/share/LFSPkg
+	make install DESTDIR=$PKG
 popd
 
 mkdir -vp "${SOURCEARCHIVES}/${SECTION}" "${OUTPUT}/${SECTION}" 2>/dev/null
