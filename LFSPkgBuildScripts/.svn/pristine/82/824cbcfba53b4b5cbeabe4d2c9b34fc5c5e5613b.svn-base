@@ -1,6 +1,0 @@
-#!/bin/bash
-
-#©keithhedger Tue 17 Mar 20:13:59 GMT 2015 kdhedger68713@gmail.com
-
-update-desktop-database
-exit 0
