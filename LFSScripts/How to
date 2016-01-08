@@ -1,0 +1,201 @@
+
+1)
+#Cd into mounted LFS partition.
+cd $LFS
+#Download complete.tar.gz from here:
+sudo wget https://dl.dropboxusercontent.com/s/zn0qtwx945yotfp/complete.tar.gz
+#Untar complete
+sudo tar -xvf complete.tar.gz
+sudo chown -R $USER:$USER ./LFSPkgBuildScripts
+sudo rm ./complete.tar.gz
+
+#And the same for the helper scripts
+sudo wget https://dl.dropboxusercontent.com/s/zavw5zw0vkhq3mu/lfsscripts.tar.gz
+#Untar lfsscripts
+sudo tar -xvf lfsscripts.tar.gz
+sudo chown -R $USER:$USER ./LFSScripts
+sudo rm ./lfsscripts.tar.gz
+
+#cd into the lfsscripts folder
+cd ./LFSScripts
+2)
+Set variables in ./SystemData
+Run ./ShowSystemData to check all ok.
+
+3)
+#Run BuildTools script.
+./BuildTools
+
+4)
+#Run BuildFileSystem script.
+./BuildFileSystem
+
+5)
+#Download LFSPkg source to LFSPkg build folder in LFS.
+pushd ../LFSPkgBuildScripts/admin/LFSPkg
+	wget https://dl.dropboxusercontent.com/s/7pyibn4f9g8msfk/LFSPkg.tar.gz
+popd
+
+6)
+#cd back to where these scripts are sved
+#Chroot into tempory system.
+sudo ./Chroot system
+
+7)
+#You should now be in the chroot
+#First install lfspkg
+cd /LFSPkgBuildScripts/admin/LFSPkg
+./LFSPkg.LFSBuild install
+#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $ SOURCEARCHIVES from SystemData as that's where the main LFS sytem source files are, you can do this either from in the chroot environment or from the host with root permisions.
+#The default SOURCEARCHIVES vaiable is set to /tmp/LFSSourceArchives.
+#You may also want to save built packages by setting the OUTPUT variable in lfspkg.rc, you may want to mount another folder in the chroot environment from the host for this, as you will need a fair amount of storage space for all the built packages for a full desktop system, you don't of course need to keep the built packages you can if space is short just delete them, in which case leave the OUTPUT variable as is and periodically delete everything in it.
+#It is handy to keep the built packages as if somthing goes wrong its's usually simpler and quicker to reinstall the binary package rather than building from sourcse again, things like qt5 and firefox take a LOOooooonnng time to build from source.
+#
+#after first installing lfspkg and setting up $LFS/etc/lfspkg.rc you may want to manually move the lfspkg source and built package tarballs to the folders set in the rc file, if you have changed them that is.
+
+8)
+#Build main system
+cd /LFSPkgBuildScripts/system/system-meta
+#Use system-sysvinit-meta
+#for standard sysvinit like so:
+./system-meta.LFSBuild install
+#Or use system-bbinit-meta.LFSBuild
+#for a busy box init system ( non standard ) like so:
+./system-bbinit-meta.LFSBuild install
+
+9)
+#logout from temporary system
+exit
+
+10)
+#Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe.
+sudo rm /tools
+
+11)
+#Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ).
+sudo ./Chroot
+
+12)
+#You MUST rebuild lfspkg after completeing the the basic system and removing the tools folder.
+#Use same process as 5)/7)
+#If you have set any vairiable in /etc/lfspkg.rc then reply 'R' ( without the quotes ) when asked about replacing files in /etc.
+#If you forgot to do the above bit just re-edit /etc/lfspkg.rc
+cd /LFSPkgBuildScripts/admin/LFSPkg
+./LFSPkg.LFSBuild install
+
+13)
+#Configure and build the kernel
+cd /LFSPkgBuildScripts/kernel
+./kernel.LFSBuild install
+
+14)
+#Build xorg
+cd /LFSPkgBuildScripts/xorg/xorg-meta/
+./xorg-meta.LFSBuild install
+
+15)
+#Install documentation stuff
+#Also installs python via dependency
+#Loads of apps need these for building documentation so might as well install now.
+cd /LFSPkgBuildScripts/devel/gtk-doc
+./gtk-doc.LFSBuild install
+
+cd /LFSPkgBuildScripts/devel/doxygen
+./doxygen.LFSBuild install
+
+16)
+#Install cups and gtk.
+#Gtk2 has a 'soft' dependency on cups so best to buils cups first.
+cd /LFSPkgBuildScripts/print/cups
+./cups.LFSBuild install
+
+cd /LFSPkgBuildScripts/gtk/gtk
+./gtk.LFSBuild install
+
+17)
+#Development stuff
+cd /LFSPkgBuildScripts/devel/development-meta
+./development-meta.LFSBuild install
+
+18)
+#The big one! build a complete desktop
+#this meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!
+#this is for an xfce4 desktop.
+cd /LFSPkgBuildScripts/desktop/desktop-meta
+./desktop-meta.LFSBuild  install
+#Or for an LFSDesktop
+cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
+./LFSDesktop-meta.LFSBuild install
+
+19)
+#Extra odd stuff
+#Chromium
+cd /LFSPkgBuildScripts/desktop/chromium
+./chromium.LFSBuild install
+
+#Cairo-dock-plugins pulls in cairo-dock as a dependency
+cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins
+./cairo-dock-plugins.LFSBuild install
+
+#Qemu builds both static and dynamically linked versions
+cd /LFSPkgBuildScripts/hware/qemu
+./qemu.LFSBuild install
+
+#Seamonkey for web dev
+cd /LFSPkgBuildScripts/net/seamonkey
+./seamonkey.LFSBuild install
+
+#Icedtea-web
+cd /LFSPkgBuildScripts/net/icedtea-web
+./icedtea-web.LFSBuild install
+#For pulse audio
+cd /LFSPkgBuildScripts/net/icedtea-sound
+./icedtea-sound.LFSBuild install
+
+#Samba
+cd /LFSPkgBuildScripts/net/samba
+./samba.LFSBuild install
+
+#Fuse and stuff
+cd /LFSPkgBuildScripts/net/sshfs
+./sshfs.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/davfs2
+./davfs2.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/curlftpfs
+./curlftpfs.LFSBuild install
+
+#Qt5 stuff
+#cd /LFSPkgBuildScripts/qt/lxqt-meta
+#./lxqt-meta.LFSBuild install
+
+#TODO
+cd /LFSPkgBuildScripts/qt/qt-creator
+./qt-creator.LFSBuild install
+
+cd /LFSPkgBuildScripts/admin/mariadb
+./mariadb.LFSBuild install
+
+
+#Busybox init
+#cd /LFSPkgBuildScripts/sys/busybox
+#./busybox.LFSBuild install
+#
+#cd /LFSPkgBuildScripts/sys/bootfiles
+#./bootfiles.LFSBuild install
+
+#Odd stuff
+cd /LFSPkgBuildScripts/xorg/xbindkeys
+./xbindkeys.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/libcddb
+./libcddb.LFSBuild install
+
+cd /LFSPkgBuildScripts/desktop/epdfview
+./epdfview.LFSBuild install
+
+cd /LFSPkgBuildScripts/desktop/conky
+./conky.LFSBuild install
+
+

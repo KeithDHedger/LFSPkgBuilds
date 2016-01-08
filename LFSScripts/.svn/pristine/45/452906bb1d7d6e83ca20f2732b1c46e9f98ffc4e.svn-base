@@ -1,0 +1,45 @@
+#!/bin/bash -e
+
+#©keithhedger Mon 2 Feb 12:38:29 GMT 2015 kdhedger68713@gmail.com
+
+#basic stuff
+LFS=/media/LFSHal
+SOURCEARCHIVES=/media/SkyNet/LFSSourceArchives-7.8
+BUILTPACKAGES=/media/SkyNet/LFSBuiltPackages-7.8
+LFSVERSION=7.8
+LFSNAME="LFSHal"
+LANGUAGE=$LANG
+INITTYPE=bbinit
+
+#if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
+KERNELVERSION=4.2
+
+#keyboard
+KEYBOARD="$(setxkbmap -print | awk -F'+' '/xkb_symbols/ {print $2}')"
+KEYBOARD=uk
+
+#computed stuff
+ROOTDEV=$(df --output=source $LFS|tail -n 1)
+ROOTFSTYPE="ext2"
+SWAP=$(/sbin/swapon --noheadings --show|awk '{print $1}')
+case $(uname -m) in
+	x86_64)
+		LIBDIRSUFFIX=64
+		;;
+	*)
+		LIBDIRSUFFIX=""
+		;;
+esac
+
+#set kernel version in build scripts
+#build scripts should be at $LFS/LFSPkgBuildScripts
+sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/LFSPkgBuildScripts/system/linuxheaders/linuxheaders.LFSBuild
+sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/LFSPkgBuildScripts/kernel/kernel.LFSBuild
+sed -ri "s/linuxheaders-[0-9]+.[0-9]+.[0-9]+/linuxheaders-${KERNELVERSION}/i" ${LFS}/LFSPkgBuildScripts/system/system-meta/system-${INITTYPE}-meta.LFSBuild
+
+#network
+IP="192.168.1.1"$(echo $ROOTDEV|sed 's/^[a-zA-Z\/]*//')
+GATEWAY="192.168.1.254"
+SUBNET="192.168.1.255"
+NAMESERVERS="208.67.222.222 208.67.220.220 8.8.8.8 $GATEWAY"
+

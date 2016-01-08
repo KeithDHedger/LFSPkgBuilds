@@ -1,0 +1,63 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="OpenSSL-1.0.2"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="certdata"
+TARNAME="$PKGNAME"
+VERSION="0.0.2"
+BUILD=${BUILD:-1}
+SECTION="DEVEL"
+SUFFIX="LFSPKG"
+PKG="${OUTPUT}/${PKGNAME}"
+
+DOWHAT=${1:-"build"}
+rm -rf "$PKG" || true
+
+mkdir -vp $PKG/bin||true
+wget http://anduin.linuxfromscratch.org/sources/other/certdata.txt
+cp -v make-cert.pl make-ca.sh remove-expired-certs.sh $PKG/bin
+chmod +x $PKG/bin/make-cert.pl $PKG/bin/make-ca.sh $PKG/bin/ $PKG/bin/remove-expired-certs.sh
+
+pushd "$PKG"
+	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+
+certhost='http://mxr.mozilla.org'
+certdir='/mozilla/source/security/nss/lib/ckfw/builtins'
+url="$certhost$certdir/certdata.txt?raw=1"
+
+wget --output-document certdata.txt $url
+unset certhost certdir url
+make-ca.sh||true
+remove-expired-certs.sh certs||true
+
+SSLDIR=/etc/ssl
+install -d ${SSLDIR}/certs||true
+cp -v certs/*.pem ${SSLDIR}/certs||true
+c_rehash
+install BLFS-ca-bundle*.crt ${SSLDIR}/ca-bundle.crt||true
+ln -sv ../ca-bundle.crt ${SSLDIR}/certs/ca-certificates.crt||true
+unset SSLDIR
+rm -r certs BLFS-ca-bundle*||true
+
+rm -r "$PKG"

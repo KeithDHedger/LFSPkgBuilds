@@ -1,0 +1,16 @@
+#!/bin/bash -e
+
+#©keithhedger Tue 10 Mar 20:17:55 GMT 2015 kdhedger68713@gmail.com
+
+NAME=${1%-?*}
+VERS=${1##?*-}
+FILE=$(find /LFSPkgBuildScripts -iname "$NAME.LFSBuild")
+
+if [ X$FILE != "X" ];then
+	sed -i "s/^VERSION=\".*\"/VERSION=\"$VERS\"/" $FILE
+fi
+
+while read
+	do
+		sed -r -i "s/\b${NAME}-[0-9\.]+\b/${1}/ig" ${REPLY}
+	done < <(find /LFSPkgBuildScripts -iname "*.LFSBuild")

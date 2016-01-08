@@ -1,0 +1,59 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="librsvg-2.40.10 libjpeg-turbo-1.4.1 OpenJPEG-1.5.2"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="ImageMagick"
+TARNAME="$PKGNAME"
+VERSION="6.9.2"
+REVISION="8"
+BUILD=${BUILD:-1}
+SECTION="DESKTOP"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}.tar.xz"
+gettar "ftp://ftp.imagemagick.org/pub/${PKGNAME}/${TARBALL}" $SECTION
+
+PKG="${OUTPUT}/${PKGNAME}"
+
+DOWHAT=${1:-"build"}
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+
+pushd "${TARNAME}"*
+	CWD=$(pwd)
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr -with-modules --with-perl --with-gslib=/usr/lib --enable-static=no --enable-shared --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
+	make $MAKEFLAGS INSTALLDIRS=vendor|| exit 1
+	make DOCUMENTATION_PATH=/usr/share/doc/imagemagick--${VERSION} install  INSTALLDIRS=vendor DESTDIR=$PKG || exit 1
+	pushd "$PKG"
+		find | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+	popd
+	ldconfig||true
+popd
+
+checketc $PKG
+
+pushd "$PKG"
+	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+
+rm -r "$PKG" "${CWD}"

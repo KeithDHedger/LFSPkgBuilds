@@ -1,0 +1,50 @@
+# If you have a multicore machine you can speed up the build by running
+# several jobs at once, but if you have a single core, delete this line:
+mk_add_options MOZ_MAKE_FLAGS="-j$(getconf _NPROCESSORS_ONLN)"
+
+# If you have installed Yasm delete this option:
+#ac_add_options --disable-webm
+
+# If you have installed DBus-Glib delete this option:
+#ac_add_options --disable-dbus
+
+# If you have installed wireless-tools delete this option:
+ac_add_options --disable-necko-wifi
+
+# If you have installed libnotify delete this option:
+#ac_add_options --disable-libnotify
+
+# Comment out following option if you have PulseAudio installed
+#ac_add_options --disable-pulseaudio
+
+# GStreamer is necessary for H.264 video playback in HTML5 Video Player;
+# to be enabled, also remember to set "media.gstreamer.enabled" to "true"
+# in about:config. If you have GStreamer 0.x.y, uncomment this line:
+ac_add_options --enable-gstreamer
+
+# Uncomment these if you have installed them:
+ac_add_options --enable-startup-notification
+# ac_add_options --enable-system-hunspell
+ac_add_options --enable-system-sqlite
+ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/moz-build-dir
+ac_add_options --disable-crashreporter
+ac_add_options --disable-debug
+ac_add_options --disable-debug-symbols
+ac_add_options --disable-installer
+ac_add_options --disable-static
+ac_add_options --disable-tests
+ac_add_options --disable-updater
+ac_add_options --enable-application=suite
+ac_add_options --enable-shared
+ac_add_options --enable-system-ffi
+ac_add_options --prefix=/usr
+ac_add_options --with-pthreads
+ac_add_options --with-system-jpeg
+ac_add_options --with-system-png
+ac_add_options --with-system-zlib
+ac_add_options --libdir=/usr/libLIBDIRSUFFIX

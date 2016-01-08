@@ -1,0 +1,65 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="gegl-0.2.0 GTK-2.24.28 PyGTK-2.24.0 librsvg-2.40.10 dbus-glib-0.104 ghostscript-9.15 Poppler-0.35.0 GTK-Doc-1.24 gudev-1.10 webkitgtk-2.4.9"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+#DEPENDS="gegl-0.2.0 GTK-2.24.28 PyGTK-2.24.0 librsvg-2.40.10 dbus-glib-0.104 ghostscript-9.15 Poppler-0.35.0 GTK-Doc-1.24 gudev-1.10 webkitgtk-2.4.9"
+
+PKGNAME="gimp"
+TARNAME="$PKGNAME"
+VERSION="2.8.14"
+HELPVERSION=2.8.2
+BUILD=${BUILD:-1}
+SECTION="DESKTOP"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+gettar "http://download.gimp.org/pub/gimp/v2.8/${TARBALL}" $SECTION
+gettar "http://ftp.gimp.org/pub/gimp/help/gimp-help-${HELPVERSION}.tar.bz2" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/7.6/${TARNAME}-${VERSION}-device_info-1.patch" $SECTION
+
+PKG="${OUTPUT}/${PKGNAME}"
+
+DOWHAT=${1:-"build"}
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+
+pushd "${TARNAME}-${VERSION}"
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-device_info-1.patch
+
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-gvfs
+	make $MAKEFLAGS||make|| exit 1
+	make install DESTDIR=$PKG || exit 1
+	tar -xvf ${SOURCEARCHIVES}/${SECTION}/gimp-help-${HELPVERSION}.tar.bz2
+	cd gimp-help-${HELPVERSION}
+	ALL_LINGUAS="en en_GB" ./configure --prefix=/usr --without-gimp
+	make $MAKEFLAGS||make|| exit 1
+	make install DESTDIR=$PKG || exit 1
+	chown -R root:root $PKG/usr/share/gimp/2.0/help
+popd
+
+checketc $PKG
+packageclean "$PKG"
+
+pushd "$PKG"
+	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+rm -r "$PKG" "${TARNAME}-${VERSION}"
