@@ -5,28 +5,25 @@
 #either via git clone or downloading the zip file and unpacking it.
 #you should place the LFSPkgBuildScripts and LFSScripts folder in the root of what will be your new LFS eg /mnt/lfs/LFSPkgBuildScripts
 
-1.5)
+2)
 #Download LFSPkg archive into /LFSPkgBuildScripts/admin/LFSPkg.
 #wget -c --no-check-certificate https://github.com/KeithDHedger/LFSPkg/archive/v0.4.17.tar.gz -O LFSPkg.tar.gz
 
 #cd into the lfsscripts folder
 cd ./LFSScripts
-2)
+3)
 #Set variables in ./SystemData !!IMPORTANT!!
 #Run
 ./ShowSystemData
 #to check all ok.
 
-3)
+4)
 #Run BuildTools script.
 ./BuildTools
 
-4)
+5)
 #Run BuildFileSystem script.
 ./BuildFileSystem
-
-5)
-**********
 
 6)
 #Chroot into tempory system.
