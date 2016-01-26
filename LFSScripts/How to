@@ -5,6 +5,10 @@
 #either via git clone or downloading the zip file and unpacking it.
 #you should place the LFSPkgBuildScripts and LFSScripts folder in the root of what will be your new LFS eg /mnt/lfs/LFSPkgBuildScripts
 
+1.5)
+#Download LFSPkg archive into /LFSPkgBuildScripts/admin/LFSPkg.
+#wget -c --no-check-certificate https://github.com/KeithDHedger/LFSPkg/archive/v0.4.17.tar.gz -O LFSPkg.tar.gz
+
 #cd into the lfsscripts folder
 cd ./LFSScripts
 2)
@@ -38,14 +42,14 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 #You may also want to save built packages by setting the OUTPUT variable in lfspkg.rc, you may want to mount another folder in the chroot environment from the host for this, as you will need a fair amount of storage space for all the built packages for a full desktop system, you don't of course need to keep the built packages you can if space is short just delete them, in which case leave the OUTPUT variable as is and periodically delete everything in it.
 #It is handy to keep the built packages as if somthing goes wrong its's usually simpler and quicker to reinstall the binary package rather than building from source again, things like qt5 and firefox take a LOOooooonnng time to build from source.
 #
-#after first installing lfspkg and setting up $LFS/etc/lfspkg.rc you may want to manually move the lfspkg source and built package tarballs to the folders set in the rc file, if you have changed them that is.
+#after first installing lfspkg and setting up $LFS/etc/lfspkg.rc you may want to manually move the lfspkg built package tarball to the folders set in the rc file, if you have changed them that is.
 
 8)
 #Build main system
 cd /LFSPkgBuildScripts/system/system-meta
 #Use system-sysvinit-meta
 #for standard sysvinit like so:
-./system-meta.LFSBuild install
+./system-sysvinit-meta.LFSBuild install
 #Or use system-bbinit-meta.LFSBuild
 #for a RECOMMENDED busy box init system ( non standard ) like so:
 ./system-bbinit-meta.LFSBuild install
