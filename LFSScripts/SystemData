@@ -5,7 +5,7 @@
 #Warn and quit
 #Set The variables between this -------------->
 #And then remove/comment out the next line
-echo "WARNING!! You must set the variable in ./SystemData before proceding!\n";exit 1
+echo -e "\n!!! WARNING !!!\nYou must set the variables in ./SystemData before proceeding!\n";exit 1
 
 #basic stuff
 #Mount point for your new LFS system
