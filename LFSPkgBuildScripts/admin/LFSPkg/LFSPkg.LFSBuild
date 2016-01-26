@@ -15,9 +15,11 @@ MANPAGE=${PROGRAM}.1
 RCFILE=lfspkg.rc
 DOWHAT=${1:-"build"}
 
-wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/v0.4.17.tar.gz" -O  $TARBALL||true
-tar -xvf "$TARBALL"
+if [ ! -e $TARBALL ];then
+	wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/v${VERSION}.tar.gz" -O  $TARBALL||true
+fi
 
+tar -xvf "$TARBALL"
 pushd "${TARNAME}-${VERSION}"
 	. ./$FUNCTIONS
 	if [ -e /etc/$RCFILE ];then
