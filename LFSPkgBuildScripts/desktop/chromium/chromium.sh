@@ -4,8 +4,8 @@
 
 # Allow users to override command-line options
 # Based on Gentoo's chromium package (and by extension, Debian's)
-if [[ -f /etc/default/chromium ]]; then
-	. /etc/default/chromium
+if [[ -f /etc/default/chromium.default ]]; then
+	. /etc/default/chromium.default
 fi
 
 # Prefer user defined CHROMIUM_USER_FLAGS (from env) over system
@@ -15,4 +15,4 @@ CHROMIUM_FLAGS=${CHROMIUM_USER_FLAGS:-$CHROMIUM_FLAGS}
 export CHROME_WRAPPER=$(readlink -f "$0")
 export CHROME_DESKTOP=chromium.desktop
 
-exec /usr/lib@LIBDIRSUFFIX@/chromium/chromium $CHROMIUM_FLAGS "$@"
+exec /usr/lib64/chromium/chromium $CHROMIUM_FLAGS "$@"
