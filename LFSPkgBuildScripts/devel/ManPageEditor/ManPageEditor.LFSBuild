@@ -9,13 +9,13 @@ fi
 
 PKGNAME="ManPageEditor"
 TARNAME="$PKGNAME"
-VERSION="0.0.18"
+VERSION="0.0.19"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
-gettar "https://dl.dropboxusercontent.com/s/82czxf6u0uoy0gk/${TARBALL}" $SECTION
+gettar "https://dl.dropboxusercontent.com/s/7olldnaomar04b9/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
