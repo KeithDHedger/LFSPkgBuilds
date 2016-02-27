@@ -2,6 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="ogmtools-1.5 lsdvd-0.17"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="dvdauthor"
 TARNAME="$PKGNAME"
 VERSION="0.7.1"
