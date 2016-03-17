@@ -2,20 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.28 aspell-0.60.6.1 shared-mime-info-1.4"
+DEPENDS="DBus-1.10.0 GLib-2.44.1 xorg-libs-7.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="ManPageEditor"
+PKGNAME="at-spi2-core"
 TARNAME="$PKGNAME"
-VERSION="0.1.0"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="2.16.0"
+BUILD=1
+SECTION="GTK"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
-
-gettar "https://dl.dropboxusercontent.com/s/urwrobf8gg4wpbr/${TARBALL}" $SECTION
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,15 +24,15 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell
-	mkdir -vp $PKG/usr/share/icons/hicolor/256x256/apps
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
 
-checketc $PKG
+checketc "$PKG"
 packageclean "$PKG"
 
+cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
