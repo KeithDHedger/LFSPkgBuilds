@@ -22,6 +22,14 @@ pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
+
+#	cd $PKG/usr/LessTif
+	mkdir -p $PKG/usr/share/doc
+	mv $PKG/usr/LessTif $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+#	mkdir $PKG/usr/share/doc
+#	mv doc $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+#	rmdir $PKG/usr/LessTif
+
 popd
 
 checketc "$PKG"

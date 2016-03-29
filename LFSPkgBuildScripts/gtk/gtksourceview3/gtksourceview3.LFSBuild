@@ -9,7 +9,7 @@ fi
 
 PKGNAME="gtksourceview3"
 TARNAME="gtksourceview"
-VERSION="3.16.1"
+VERSION="3.14.1"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
