@@ -9,12 +9,12 @@ fi
 
 PKGNAME="vte2"
 TARNAME="vte"
-VERSION="0.40.2"
+VERSION="0.40.0"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-gettar "http://ftp.gnome.org/pub/gnome/sources/vte/0.40/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/vte/${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
