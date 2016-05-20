@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LVM2-2.02.130"
+DEPENDS="LVM2-2.02.142"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

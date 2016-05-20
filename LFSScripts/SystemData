@@ -5,21 +5,21 @@
 #Warn and quit
 #Set The variables between this -------------->
 #And then remove/comment out the next line
-echo -e "\n!!! WARNING !!!\nYou must set the variables in ./SystemData before proceeding!\n";exit 1
+#echo -e "\n!!! WARNING !!!\nYou must set the variables in ./SystemData before proceeding!\n";exit 1
 
 #basic stuff
 #Mount point for your new LFS system
-LFS=
+LFS=/media/LFSHal
 #LFS Version
-LFSVERSION=
+LFSVERSION=7.8
 #Computer name
-LFSNAME=
+LFSNAME="LFSHal"
 #LFS init type eithe bbinit or sysvinit
-INITTYPE=
+INITTYPE=bbinit
 #Place to store built packages, defaults to /tmp
-BUILTPACKAGES=
+BUILTPACKAGES="/media/SkyNet/LFSBuiltPackages-${LFSVERSION}"
 #Place to store downloaded source archives, defaults to /tmp
-SOURCEARCHIVES=
+SOURCEARCHIVES="/media/SkyNet/LFSSourceArchives"
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
@@ -28,16 +28,16 @@ KERNELVERSION=4.2
 #keyboard
 #set keyboad lang for auto detect use
 #KEYBOARD="$(setxkbmap -print | awk -F'+' '/xkb_symbols/ {print $2}')"
-KEYBOARD=
+KEYBOARD=uk
 
 #network
 #Set up the network
-GATEWAY=
-SUBNET=
-NAMESERVERS=
+GATEWAY="192.168.1.254"
+SUBNET="255.255.255.0"
+NAMESERVERS="208.67.222.222 208.67.220.220 8.8.8.8 $GATEWAY"
 
 #File system type, probably ext2 or ext4
-ROOTFSTYPE=
+ROOTFSTYPE="ext2"
 #And this <------------
 
 #Variable below this line are computed and probably don't need changing, but feel free.
