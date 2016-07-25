@@ -28,7 +28,7 @@ pushd "${TARNAME}-${VERSION}"
 
 	mkdir build || true
 	cd build
-	cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+	cmake .. -DCMAKE_INSTALL_PREFIX=/usr -Dforce-gtk2=ON
 
 	make -j $(grep -c ^processor /proc/cpuinfo) || exit 1
 	make install DESTDIR="$PKG" || exit 1
