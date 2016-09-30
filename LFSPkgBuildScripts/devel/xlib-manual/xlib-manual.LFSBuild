@@ -2,20 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.44.0 libarchive-3.1.2 qt5-5.5.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
 
-PKGNAME="cmake"
+PKGNAME="xlib-manual"
 TARNAME="$PKGNAME"
-VERSION="3.4.3"
-BUILD=${BUILD:-1}
+VERSION="0.0.1"
+BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
-gettar "http://www.cmake.org/files/v${VERSION%.?*}/${TARBALL}" $SECTION
-
+TARBALL="${TARNAME}.tar.gz"
+gettar "https://tronche.com/gui/x/xlib/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -23,15 +18,11 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-	./bootstrap --prefix=/usr --system-libs --mandir=/share/man --no-system-jsoncpp --docdir=/share/doc/${TARNAME}-${VERSION} --qt-gui
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+cp xlib.html xlib
+mkdir -vp ${PKG}/usr/share/doc
+cp -r xlib "${PKG}/usr/share/doc"
 
-checketc $PKG
-packageclean "$PKG"
-
+cp ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
@@ -51,4 +42,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "xlib"
