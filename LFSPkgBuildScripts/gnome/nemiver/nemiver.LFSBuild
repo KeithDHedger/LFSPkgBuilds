@@ -9,12 +9,12 @@ fi
 
 PKGNAME="nemiver"
 TARNAME="$PKGNAME"
-VERSION="0.8.0"
+VERSION="0.8.2"
 BUILD=${BUILD:-1}
 SECTION="GNOME"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-gettar "http://www.mirrorservice.org/sites/ftp.gnome.org/pub/GNOME/sources/nemiver/0.8/${TARBALL}" $SECTION
+gettar "http://www.mirrorservice.org/sites/ftp.gnome.org/pub/GNOME/sources/nemiver/${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
