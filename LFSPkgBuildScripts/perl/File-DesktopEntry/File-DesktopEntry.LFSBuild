@@ -2,11 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=""
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="File-DesktopEntry"
 TARNAME="$PKGNAME"
 VERSION="0.08"

@@ -2,19 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="perl-5.20.0 Module-Build-0.4220"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="File-BaseDir"
+PKGNAME="Module-Build"
 TARNAME="$PKGNAME"
-VERSION="0.07"
+VERSION="0.4220"
 BUILD=1
 SECTION="PERL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
-gettar "https://cpan.metacpan.org/authors/id/K/KI/KIMRYAN/${TARBALL}" $SECTION
+gettar "https://cpan.metacpan.org/authors/id/L/LE/LEONT/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -32,6 +27,7 @@ popd
 checketc "$PKG"
 packageclean "$PKG"
 
+cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
