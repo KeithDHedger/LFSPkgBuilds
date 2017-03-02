@@ -13,8 +13,8 @@ VERSION="1.4.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-gettar "https://github.com/anholt/libepoxy/releases/download/v${VERSION}/${TARBALL}" $SECTION
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+gettar "https://github.com/anholt/libepoxy/releases/download/v${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

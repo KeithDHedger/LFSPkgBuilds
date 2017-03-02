@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libffi-3.2.1 Python-2.7.13"
+DEPENDS="libffi-3.2.1 Python-2.7.13 CMake-3.7.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -24,11 +24,13 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}.src"
-	sed -e "s:/docs/llvm:/share/doc/${PKGNAME}-${VERSION}:" -i Makefile.config.in
+#	sed -e "s:/docs/llvm:/share/doc/${PKGNAME}-${VERSION}:" -i Makefile.config.in
 #	CC=gcc CXX=g++ ./configure --prefix=/usr --sysconfdir=/etc --enable-libffi --enable-optimized --enable-shared --enable-targets=all --disable-assertions --disable-debug-runtime --disable-expensive-checks --enable-experimental-targets=R600
 	mkdir build
 	pushd build
-		CC=gcc CXX=g++ ../configure --prefix=/usr --sysconfdir=/etc --enable-libffi --enable-optimized --enable-shared --enable-targets=all --disable-assertions --disable-debug-runtime --disable-expensive-checks
+#		CC=gcc CXX=g++ ../configure --prefix=/usr --sysconfdir=/etc --enable-libffi --enable-optimized --enable-shared --enable-targets=all --disable-assertions --disable-debug-runtime --disable-expensive-checks
+
+		CC=gcc CXX=g++ cmake -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_FFI=ON -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_TARGETS_TO_BUILD="host;AMDGPU" -Wno-dev ..
 		make $MAKEFLAGS||make || exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
