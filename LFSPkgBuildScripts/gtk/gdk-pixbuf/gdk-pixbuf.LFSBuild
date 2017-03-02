@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.44.1 libjpeg-turbo-1.4.1 libpng-1.6.18 LibTIFF-4.0.5 gobject-introspection-1.44.0"
+DEPENDS="GLib-2.44.1 libjpeg-turbo-1.5.1 libpng-1.6.28 LibTIFF-4.0.7 gobject-introspection-1.50.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 TARNAME="gdk-pixbuf"
 PKGNAME="gdk-pixbuf"
-VERSION="2.31.7"
+VERSION="2.36.5"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"

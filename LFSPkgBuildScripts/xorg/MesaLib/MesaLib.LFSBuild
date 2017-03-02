@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-7.8 libdrm-2.4.64 Python-2.7.10 elfutils-0.161 libvdpau-1.1.1 LLVM-3.7.0"
+DEPENDS="xorg-libs-7.8 libdrm-2.4.75 Python-2.7.13 elfutils-0.168 libvdpau-1.1.1 LLVM-3.9.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="mesalib"
 TARNAME="mesa"
-VERSION="10.6.6"
+VERSION="13.0.4"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"

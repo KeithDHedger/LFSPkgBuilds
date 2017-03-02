@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ATK-2.16.0 gdk-pixbuf-2.31.7 Pango-1.36.8 hicolor-icon-theme-0.15 at-spi2-atk-2.16.0"
+DEPENDS="ATK-2.22.0 gdk-pixbuf-2.36.5 Pango-1.40.3 hicolor-icon-theme-0.15 at-spi2-atk-2.22.0 libepoxy-1.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gtk3"
 TARNAME="gtk+"
-VERSION="3.19.1"
+VERSION="3.22.8"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"

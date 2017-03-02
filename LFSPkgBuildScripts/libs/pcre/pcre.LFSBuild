@@ -4,7 +4,7 @@
 
 PKGNAME="pcre"
 TARNAME="$PKGNAME"
-VERSION="8.37"
+VERSION="8.40"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -12,7 +12,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 
 gettar "http://downloads.sourceforge.net/pcre/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/pcre-8.37-upstream_fixes-1.patch"  $SECTION
+#gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/pcre-8.37-upstream_fixes-1.patch"  $SECTION
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
@@ -20,8 +20,9 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/pcre-8.37-upstream_fixes-1.patch
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --enable-utf --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline --enable-shared
+#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/pcre-8.37-upstream_fixes-1.patch
+#	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --enable-utf --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline --enable-shared
+	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --enable-utf --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline --enable-shared --disable-static
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 

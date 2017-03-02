@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="PCRE-8.37 libffi-3.2.1 Python-2.7.10 GTK-Doc-1.24"
+DEPENDS="PCRE-8.40 libffi-3.2.1 Python-2.7.13 GTK-Doc-1.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="glib"
 TARNAME="$PKGNAME"
-VERSION="2.44.1"
+VERSION="2.50.3"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

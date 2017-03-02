@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="at-spi2-core-2.16.0 ATK-2.16.0"
+DEPENDS="at-spi2-core-2.22.0 ATK-2.22.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="at-spi2-atk"
 TARNAME="$PKGNAME"
-VERSION="2.16.0"
+VERSION="2.22.0"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"

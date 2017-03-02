@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.10 docbook-xml-4.5 docbook-xsl-1.78.1 Itstool-2.0.2 libxslt-1.1.28 xmlto-0.0.26"
+DEPENDS="Python-2.7.13 docbook-xml-4.5 docbook-xsl-1.79.1 Itstool-2.0.2 libxslt-1.1.29 xmlto-0.0.26"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gtk-doc"
 TARNAME="$PKGNAME"
-VERSION="1.24"
+VERSION="1.25"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
