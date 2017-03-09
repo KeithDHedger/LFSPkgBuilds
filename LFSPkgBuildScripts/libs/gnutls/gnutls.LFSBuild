@@ -2,19 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Nettle-3.1.1"
+DEPENDS="Nettle-3.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gnutls"
 TARNAME="$PKGNAME"
-VERSION="3.4.4.1"
+VERSION="3.5.9"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-gettar "ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/${TARBALL}" $SECTION
+gettar "ftp://ftp.gnutls.org/gcrypt/gnutls/v${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
