@@ -22,7 +22,9 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 #	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/pcre-8.37-upstream_fixes-1.patch
 #	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --enable-utf --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline --enable-shared
-	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --enable-utf --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline --enable-shared --disable-static
+	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --enable-utf --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline --enable-shared
+#needed for static linking of qemu
+# --disable-static
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 

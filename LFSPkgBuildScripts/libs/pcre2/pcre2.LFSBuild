@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="SDL2"
+PKGNAME="pcre2"
 TARNAME="$PKGNAME"
-VERSION="2.0.5"
+VERSION="10.23"
 BUILD=1
-SECTION="MM"
+SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
-gettar "http://www.libsdl.org/release/${TARBALL}" $SECTION
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+gettar "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -19,15 +19,15 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --enable-gtk-doc --disable-debug --disable-nls
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-unicode --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
-	rm -v ${PKG}/usr/lib${LIBDIRSUFFIX}/libSDL2*.a
 popd
 
 checketc "$PKG"
 packageclean "$PKG"
 
+cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
