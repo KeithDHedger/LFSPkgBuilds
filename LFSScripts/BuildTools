@@ -34,8 +34,8 @@ export LFS LC_ALL LFS_TGT PATH
 export MAKEFLAGS='-j 4'
 
 if [ ! -e ${SYSTEMSOURCE}/gotsystem ];then
-	wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
-	wget http://www.linuxfromscratch.org/lfs/view/stable/md5sums
+	wget http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list
+	wget http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/md5sums
 	mv md5sums $SYSTEMSOURCE
 	wget -i wget-list -c -P $SYSTEMSOURCE||true
 
