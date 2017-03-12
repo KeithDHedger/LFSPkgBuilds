@@ -15,10 +15,24 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+ARCH=${ARCH:-$(uname -m)}
+case "$ARCH" in
+	"i486")
+		ABI=32
+		;;
+	"i686")
+		ABI=32
+		;;
+	"x86_64")
+		ABI=64
+		;;
+esac
+
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-cxx --docdir=/usr/share/doc/${PKGNAME}-${VERSION}a
+	ABI=$ABI CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-cxx --docdir=/usr/share/doc/${PKGNAME}-${VERSION}a
 	make $MAKEFLAGS||make|| exit 1
 	make html $MAKEFLAGS||make html|| exit 1
 	make install DESTDIR=$PKG || exit 1
