@@ -56,7 +56,15 @@ pushd "${KERNELSOURCEDIR}"
 			cp -rvp firmware-nonfree/realtek/* $PKG/lib/firmware
 			rm -rf firmware-nonfree
 		popd
-		cp -v arch/x86_64/boot/bzImage $PKG/boot/vmlinuz-$VERSION
+		ARCH=${ARCH:-$(uname -m)}
+		case $ARCH in
+			i*86)
+				cp -v arch/x86/boot/bzImage $PKG/boot/vmlinuz-$VERSION
+				;;
+			x86_64)
+				cp -v arch/x86_64/boot/bzImage $PKG/boot/vmlinuz-$VERSION
+				;;
+		esac
 		cp -v .config $PKG/boot/config-$VERSION
 		cp -v System.map $PKG/boot/System.map-$VERSION
 
