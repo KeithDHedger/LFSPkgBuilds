@@ -46,7 +46,7 @@ certhost='http://mxr.mozilla.org'
 certdir='/mozilla/source/security/nss/lib/ckfw/builtins'
 url="$certhost$certdir/certdata.txt?raw=1"
 
-wget --output-document certdata.txt $url
+wget --no-check-certificate --output-document certdata.txt $url
 unset certhost certdir url
 make-ca.sh||true
 remove-expired-certs.sh certs||true
