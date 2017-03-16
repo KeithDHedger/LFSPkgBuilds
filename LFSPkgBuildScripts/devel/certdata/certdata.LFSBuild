@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 
 mkdir -vp $PKG/bin||true
-wget http://anduin.linuxfromscratch.org/sources/other/certdata.txt
+wget --no-check-certificate http://anduin.linuxfromscratch.org/sources/other/certdata.txt
 cp -v make-cert.pl make-ca.sh remove-expired-certs.sh $PKG/bin
 chmod +x $PKG/bin/make-cert.pl $PKG/bin/make-ca.sh $PKG/bin/ $PKG/bin/remove-expired-certs.sh
 
