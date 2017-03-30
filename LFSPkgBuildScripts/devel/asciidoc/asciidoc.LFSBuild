@@ -2,19 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK3-3.22.2"
+DEPENDS="Python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gtksourceview3"
-TARNAME="gtksourceview"
-VERSION="3.22.2"
+PKGNAME="asciidoc"
+TARNAME="$PKGNAME"
+VERSION="8.6.9"
 BUILD=1
-SECTION="GTK"
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+gettar "http://sourceforge.net/projects/asciidoc/files/asciidoc/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
