@@ -9,19 +9,20 @@ fi
 
 PKGNAME="html2text"
 TARNAME="$PKGNAME"
-VERSION="2015.11.4"
+VERSION="3.200.3"
 BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
+
 TARBALL="${TARNAME}-${VERSION}_8ddc844b03.zip"
 gettar "http://lukenshiro.altervista.org/sbo-sources/${TARBALL}" $SECTION
-
+#http://lukenshiro.altervista.org/sbo-sources/html2text-3.200.3_8ddc844b03.zip
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-unzip "$TARBALL"
+unzip "${SOURCEARCHIVES}/${SECTION}/$TARBALL"
 
 pushd "${PKGNAME}-master"
 	python setup.py install --root=$PKG || exit 1
