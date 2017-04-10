@@ -2,24 +2,26 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="fmt"
+PKGNAME="taglib"
 TARNAME="$PKGNAME"
-VERSION="3.0.1"
+VERSION="1.11.1"
 BUILD=1
-SECTION="DEVEL"
+SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
-gettar "https://github.com/fmtlib/fmt/releases/download/${VERSION}/${TARBALL}" $SECTION
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+gettar "https://taglib.github.io/releases/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH .
+	mkdir build||true
+	cd  build
+	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH  -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ..
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
