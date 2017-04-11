@@ -4,12 +4,12 @@
 
 PKGNAME="swig"
 TARNAME="$PKGNAME"
-VERSION="3.0.7"
+VERSION="3.0.12"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
-gettar "http://netcologne.dl.sourceforge.net/project/swig/swig/SWIG-3.0.7/${TARBALL}" $SECTION
+gettar "http://downloads.sourceforge.net/swig/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
