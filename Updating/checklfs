@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#. /usr/share/LFSPkg/LFSFunctions
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+BLUE='\e[1;34m'
+BLACK='\e[0;30m'
+NORMAL='\e[0;0m'
+
+
+UF="updatefile"
+
+while read
+	do
+		pkg=$(echo "$REPLY"|sed 's/^\s*\(.*\) \(.*\)$/\1/')
+		if [ X$pkg != "X" ] && [ X$pkg != "XAdded:" ] && [ X$pkg != "XUpgraded" ];then
+			if lfspkg -C $pkg 2>/dev/null|grep -i "ok" >/dev/null;then
+				:
+			else
+				echo -e "${RED}$pkg${NORMAL} needs upgrading to ${BLUE}$(echo "$REPLY"|sed 's/^\s*\(.*\) \(.*\)$/\1-\2/')${NORMAL} from ${RED}${pkg}-$(lfspkg -S $pkg 2)${NORMAL}" 
+				lfspkg -S $pkg 3
+			fi
+		fi
+	done < <(sed -n '/^Upgraded to:$/,/^Added/ p' "$UF"|sort)
+
+sed -n '/^Added:$/,/Prev/ p' "$UF"
+
+#lfspkg -P 2>/dev/null|sed 's/^\(More info here:.*\)$/\1\n/g'

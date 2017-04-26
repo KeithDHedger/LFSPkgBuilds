@@ -1,0 +1,84 @@
+Linux From Scratch - Version 8.0
+Chapter 1. Introduction
+Prev
+How to Build an LFS System
+Next
+Changelog
+Up
+Home
+1.2. What's new since the last release
+
+Below is a list of package updates made since the previous release of the book.
+
+Upgraded to:
+
+Bash 4.4
+
+Check 0.11.0
+
+Eudev 3.2.1
+
+E2fsprogs 1.43.4
+
+File 5.30
+
+Flex 2.6.3
+
+Gawk 4.1.4
+
+GCC 6.3.0
+
+Glibc 2.25
+
+GMP 6.1.2
+
+Grep 3.0
+
+IPRoute2 4.9.0
+
+Kbd 2.0.4
+
+Linux 4.9.9
+
+Man-DB 2.7.6.1
+
+Man-pages 4.09
+
+MPFR 3.1.5
+
+Perl 5.24.1
+
+Readline 7.0
+
+Sed 4.4
+
+Shadow 4.4
+
+Texinfo 6.3
+
+Tzdata 2016j
+
+Util-Linux 2.29.1
+
+Vim 8.0.069
+
+XZ-Utils 5.2.3
+
+Zlib 1.2.11
+
+Added:
+
+bash-4.4-upstream_fixes-1.patch
+
+Removed:
+
+bash-4.3.30-upstream_fixes-3.patch
+
+readline-6.3-upstream_fixes-3.patch
+
+Prev
+How to Build an LFS System
+Next
+Changelog
+Up
+Home
