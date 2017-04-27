@@ -9,11 +9,11 @@
 
 #basic stuff
 #Mount point for your new LFS system
-LFS=/media/LFSHal
+LFS=/media/LFSJane
 #LFS Version
-LFSVERSION=7.8
+LFSVERSION=8.0
 #Computer name
-LFSNAME="LFSHal"
+LFSNAME="LFSJane"
 #LFS init type eithe bbinit or sysvinit
 INITTYPE=bbinit
 #Place to store built packages, defaults to /tmp
@@ -23,7 +23,7 @@ SOURCEARCHIVES="/media/SkyNet/LFSSourceArchives"
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
-KERNELVERSION=4.2
+KERNELVERSION=4.9.9
 
 #keyboard
 #set keyboad lang for auto detect use
