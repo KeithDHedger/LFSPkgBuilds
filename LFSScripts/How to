@@ -8,6 +8,7 @@
 2)
 #Download LFSPkg archive into /LFSPkgBuildScripts/admin/LFSPkg.
 #wget -c --no-check-certificate https://github.com/KeithDHedger/LFSPkg/archive/v0.4.17.tar.gz -O LFSPkg.tar.gz
+#wget -c --no-check-certificate https://github.com/KeithDHedger/LFSPkg/archive/v0.4.18.tar.gz -O LFSPkg.tar.gz
 
 #cd into the lfsscripts folder
 cd ./LFSScripts
@@ -34,7 +35,7 @@ sudo ./Chroot system
 #First install lfspkg
 cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild install
-#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $ SOURCEARCHIVES from SystemData as that's where the main LFS sytem source files are, you can do this either from in the chroot environment or from the host with root permisions.
+#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from SystemData as that's where the main LFS sytem source files are, you can do this either from in the chroot environment or from the host with root permisions.
 #The default SOURCEARCHIVES vaiable is set to /tmp/LFSSourceArchives.
 #You may also want to save built packages by setting the OUTPUT variable in lfspkg.rc, you may want to mount another folder in the chroot environment from the host for this, as you will need a fair amount of storage space for all the built packages for a full desktop system, you don't of course need to keep the built packages you can if space is short just delete them, in which case leave the OUTPUT variable as is and periodically delete everything in it.
 #It is handy to keep the built packages as if somthing goes wrong its's usually simpler and quicker to reinstall the binary package rather than building from source again, things like qt5 and firefox take a LOOooooonnng time to build from source.

@@ -59,4 +59,5 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG"
+# "${TARNAME}-${VERSION}"

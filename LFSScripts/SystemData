@@ -19,7 +19,7 @@ INITTYPE=bbinit
 #Place to store built packages, defaults to /tmp
 BUILTPACKAGES="/media/SkyNet/LFSBuiltPackages-${LFSVERSION}"
 #Place to store downloaded source archives, defaults to /tmp
-SOURCEARCHIVES="/media/SkyNet/LFSSourceArchives"
+SOURCEARCHIVES="/media/SkyNet/LFSSourceArchives/${LFSVERSION}"
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
