@@ -475,8 +475,8 @@ popd
 rm -rf ${NAME}-${VERSION}
 
 #/usr/bin/strip --strip-debug /tools/lib/* || true
-#/usr/bin/strip --strip-unneeded /tools/{,s}bin/* || true
-#rm -rf /tools/{,share}/{info,man,doc}
+/usr/bin/strip --strip-unneeded /tools/{,s}bin/* || true
+rm -rf /tools/{,share}/{info,man,doc}
 
 echo $ADMINPWD|sudo -S chown -R root:root $LFS/tools 2>/dev/null
 cd $LFS/tools

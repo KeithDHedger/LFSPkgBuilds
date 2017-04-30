@@ -1,0 +1,79 @@
+#!/bin/bash -e
+
+#©keithhedger Sat 29 Apr 17:38:29 BST 2017 kdhedger68713@gmail.com
+
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+BLACK='\e[0;30m'
+NORMAL='\e[0;0m'
+
+declare -a RESULTS
+declare -a DEPENDSON
+
+PACKAGETOTEST="$1"
+INSTALLEDVERSION=""
+UPDATETOVERSION=""
+PATHTOSCRIPT=""
+
+parseArray ()
+{
+for ((j=0;j<${#RESULTS};j++))
+	do
+		if [ "X${RESULTS[j]}" != "X" ];then
+			case ${RESULTS[j]} in
+				"Installed version="*)
+					INSTALLEDVERSION=${RESULTS[j]##*=}
+					INSTALLEDVERSION=${INSTALLEDVERSION//[$'\t\r\n ']}
+					;;
+				*"may need updating to"*)
+					UPDATETOVERSION=${RESULTS[j]##* }
+					UPDATETOVERSION=${UPDATETOVERSION//[$'\t\r\n ']}
+					;;
+				"Path to script="*)
+					PATHTOSCRIPT=${RESULTS[j]##*=}
+					PATHTOSCRIPT=${PATHTOSCRIPT//[$'\t\r\n ']}
+			esac
+		fi
+	done	
+}
+
+if [ "X$PACKAGETOTEST" = "X" ];then
+	echo "Need package name ..."
+	exit 1
+fi
+
+if [ "X$(lfspkg -C $PACKAGETOTEST 2>&1|grep -i 'No version info for')" != "X" ];then
+	echo "Can't find version info for $PACKAGETOTEST ..."
+	exit 1
+fi
+
+readarray RESULTS < <(lfspkg -C $PACKAGETOTEST 2>/dev/null)
+parseArray
+
+if [ "X$INSTALLEDVERSION" = "X" ] || [ "X$UPDATETOVERSION" = "X" ];then
+	echo -e "${RED}Can't auto-update $PACKAGETOTEST ...${NORMAL}"
+	lfspkg -S $PACKAGETOTEST
+	echo "....."
+	lfspkg -C $PACKAGETOTEST 2>/dev/null
+	exit 1
+fi
+
+echo -e "${GREEN}Auto-update $PACKAGETOTEST $INSTALLEDVERSION to $UPDATETOVERSION${NORMAL}"
+
+readarray DEPENDSON < <(lfspkg -O $PACKAGETOTEST 2>/dev/null)
+for ((j=1;j<${#DEPENDSON};j++))
+	do
+		if [ "X${DEPENDSON[j]}" != "X" ];then
+			sed "s|\($PACKAGETOTEST\)-[0-9].*|\1-$UPDATETOVERSION|gI" ${DEPENDSON[j]##*- }
+		fi
+	done
+
+sed "s|VERSION=.*|VERSION=$UPDATETOVERSION|" "$PATHTOSCRIPT"
+echo -e "\n${GREEN}Please check $PATHTOSCRIPT ...${NORMAL}\n"
+
+
+
+
+
+
+
