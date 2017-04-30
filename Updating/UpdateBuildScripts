@@ -2,6 +2,15 @@
 
 #©keithhedger Sat 29 Apr 17:38:29 BST 2017 kdhedger68713@gmail.com
 
+if [ -e ../LFSScripts/SystemData ];then
+	. ../LFSScripts/SystemData
+else
+	echo "No SystemData file found ..."
+	exit 1
+fi
+
+#(cd ../LFSScripts;./ShowSystemData)||true
+
 RED='\e[1;31m'
 GREEN='\e[1;32m'
 BLACK='\e[0;30m'
@@ -15,13 +24,15 @@ INSTALLEDVERSION=""
 UPDATETOVERSION=""
 PATHTOSCRIPT=""
 
+INLINE=""
+
 parseArray ()
 {
 for ((j=0;j<${#RESULTS};j++))
 	do
 		if [ "X${RESULTS[j]}" != "X" ];then
 			case ${RESULTS[j]} in
-				"Installed version="*)
+				"Script version="*)
 					INSTALLEDVERSION=${RESULTS[j]##*=}
 					INSTALLEDVERSION=${INSTALLEDVERSION//[$'\t\r\n ']}
 					;;
@@ -31,7 +42,7 @@ for ((j=0;j<${#RESULTS};j++))
 					;;
 				"Path to script="*)
 					PATHTOSCRIPT=${RESULTS[j]##*=}
-					PATHTOSCRIPT=${PATHTOSCRIPT//[$'\t\r\n ']}
+					PATHTOSCRIPT=${LFS}${PATHTOSCRIPT//[$'\t\r\n ']}
 			esac
 		fi
 	done	
@@ -42,34 +53,39 @@ if [ "X$PACKAGETOTEST" = "X" ];then
 	exit 1
 fi
 
-if [ "X$(lfspkg -C $PACKAGETOTEST 2>&1|grep -i 'No version info for')" != "X" ];then
+if [ "X$(lfspkg -R $LFS -C $PACKAGETOTEST 2>&1|grep -i 'No version info for')" != "X" ];then
 	echo "Can't find version info for $PACKAGETOTEST ..."
 	exit 1
 fi
 
-readarray RESULTS < <(lfspkg -C $PACKAGETOTEST 2>/dev/null)
+readarray RESULTS < <(lfspkg -R $LFS -C $PACKAGETOTEST 2>/dev/null)
 parseArray
 
-if [ "X$INSTALLEDVERSION" = "X" ] || [ "X$UPDATETOVERSION" = "X" ];then
+if [ "X$INSTALLEDVERSION" = "X" ] || [ "X$UPDATETOVERSION" = "X" ] || [ "X$PATHTOSCRIPT" = "X" ];then
 	echo -e "${RED}Can't auto-update $PACKAGETOTEST ...${NORMAL}"
-	lfspkg -S $PACKAGETOTEST
+	lfspkg -R $LFS -S $PACKAGETOTEST
 	echo "....."
-	lfspkg -C $PACKAGETOTEST 2>/dev/null
+	lfspkg -R $LFS -C $PACKAGETOTEST 2>/dev/null
 	exit 1
 fi
 
 echo -e "${GREEN}Auto-update $PACKAGETOTEST $INSTALLEDVERSION to $UPDATETOVERSION${NORMAL}"
 
-readarray DEPENDSON < <(lfspkg -O $PACKAGETOTEST 2>/dev/null)
+readarray DEPENDSON < <(lfspkg -R $LFS -O $PACKAGETOTEST 2>/dev/null)
 for ((j=1;j<${#DEPENDSON};j++))
 	do
 		if [ "X${DEPENDSON[j]}" != "X" ];then
-			sed "s|\($PACKAGETOTEST\)-[0-9].*|\1-$UPDATETOVERSION|gI" ${DEPENDSON[j]##*- }
+			DEPENDFILE=${DEPENDSON[j]##*- }
+			DEPENDFILE=${DEPENDFILE//[$'\t\r\n ']}
+			echo -e "\n${GREEN}Updating $DEPENDFILE ...${NORMAL}"
+			sed $INLINE "s|\($PACKAGETOTEST\)-[0-9].*|\1-$UPDATETOVERSION|gI" $DEPENDFILE
 		fi
 	done
 
-sed "s|VERSION=.*|VERSION=$UPDATETOVERSION|" "$PATHTOSCRIPT"
+echo
+
 echo -e "\n${GREEN}Please check $PATHTOSCRIPT ...${NORMAL}\n"
+sed $INLINE "s|VERSION=.*|VERSION=$UPDATETOVERSION|" "$PATHTOSCRIPT"
 
 
 
