@@ -2,7 +2,7 @@
 
 #©keithhedger Thu 3 Dec 12:26:07 GMT 2015 kdhedger68713@gmail.com
 
-cat > $PKG/etc/nsswitch.conf << "EOF"
+cat > /etc/nsswitch.conf << "EOF"
 # Begin /etc/nsswitch.conf
 
 passwd: files

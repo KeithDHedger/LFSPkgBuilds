@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="wxgtk-2.24.26 libsndfile-1.0.25 libmad-0.15.1"
+DEPENDS="wxgtk-2.24.26 libsndfile-1.0.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

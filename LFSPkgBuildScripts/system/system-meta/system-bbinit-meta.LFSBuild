@@ -11,7 +11,7 @@ export THISTTY
 DEPENDS="linuxheaders-4.9.9
 Man-pages-4.09
 Glibc-2.25
-Zlib-1.2.22
+Zlib-1.2.11
 File-5.30
 Binutils-2.27
 GMP-6.1.2

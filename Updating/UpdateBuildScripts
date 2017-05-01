@@ -23,8 +23,7 @@ PACKAGETOTEST="$1"
 INSTALLEDVERSION=""
 UPDATETOVERSION=""
 PATHTOSCRIPT=""
-
-INLINE=""
+INLINE=${INLINE:-"-i"}
 
 parseArray ()
 {
@@ -69,7 +68,7 @@ if [ "X$INSTALLEDVERSION" = "X" ] || [ "X$UPDATETOVERSION" = "X" ] || [ "X$PATHT
 	exit 1
 fi
 
-echo -e "${GREEN}Auto-update $PACKAGETOTEST $INSTALLEDVERSION to $UPDATETOVERSION${NORMAL}"
+echo -e "${GREEN}Auto-update $PACKAGETOTEST $INSTALLEDVERSION to $UPDATETOVERSION${NORMAL}\n"
 
 readarray DEPENDSON < <(lfspkg -R $LFS -O $PACKAGETOTEST 2>/dev/null)
 for ((j=1;j<${#DEPENDSON};j++))
@@ -77,16 +76,16 @@ for ((j=1;j<${#DEPENDSON};j++))
 		if [ "X${DEPENDSON[j]}" != "X" ];then
 			DEPENDFILE=${DEPENDSON[j]##*- }
 			DEPENDFILE=${DEPENDFILE//[$'\t\r\n ']}
-			echo -e "\n${GREEN}Updating $DEPENDFILE ...${NORMAL}"
-			sed $INLINE "s|\($PACKAGETOTEST\)-[0-9].*|\1-$UPDATETOVERSION|gI" $DEPENDFILE
+			echo -e "${GREEN}Updating $DEPENDFILE ...${NORMAL}"
+			sed $INLINE "s|\(\b${PACKAGETOTEST}\b\)-[0-9].*|\1-$UPDATETOVERSION|gI" $DEPENDFILE
 		fi
 	done
 
 echo
 
-echo -e "\n${GREEN}Please check $PATHTOSCRIPT ...${NORMAL}\n"
-sed $INLINE "s|VERSION=.*|VERSION=$UPDATETOVERSION|" "$PATHTOSCRIPT"
-
+echo -e "${GREEN}Please check $PATHTOSCRIPT ...${NORMAL}"
+sed $INLINE "s|VERSION=.*|VERSION=\"$UPDATETOVERSION\"|" "$PATHTOSCRIPT"
+xdg-open "$PATHTOSCRIPT" &>/dev/null
 
 
 
