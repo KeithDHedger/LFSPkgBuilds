@@ -4,7 +4,7 @@
 
 PKGNAME="m4"
 TARNAME="$PKGNAME"
-VERSION="1.4.17"
+VERSION="1.4.18"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,7 +18,6 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -i -e '/gets is a/d' lib/stdio.in.h
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1

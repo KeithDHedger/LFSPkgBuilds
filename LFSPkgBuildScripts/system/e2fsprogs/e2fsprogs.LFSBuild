@@ -4,7 +4,7 @@
 
 PKGNAME="e2fsprogs"
 TARNAME="$PKGNAME"
-VERSION="1.42.13"
+VERSION="1.43.4"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -23,7 +23,6 @@ pushd "${TARNAME}-${VERSION}"
 	cd build
 	LIBS=-L/tools/lib CFLAGS=-I/tools/include PKG_CONFIG_PATH=/tools/lib/pkgconfig ../configure --prefix=/usr --with-root-prefix="" --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck
 	make|| exit
-	#make $MAKEFLAGS||make|| exit
 	make install DESTDIR="$PKG" || exit
 	make install-libs DESTDIR="$PKG" || exit
 	chmod -v u+w $PKG/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a

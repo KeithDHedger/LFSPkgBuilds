@@ -4,7 +4,7 @@
 
 PKGNAME="gzip"
 TARNAME="$PKGNAME"
-VERSION="1.6"
+VERSION="1.8"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -22,8 +22,7 @@ pushd "${TARNAME}-${VERSION}"
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	mkdir -vp $PKG/usr/bin || exit 1
-	mv -v $PKG/bin/{gzexe,uncompress,zcmp,zdiff,zegrep} $PKG/usr/bin
-	mv -v $PKG/bin/{zfgrep,zforce,zgrep,zless,zmore,znew} $PKG/usr/bin
+	mv -v $PKG/usr/bin/gzip $PKG/bin
 popd
 
 checketc "$PKG"

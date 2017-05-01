@@ -4,7 +4,7 @@
 
 PKGNAME="gcc"
 TARNAME="$PKGNAME"
-VERSION="5.2.0"
+VERSION="6.3.0"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,10 +18,9 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	mkdir -v ../gcc-build
-	cd ../gcc-build
-#	SED=sed ../${TARNAME}-${VERSION}/configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib --enable-shared
-	SED=sed ../${TARNAME}-${VERSION}/configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
+	mkdir -v build
+	cd build
+	SED=sed ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
 
 	make $MAKEFLAGS||make|| exit
 	make install DESTDIR="$PKG" || exit
@@ -59,7 +58,7 @@ esac
 
 rm -r "$PKG" "${TARNAME}-${VERSION}" gcc-build
 
-echo 'main(){}' > dummy.c
+echo 'int main(){}' > dummy.c
 cc dummy.c -v -Wl,--verbose &> dummy.log
 readelf -l a.out | grep ': /lib'
 grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
@@ -68,5 +67,6 @@ grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
 grep "/lib.*/libc.so.6 " dummy.log
 grep found dummy.log
 
-read -t 20 -p "check out " ||true
+#read -t 20 -p "check out " ||true
+read -p "check out " ||true
 rm -v dummy.c a.out

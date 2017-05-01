@@ -4,7 +4,7 @@
 
 PKGNAME="procps-ng"
 TARNAME="$PKGNAME"
-VERSION="3.3.11"
+VERSION="3.3.12"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -20,7 +20,6 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	./configure --prefix=/usr --exec-prefix= --libdir=/usr/lib${LIBDIRSUFFIX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static --disable-kill
 	make $MAKEFLAGS||make|| exit
-	sed -i -r 's|(pmap_initname)\\\$|\1|' testsuite/pmap.test/pmap.exp
 	make install DESTDIR="$PKG" || exit
 
 	mkdir -vp $PKG/lib${LIBDIRSUFFIX} $PKG/bin || exit	

@@ -20,7 +20,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 	make $MAKEFLAGS||make|| exit 1
-	make $MAKEFLAGS||make|| exit 1
+	make $MAKEFLAGS html||make html|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	make install-html DESTDIR=$PKG || exit 1
 popd

@@ -4,7 +4,7 @@
 
 PKGNAME="vim"
 TARNAME="$PKGNAME"
-VERSION="7.4"
+VERSION="8.0.069"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -28,7 +28,7 @@ pushd "${PKGNAME}74"
 		do
 		    ln -sv vim.1 $(dirname $L)/vi.1
 		done
-	ln -sv ../vim/vim74/doc $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	ln -sv ../vim/vim80/doc $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 popd
 
 checketc "$PKG"

@@ -4,7 +4,7 @@
 
 PKGNAME="iproute2"
 TARNAME="$PKGNAME"
-VERSION="4.2.0"
+VERSION="4.9.0"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,9 +18,10 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -i '/^TARGETS/s@arpd@@g' misc/Makefile
 	sed -i /ARPD/d Makefile
 	sed -i 's/arpd.8//' man/man8/Makefile
+	rm -v doc/arpd.sgml
+	sed -i 's/m_ipt.o//' tc/Makefile
 	make $MAKEFLAGS||make|| exit
 	make LIBDIR=/usr/lib${LIBDIRSUFFIX}/ DESTDIR=$PKG DOCDIR=/usr/share/doc/${PKGNAME}-${VERSION} MANDIR=/usr/share/man install || exit
 popd

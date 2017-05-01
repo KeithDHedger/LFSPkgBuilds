@@ -77,7 +77,8 @@ for ((j=1;j<${#DEPENDSON};j++))
 			DEPENDFILE=${DEPENDSON[j]##*- }
 			DEPENDFILE=${DEPENDFILE//[$'\t\r\n ']}
 			echo -e "${GREEN}Updating $DEPENDFILE ...${NORMAL}"
-			sed $INLINE "s|\(\b${PACKAGETOTEST}\b\)-[0-9].*|\1-$UPDATETOVERSION|gI" $DEPENDFILE
+#			sed $INLINE "s|\(\b${PACKAGETOTEST}\b\)-[0-9].*|\1-$UPDATETOVERSION|gI" $DEPENDFILE
+			sed $INLINE "s|\(\b${PACKAGETOTEST}\b\)-[0-9][.0-9]*|\1-$UPDATETOVERSION|gI" $DEPENDFILE
 		fi
 	done
 

@@ -4,7 +4,7 @@
 
 PKGNAME="sed"
 TARNAME="$PKGNAME"
-VERSION="4.2.2"
+VERSION="4.4"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,11 +18,14 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/bin --htmldir=/usr/share/doc/${PKGNAME}-${VERSION}
+	sed -i 's/usr/tools/' build-aux/help2man
+	sed -i 's/panic-tests.sh//' Makefile.in
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/bin
 	make $MAKEFLAGS||make|| exit 1
 	make html $MAKEFLAGS||make html|| exit 1
 	make install DESTDIR=$PKG || exit 1
-	make -C doc install-html DESTDIR="$PKG"
+	mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	install -m644 doc/sed.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 popd
 
 checketc $PKG

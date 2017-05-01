@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libusb-1.0.18 pkg-config-0.28"
+DEPENDS="libusb-1.0.18 pkg-config-0.29.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

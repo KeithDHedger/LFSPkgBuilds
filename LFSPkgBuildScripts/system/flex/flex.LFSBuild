@@ -4,7 +4,7 @@
 
 PKGNAME="flex"
 TARNAME="$PKGNAME"
-VERSION="2.5.39"
+VERSION="2.6.3"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,8 +18,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -i -e '/test-bison/d' tests/Makefile.in
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" HELP2MAN=/tools/bin/true  ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	mkdir -vp $PKG/usr/bin||true

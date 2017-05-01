@@ -4,7 +4,7 @@
 
 PKGNAME="man-db"
 TARNAME="$PKGNAME"
-VERSION="2.7.2"
+VERSION="2.7.6.1"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,7 +18,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --sysconfdir=/etc --disable-setuid --with-browser=/usr/bin/links --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap
+	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --sysconfdir=/etc --disable-setuid --enable-cache-owner=bin --with-browser=/usr/bin/links --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap --with-systemdtmpfilesdir=
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd

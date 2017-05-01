@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="perl-5.20.0 Module-Build-0.4220"
+DEPENDS="perl-5.24.1 Module-Build-0.4220"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

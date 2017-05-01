@@ -4,7 +4,7 @@
 
 PKGNAME="mpfr"
 TARNAME="$PKGNAME"
-VERSION="3.1.3"
+VERSION="3.1.5"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,7 +18,6 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/mpfr-${VERSION}-upstream_fixes-1.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-thread-safe --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 	make $MAKEFLAGS||make || exit 1
 	make html $MAKEFLAGS||make || exit 1

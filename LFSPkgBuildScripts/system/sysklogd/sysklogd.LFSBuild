@@ -19,6 +19,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	sed -i '/Error loading kernel symbols/{n;n;d}' ksym_mod.c
+	sed -i 's/union wait/int/' syslogd.c
 	make $MAKEFLAGS||make|| exit
 	mkdir -vp $PKG/sbin
 	make BINDIR=$PKG/sbin install || exit

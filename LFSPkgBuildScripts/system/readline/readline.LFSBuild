@@ -4,7 +4,7 @@
 
 PKGNAME="readline"
 TARNAME="$PKGNAME"
-VERSION="6.3"
+VERSION="7.0"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,10 +18,9 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-upstream_fixes-3.patch
 	sed -i '/MV.*old/d' Makefile.in
 	sed -i '/{OLDSUFF}/c:' support/shlib-install
-	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static
 	make $MAKEFLAGS SHLIB_LIBS=-lncurses||make SHLIB_LIBS=-lncurses|| exit
 	make install SHLIB_LIBS=-lncurses DESTDIR="$PKG" || exit
 

@@ -4,7 +4,7 @@
 
 PKGNAME="binutils"
 TARNAME="$PKGNAME"
-VERSION="2.25.1"
+VERSION="2.27"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,13 +18,11 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${PKGNAME}-${VERSION}"
-	rm -fv etc/standards.info
-	sed -i.bak '/^INFO/s/standards.info //' etc/Makefile.in
-	mkdir -v ../binutils-build
-	cd ../binutils-build
-	../${PKGNAME}-${VERSION}/configure --prefix=/usr --enable-shared --disable-werror
-	make tooldir=/usr|| exit 1
-	make tooldir=/usr install DESTDIR=$PKG || exit 1
+	mkdir -v build
+	cd build
+	../configure --prefix=/usr --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --with-system-zlib
+	make $MAKEFLAGS tooldir=/usr||make tooldir=/usr|| exit 1
+	make $MAKEFLAGS tooldir=/usr install DESTDIR=$PKG||make tooldir=/usr install DESTDIR=$PKG|| exit 1
 popd
 
 checketc "$PKG"

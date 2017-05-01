@@ -4,7 +4,7 @@
 
 PKGNAME="tar"
 TARNAME="$PKGNAME"
-VERSION="1.28"
+VERSION="1.29"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -18,7 +18,6 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ../tar-manpage.patch
 	FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --bindir=/bin --libexecdir=/usr/sbin
 	make $MAKEFLAGS||make|| exit
 	make install DESTDIR="$PKG" || exit

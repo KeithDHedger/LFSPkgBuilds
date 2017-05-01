@@ -5,7 +5,7 @@
 PKGNAME="grub"
 TARNAME="$PKGNAME"
 VERSION="2.02"
-MINORVERSION="~beta2"
+MINORVERSION="~beta3"
 
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
@@ -20,7 +20,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}${MINORVERSION}"
-	./configure --sbindir=/sbin --prefix=/usr --sysconfdir=/etc --disable-grub-emu-usb --disable-efiemu  --disable-werror
+	./configure --sbindir=/sbin --prefix=/usr --sysconfdir=/etc --disable-efiemu  --disable-werror
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd

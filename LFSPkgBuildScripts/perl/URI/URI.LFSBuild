@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="perl-5.20.0"
+DEPENDS="perl-5.24.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
