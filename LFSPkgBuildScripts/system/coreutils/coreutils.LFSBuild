@@ -18,10 +18,11 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	export FORCE_UNSAFE_CONFIGURE=1 
 	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-i18n-1.patch
-	sed -i '/tests\/misc\/sort.pl/ d' Makefile.in
-	FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --libexecdir=/usr/lib --enable-no-install-program=kill,uptime
-	make $MAKEFLAGS||make|| exit
+	sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
+	./configure --prefix=/usr --libexecdir=/usr/lib --enable-no-install-program=kill,uptime
+	make $MAKEFLAGS||FORCE_UNSAFE_CONFIGURE=1 make|| exit
 	make install DESTDIR="$PKG" || exit
 	mkdir -vp $PKG/bin $PKG/usr/sbin $PKG/usr/share/man/man8
 	mv -v $PKG/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $PKG/bin
@@ -31,6 +32,7 @@ pushd "${TARNAME}-${VERSION}"
 	mv -v $PKG/usr/share/man/man1/chroot.1 $PKG/usr/share/man/man8/chroot.8
 	sed -i 's/\"1\"/\"8\"/1' "$PKG/usr/share/man/man8/chroot.8"
 	mv -v $PKG/usr/bin/{head,sleep,nice,test,[} $PKG/bin
+	unset FORCE_UNSAFE_CONFIGURE
 popd
 
 checketc "$PKG"

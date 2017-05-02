@@ -56,7 +56,7 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}" gcc-build
+rm -r "$PKG" "${TARNAME}-${VERSION}"
 
 echo 'int main(){}' > dummy.c
 cc dummy.c -v -Wl,--verbose &> dummy.log

@@ -18,10 +18,10 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/bin
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
-	mkdir -vp $PKG/usr/bin || exit 1
+	mkdir -vp $PKG/usr/bin $PKG/bin || exit 1
 	mv -v $PKG/usr/bin/gzip $PKG/bin
 popd
 
