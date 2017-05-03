@@ -18,12 +18,13 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --bindir=/bin --libexecdir=/usr/sbin
+	export FORCE_UNSAFE_CONFIGURE=1
+	./configure --prefix=/usr --bindir=/bin --libexecdir=/usr/sbin
 	make $MAKEFLAGS||make|| exit
 	make install DESTDIR="$PKG" || exit
 	make -j3 -C doc install-html docdir=/usr/share/doc/${PKGNAME}-${VERSION} DESTDIR="$PKG"
 	mkdir -vp $PKG/usr/share/man/man1||true
-	perl tarman > $PKG/usr/share/man/man1/tar.1
+	unset FORCE_UNSAFE_CONFIGURE
 popd
 
 checketc "$PKG"

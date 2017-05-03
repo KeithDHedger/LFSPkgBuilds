@@ -25,7 +25,7 @@ DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION} $SECTION
+gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION}
 #extra ucode and firmware can be retreived for here:
 #http://git.exherbo.org/summer/repositories/hardware/index.html
 #need this for my radeon driver

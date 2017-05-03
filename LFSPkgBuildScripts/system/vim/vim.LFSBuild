@@ -9,6 +9,7 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+VIMVERS=80
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -17,7 +18,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${PKGNAME}74"
+pushd "${PKGNAME}${VIMVERS}"
 	echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 	./configure --prefix=/usr --enable-multibyte
 	make $MAKEFLAGS||make|| exit
@@ -28,7 +29,7 @@ pushd "${PKGNAME}74"
 		do
 		    ln -sv vim.1 $(dirname $L)/vi.1
 		done
-	ln -sv ../vim/vim80/doc $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	ln -sv ../vim/vim${VIMVERS}/doc $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 popd
 
 checketc "$PKG"
@@ -53,4 +54,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "vim74"
+rm -r "$PKG" "vim${VIMVERS}"
