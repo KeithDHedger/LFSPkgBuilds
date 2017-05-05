@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gdk-pixbuf-2.31.7 libjpeg-turbo-1.4.1 libpng-1.6.18 librsvg-2.40.10"
+DEPENDS="gdk-pixbuf-2.31.7 libjpeg-turbo-1.4.1 libpng-1.6.28 librsvg-2.40.10"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

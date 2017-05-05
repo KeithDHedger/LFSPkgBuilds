@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libpng-1.6.18 GLib-2.44.1 Pixman-0.32.6 GTK-Doc-1.24"
+DEPENDS="libpng-1.6.28 GLib-2.44.1 Pixman-0.32.6 GTK-Doc-1.24"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

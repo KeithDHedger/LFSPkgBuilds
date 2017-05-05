@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="FreeType-2.6 FriBidi-0.19.7 Fontconfig-2.11.1"
+DEPENDS="FreeType-2.7.1 FriBidi-0.19.7 Fontconfig-2.12.1[0;0m"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-7.7 libXp-1.0.3 bullet3-2.83.4"
+DEPENDS="xorg-libs-8.0 libXp-1.0.3 bullet3-2.83.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

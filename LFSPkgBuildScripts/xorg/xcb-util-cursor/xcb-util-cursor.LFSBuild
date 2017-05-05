@@ -2,19 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.0"
+DEPENDS="xcb-util-0.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="xkeyboard-config"
+PKGNAME="xcb-util-cursor"
 TARNAME="$PKGNAME"
-VERSION="2.14"
-BUILD=${BUILD:-1}
+VERSION="0.1.3"
+BUILD=1
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-gettar "http://xorg.freedesktop.org/archive/individual/data/xkeyboard-config/${TARBALL}" $SECTION
+gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -24,14 +24,15 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	./configure $XORG_CONFIG --with-xkb-rules-symlink=xorg
-	make $MAKEFLAGS||make || exit 1
+	./configure $XORG_CONFIG
+	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
 
-checketc $PKG
+checketc "$PKG"
 packageclean "$PKG"
 
+cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd

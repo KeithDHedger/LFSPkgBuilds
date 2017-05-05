@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.0.29 DBus-1.10.0 MesaLib-10.6.6 xcb-util-image-0.3.9 xcb-util-keysyms-0.3.9 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-6.0 pciutils-3.4.0 NSS-3.20"
+DEPENDS="alsa-lib-1.0.29 DBus-1.10.0 MesaLib-10.6.6 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-6.0 pciutils-3.4.0 NSS-3.20"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

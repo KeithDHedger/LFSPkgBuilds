@@ -10,7 +10,7 @@ SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 gettar "http://downloads.sourceforge.net/libpng/${TARBALL}" $SECTION
-gettar "http://downloads.sourceforge.net/libpng-apng/libpng-${VERSION}-apng.patch.gz" $SECTION
+gettar "http://downloads.sourceforge.net/project/apng/libpng/libpng16/${TARNAME}-${VERSION}-apng.patch.gz" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -20,7 +20,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	gzip -cd ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-apng.patch.gz | patch -p1
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" LIBS=-lpthread ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make || exit 1
 	make install DESTDIR=$PKG || exit 1
 	mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}

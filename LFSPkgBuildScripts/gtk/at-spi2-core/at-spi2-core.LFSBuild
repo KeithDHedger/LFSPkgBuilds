@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="DBus-1.10.14 GLib-2.50.3 xorg-libs-7.8"
+DEPENDS="DBus-1.10.14 GLib-2.50.3 xorg-libs-8.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

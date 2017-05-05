@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-7.8 libdrm-2.4.75 Python-2.7.13 elfutils-0.168 libvdpau-1.1.1 LLVM-3.9.1"
+DEPENDS="xorg-libs-8.0 libdrm-2.4.75 Python-2.7.13 elfutils-0.168 libvdpau-1.1.1 LLVM-3.9.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

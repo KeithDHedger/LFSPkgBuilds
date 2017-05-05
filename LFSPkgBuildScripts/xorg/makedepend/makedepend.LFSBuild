@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="proto-7.8 pkg-config-0.29.1"
+DEPENDS="proto-8.0 pkg-config-0.29.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
