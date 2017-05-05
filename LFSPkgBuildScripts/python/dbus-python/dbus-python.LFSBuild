@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.104 Python-2.7.10"
+DEPENDS="dbus-glib-0.104 Python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libcap-2.24 OpenSSL-1.0.2 libedit-3.1"
+DEPENDS="libcap-2.25 OpenSSL-1.0.2 libedit-3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

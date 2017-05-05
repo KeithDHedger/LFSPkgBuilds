@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="util-macros-1.19.0"
+DEPENDS="util-macros-1.19.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

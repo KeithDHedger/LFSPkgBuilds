@@ -2,19 +2,20 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libXau-1.0.8 xcb-proto-1.11"
+DEPENDS="libXau-1.0.8 xcb-proto-1.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libxcb"
 TARNAME="$PKGNAME"
-VERSION="1.11.1"
+VERSION="1.12"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-python3-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -24,6 +25,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	patch -Np1 -i ../libxcb-1.12-python3-1.patch
 	sed -e "s/pthread-stubs//" -i configure.ac
 	autoreconf -fi
 	./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --enable-xinput --without-doxygen

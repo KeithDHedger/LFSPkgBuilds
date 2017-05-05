@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="babl-0.1.12 Cairo-1.14.2 gdk-pixbuf-2.31.7 Graphviz-2.38.0 libjpeg-turbo-1.4.1 libpng-1.6.18 Pango-1.36.8 Python-2.7.10 gobject-introspection-1.44.0 Vala-0.28.1"
+DEPENDS="babl-0.1.12 Cairo-1.14.2 gdk-pixbuf-2.31.7 Graphviz-2.38.0 libjpeg-turbo-1.4.1 libpng-1.6.18 Pango-1.36.8 Python-2.7.13 gobject-introspection-1.44.0 Vala-0.28.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

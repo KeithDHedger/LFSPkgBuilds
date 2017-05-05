@@ -26,10 +26,10 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	./configure --prefix=/usr --enable-shared --with-system-expat --with-system-ffi --enable-unicode=ucs4 --libdir=/usr/lib --with-system-expat
+	./configure --prefix=/usr --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes --enable-unicode=ucs4 --libdir=/usr/lib${LIBDIRSUFFIX}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
-	chmod -v 755 $PKG/usr/lib/libpython2.7.so.1.0||true
+	chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libpython2.7.so.1.0||true
 
 	install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	tar --strip-components=1 -C $PKG/usr/share/doc/${PKGNAME}-${VERSION} --no-same-owner -xvf ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-docs-html.tar.bz2

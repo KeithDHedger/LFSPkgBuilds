@@ -3,7 +3,7 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="xorg-meta"
-VERSION="7.8"
+VERSION="8.0"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -14,11 +14,11 @@ export CHECKETC=0
 
 mkdir -vp ${SOURCEARCHIVES}/${SECTION}||true
 
-DEPENDS="util-macros-1.19.0
-proto-7.8
+DEPENDS="util-macros-1.19.1
+proto-8.0
 libXau-1.0.8
 libXdmcp-1.1.2
-xcb-proto-1.11
+xcb-proto-1.12
 Fontconfig-2.11.1
 libxcb-1.11.1 
 xorg-libs-7.8

@@ -10,7 +10,7 @@ export THISTTY
 
 DEPENDS="linuxheaders-4.9.9
 Man-pages-4.09
-Glibc-2.25
+Glibc-1.06.95
 Zlib-1.2.11
 File-5.30
 Binutils-2.27
@@ -65,7 +65,7 @@ Make-4.2.1
 Patch-2.7.5
 Sysklogd-1.5.1
 Sysvinit-2.88
-eudev-3.2.1
+eudev-3.2.1[0;0m[0;0m
 Util-linux-2.29.1
 Man-DB-2.7.6.1
 Tar-1.29

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="docbook-xml-4.5 Python-2.7.10"
+DEPENDS="docbook-xml-4.5 Python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

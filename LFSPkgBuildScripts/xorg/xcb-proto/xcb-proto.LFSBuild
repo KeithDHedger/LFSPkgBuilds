@@ -2,19 +2,20 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.10"
+DEPENDS="Python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xcb-proto"
 TARNAME="${PKGNAME}"
-VERSION="1.11"
+VERSION="1.12"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-schema-1.patch"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -24,6 +25,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	patch -Np1 -i ../${TARNAME}-${VERSION}-schema-1.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${XORG_CONFIG}
 	make $MAKEFLAGS||make || exit 1
 	make install DESTDIR=$PKG || exit 1

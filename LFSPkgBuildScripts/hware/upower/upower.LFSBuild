@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.104 Intltool-0.50.2 libusb-1.0.19 Polkit-0.113 gobject-introspection-1.44.0"
+DEPENDS="dbus-glib-0.104 Intltool-0.51.0 libusb-1.0.19 Polkit-0.113 gobject-introspection-1.44.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

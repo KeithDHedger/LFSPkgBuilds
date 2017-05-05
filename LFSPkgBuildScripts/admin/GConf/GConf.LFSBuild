@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.104 Intltool-0.50.2 libxml2-2.9.2"
+DEPENDS="dbus-glib-0.104 Intltool-0.51.0 libxml2-2.9.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

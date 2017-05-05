@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="icu-55.1 Python-2.7.10"
+DEPENDS="icu-55.1 Python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
