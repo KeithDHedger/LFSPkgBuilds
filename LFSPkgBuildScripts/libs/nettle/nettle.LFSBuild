@@ -20,7 +20,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
-	sed -i '/^install-here/ s/install-static//' Makefile
+#	sed -i '/^install-here/ s/install-static//' Makefile
 	make $MAKEFLAGS||make || exit 1
 	make install DESTDIR=$PKG || exit 1
 

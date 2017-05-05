@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.17.2"
+DEPENDS="Xorg-Server-1.19.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xf86-video-vesa"
 TARNAME="$PKGNAME"
-VERSION="2.3.3"
+VERSION="2.3.4"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"

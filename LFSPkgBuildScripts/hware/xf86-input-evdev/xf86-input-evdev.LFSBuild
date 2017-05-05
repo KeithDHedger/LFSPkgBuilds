@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.17.2 Libevdev-1.4.4"
+DEPENDS="Xorg-Server-1.19.1 Libevdev-1.5.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xf86-input-evdev"
 TARNAME="$PKGNAME"
-VERSION="2.9.2"
+VERSION="2.10.5"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"

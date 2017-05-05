@@ -16,9 +16,7 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 gettar "ftp://ftp.freedesktop.org/pub/mesa/${VERSION}/${TARBALL}" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/mesa-10.6.6-llvm_3_7-1.patch" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/mesa-10.6.6-add_xdemos-1.patch" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.0/mesa-13.0.4-add_xdemos-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-add_xdemos-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -28,8 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/mesa-10.6.6-add_xdemos-1.patch
-#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/mesa-10.6.6-llvm_3_7-1.patch
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch
 	sed -i "/pthread_stubs_possible=/s/yes/no/" configure.ac
 	GLL_DRV="r600,r300,nouveau,radeonsi,svga,swrast"
 	./autogen.sh CFLAGS="-O2" CXXFLAGS="-O2" --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV

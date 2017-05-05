@@ -4,7 +4,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.17.2 Pango-1.36.8 Imlib2-1.4.7 startup-notification-0.12 librsvg-2.40.10"
+DEPENDS="Xorg-Server-1.19.1 Pango-1.36.8 Imlib2-1.4.7 startup-notification-0.12 librsvg-2.40.10"
 lfspkg -B "$DEPENDS"
 
 PKGNAME="openbox"

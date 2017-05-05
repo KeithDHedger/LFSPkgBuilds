@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.17.2"
+DEPENDS="Xorg-Server-1.19.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xf86-video-ati"
 TARNAME="$PKGNAME"
-VERSION="7.5.0"
+VERSION="7.8.0"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -24,7 +24,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -i -e '/ac_cv_header_glamor/s/\$ac_includes_default/#include \\"xorg-server.h\\"/' -e '/GLAMOR_NO_DRI3/s/\(#include \)/\1\\"xorg-server.h\\"\n\1/' configure
+#	sed -i -e '/ac_cv_header_glamor/s/\$ac_includes_default/#include \\"xorg-server.h\\"/' -e '/GLAMOR_NO_DRI3/s/\(#include \)/\1\\"xorg-server.h\\"\n\1/' configure
 	./configure $XORG_CONFIG --enable-glamor
 	make $MAKEFLAGS||make || exit 1
 	make install DESTDIR=$PKG || exit 1
