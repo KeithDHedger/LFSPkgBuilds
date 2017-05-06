@@ -61,7 +61,7 @@ beef61a9b0762aba8af7b736bb961f86  font-sony-misc-1.0.3.tar.bz2
 EOF
 
 pushd "${SOURCEARCHIVES}/${SECTION}/x-fonts"
-	grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget -i- -c -B http://xorg.freedesktop.org/releases/individual/font/
+	grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B http://xorg.freedesktop.org/releases/individual/font/
 	if ! md5sum -c ${PKGNAME}-${VERSION}.md5;then
 		echo "Files don't match ..."
 		exit 1

@@ -19,7 +19,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	gzip -cd ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-apng.patch.gz | patch -p1
+	gzip -cd ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-apng.patch.gz | patch -p0
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" LIBS=-lpthread ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make || exit 1
 	make install DESTDIR=$PKG || exit 1
