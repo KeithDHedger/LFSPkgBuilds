@@ -10,6 +10,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}-${MINORVERSION}.orig.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.us.debian.org/debian/pool/main/d/dialog/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

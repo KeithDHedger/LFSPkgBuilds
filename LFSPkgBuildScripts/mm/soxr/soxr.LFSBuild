@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}-Source.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://heanet.dl.sourceforge.net/project/soxr/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://archive.xfce.org/src/xfce/libxfce4ui/4.10/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

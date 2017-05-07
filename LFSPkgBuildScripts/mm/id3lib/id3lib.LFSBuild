@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://kent.dl.sourceforge.net/project/id3lib/id3lib/3.8.3/${TARBALL}" $SECTION
 #gettar "http://svn.cross-lfs.org/svn/repos/patches/id3lib/id3lib-3.8.3-UTF16_writing_bug-1.patch" $SECTION
 #gettar "http://svn.cross-lfs.org/svn/repos/patches/id3lib/id3lib-3.8.3-GCC43FIX-1.patch" $SECTION

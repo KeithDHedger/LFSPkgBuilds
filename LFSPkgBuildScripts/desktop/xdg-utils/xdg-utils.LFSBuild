@@ -16,6 +16,8 @@ SUFFIX="LFSPKG"
 MINORVERSION="rc3"
 
 TARBALL="${TARNAME}-${VERSION}-${MINORVERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://people.freedesktop.org/~rdieter/${TARNAME}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

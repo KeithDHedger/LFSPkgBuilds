@@ -14,6 +14,8 @@ BUILD=1
 SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://dl.dropboxusercontent.com/s/4gbu4oprllk7rt9/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

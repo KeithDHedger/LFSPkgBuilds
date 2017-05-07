@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://gstreamer.freedesktop.org/data/src/${PKGNAME}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

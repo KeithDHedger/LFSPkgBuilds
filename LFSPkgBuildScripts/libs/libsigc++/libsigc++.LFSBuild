@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

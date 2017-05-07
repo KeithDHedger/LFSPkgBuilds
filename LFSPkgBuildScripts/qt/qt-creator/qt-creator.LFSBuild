@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.qt-project.org/official_releases/qtcreator/3.2/3.2.0/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

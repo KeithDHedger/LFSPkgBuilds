@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://garr.dl.sourceforge.net/project/wxwindows/2.8.12/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

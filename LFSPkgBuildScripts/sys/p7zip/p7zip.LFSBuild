@@ -9,6 +9,8 @@ BUILD=1
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}_src_all.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/project/p7zip/p7zip/9.38/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

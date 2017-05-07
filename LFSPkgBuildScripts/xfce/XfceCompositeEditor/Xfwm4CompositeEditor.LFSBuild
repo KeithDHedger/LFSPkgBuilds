@@ -10,6 +10,8 @@ SECTION="XFCE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://dl.dropboxusercontent.com/s/4ju97lhri2gu8ag/$TARBALL" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.videolan.org/pub/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

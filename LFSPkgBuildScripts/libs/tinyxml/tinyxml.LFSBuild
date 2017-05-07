@@ -9,6 +9,8 @@ BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_2_6_2.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://freefr.dl.sourceforge.net/project/${PKGNAME}/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

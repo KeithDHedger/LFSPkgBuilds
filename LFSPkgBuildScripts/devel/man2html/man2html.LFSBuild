@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}g.orig.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.de.debian.org/debian/pool/main/m/man2html/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

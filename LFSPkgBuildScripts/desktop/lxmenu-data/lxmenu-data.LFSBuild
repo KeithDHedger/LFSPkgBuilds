@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/lxde/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

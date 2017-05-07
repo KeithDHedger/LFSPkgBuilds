@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp2.sane-project.org/pub/sane/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 

@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.kernel.org/pub/linux/bluetooth/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/bluez-5.34-obexd_without_systemd-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

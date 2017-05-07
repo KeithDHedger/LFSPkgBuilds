@@ -11,6 +11,8 @@ BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}-${MINORVERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.isc.org/isc/bind9/${VERSION}-${MINORVERSION}/${TARBALL}" $SECTION
 #        ftp://ftp.isc.org/isc/bind9/9.10.1-P2/bind-9.10.1-P2.tar.gz
 PKG="${OUTPUT}/${PKGNAME}"

@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://garr.dl.sourceforge.net/project/clamav/clamav/0.98.4/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

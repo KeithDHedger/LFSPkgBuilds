@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.src.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://llvm.org/releases/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://heanet.dl.sourceforge.net/project/gsmartcontrol/0.8.7/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

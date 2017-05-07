@@ -9,7 +9,11 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://valgrind.org/downloads/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/valgrind-3.10.1-glibc_2.21-1.patch"  $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

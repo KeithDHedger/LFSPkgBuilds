@@ -10,6 +10,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://optimate.dl.sourceforge.net/project/avidemux/avidemux/${VERSION}/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 

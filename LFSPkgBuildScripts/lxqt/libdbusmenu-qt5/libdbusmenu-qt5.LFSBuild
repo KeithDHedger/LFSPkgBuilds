@@ -10,6 +10,8 @@ SECTION="LXQT"
 SUFFIX="LFSPKG"
 REVISION="r267_20140619"
 TARBALL="${TARNAME}-${REVISION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://alien.slackbook.org/ktown/source/5/deps/libdbusmenu-qt5/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -15,8 +15,14 @@ SECTION="PRINT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.ghostscript.com/public/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/gs-fonts/gnu-gs-fonts-other-6.0.tar.gz" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

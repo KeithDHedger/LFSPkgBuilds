@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-55_1-src.tgz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.icu-project.org/files/icu4c/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -10,6 +10,8 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${MINORVERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://sqlite.org/2015/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

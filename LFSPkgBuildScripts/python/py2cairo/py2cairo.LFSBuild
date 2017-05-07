@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://cairographics.org/releases/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

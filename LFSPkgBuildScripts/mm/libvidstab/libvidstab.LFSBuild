@@ -9,6 +9,8 @@ BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${PKGNAME}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://codeload.github.com/georgmartius/vid.stab/tar.gz/${TARNAME}-${VERSION}b" $SECTION $TARBALL
 
 PKG="${OUTPUT}/${PKGNAME}"

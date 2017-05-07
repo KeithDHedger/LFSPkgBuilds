@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

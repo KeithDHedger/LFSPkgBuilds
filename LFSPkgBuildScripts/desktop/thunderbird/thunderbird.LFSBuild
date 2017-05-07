@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.source.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${VERSION}/source/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

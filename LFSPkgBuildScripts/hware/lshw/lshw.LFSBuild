@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-B.0${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ezix.org/software/files/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

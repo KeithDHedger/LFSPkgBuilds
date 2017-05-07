@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.transmissionbt.com/files/${TARBALL}" $SECTION
 #gettar "http://www.linuxfromscratch.org/patches/blfs/7.5/Transmission-2.84-qt4-1.patch"
 

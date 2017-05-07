@@ -9,6 +9,8 @@ BUILD=2
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/bulletphysics/${PKGNAME}/archive/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

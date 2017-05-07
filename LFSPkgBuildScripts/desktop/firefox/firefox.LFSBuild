@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.source.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${VERSION}/source/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

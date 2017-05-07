@@ -9,6 +9,8 @@ BUILD=1
 SECTION="GNOME"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.acc.umu.se/pub/GNOME/sources/system-tools-backends/2.10/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

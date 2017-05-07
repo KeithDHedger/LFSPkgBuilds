@@ -14,6 +14,8 @@ BUILD=1
 SECTION="LXQT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/qterminal/${TARNAME}/releases/download/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://rpm.org/releases/rpm-4.12.x/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://graphviz.org/pub/graphviz/stable/SOURCES/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

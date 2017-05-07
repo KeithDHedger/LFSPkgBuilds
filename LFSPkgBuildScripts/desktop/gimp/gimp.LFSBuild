@@ -16,8 +16,14 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.gimp.org/pub/gimp/v2.8/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gimp.org/pub/gimp/help/gimp-help-${HELPVERSION}.tar.bz2" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.6/${TARNAME}-${VERSION}-device_info-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

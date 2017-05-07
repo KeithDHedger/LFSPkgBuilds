@@ -15,6 +15,8 @@ SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.orig.tar.gz"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.de.debian.org/debian/pool/main/a/at/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -11,6 +11,8 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 #gettar "http://ftp.de.debian.org/debian/pool/main/libf/libfm/libfm_1.2.3.orig.tar.xz" $SECTION
 #gettar "http://heanet.dl.sourceforge.net/project/pcmanfm/PCManFM%20%2B%20Libfm%20%28tarball%20release%29/LibFM/${TARBALL}"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/pcmanfm/${TARBALL}" $SECTION
 #		http://downloads.sourceforge.net/pcmanfm/libfm-1.2.3.tar.xz
 

@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.zip"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.docbook.org/xml/4.5/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

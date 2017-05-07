@@ -10,6 +10,8 @@ SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://bitmath.org/code/mtdev/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

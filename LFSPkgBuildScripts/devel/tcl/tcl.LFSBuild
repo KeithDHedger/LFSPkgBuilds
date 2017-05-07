@@ -9,6 +9,8 @@ BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}${VERSION}-src.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/tcl/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

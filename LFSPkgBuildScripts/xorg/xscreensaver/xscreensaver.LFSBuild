@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.jwz.org/xscreensaver/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

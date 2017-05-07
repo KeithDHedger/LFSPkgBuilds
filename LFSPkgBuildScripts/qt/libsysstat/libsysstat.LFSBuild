@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.lxqt.org/libsysstat/0.3.0/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

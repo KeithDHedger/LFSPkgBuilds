@@ -9,6 +9,8 @@ BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/dvdbackup/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

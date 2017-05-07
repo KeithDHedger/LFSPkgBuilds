@@ -14,8 +14,14 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/software/scm/git/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/software/scm/git/git-manpages-${VERSION}.tar.xz" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/software/scm/git/git-htmldocs-${VERSION}.tar.xz" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

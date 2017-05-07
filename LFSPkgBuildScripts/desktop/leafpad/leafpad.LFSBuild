@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://savannah.nongnu.org/download/leafpad/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/gvfs/1.24/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

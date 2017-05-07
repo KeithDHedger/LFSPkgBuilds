@@ -16,6 +16,8 @@ BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.source.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/${VERSION}/source/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

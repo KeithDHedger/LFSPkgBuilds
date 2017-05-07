@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://icon-theme.freedesktop.org/releases/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

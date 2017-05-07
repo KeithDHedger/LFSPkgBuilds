@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://launchpad.net/bzr/2.5/${VERSION}/+download/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

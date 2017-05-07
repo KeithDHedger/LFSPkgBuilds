@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}b.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://prdownloads.sourceforge.net/mad/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

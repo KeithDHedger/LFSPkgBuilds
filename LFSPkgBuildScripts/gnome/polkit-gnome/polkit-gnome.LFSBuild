@@ -9,6 +9,8 @@ BUILD=1
 SECTION="GNOME"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/polkit-gnome/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

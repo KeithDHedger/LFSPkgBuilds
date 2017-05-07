@@ -8,6 +8,8 @@ BUILD=1
 SECTION="XFCE"
 SUFFIX="LFSPKG"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://codeload.github.com/ncopa/xfce-polkit/zip/master" $SECTION
 mv ${SOURCEARCHIVES}/${SECTION}/master ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip||true
 

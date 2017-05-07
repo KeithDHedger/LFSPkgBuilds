@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://dl.dropboxusercontent.com/s/y90lk4fqmrbbaay/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 

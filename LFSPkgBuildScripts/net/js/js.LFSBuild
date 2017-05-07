@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="mozjs17.0.0.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.mozilla.org/pub/mozilla.org/js/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

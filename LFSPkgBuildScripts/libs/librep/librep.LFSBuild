@@ -9,6 +9,8 @@ BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.tuxfamily.org/librep/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

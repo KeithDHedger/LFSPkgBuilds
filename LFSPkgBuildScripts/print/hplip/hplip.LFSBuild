@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://netcologne.dl.sourceforge.net/project/hplip/hplip/3.13.4/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -14,6 +14,8 @@ BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/avidemux/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

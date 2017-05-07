@@ -14,6 +14,8 @@ BUILD=1
 SECTION="PERL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://cpan.metacpan.org/authors/id/M/MI/MICHIELB/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -17,6 +17,8 @@ TARBALL="${TARNAME}-${VERSION}-source.tar.bz2"
 
 ./preinstall||true
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.cups.org/software/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

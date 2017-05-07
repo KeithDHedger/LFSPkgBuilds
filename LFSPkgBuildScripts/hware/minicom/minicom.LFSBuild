@@ -9,6 +9,8 @@ BUILD=1
 SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://alioth.debian.org/frs/download.php/file/3977/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

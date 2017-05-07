@@ -15,6 +15,8 @@ SECTION="PYTHON"
 SUFFIX="LFSPKG"
 
 TARBALL="${TARNAME}-${VERSION}_8ddc844b03.zip"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://lukenshiro.altervista.org/sbo-sources/${TARBALL}" $SECTION
 #http://lukenshiro.altervista.org/sbo-sources/html2text-3.200.3_8ddc844b03.zip
 PKG="${OUTPUT}/${PKGNAME}"

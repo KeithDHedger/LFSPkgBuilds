@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://fedorahosted.org/releases/x/m/xmlto/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

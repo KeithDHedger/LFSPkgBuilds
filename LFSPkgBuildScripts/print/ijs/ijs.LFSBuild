@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.openprinting.org/download/ijs/download/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

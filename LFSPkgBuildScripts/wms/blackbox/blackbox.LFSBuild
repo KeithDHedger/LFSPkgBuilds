@@ -9,6 +9,8 @@ BUILD=1
 SECTION="WMS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}_SL7.0.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://kent.dl.sourceforge.net/project/blackboxwm/blackboxwm/Blackbox%200.70.1_SL7/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 

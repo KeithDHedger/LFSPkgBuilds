@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="LXQT"
 SUFFIX="LFSPKG"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/lxde/${BASEPKGNAME}/archive/master.zip" $SECTION
 mv ${SOURCEARCHIVES}/${SECTION}/master.zip ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip||true
 

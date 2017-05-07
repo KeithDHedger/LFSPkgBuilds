@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}-signed.tar"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://web.mit.edu/kerberos/www/dist/krb5/1.12/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

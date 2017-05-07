@@ -10,6 +10,8 @@ BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}${MINORREVISION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.sudo.ws/sudo/dist/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

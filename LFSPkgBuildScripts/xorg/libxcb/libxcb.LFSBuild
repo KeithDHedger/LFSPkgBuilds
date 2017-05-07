@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-python3-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/anholt/libepoxy/releases/download/v${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

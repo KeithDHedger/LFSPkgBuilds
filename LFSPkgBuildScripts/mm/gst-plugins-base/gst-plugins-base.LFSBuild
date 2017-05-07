@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/gst-plugins-base/0.10/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

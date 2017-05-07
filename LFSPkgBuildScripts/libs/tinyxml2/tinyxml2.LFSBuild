@@ -9,6 +9,8 @@ BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/leethomason/tinyxml2/archive/4.0.1/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

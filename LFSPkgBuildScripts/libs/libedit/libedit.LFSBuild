@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-20130712-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://thrysoee.dk/editline/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

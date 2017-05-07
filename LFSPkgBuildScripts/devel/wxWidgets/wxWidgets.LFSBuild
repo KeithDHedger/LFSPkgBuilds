@@ -10,6 +10,8 @@ SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://sourceforge.net/projects/wxwindows/files/${VERSION}/${TARBALL}/download" $SECTION
 mv "${SOURCEARCHIVES}/${SECTION}/download" "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 

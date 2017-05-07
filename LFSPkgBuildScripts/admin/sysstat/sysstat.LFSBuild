@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://perso.wanadoo.fr/sebastien.godard/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

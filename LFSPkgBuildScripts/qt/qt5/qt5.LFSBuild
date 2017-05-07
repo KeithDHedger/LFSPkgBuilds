@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.qt-project.org/official_releases/qt/5.5/${VERSION}/single/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -15,6 +15,8 @@ SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://dev.gentoo.org/~blueness/eudev/${TARBALL}" $SECTION
 
 UDEVLFS="udev-lfs-20140408"

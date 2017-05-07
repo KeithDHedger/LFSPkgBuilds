@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v${VERSION}/src/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

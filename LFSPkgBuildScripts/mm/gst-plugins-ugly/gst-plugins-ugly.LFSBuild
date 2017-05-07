@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://gstreamer.freedesktop.org/src/gst-plugins-ugly/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-libcdio_fixes-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

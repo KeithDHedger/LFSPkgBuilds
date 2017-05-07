@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_20_RTM/src/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/${TARNAME}-${VERSION}-standalone-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

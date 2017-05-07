@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/pygobject/2.28/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.6/${TARNAME}-${VERSION}-fixes-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

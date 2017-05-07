@@ -15,6 +15,8 @@ SECTION="GTK"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://cairographics.org/releases/${TARBALL}" $SECTION
 
 DOWHAT=${1:-"build"}

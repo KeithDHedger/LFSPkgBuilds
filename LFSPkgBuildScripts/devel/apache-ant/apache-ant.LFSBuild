@@ -14,8 +14,14 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}-src.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://archive.apache.org/dist/ant/source/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://anduin.linuxfromscratch.org/sources/other/junit-4.11.jar" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://hamcrest.googlecode.com/files/hamcrest-1.3.tgz" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

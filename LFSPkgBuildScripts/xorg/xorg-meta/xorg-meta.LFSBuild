@@ -8,6 +8,8 @@ BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 
+scriptLog "${PKGNAME}-${VERSION}"
+
 export XORG_PREFIX="/usr"
 export XORG_CONFIG="--prefix=$XORG_PREFIX --sysconfdir=/etc --mandir=$XORG_PREFIX/share/man --localstatedir=/var --disable-static"
 export CHECKETC=0

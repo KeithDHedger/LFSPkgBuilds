@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnu.org/gnu/ddd/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/libunique/1.1/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.6/${TARNAME}-${VERSION}-upstream_fixes-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

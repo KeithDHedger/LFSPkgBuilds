@@ -15,6 +15,8 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}${MINORREVISION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/${TARNAME}-${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

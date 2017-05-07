@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://mirror9.fosshub.com/programs/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

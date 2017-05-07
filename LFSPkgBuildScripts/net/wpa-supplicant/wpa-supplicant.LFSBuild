@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://hostap.epitest.fi/releases/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

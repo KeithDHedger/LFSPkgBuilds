@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}.${VERSION}.tgz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://sources.redhat.com/pub/lvm2/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

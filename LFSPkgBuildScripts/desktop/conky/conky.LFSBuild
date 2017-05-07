@@ -15,6 +15,8 @@ SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 #gettar "http://netcologne.dl.sourceforge.net/project/conky/conky/1.9.0/${TARBALL}"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://dfn.dl.sourceforge.net/project/conky/conky/1.9.0/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 

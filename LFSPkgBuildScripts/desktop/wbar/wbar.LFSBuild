@@ -14,6 +14,8 @@ BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tgz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://wbar.googlecode.com/files/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

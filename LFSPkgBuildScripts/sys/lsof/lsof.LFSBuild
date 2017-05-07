@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://sunsite.ualberta.ca/pub/Mirror/$PKGNAME/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

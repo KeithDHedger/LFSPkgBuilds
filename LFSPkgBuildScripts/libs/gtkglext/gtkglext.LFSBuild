@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/gtkglext/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://slackbuilds.org/slackbuilds/14.1/libraries/gtkglext/gtkglext-no-deprecated-flags.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

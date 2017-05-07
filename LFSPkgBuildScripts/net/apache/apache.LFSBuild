@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://archive.apache.org/dist/httpd/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/httpd-2.4.16-blfs_layout-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

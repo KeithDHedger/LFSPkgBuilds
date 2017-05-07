@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}.zip"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/joe42/CloudFusion/archive/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

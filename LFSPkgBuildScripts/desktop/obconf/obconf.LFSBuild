@@ -9,6 +9,8 @@ BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://openbox.org/dist/obconf/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

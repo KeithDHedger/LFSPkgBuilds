@@ -9,6 +9,8 @@ BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.zip"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/fmtlib/fmt/releases/download/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

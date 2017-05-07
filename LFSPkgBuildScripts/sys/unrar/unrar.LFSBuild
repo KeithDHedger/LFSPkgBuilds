@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.rarlab.com/rar/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

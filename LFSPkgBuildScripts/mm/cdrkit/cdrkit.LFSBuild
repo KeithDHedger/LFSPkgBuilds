@@ -15,6 +15,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://pkgs.fedoraproject.org/repo/pkgs/${PKGNAME}/${TARBALL}/efe08e2f3ca478486037b053acd512e9/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

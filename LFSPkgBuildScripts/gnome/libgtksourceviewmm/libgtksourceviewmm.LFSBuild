@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="GNOME"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/GNOME/sources/libgtksourceviewmm/1.9/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

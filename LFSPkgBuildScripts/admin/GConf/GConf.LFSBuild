@@ -14,6 +14,8 @@ BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.gnome.org/pub/gnome/sources/GConf/3.2/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

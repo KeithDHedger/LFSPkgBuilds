@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/lcms/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

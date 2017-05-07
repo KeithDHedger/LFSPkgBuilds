@@ -10,6 +10,8 @@ BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://tronche.com/gui/x/xlib/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 

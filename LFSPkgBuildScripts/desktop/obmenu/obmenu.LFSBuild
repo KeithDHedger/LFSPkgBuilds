@@ -14,6 +14,8 @@ BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://softlayer-ams.dl.sourceforge.net/project/obmenu/obmenu/1.0/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

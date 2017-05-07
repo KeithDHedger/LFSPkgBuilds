@@ -9,6 +9,8 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnu.org/gnu/help2man/help2man-1.46.4.tar.xz" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

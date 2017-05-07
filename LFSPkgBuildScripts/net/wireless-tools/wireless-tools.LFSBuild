@@ -11,6 +11,8 @@ SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARNAME="wireless_tools"
 TARBALL="${TARNAME}.${VERSION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.29.tar.gz" $SECTION
 
 mkdir -p "/tmp" &>/dev/null||true

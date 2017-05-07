@@ -16,6 +16,8 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
 
 pushd ${SOURCEARCHIVES}/${SECTION}

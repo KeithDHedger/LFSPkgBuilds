@@ -14,7 +14,11 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/project/libtirpc/libtirpc/${VERSION}/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/libtirpc-0.3.2-api_fixes-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

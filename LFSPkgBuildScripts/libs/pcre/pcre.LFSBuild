@@ -11,6 +11,8 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/pcre/${TARBALL}" $SECTION
 #gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/pcre-8.37-upstream_fixes-1.patch"  $SECTION
 

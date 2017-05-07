@@ -15,6 +15,8 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}${MINORREVISION}.tar.gz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.us.xiph.org/releases/speex/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

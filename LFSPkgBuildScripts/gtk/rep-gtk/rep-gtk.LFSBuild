@@ -14,6 +14,8 @@ BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.tuxfamily.org/librep/rep-gtk/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

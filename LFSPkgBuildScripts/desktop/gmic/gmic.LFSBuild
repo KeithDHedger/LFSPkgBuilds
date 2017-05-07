@@ -15,6 +15,8 @@ SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.tar.gz"
 #gettar "http://gmic.eu/files/latest/${TARBALL}" $SECTION
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://gmic.eu/files/source/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
