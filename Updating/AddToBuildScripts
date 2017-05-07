@@ -1,0 +1,19 @@
+#!/bin/bash -e
+
+#©keithhedger Sun 7 May 14:03:38 BST 2017 kdhedger68713@gmail.com
+
+if [ -e ../LFSScripts/SystemData ];then
+	. ../LFSScripts/SystemData
+else
+	echo "No SystemData file found ..."
+	exit 1
+fi
+
+(cd ../LFSScripts;./ShowSystemData)||true
+
+STARTAT="$1"
+
+while read
+	do
+		sed 's|^\(gettar .*\)$|\nscriptLog "${PKGNAME}-${VERSION}"\n\1|' "$REPLY"
+	done < <(find ${LFS}//LFSPkgBuildScripts/${STARTAT} -iname "*.LFSBuild")
