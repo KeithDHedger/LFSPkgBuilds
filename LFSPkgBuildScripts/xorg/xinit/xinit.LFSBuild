@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="twm-1.0.9 xclock-1.0.7 xterm-327[0;0m"
+DEPENDS="twm-1.0.9 xclock-1.0.7 xterm-327"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

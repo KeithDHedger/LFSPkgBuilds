@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="BinaryJDK-1.8.0.60 alsa-lib-1.0.29 certdata-0.0.2 giflib-5.1.1 cpio-2.11 Cups-2.1.0 UnZip-6.0 Wget-1.19.1 Which-2.21 xorg-libs-8.0 Zip-3.0"
+DEPENDS="BinaryJDK-1.8.0.60 alsa-lib-1.1.3 certdata-0.0.2 giflib-5.1.1 cpio-2.11 Cups-2.1.0 UnZip-6.0 Wget-1.19.1 Which-2.21 xorg-libs-8.0 Zip-3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

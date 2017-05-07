@@ -25,9 +25,8 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ../libxcb-1.12-python3-1.patch
-	sed -e "s/pthread-stubs//" -i configure.ac
-	autoreconf -fi
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-python3-1.patch
+	sed -e "s/pthread-stubs//" -i configure
 	./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --enable-xinput --without-doxygen
 	make $MAKEFLAGS||make || exit 1
 	make install DESTDIR=$PKG || exit 1
