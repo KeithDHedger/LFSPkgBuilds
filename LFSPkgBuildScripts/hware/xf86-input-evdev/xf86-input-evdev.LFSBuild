@@ -15,7 +15,6 @@ SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
-scriptLog ${PKGNAME}-${VERSION}
 gettar "http://xorg.freedesktop.org/archive/individual/driver/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

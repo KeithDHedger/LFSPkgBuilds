@@ -15,5 +15,5 @@ STARTAT="$1"
 
 while read
 	do
-		sed 's|^\(gettar .*\)$|\nscriptLog "${PKGNAME}-${VERSION}"\n\1|' "$REPLY"
-	done < <(find ${LFS}//LFSPkgBuildScripts/${STARTAT} -iname "*.LFSBuild")
+		sed -i 's|^\(gettar .*\)$|\nscriptLog "${PKGNAME}-${VERSION}"\n\1|' "$REPLY"
+	done < <(find ${LFS}/LFSPkgBuildScripts/${STARTAT} -iname "*.LFSBuild")
