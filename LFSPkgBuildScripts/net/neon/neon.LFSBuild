@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxml2-2.9.2 OpenSSL-1.0.2"
+DEPENDS="libxml2-2.9.4 OpenSSL-1.0.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

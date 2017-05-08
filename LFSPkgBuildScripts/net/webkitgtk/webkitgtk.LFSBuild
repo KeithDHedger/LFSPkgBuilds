@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.4.5 GTK-2.24.28 icu-55.1 libsoup-2.50.0 MesaLib-13.0.4 Ruby-2.2.3 SQLite-3.8.11.1 Which-2.21 libwebp-0.4.3 libsecret-0.18.3 GTK-Doc-1.24"
+DEPENDS="gst-plugins-base1.0-1.4.5 GTK-2.24.28 icu-55.1 libsoup-2.50.0 MesaLib-13.0.4 Ruby-2.2.3 SQLite-3.8.11.1 Which-2.21 libwebp-0.4.3 libsecret-0.18.3 GTK-Doc-1.25"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

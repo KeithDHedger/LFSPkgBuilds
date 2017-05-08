@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-Doc-1.24 GConf-3.2.6 libunique-1.1.6 libwnck-2.30.7"
+DEPENDS="GTK-Doc-1.25 GConf-3.2.6 libunique-1.1.6 libwnck-2.30.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

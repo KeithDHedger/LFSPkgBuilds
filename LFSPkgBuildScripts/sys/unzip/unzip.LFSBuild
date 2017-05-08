@@ -21,19 +21,8 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "unzip60"
-
-	case $(uname -m) in
-		i?86)
-			sed -i -e 's/DASM"/DASM -DNO_LCHMOD"/' unix/Makefile
-			make -f unix/Makefile linux || exit 1
-			;;
-		*)
-			sed -i -e 's/CFLAGS="-O -Wall/& -DNO_LCHMOD/' unix/Makefile
-			make -f unix/Makefile linux_noasm || exit 1
-			;;
-	esac
-
-	make -f unix/Makefile prefix=$PKG/usr install || exit 1
+	make -f unix/Makefile generic
+	make -f unix/Makefile prefix=$PKG/usr MANDIR=/usr/share/man/man1 install || exit 1
 popd
 
 checketc $PKG

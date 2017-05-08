@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.10.0 libxml2-2.9.2 libnl-3.2.25"
+DEPENDS="dbus-1.10.0 libxml2-2.9.4 libnl-3.2.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

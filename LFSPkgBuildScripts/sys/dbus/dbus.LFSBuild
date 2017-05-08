@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Doxygen-1.8.10 xmlto-0.0.26"
+DEPENDS="Doxygen-1.8.10 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xmlto-0.0.26 Links-2.14[0;0m"
+DEPENDS="xmlto-0.0.28 Links-2.14[0;0m"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
