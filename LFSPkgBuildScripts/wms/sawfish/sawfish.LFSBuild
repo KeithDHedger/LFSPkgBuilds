@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Pango-1.36.8 rep-gtk-0.90.8.2 Which-2.20"
+DEPENDS="Pango-1.40.3 rep-gtk-0.90.8.2 Which-2.21"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.52.1 libarchive-3.1.2"
+DEPENDS="curl-7.52.1 libarchive-3.2.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

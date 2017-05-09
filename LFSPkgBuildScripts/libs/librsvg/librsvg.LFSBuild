@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.28 gdk-pixbuf-2.31.7 libcroco-0.6.8 Pango-1.36.8 gobject-introspection-1.44.0 Vala-0.28.1 GTK-Doc-1.25"
+DEPENDS="gdk-pixbuf-2.36.5 libcroco-0.6.11 Pango-1.40.3 gobject-introspection-1.50.0 Vala-0.34.4 GTK-Doc-1.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="librsvg"
 TARNAME="$PKGNAME"
-VERSION="2.40.10"
+VERSION="2.40.16"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.10.0 GLib-2.44.1"
+DEPENDS="dbus-1.10.14 GLib-2.50.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="dbus-glib"
 TARNAME="$PKGNAME"
-VERSION="0.104"
+VERSION="0.108"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"

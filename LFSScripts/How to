@@ -105,6 +105,12 @@ cd /LFSPkgBuildScripts/print/cups
 cd /LFSPkgBuildScripts/gtk/gtk
 ./gtk.LFSBuild install
 
+#rest of printing stuff
+cd /LFSPkgBuildScripts/print/printing-meta
+./printing-meta.LFSBuild install
+
+
+
 17)
 #Development stuff
 cd /LFSPkgBuildScripts/devel/development-meta

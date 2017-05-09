@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libarchive-3.1.2"
+DEPENDS="libarchive-3.2.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

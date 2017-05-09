@@ -4,7 +4,7 @@
 
 PKGNAME="libusb"
 TARNAME="$PKGNAME"
-VERSION="1.0.19"
+VERSION="1.0.21"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -21,6 +21,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	sed -i "s/^PROJECT_LOGO/#&/" doc/doxygen.cfg.in
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make $MAKEFLAGS -C doc docs||make -C doc docs|| exit 1

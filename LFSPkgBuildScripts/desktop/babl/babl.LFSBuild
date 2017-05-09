@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Vala-0.28.1 gobject-introspection-1.44.0"
+DEPENDS="Vala-0.34.4 gobject-introspection-1.50.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

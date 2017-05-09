@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cairo-1.14.2 libsigc++-2.3.1"
+DEPENDS="Cairo-1.14.8 libsigc++-2.3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

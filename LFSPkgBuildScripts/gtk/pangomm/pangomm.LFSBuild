@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cairomm-1.10.0 GLibmm-2.44.0 Pango-1.36.8"
+DEPENDS="Cairomm-1.10.0 GLibmm-2.44.0 Pango-1.40.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

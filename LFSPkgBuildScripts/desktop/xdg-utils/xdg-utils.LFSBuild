@@ -2,18 +2,18 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xmlto-0.0.28 Links-2.14[0;0m"
+DEPENDS="xmlto-0.0.28 Links-2.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xdg-utils"
 TARNAME="$PKGNAME"
-VERSION="1.1.0"
+VERSION="1.1.1"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-MINORVERSION="rc3"
+MINORVERSION="1.1.1"
 
 TARBALL="${TARNAME}-${VERSION}-${MINORVERSION}.tar.gz"
 

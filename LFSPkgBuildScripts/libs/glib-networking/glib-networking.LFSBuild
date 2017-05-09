@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GnuTLS-3.4.4.1 gsettings-desktop-schemas-3.16.1"
+DEPENDS="GnuTLS-3.5.9 gsettings-desktop-schemas-3.16.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

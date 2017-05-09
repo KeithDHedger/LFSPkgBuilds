@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Exo-0.10.2 libxfce4ui-4.10.0 startup-notification-0.12 gudev-1.10"
+DEPENDS="Exo-0.10.2 libxfce4ui-4.10.0 startup-notification-0.12 libgudev-231"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.10.0 GLib-2.44.1 lcms2-2.7 SQLite-3.8.11.1 Vala-0.28.1 libgusb-0.2.6 gobject-introspection-1.44.0 Polkit-0.113"
+DEPENDS="dbus-1.10.14 GLib-2.50.3 lcms2-2.8 SQLite-3.17.0 Vala-0.34.4 libgusb-0.2.9 gobject-introspection-1.50.0 Polkit-0.113"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -4,7 +4,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libgcrypt-1.6.3 libexif-0.6.21 git-2.5.0 pulseaudio-6.0 bzip2-1.0.6 flac-1.3.1 harfbuzz-1.0.3 icu-55.1 libevent-2.0.22 openjpeg-1.5.2 libpng-1.6.28 nspr-4.10.9 openssl-1.0.2 xdg-utils-1.1.0 yasm-1.3.0"
+DEPENDS="libgcrypt-1.6.3 libexif-0.6.21 git-2.5.0 pulseaudio-6.0 bzip2-1.0.6 flac-1.3.1 harfbuzz-1.4.2 icu-58.2 libevent-2.0.22 openjpeg-1.5.2 libpng-1.6.28 nspr-4.13.1 openssl-1.0.2 xdg-utils-1.1.1 yasm-1.3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

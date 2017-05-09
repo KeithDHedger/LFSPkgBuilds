@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.44.1 icu-55.1 FreeType-2.7.1"
+DEPENDS="GLib-2.50.3 icu-58.2 FreeType-2.7.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="harfbuzz"
 TARNAME="$PKGNAME"
-VERSION="1.0.3"
+VERSION="1.4.2"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.44.1 gobject-introspection-1.44.0"
+DEPENDS="GLib-2.50.3 gobject-introspection-1.50.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.10.0 GLib-2.44.1 Intltool-0.51.0"
+DEPENDS="dbus-1.10.14 GLib-2.50.3 Intltool-0.51.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -53,6 +53,6 @@ case $DOWHAT in
 		exit 1
 esac
 
-glib-compile-schemas /usr/share/GLib-2.44.1/schemas
+glib-compile-schemas /usr/share/GLib-2.50.3/schemas
 
 rm -r "$PKG" "${TARNAME}-${VERSION}"

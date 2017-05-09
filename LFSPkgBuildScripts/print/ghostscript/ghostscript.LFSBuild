@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="FreeType-2.7.1 libjpeg-turbo-1.4.1 libpng-1.6.28 LibTIFF-4.0.5 lcms2-2.7 GTK-2.24.28"
+DEPENDS="FreeType-2.7.1 libjpeg-turbo-1.5.1 libpng-1.6.28 LibTIFF-4.0.7 lcms2-2.8 GTK-2.24.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ghostscript"
 TARNAME="$PKGNAME"
-VERSION="9.15"
+VERSION="9.20"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -18,6 +18,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.ghostscript.com/public/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/8.0/${TARNAME}-${VERSION}-security_fixes-1.patch" $SECTION
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz" $SECTION
@@ -33,6 +34,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	rm -rf freetype lcms2 jpeg libpng
 	sed -i 's/ZLIBDIR=src/ZLIBDIR=$includedir/' configure.ac configure
 	rm -rf expat freetype lcms2 jpeg libpng zlib||true
 	./configure --prefix=/usr --disable-compile-inits --enable-dynamic --with-system-libtiff

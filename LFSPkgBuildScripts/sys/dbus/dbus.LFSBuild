@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Doxygen-1.8.10 xmlto-0.0.28"
+DEPENDS="Doxygen-1.8.13 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -26,10 +26,10 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libexecdir=/usr/lib/dbus-1.10.0 --with-console-auth-dir=/run/console/ --without-systemdsystemunitdir --disable-systemd --disable-static
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --with-console-auth-dir=/run/console/ --without-systemdsystemunitdir --disable-systemd --disable-static
 	make $MAKEFLAGS||make || exit 1
 	make install DESTDIR=$PKG || exit 1
-	mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} $PKG/etc/dbus-1.10.0
+	mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} $PKG/etc/${PKGNAME}-${VERSION}
 	mv -v $PKG/usr/share/doc/dbus $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 popd
 

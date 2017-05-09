@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GStreamer-0.10.36 Pango-1.36.8"
+DEPENDS="GStreamer-0.10.36 Pango-1.40.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

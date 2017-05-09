@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.3.1 cairo-dock-3.3.2"
+DEPENDS="CMake-3.7.2 cairo-dock-3.3.2"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

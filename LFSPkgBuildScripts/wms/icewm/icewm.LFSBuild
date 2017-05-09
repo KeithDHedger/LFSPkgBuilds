@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gdk-pixbuf-2.31.2"
+DEPENDS="gdk-pixbuf-2.36.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

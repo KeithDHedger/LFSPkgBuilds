@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cups-2.1.0"
+DEPENDS="Cups-2.2.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

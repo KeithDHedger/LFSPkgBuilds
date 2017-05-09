@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.3.1 OpenSSL-1.0.2 libevent-2.0.22"
+DEPENDS="CMake-3.7.2 OpenSSL-1.0.2 libevent-2.0.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

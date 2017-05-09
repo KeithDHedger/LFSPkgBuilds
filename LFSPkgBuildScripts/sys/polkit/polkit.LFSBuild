@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.44.1 Intltool-0.51.0 JS-17.0.0"
+DEPENDS="GLib-2.50.3 Intltool-0.51.0 JS-17.0.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/lib/Polkit-0.113 --localstatedir=/var --with-authfw=shadow --disable-static --disable-man-pages --enable-libsystemd-login=no --disable-static --enable-gtk-doc
+	./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/lib/${PKGNAME}-${VERSION} --localstatedir=/var --with-authfw=shadow --disable-static --disable-man-pages --enable-libsystemd-login=no --disable-static --enable-gtk-doc
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd

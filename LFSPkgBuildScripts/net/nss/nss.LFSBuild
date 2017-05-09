@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NSPR-4.10.9 SQLite-3.8.11.1"
+DEPENDS="NSPR-4.13.1 SQLite-3.17.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

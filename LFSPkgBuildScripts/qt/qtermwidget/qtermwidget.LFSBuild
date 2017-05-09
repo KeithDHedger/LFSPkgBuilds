@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="cmake-3.3.1 qt5-5.5.0"
+DEPENDS="cmake-3.7.2 qt5-5.5.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

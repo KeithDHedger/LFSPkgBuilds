@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="librsvg-2.40.10 libjpeg-turbo-1.4.1 OpenJPEG-1.5.2"
+DEPENDS="librsvg-2.40.16 libjpeg-turbo-1.5.1 OpenJPEG-1.5.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

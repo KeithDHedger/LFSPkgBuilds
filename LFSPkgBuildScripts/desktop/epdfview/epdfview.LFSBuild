@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Poppler-0.35.0 GTK-2.24.28 Cups-2.1.0"
+DEPENDS="Poppler-0.35.0 GTK-2.24.28 Cups-2.2.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

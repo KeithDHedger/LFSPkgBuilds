@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.3.1 Graphviz-2.38.0 Python-2.7.13 Xapian-1.2.21"
+DEPENDS="CMake-3.7.2 Graphviz-2.38.0 Python-2.7.13 Xapian-1.4.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="doxygen"
 TARNAME="$PKGNAME"
-VERSION="1.8.10"
+VERSION="1.8.13"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -33,7 +33,6 @@ pushd "${TARNAME}-${VERSION}"
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -Dbuild_search=ON ..
 	make $MAKEFLAGS||make|| exit 1
 
-	sed -i 's:man/man1:share/&:' ../doc/CMakeLists.txt
 	make install DESTDIR=$PKG || exit 1
 	mkdir -vp $PKG/usr/share/man/man1
 	install -vm644 ../doc/*.1 $PKG/usr/share/man/man1

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Apr-Util-1.5.4 PCRE-8.37 OpenSSL-1.0.2"
+DEPENDS="Apr-Util-1.5.4 PCRE-8.40 OpenSSL-1.0.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

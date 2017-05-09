@@ -41,7 +41,7 @@ for ((j=0;j<${#RESULTS[@]};j++))
 					;;
 				*"may need updating to"*)
 					UPDATETOVERSION=${RESULTS[j]##* }
-					UPDATETOVERSION=${UPDATETOVERSION//[$'\t\r\n ']}
+					UPDATETOVERSION=$(echo ${UPDATETOVERSION//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
 					;;
 				"Path to script="*)
 					PATHTOSCRIPT=${RESULTS[j]##*=}
@@ -112,6 +112,7 @@ if [ $UPDATESCRIPT -eq 1 ];then
 	sed $INLINE "s|VERSION=.*|VERSION=\"${UPDATETOVERSION}\"|" "$PATHTOSCRIPT"
 fi
 xdg-open "$PATHTOSCRIPT" &>/dev/null
+lfspkg -R $LFS -W $PACKAGETOTEST 2>&1
 
 
 

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ATK-2.16.0 GLibmm-2.44.0"
+DEPENDS="ATK-2.22.0 GLibmm-2.44.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

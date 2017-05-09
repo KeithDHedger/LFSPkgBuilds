@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.44.0 Fuse-2.9.4"
+DEPENDS="curl-7.52.1 Fuse-2.9.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
