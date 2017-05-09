@@ -1,0 +1,31 @@
+#!/bin/bash -e
+
+#©keithhedger Tue 9 May 11:56:59 BST 2017 kdhedger68713@gmail.com
+
+declare -a DEPENDSON
+
+if [ -e ../LFSScripts/SystemData ];then
+	. ../LFSScripts/SystemData
+else
+	echo "No SystemData file found ..."
+	exit 1
+fi
+
+(cd ../LFSScripts;./ShowSystemData)||true
+
+if [ "X$1" = "X" ];then
+	echo "Need package name ..."
+	exit 1
+fi
+
+readarray DEPENDSON < <(lfspkg --nocolour -R $LFS -F $1|awk '{print $3}')
+echo
+for ((j=0;j<${#DEPENDSON[@]};j++))
+	do
+		PACKAGE=$(echo ${DEPENDSON[j]//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
+		if ! lfspkg -R $LFS "${PACKAGE%-?*}" &>/dev/null;then
+			echo "$PACKAGE"
+		fi
+		
+	done
+	
