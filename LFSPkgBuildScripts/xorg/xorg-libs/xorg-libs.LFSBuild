@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Fontconfig-2.12.1[0;0m libxcb-1.12"
+DEPENDS="Fontconfig-2.12.1 libxcb-1.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

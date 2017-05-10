@@ -65,7 +65,7 @@ Make-4.2.1
 Patch-2.7.5
 Sysklogd-1.5.1
 Sysvinit-2.88
-eudev-3.2.1[0;0m[0;0m
+eudev-3.2.1
 Util-linux-2.29.1
 Man-DB-2.7.6.1
 Tar-1.29

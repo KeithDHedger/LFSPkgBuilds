@@ -8,8 +8,7 @@ Gutenprint-5.2.10
 sane-backends-1.0.24
 sane-frontends-1.0.14
 hplip-3.13.4
-XSane-0.999
-GTK-2.24.2"
+XSane-0.999 GTK-2.24.2"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

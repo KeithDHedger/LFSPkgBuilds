@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Fontconfig-2.12.1[0;0m gobject-introspection-1.50.0 Cairo-1.14.8 libjpeg-turbo-1.5.1 libpng-1.6.28 OpenJPEG-1.5.2"
+DEPENDS="Fontconfig-2.12.1 gobject-introspection-1.50.0 Cairo-1.14.8 libjpeg-turbo-1.5.1 libpng-1.6.28 OpenJPEG-1.5.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

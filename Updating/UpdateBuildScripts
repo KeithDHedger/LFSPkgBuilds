@@ -44,13 +44,12 @@ for ((j=0;j<${#RESULTS[@]};j++))
 					UPDATETOVERSION=$(echo ${UPDATETOVERSION//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
 					;;
 				"Path to script="*)
-				echo ${RESULTS[j]}
 					PATHTOSCRIPT=${RESULTS[j]##*=}
 					PATHTOSCRIPT=${LFS}${PATHTOSCRIPT//[$'\t\r\n ']}
 					;;
 				*"is Ok"*)
-					CURRENTVERSION="$PACKAGETOTEST-$(echo ${RESULTS[j]}|awk '{print $4}')"
-					UPDATETOVERSION=$(echo ${RESULTS[j]}|awk '{print $4}')
+					CURRENTVERSION="$PACKAGETOTEST-$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')"
+					UPDATETOVERSION=$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')
 					UPDATESCRIPT=0
 					;;
 			esac
