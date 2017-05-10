@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.0"
+DEPENDS="xorg-libs-8.0 OpenJPEG-1.5.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -4,14 +4,14 @@
 
 PKGNAME="hplip"
 TARNAME="$PKGNAME"
-VERSION="3.13.4"
+VERSION="3.16.11"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://netcologne.dl.sourceforge.net/project/hplip/hplip/3.13.4/${TARBALL}" $SECTION
+gettar "http://netcologne.dl.sourceforge.net/project/hplip/hplip/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

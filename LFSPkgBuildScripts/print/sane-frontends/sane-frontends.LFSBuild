@@ -11,7 +11,8 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp2.sane-project.org/pub/sane/${TARBALL}" $SECTION
+gettar "http://alioth.debian.org/frs/download.php/file/1140/${TARBALL}" $SECTION
+
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -21,7 +22,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	sed -i -e "/SANE_CAP_ALWAYS_SETTABLE/d" src/gtkglue.c
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --mandir=/usr/share/man
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	mkdir -vp $PKG/usr/share/sane $PKG/usr/lib/gimp/2.0/plug-ins||true
