@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Nettle-3.3"
+DEPENDS="libunistring-0.9.7 Nettle-3.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

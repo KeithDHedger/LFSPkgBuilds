@@ -5,14 +5,14 @@
 PKGNAME="sqlite"
 TARNAME="sqlite-autoconf"
 VERSION="3.17.0"
-MINORVERSION="3.17.0"
+MINORVERSION="3170000"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${MINORVERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://sqlite.org/2015/${TARBALL}" $SECTION
+gettar "http://sqlite.org/2017/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

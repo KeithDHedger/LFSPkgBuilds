@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GC-7.4.2 libffi-3.2.1 libunistring-0.9.6"
+DEPENDS="GC-7.4.2 libffi-3.2.1 libunistring-0.9.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

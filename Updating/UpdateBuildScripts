@@ -44,6 +44,7 @@ for ((j=0;j<${#RESULTS[@]};j++))
 					UPDATETOVERSION=$(echo ${UPDATETOVERSION//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
 					;;
 				"Path to script="*)
+				echo ${RESULTS[j]}
 					PATHTOSCRIPT=${RESULTS[j]##*=}
 					PATHTOSCRIPT=${LFS}${PATHTOSCRIPT//[$'\t\r\n ']}
 					;;

@@ -13,13 +13,12 @@ VERSION="2.2.2"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}-source.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}-source.tar.gz"
 
 ./preinstall||true
 
-
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.cups.org/software/${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/apple/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

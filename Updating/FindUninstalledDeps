@@ -18,8 +18,9 @@ if [ "X$1" = "X" ];then
 	exit 1
 fi
 
-readarray DEPENDSON < <(lfspkg --nocolour -R $LFS -F $1|awk '{print $3}')
-echo
+readarray DEPENDSON < <(lfspkg --nocolour -R $LFS -F $1 2>&1|awk '{print $3}')
+echo "Finding build scripts ..."
+
 for ((j=0;j<${#DEPENDSON[@]};j++))
 	do
 		PACKAGE=$(echo ${DEPENDSON[j]//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
