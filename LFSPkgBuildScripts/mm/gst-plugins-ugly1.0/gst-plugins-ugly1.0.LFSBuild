@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.4.5"
+DEPENDS="gst-plugins-base1.0-1.10.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gst-plugins-ugly1.0"
 TARNAME="gst-plugins-ugly"
-VERSION="1.4.5"
+VERSION="1.10.3"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"

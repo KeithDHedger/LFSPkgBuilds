@@ -21,7 +21,7 @@ gtkdialog-0.8.3
 help2man-1.46.4
 man2html-1.6
 meld-1.8.6
-mm-meta-0.0.2
+mm-meta-8.0
 poedit-1.6.11
 yad-0.32.0
 xforms-1.2.4
@@ -33,7 +33,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="development-meta"
-VERSION="0.0.3"
+VERSION="8.0"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"

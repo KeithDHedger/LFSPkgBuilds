@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libgpod-0.7.2 mp4v2-1.9.1"
+DEPENDS="libgpod-0.7.2 mp4v2-2.0.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

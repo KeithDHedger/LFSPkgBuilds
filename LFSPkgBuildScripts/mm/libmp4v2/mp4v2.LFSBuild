@@ -2,16 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="mp4v2"
-TARNAME="$PKGNAME"
-VERSION="1.9.1"
+PKGNAME="libmp4v2"
+TARNAME="mp4v2"
+VERSION="2.0.0"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://mp4v2.googlecode.com/files/${TARBALL}" $SECTION
+gettar "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/${TARNAME}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

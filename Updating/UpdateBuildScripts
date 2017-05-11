@@ -29,6 +29,11 @@ CURRENTVERSION=""
 UPDATESCRIPT=1
 OPENDEPENDS=${OPENDEPENDS:-0}
 
+stripVar ()
+{
+	echo -e "$1"|sed -r "s/\x1b\[[0-9;]*m?//g;s/^ *//;s/ *$//"|tr -d '\n\r\t'
+}
+
 parseArray ()
 {
 for ((j=0;j<${#RESULTS[@]};j++))
@@ -37,19 +42,25 @@ for ((j=0;j<${#RESULTS[@]};j++))
 			case ${RESULTS[j]} in
 				"Script version="*)
 					INSTALLEDVERSION=${RESULTS[j]##*=}
-					INSTALLEDVERSION=${INSTALLEDVERSION//[$'\t\r\n ']}
+					INSTALLEDVERSION=$(stripVar "$INSTALLEDVERSION")
+					#INSTALLEDVERSION=${INSTALLEDVERSION//[$'\t\r\n ']}
 					;;
 				*"may need updating to"*)
 					UPDATETOVERSION=${RESULTS[j]##* }
-					UPDATETOVERSION=$(echo ${UPDATETOVERSION//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
+					UPDATETOVERSION=$(stripVar "$UPDATETOVERSION")
+					#UPDATETOVERSION=$(echo ${UPDATETOVERSION//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
 					;;
 				"Path to script="*)
 					PATHTOSCRIPT=${RESULTS[j]##*=}
-					PATHTOSCRIPT=${LFS}${PATHTOSCRIPT//[$'\t\r\n ']}
+					#PATHTOSCRIPT=${LFS}${PATHTOSCRIPT//[$'\t\r\n ']}
+					PATHTOSCRIPT=${LFS}$(stripVar "$PATHTOSCRIPT")
 					;;
 				*"is Ok"*)
-					CURRENTVERSION="$PACKAGETOTEST-$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')"
-					UPDATETOVERSION=$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')
+					#CURRENTVERSION="$PACKAGETOTEST-$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')"
+					CURRENTVERSION="$PACKAGETOTEST-$(echo ${RESULTS[j]}|awk '{print $4}')"
+					CURRENTVERSION=$(stripVar "$CURRENTVERSION")
+					UPDATETOVERSION=$(stripVar "${RESULTS[j]}")
+					#UPDATETOVERSION=$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')
 					UPDATESCRIPT=0
 					;;
 			esac
@@ -95,7 +106,8 @@ for ((j=1;j<${#DEPENDSON[@]};j++))
 	do
 		if [ "X${DEPENDSON[j]}" != "X" ];then
 			DEPENDFILE=${DEPENDSON[j]##*- }
-			DEPENDFILE=${DEPENDFILE//[$'\t\r\n ']}
+			#DEPENDFILE=${DEPENDFILE//[$'\t\r\n ']}
+			DEPENDFILE=$(stripVar "$DEPENDFILE")
 			echo -e "${GREEN}Updating $DEPENDFILE ...${NORMAL}"
 			sed $INLINE "s|\([^-]\b${PACKAGETOTEST}\b\)-[0-9][.0-9]*|\1-$UPDATETOVERSION|gI;s|^\(\b${PACKAGETOTEST}\b\)-[0-9][.0-9]*|\1-$UPDATETOVERSION|gI"  $DEPENDFILE
 

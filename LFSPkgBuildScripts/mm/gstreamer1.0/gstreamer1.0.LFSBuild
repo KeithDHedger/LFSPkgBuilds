@@ -9,7 +9,7 @@ fi
 
 PKGNAME="gstreamer1.0"
 TARNAME="gstreamer"
-VERSION="1.4.5"
+VERSION="1.10.3"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
