@@ -28,7 +28,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	sed -i -e "/input:/d" sys/v4l2/gstv4l2bufferpool.c
 	sed -i -e "/case V4L2_CID_HCENTER/d" -e "/case V4L2_CID_VCENTER/d" sys/v4l2/v4l2_calls.c
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --enable-docbook=no --enable-gtk-doc=no
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd

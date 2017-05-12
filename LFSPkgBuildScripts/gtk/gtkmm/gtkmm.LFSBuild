@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Atkmm-2.22.7 GTK-2.24.28 Pangomm-2.36.0"
+DEPENDS="Atkmm-2.22.7 GTK-2.24.31 Pangomm-2.36.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

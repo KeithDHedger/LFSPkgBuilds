@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.28 menu-cache-1.0.1"
+DEPENDS="GTK-2.24.31 menu-cache-1.0.1"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

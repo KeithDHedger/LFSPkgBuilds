@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.28 gobject-introspection-1.50.0 GTK-Doc-1.25 libglade-2.6.4"
+DEPENDS="GTK-2.24.31 gobject-introspection-1.50.0 GTK-Doc-1.25 libglade-2.6.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

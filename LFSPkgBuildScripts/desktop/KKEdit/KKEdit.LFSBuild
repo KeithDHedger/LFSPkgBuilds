@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xdg-utils-1.1.1 gtksourceview-2.11.1 GTK-2.24.28 webkitgtk-2.4.9 aspell-0.60.6.1 ctags-5.8"
+DEPENDS="xdg-utils-1.1.1 gtksourceview-2.11.1 GTK-2.24.31 webkitgtk-2.4.9 aspell-0.60.6.1 ctags-5.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

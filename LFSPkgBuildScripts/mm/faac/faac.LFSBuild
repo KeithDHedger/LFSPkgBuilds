@@ -14,7 +14,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/faac/${TARBALL}" $SECTION
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-glibc_fixes-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-glibc_fixes-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,7 +26,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-glibc_fixes-1.patch
 	sed -i -e '/obj-type/d' -e '/Long Term/d' frontend/main.c
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	CFLAGS=-std=c99 CXXFLAGS=-std=c++98 ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd

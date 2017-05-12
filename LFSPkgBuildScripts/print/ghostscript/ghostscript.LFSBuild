@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="FreeType-2.7.1 libjpeg-turbo-1.5.1 libpng-1.6.28 LibTIFF-4.0.7 lcms2-2.8 GTK-2.24.28"
+DEPENDS="FreeType-2.7.1 libjpeg-turbo-1.5.1 libpng-1.6.28 LibTIFF-4.0.7 lcms2-2.8 GTK-2.24.31"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

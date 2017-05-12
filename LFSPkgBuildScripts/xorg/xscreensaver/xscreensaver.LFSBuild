@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libglade-2.6.4 x-apps-8.0 GLU-9.0.0"
+DEPENDS="libglade-Package libglade-2.6.4 x-apps-8.0 GLU-9.0.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

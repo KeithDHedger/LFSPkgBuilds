@@ -16,7 +16,7 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://diracvideo.org/download/schroedinger/${TARBALL}" $SECTION
+gettar "http://pkgs.fedoraproject.org/repo/pkgs/schroedinger/${TARBALL}/da6af08e564ca1157348fb8d92efc891/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

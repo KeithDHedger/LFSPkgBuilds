@@ -9,12 +9,12 @@ fi
 
 PKGNAME="speex"
 TARNAME="$PKGNAME"
-VERSION="1.2"
-MINORREVISION=rc1
+VERSION="1.2.0"
+MINORREVISION=
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}${MINORREVISION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.us.xiph.org/releases/speex/${TARBALL}" $SECTION

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.28 sane-backends-1.0.25"
+DEPENDS="GTK-2.24.31 sane-backends-1.0.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

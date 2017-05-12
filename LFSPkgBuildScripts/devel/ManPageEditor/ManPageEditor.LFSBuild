@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.28 aspell-0.60.6.1 shared-mime-info-1.4"
+DEPENDS="GTK-2.24.31 aspell-0.60.6.1 shared-mime-info-1.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

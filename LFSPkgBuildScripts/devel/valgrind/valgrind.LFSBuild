@@ -4,7 +4,7 @@
 
 PKGNAME="valgrind"
 TARNAME="$PKGNAME"
-VERSION="3.10.1"
+VERSION="3.12.0"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -24,7 +24,6 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -e 's#|3.\*#&|4.\*#' -e 's/-mt//g' -e 's/2\.20)/2.2[0-9])/' -i configure
 	sed -i 's|/doc/valgrind||' docs/Makefile.in
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --datadir=/usr/share/doc/${PKGNAME}-${VERSION}
 	make $MAKEFLAGS||make|| exit 1

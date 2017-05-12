@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="enchant-1.6.0 GTK-2.24.28"
+DEPENDS="enchant-1.6.0 GTK-2.24.31"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

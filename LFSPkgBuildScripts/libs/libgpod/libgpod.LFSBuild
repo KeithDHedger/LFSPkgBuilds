@@ -16,7 +16,7 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://heanet.dl.sourceforge.net/project/gtkpod/libgpod/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/project/gtkpod/${PKGNAME}/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

@@ -27,7 +27,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	sed -i  -e '/YYLEX_PARAM/d' -e '/parse-param.*scanner/i %lex-param { void *scanner }' gst/parse/grammar.y
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-docbook=no --enable-gtk-doc=no
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd

@@ -26,6 +26,8 @@ stripVar ()
 echo "Finding build scripts ..."
 readarray DEPENDSON < <(lfspkg --nocolour -R $LFS -F $1)
 
+echo -e "\r                   "
+
 for ((j=0;j<${#DEPENDSON[@]};j++))
 	do
 		if [ "X${DEPENDSON[j]//[$'\t\r\n ']}" = "Xavailable" ];then
