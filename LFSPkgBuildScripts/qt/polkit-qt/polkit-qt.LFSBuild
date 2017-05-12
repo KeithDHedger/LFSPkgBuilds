@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Qt5-5.5.0 Polkit-0.113"
+DEPENDS="Qt5-5.8.0 Polkit-0.113"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

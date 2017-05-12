@@ -5,7 +5,7 @@
 
 export NODOWNLOAD=1
 
-DEPENDS="qt5-5.4.0
+DEPENDS="qt5-5.8.0
 libsysstat-qt-git-0.3.0
 libqtxdg-git-1.1.0
 liblxqt-git-0.9.0

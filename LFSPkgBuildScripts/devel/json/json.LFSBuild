@@ -3,8 +3,8 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="json-c"
-TARNAME="json-c"
-VERSION="0.12"
+TARNAME="${PKGNAME}"
+VERSION="0.12.1"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -i s/-Werror// Makefile.in
+	sed -i s/-Werror// Makefile.in tests/Makefile.in
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make -j1|| exit 1
 	make -j1 install DESTDIR=$PKG || exit 1

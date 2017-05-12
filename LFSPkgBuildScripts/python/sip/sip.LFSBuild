@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.13 Qt5-5.5.0"
+DEPENDS="Python-2.7.13 Qt5-5.8.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

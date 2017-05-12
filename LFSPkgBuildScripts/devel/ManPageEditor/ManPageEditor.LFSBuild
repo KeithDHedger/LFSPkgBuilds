@@ -2,22 +2,20 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.31 aspell-0.60.6.1 shared-mime-info-1.4"
+DEPENDS="GTK-2.24.31 aspell-0.60.6.1 shared-mime-info-1.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ManPageEditor"
 TARNAME="$PKGNAME"
-VERSION="0.1.0"
+VERSION="0.1.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
-
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dl.dropboxusercontent.com/s/urwrobf8gg4wpbr/${TARBALL}" $SECTION
+gettar "https://github.com/KeithDHedger/ManPageEditor/archive/master.zip" $SECTION ManPageEditor-${VERSION}.zip
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
+pushd "ManPageEditor-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell
 	mkdir -vp $PKG/usr/share/icons/hicolor/256x256/apps
 	make $MAKEFLAGS||make|| exit 1
@@ -55,4 +53,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "ManPageEditor-master"

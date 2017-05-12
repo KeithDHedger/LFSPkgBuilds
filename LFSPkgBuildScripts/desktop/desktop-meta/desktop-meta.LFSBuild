@@ -22,9 +22,9 @@ ConsoleKit-1.0.0
 gnome-icon-theme-3.12.0
 Sudo-1.8.12
 xfce-meta-4.10.1
-gtksourceview-2.11.1
+gtksourceview-2.11.2
 leafpad-0.8.18.1
-shared-mime-info-1.4
+shared-mime-info-1.8
 OpenSSH-6.7
 ntp-4.2.8
 xdg-utils-1.1.1
@@ -35,7 +35,7 @@ ImageMagick-6.9.2
 Firefox-41.0
 Thunderbird-38.3.0
 spacefm-1.0.4
-ManPageEditor-0.0.18
+ManPageEditor-0.1.2
 AspellGUI-0.0.8
 KKEdit-0.2.11
 xarchiver-0.5.4

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.52.1 Intltool-0.51.0 libevent-2.0.22 OpenSSL-1.0.2 qt5-5.5.0"
+DEPENDS="curl-7.52.1 Intltool-0.51.0 libevent-2.0.22 OpenSSL-1.0.2 qt5-5.8.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

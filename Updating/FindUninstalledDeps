@@ -2,6 +2,13 @@
 
 #©keithhedger Tue 9 May 11:56:59 BST 2017 kdhedger68713@gmail.com
 
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+BLACK='\e[0;30m'
+NORMAL='\e[0;0m'
+
+#SPINNER="-\|/"
+
 declare -a DEPENDSON
 
 if [ -e ../LFSScripts/SystemData ];then
@@ -23,13 +30,14 @@ stripVar ()
 	echo -e "$1"|sed -r "s/\x1b\[[0-9;]*m?//g;s/^ *//;s/ *$//"|tr -d '\n\r\t'
 }
 
-echo "Finding build scripts ..."
 readarray DEPENDSON < <(lfspkg --nocolour -R $LFS -F $1)
 
+echo -e "\r${GREEN}Finding packages needing to be installed ...${NORMAL}"
 echo -e "\r                   "
 
 for ((j=0;j<${#DEPENDSON[@]};j++))
 	do
+		#echo -en "\r${SPINNER:$(($j % 4)):1}"
 		if [ "X${DEPENDSON[j]//[$'\t\r\n ']}" = "Xavailable" ];then
 			lfspkg --nocolour -R $LFS -F $1
 			exit 0
@@ -39,6 +47,5 @@ for ((j=0;j<${#DEPENDSON[@]};j++))
 		if ! lfspkg -R $LFS "${PACKAGE%-?*}" &>/dev/null;then
 			echo "$PACKAGE"
 		fi
-		
 	done
 	

@@ -4,7 +4,7 @@
 
 PKGNAME="BinaryJDK"
 TARNAME="OpenJDK"
-VERSION="1.8.0.60"
+VERSION="1.8.0.121"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -21,9 +21,9 @@ else
 	ARCHBIN=i686
 fi
 
-
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://anduin.linuxfromscratch.org/files/BLFS/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz" $SECTION
+
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz"
 pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"
 	mkdir -vp $PKG/opt

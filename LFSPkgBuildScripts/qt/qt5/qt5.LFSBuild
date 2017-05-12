@@ -2,21 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.1.3 DBus-1.10.14 MesaLib-13.0.4 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-6.0 pciutils-3.4.0 NSS-3.20"
+DEPENDS="alsa-lib-1.1.3 DBus-1.10.14 MesaLib-13.0.4 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-10.0 pciutils-3.5.2 NSS-3.20"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qt5"
 TARNAME="qt-everywhere-opensource-src"
-VERSION="5.5.0"
+VERSION="5.8.0"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.qt-project.org/official_releases/qt/5.5/${VERSION}/single/${TARBALL}" $SECTION
+gettar "http://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 CWD=$(pwd)
@@ -40,15 +40,15 @@ pushd qt5build
 	export QT5PLUGINS=${QT5LINK}/share/doc/${PKGNAME}/plugins
 	
 
-	../${TARNAME}-${VERSION}/configure -prefix ${QT5LINK} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -examplesdir ${QT5DEMOS} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -no-nis -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS}
+	../${TARNAME}-${VERSION}/configure -prefix ${QT5LINK} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -examplesdir ${QT5DEMOS} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS}
 
 	find . -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
 
 	make $MAKEFLAGS||make|| exit 1
 	make install INSTALL_ROOT=$PKG || exit 1
-	sed -e "s:$PWD/qtbase:${QT5LIBS}:g" -i ${PKG}/${QT5LIBS}/mkspecs/modules/qt_lib_bootstrap_private.pri
-	find $PKG/${QT5LIBS}/libqgsttools_p.prl -exec sed -i -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/1/' {} \;||true
-	find $PKG/${QT5LIBS}/libQt5*.prl -exec sed -i -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/1/' {} \;||true
+
+	find ${PKG}${QT5LINK}/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5PREFIX/lib/:g" {} \;
+	find${PKG}${QT5LINK}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
 
 	install -v -dm755 $PKG/usr/share/pixmaps/ $PKG/usr/share/applications $PKG/etc/profile.d
 	install -v -Dm644 ${CWD}/${TARNAME}-${VERSION}/qttools/src/assistant/assistant/images/assistant-128.png $PKG/usr/share/pixmaps/assistant-qt5.png

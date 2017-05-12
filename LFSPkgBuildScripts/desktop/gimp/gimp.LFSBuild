@@ -2,11 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gegl-0.2.0 GTK-2.24.31 PyGTK-2.24.0 librsvg-2.40.16 dbus-glib-0.108 ghostscript-9.20 Poppler-0.35.0 GTK-Doc-1.25 libgudev-231 webkitgtk-2.4.9"
+DEPENDS="gegl-0.2.0 GTK-2.24.31 PyGTK-2.24.0 librsvg-2.40.16 dbus-glib-0.108 ghostscript-9.20 Poppler-0.35.0 GTK-Doc-1.25 libgudev-231 webkitgtk-2.14.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
-#DEPENDS="gegl-0.2.0 GTK-2.24.31 PyGTK-2.24.0 librsvg-2.40.16 dbus-glib-0.108 ghostscript-9.20 Poppler-0.35.0 GTK-Doc-1.25 gudev-1.10 webkitgtk-2.4.9"
+#DEPENDS="gegl-0.2.0 GTK-2.24.31 PyGTK-2.24.0 librsvg-2.40.16 dbus-glib-0.108 ghostscript-9.20 Poppler-0.35.0 GTK-Doc-1.25 gudev-1.10 webkitgtk-2.14.5"
 
 PKGNAME="gimp"
 TARNAME="$PKGNAME"

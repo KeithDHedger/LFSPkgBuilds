@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="qt5-5.4.0 libfm-extras-1.2.3 menu-cache-1.1.0 libfm-1.2.3"
+DEPENDS="qt5-5.8.0 libfm-extras-1.2.3 menu-cache-1.1.0 libfm-1.2.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

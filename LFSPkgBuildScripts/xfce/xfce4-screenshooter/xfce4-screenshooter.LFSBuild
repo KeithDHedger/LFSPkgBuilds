@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libsoup-2.50.0 xfce4-panel-4.10.1 libxfcegui4-4.10.0"
+DEPENDS="libsoup-2.56.0 xfce4-panel-4.10.1 libxfcegui4-4.10.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

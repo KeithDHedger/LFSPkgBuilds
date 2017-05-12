@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Boost-1.59.0"
+DEPENDS="Boost-1.63.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

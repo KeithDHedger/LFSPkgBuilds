@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="qt5-5.4.0 libqtxdg-git-1.1.0 kwindowsystem-5.7.0"
+DEPENDS="qt5-5.8.0 libqtxdg-git-1.1.0 kwindowsystem-5.7.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

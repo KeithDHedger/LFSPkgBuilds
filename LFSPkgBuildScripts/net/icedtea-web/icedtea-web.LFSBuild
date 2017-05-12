@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NPAPI-SDK-0.27.2 OpenJDK-1.8.0.60"
+DEPENDS="NPAPI-SDK-0.27.2 OpenJDK-1.8.0.121"
  if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

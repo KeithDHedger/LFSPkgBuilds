@@ -9,7 +9,7 @@ fi
 
 PKGNAME="yad"
 TARNAME="$PKGNAME"
-VERSION="0.32.0"
+VERSION="0.38.1"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -31,7 +31,7 @@ else
 fi
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-nls --enable-icon-browser $HTML
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-nls --enable-icon-browser $HTML --with-gtk=gtk2 --with-rgb=/usr/share/X11/rgb.txt
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	ln -sv yad $PKG/usr/bin/zenity

@@ -4,7 +4,7 @@
 
 PKGNAME="cpio"
 TARNAME="$PKGNAME"
-VERSION="2.11"
+VERSION="2.12"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -21,7 +21,6 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -i -e '/gets is a/d' gnu/stdio.in.h
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --libexecdir=/tmp --enable-mt --with-rmt=/usr/sbin/rmt
 	make $MAKEFLAGS||make|| exit 1
 	makeinfo --html -o doc/html doc/cpio.texi

@@ -14,6 +14,7 @@ fi
 RED='\e[1;31m'
 GREEN='\e[1;32m'
 BLACK='\e[0;30m'
+BLUE='\e[1;34m'
 NORMAL='\e[0;0m'
 
 declare -a RESULTS
@@ -43,26 +44,22 @@ for ((j=0;j<${#RESULTS[@]};j++))
 				"Script version="*)
 					INSTALLEDVERSION=${RESULTS[j]##*=}
 					INSTALLEDVERSION=$(stripVar "$INSTALLEDVERSION")
-					#INSTALLEDVERSION=${INSTALLEDVERSION//[$'\t\r\n ']}
 					;;
 				*"may need updating to"*)
 					UPDATETOVERSION=${RESULTS[j]##* }
 					UPDATETOVERSION=$(stripVar "$UPDATETOVERSION")
-					#UPDATETOVERSION=$(echo ${UPDATETOVERSION//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
 					;;
 				"Path to script="*)
 					PATHTOSCRIPT=${RESULTS[j]##*=}
-					#PATHTOSCRIPT=${LFS}${PATHTOSCRIPT//[$'\t\r\n ']}
 					PATHTOSCRIPT=${LFS}$(stripVar "$PATHTOSCRIPT")
 					;;
 				*"is Ok"*)
-					#CURRENTVERSION="$PACKAGETOTEST-$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')"
 					CURRENTVERSION="$PACKAGETOTEST-$(echo ${RESULTS[j]}|awk '{print $4}')"
 					CURRENTVERSION=$(stripVar "$CURRENTVERSION")
 					UPDATETOVERSION=$(stripVar "${RESULTS[j]}")
 					UPDATETOVERSION=${CURRENTVERSION##?*-}
-					#UPDATETOVERSION=$(echo ${RESULTS[j]}|sed -r 's/\x1b\[[0-9;]*m?//g'|awk '{print $4}')
 					UPDATESCRIPT=0
+					echo -e "${BLUE}${RESULTS[j]}${NORMAL}"
 					;;
 			esac
 		fi
@@ -90,8 +87,6 @@ else
 fi
 
 parseArray
-#echo -e ">>$INSTALLEDVERSION $UPDATETOVERSION $PATHTOSCRIPT $CURRENTVERSION<<"
-#exit
 if [ "X$INSTALLEDVERSION" = "X" ] || [ "X$UPDATETOVERSION" = "X" ] || [ "X$PATHTOSCRIPT" = "X" ] && [ "X$CURRENTVERSION" = "X" ];then
 	echo -e "${RED}Can't auto-update $PACKAGETOTEST ...${NORMAL}"
 	lfspkg  --nocolour -R $LFS -S $PACKAGETOTEST
@@ -100,14 +95,13 @@ if [ "X$INSTALLEDVERSION" = "X" ] || [ "X$UPDATETOVERSION" = "X" ] || [ "X$PATHT
 	exit 1
 fi
 
-echo -e "${GREEN}Auto-update $PACKAGETOTEST $INSTALLEDVERSION to $UPDATETOVERSION${NORMAL}\n"
+echo -e "${GREEN}Auto-update $PACKAGETOTEST $INSTALLEDVERSION and dependencies to $UPDATETOVERSION${NORMAL}\n"
 
 readarray DEPENDSON < <(lfspkg --nocolour -R $LFS -O $PACKAGETOTEST 2>&1)
 for ((j=1;j<${#DEPENDSON[@]};j++))
 	do
 		if [ "X${DEPENDSON[j]}" != "X" ];then
 			DEPENDFILE=${DEPENDSON[j]##*- }
-			#DEPENDFILE=${DEPENDFILE//[$'\t\r\n ']}
 			DEPENDFILE=$(stripVar "$DEPENDFILE")
 			echo -e "${GREEN}Updating $DEPENDFILE ...${NORMAL}"
 			sed $INLINE "s|\([^-]\b${PACKAGETOTEST}\b\)-[0-9][.0-9]*|\1-$UPDATETOVERSION|gI;s|^\(\b${PACKAGETOTEST}\b\)-[0-9][.0-9]*|\1-$UPDATETOVERSION|gI" $DEPENDFILE
@@ -118,14 +112,15 @@ for ((j=1;j<${#DEPENDSON[@]};j++))
 		fi
 	done
 
-echo
-
-echo -e "${GREEN}Please check $PATHTOSCRIPT ...${NORMAL}"
+echo -e "\n${GREEN}Please check $PATHTOSCRIPT ...${NORMAL}"
 if [ $UPDATESCRIPT -eq 1 ];then
 	sed $INLINE "s|VERSION=.*|VERSION=\"${UPDATETOVERSION}\"|" "$PATHTOSCRIPT"
 fi
 
-SIMPLEUPDATE=1 lfspkg -R $LFS -U
+if [ "X$UPDATE" != "X" ];then
+	SIMPLEUPDATE=1 lfspkg -R $LFS -U
+fi
+
 xdg-open "$PATHTOSCRIPT" &>/dev/null
 lfspkg -R $LFS -W $PACKAGETOTEST 2>&1
 

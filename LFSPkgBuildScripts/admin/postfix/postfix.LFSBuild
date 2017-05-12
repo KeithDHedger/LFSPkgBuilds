@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Berkeley-DB-6.1.26"
+DEPENDS="Berkeley-DB-6.2.23"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

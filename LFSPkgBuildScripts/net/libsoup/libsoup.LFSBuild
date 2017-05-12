@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="glib-networking-2.44.0 libxml2-2.9.4 SQLite-3.17.0"
+DEPENDS="glib-networking-2.50.0 libxml2-2.9.4 SQLite-3.17.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libsoup"
 TARNAME="$PKGNAME"
-VERSION="2.50.0"
+VERSION="2.56.0"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"

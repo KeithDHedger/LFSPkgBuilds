@@ -2,22 +2,22 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="icu-58.2 Python-2.7.13"
+DEPENDS="Which-2.2 icu-58.2 Python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="boost"
 TARNAME="$PKGNAME"
-VERSION="1.59.0"
+VERSION="1.63.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARVERSION=1_56_0
+TARVERSION="1_63_0"
 TARBALL="${TARNAME}_${TARVERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/boost/${TARBALL}" $SECTION
+gettar "http://downloads.sourceforge.net/${PKGNAME}/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -27,7 +27,6 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}_${TARVERSION}"
-	sed -e '1 i#ifndef Q_MOC_RUN' -e '$ a#endif' -i boost/type_traits/detail/has_binary_operator.hpp
 	./bootstrap.sh --prefix=$PKG/usr || exit 
 	./b2 -j3 stage threading=multi link=shared || true 
 	./b2 -j3 install threading=multi link=shared || true 

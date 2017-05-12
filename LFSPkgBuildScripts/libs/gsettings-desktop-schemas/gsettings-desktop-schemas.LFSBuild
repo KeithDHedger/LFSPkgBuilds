@@ -9,7 +9,7 @@ fi
 
 PKGNAME="gsettings-desktop-schemas"
 TARNAME="$PKGNAME"
-VERSION="3.16.1"
+VERSION="3.22.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -26,6 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	sed -i -r 's:"(/system):"/org/gnome\1:g' schemas/*.in 
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
