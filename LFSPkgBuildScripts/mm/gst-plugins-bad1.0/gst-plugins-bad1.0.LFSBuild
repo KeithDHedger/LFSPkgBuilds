@@ -9,13 +9,14 @@ fi
 
 PKGNAME="gst-plugins-bad1.0"
 TARNAME="gst-plugins-bad"
-VERSION="1.4.5"
+VERSION="1.10.3"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://gstreamer.freedesktop.org/src/gst-plugins-bad/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/${TARNAME}-${VERSION}-openjpeg21-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,8 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-openjpeg21-1.patch
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-package-name="GStreamer Bad Plugins ${VERSION} BLFS" --with-package-origin="http://www.linuxfromscratch.org/blfs/view/stable/"
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-wayland --disable-opencv --with-package-name="GStreamer Bad Plugins ${VERSION} BLFS" --with-package-origin="http://www.linuxfromscratch.org/blfs/view/stable/"
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
