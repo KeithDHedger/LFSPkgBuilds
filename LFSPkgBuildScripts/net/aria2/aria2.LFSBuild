@@ -31,13 +31,14 @@ pushd "${TARNAME}-${VERSION}"
 	cd webui-aria2-master
 	mkdir -vp $PKG/usr/share/doc/aria2/webiface||true
 	cp -rf css flags fonts js configuration.js favicon.ico index.html $PKG/usr/share/doc/aria2/webiface
-	cat > >$PKG/usr/bin << EOF
+	cat > >$PKG/usr/bin/startariawebif << EOF
 #!/bin/bash -e
 
 #©keithhedger Sun 14 May 13:27:34 BST 2017 kdhedger68713@gmail.com
 aria2c --enable-rpc --rpc-listen-all &
 xdg-open /usr/share/doc/aria2/webiface/index.html
 EOF
+	chmod +x $PKG/usr/bin/startariawebif
 popd
 
 checketc "$PKG"
