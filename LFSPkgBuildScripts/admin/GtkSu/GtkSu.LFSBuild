@@ -17,7 +17,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/GtkSu/archive/${TARBALL}" $SECTION
+gettar "https://github.com/KeithDHedger/GtkSu/archive/master.zip" $SECTION ${TARBALL}
 
 PKG="${OUTPUT}/${PKGNAME}"
 
