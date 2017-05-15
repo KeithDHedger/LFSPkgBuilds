@@ -17,9 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xorg.freedesktop.org/archive/individual/xserver/${TARBALL}" $SECTION
-
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-add_prime_support-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GDB-7.10 lesstif-0.95.2"
+DEPENDS="GDB-7.12.1 lesstif-0.95.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

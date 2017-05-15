@@ -17,8 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://anduin.linuxfromscratch.org/sources/BLFS/conglomeration/epdfview/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${PKGNAME}-${VERSION}-fixes-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

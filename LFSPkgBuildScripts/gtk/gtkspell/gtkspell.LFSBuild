@@ -2,22 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="pangox-compat-0.0.2"
+DEPENDS="gtk-2.24.31 enchant-1.6.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gtkglext"
+PKGNAME="gtkspell"
 TARNAME="$PKGNAME"
-VERSION="1.2.0"
-BUILD=${BUILD:-1}
-SECTION="LIBS"
+VERSION="2.0.16"
+BUILD=1
+SECTION="GTK"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/gtkglext/${TARBALL}" $SECTION
-gettar "http://slackbuilds.org/slackbuilds/14.1/libraries/gtkglext/gtkglext-no-deprecated-flags.patch" $SECTION
+gettar "http://gtkspell.sourceforge.net/download/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -27,9 +26,6 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-#thanks to Robby Workman for the patch at slackbuilds.org
-# Don't disable deprecated stuff
-	patch -p1 < ${SOURCEARCHIVES}/${SECTION}/gtkglext-no-deprecated-flags.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
@@ -38,6 +34,7 @@ popd
 checketc "$PKG"
 packageclean "$PKG"
 
+cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd

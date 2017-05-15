@@ -17,8 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gimp.org/pub/gegl/0.2/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.6/${TARNAME}-${VERSION}-ffmpeg2-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -17,8 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnu.org/gnu/libcdio/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnu.org/gnu/libcdio/libcdio-paranoia-10.2+0.94+1.tar.bz2" $SECTION
  
 PKG="${OUTPUT}/${PKGNAME}"

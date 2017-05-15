@@ -15,16 +15,17 @@ SECTION="DEVEL"
 SUFFIX="LFSPKG"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/ManPageEditor/archive/master.zip" $SECTION ManPageEditor-${VERSION}.zip
+gettar "https://github.com/KeithDHedger/ManPageEditor/archive/master.zip" $SECTION ${PKGNAME}-${VERSION}.zip
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "ManPageEditor-master"
+unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.zip"
+
+pushd "${PKGNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell
 	mkdir -vp $PKG/usr/share/icons/hicolor/256x256/apps
 	make $MAKEFLAGS||make|| exit 1
@@ -53,4 +54,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "ManPageEditor-master"
+rm -r "$PKG" "${PKGNAME}-master"

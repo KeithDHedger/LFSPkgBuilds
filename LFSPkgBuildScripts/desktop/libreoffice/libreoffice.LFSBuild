@@ -18,15 +18,10 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.documentfoundation.org/libreoffice/src/${FOLDERVERSION}/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.documentfoundation.org/libreoffice/src/${FOLDERVERSION}/libreoffice-dictionaries-${VERSION}.tar.xz" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.documentfoundation.org/libreoffice/src/${FOLDERVERSION}/libreoffice-help-${VERSION}.tar.xz" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/${PKGNAME}-${VERSION}-boost_1_59_0-1.patch" $SECTION
+
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}

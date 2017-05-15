@@ -12,9 +12,8 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/dosbox/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://slackbuilds.org/slackbuilds/14.1/system/dosbox/dosbox-0.74-gcc46.patch" $SECTION
+
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}

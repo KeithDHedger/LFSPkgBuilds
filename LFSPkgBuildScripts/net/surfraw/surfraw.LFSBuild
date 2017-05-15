@@ -4,14 +4,12 @@
 
 PKGNAME="surfraw"
 TARNAME="$PKGNAME"
-VERSION="2.2.9"
+VERSION="9417139"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://surfraw.alioth.debian.org/dist/${TARBALL}" $SECTION
+gettar "https://anonscm.debian.org/gitweb/?p=surfraw/surfraw.git;a=snapshot;h=941713969153b074490112154f21979f7fe6f4df;sf=tgz" $SECTION "${TARBALL}"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,7 +19,8 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-opensearch --with-elvidir=/usr/share/surfraw 
+	autoreconf
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} 
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
@@ -48,4 +47,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-#rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-${VERSION}"

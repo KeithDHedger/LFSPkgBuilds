@@ -18,8 +18,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.freedesktop.org/pub/mesa/${VERSION}/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-add_xdemos-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

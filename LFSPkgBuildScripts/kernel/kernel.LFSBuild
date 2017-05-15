@@ -31,17 +31,9 @@ gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION}
 #extra ucode and firmware can be retreived for here:
 #http://git.exherbo.org/summer/repositories/hardware/index.html
 #need this for my radeon driver
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://people.freedesktop.org/~agd5f/radeon_ucode/R700_rlc.bin" ${SECTION}
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://people.freedesktop.org/~agd5f/radeon_ucode/RV710_uvd.bin" ${SECTION}
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://people.freedesktop.org/~agd5f/radeon_ucode/RV710_smc.bin" ${SECTION}
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://mirror.lchost.net/debian/pool/non-free/f/firmware-nonfree/firmware-nonfree_0.43.tar.gz"  ${SECTION}
 #gettar "http://people.freedesktop.org/~agd5f/radeon_ucode/RV710_pfp.bin" ${SECTION}
 

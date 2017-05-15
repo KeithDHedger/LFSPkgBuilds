@@ -17,8 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://cdn.mysql.com/Downloads/MySQL-5.6/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.5/${TARNAME}-${VERSION}-embedded_library_shared-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

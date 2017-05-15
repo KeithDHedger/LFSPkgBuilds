@@ -17,8 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/clucene/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/svn/${PKGNAME}-${VERSION}-contribs_lib-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

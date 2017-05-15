@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gdb-7.9"
+DEPENDS="gdb-7.12.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

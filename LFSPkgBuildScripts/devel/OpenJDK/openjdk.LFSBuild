@@ -33,9 +33,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARROOTPKGNAME}${TARROOTPKGVERSION}.tar.bz2"
-pushd "${TARROOTPKGNAME}${TARROOTPKGVERSION}"
+pushd "${TARROOTPKGNAME}-${TARROOTPKGNAME}${TARROOTPKGVERSION}"
 	for subproject in corba hotspot jaxp jaxws langtools jdk nashorn
 		do
 			mkdir -pv ${subproject}
@@ -75,5 +74,5 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARROOTPKGNAME}${TARROOTPKGVERSION}}"
+rm -r "$PKG" "${TARROOTPKGNAME}-${TARROOTPKGNAME}${TARROOTPKGVERSION}"
 

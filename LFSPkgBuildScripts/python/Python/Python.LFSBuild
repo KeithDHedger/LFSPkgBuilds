@@ -18,8 +18,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.python.org/ftp/python/${VERSION}/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://docs.python.org/ftp/python/doc/${VERSION}/${PKGNAME}-${VERSION}-docs-html.tar.bz2" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

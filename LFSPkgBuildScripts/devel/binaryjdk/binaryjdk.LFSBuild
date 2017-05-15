@@ -22,7 +22,7 @@ else
 fi
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/files/BLFS/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz" $SECTION
 
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz"
 pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"

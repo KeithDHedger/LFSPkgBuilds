@@ -42,13 +42,12 @@ pushd qt5build
 
 	../${TARNAME}-${VERSION}/configure -prefix ${QT5LINK} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -examplesdir ${QT5DEMOS} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS}
 
-	find . -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
-
 	make $MAKEFLAGS||make|| exit 1
 	make install INSTALL_ROOT=$PKG || exit 1
 
+	find ${PKG}${QT5LIBS}/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
 	find ${PKG}${QT5LINK}/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5PREFIX/lib/:g" {} \;
-	find${PKG}${QT5LINK}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+	find ${PKG}${QT5LINK}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
 
 	install -v -dm755 $PKG/usr/share/pixmaps/ $PKG/usr/share/applications $PKG/etc/profile.d
 	install -v -Dm644 ${CWD}/${TARNAME}-${VERSION}/qttools/src/assistant/assistant/images/assistant-128.png $PKG/usr/share/pixmaps/assistant-qt5.png
@@ -57,7 +56,6 @@ pushd qt5build
 	install -v -Dm644 ${CWD}/${TARNAME}-${VERSION}/qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png $PKG/usr/share/pixmaps/qdbusviewer-qt5.png
 	install -dm755 $PKG/usr/share/applications
 
-#rm -f $PKG/usr/bin/qhelpgenerator $PKG/usr/bin/qdoc
 	mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	pushd $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
 		ln -sv ../qt5/pkgconfig/*.pc .

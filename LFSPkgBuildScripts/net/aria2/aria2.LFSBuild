@@ -2,22 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="pangox-compat-0.0.2"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="gtkglext"
+PKGNAME="aria2"
 TARNAME="$PKGNAME"
-VERSION="1.2.0"
-BUILD=${BUILD:-1}
-SECTION="LIBS"
+VERSION="1.31.0"
+BUILD=1
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/gtkglext/${TARBALL}" $SECTION
-gettar "http://slackbuilds.org/slackbuilds/14.1/libraries/gtkglext/gtkglext-no-deprecated-flags.patch" $SECTION
+gettar "https://github.com/${PKGNAME}/${PKGNAME}/releases/download/release-${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -27,17 +21,30 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-#thanks to Robby Workman for the patch at slackbuilds.org
-# Don't disable deprecated stuff
-	patch -p1 < ${SOURCEARCHIVES}/${SECTION}/gtkglext-no-deprecated-flags.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
+	mkdir -vp $PKG/etc/bash_completion.d
+	ln -sv /usr/share/doc/aria2/bash_completion/aria2c $PKG/etc/bash_completion.d
+	wget -c "https://github.com/ziahamza/webui-aria2/archive/master.zip"
+	unzip master.zip
+	cd webui-aria2-master
+	mkdir -vp $PKG/usr/share/doc/aria2/webiface||true
+	cp -rf css flags fonts js configuration.js favicon.ico index.html $PKG/usr/share/doc/aria2/webiface
+	cat > >$PKG/usr/bin/startariawebif << EOF
+#!/bin/bash -e
+
+#©keithhedger Sun 14 May 13:27:34 BST 2017 kdhedger68713@gmail.com
+aria2c --enable-rpc --rpc-listen-all &
+xdg-open /usr/share/doc/aria2/webiface/index.html
+EOF
+	chmod +x $PKG/usr/bin/startariawebif
 popd
 
 checketc "$PKG"
 packageclean "$PKG"
 
+cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd

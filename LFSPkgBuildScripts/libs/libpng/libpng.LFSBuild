@@ -12,9 +12,8 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/libpng/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/project/apng/libpng/libpng16/${TARNAME}-${VERSION}-apng.patch.gz" $SECTION
+
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}

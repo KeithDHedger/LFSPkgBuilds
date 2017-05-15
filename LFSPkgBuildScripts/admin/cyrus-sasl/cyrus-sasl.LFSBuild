@@ -17,8 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.cyrusimap.org/cyrus-sasl/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-fixes-3.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

@@ -17,8 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://poppler.freedesktop.org/${TARBALL}" $SECTION
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://poppler.freedesktop.org/poppler-data-0.4.7.tar.gz" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
