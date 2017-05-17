@@ -4,23 +4,23 @@
 
 PKGNAME="Xfce-Theme-Manager"
 TARNAME="$PKGNAME"
-VERSION="0.3.7"
+VERSION="0.3.8"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.zip"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dl.dropboxusercontent.com/s/ymhfhuhg28zpmfq/$TARBALL" $SECTION
+gettar "https://github.com/KeithDHedger/Xfce-Theme-Manager/archive/master.zip" $SECTION ${TARBALL}
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${PKGNAME}-${VERSION}"
+unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+pushd "${PKGNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
@@ -48,4 +48,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${PKGNAME}-${VERSION}"
+rm -r "$PKG" "${PKGNAME}-master"

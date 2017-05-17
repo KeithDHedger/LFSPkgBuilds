@@ -8,20 +8,20 @@ VERSION="0.2.1"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.zip"
 
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dl.dropboxusercontent.com/s/4ju97lhri2gu8ag/$TARBALL" $SECTION
+gettar "https://github.com/KeithDHedger/Xfwm4CompositeEditor/archive/master.zip" $SECTION ${TARBALL}
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${PKGNAME}-${VERSION}"
+unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+pushd "${PKGNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
@@ -49,4 +49,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-master"

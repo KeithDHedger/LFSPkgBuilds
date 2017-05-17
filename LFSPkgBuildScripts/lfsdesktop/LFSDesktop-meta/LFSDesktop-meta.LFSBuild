@@ -33,7 +33,7 @@ Xfwm4CompositeEditor-0.2.1
 gtksourceview-2.11.1
 leafpad-0.8.18.1
 shared-mime-info-1.8
-OpenSSH-6.7
+OpenSSH-7.4
 ntp-4.2.8
 xdg-utils-1.1.1
 desktopfile-utils-0.22
@@ -48,8 +48,9 @@ AspellGUI-0.0.8
 KKEdit-0.2.11
 xarchiver-0.5.4
 ClipboardViewer-2.2.1
-LibreOffice-5.3.0
 GtkSu-0.1.6"
+
+#LibreOffice-5.3.0
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
