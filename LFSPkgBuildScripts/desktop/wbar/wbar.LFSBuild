@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="imlib2-1.4.7"
+DEPENDS="imlib2-1.4.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

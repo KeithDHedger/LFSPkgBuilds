@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="lua-5.1.5 tolua++-1.0.93 Imlib2-1.4.7 lm-sensors-3.4.0"
+DEPENDS="lua-5.1.5 tolua++-1.0.93 Imlib2-1.4.9 lm-sensors-3.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
