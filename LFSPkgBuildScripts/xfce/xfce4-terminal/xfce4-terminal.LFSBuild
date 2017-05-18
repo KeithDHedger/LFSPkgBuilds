@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxfce4ui-4.10.0 vte-0.46.1"
+DEPENDS="libxfce4ui-4.10.0 vte1-0.28.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

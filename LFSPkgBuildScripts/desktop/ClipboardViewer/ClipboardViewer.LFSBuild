@@ -4,23 +4,24 @@
 
 PKGNAME="ClipboardViewer"
 TARNAME="$PKGNAME"
-VERSION="2.2.1"
+VERSION="2.2.2"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.zip"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dl.dropboxusercontent.com/s/rafh8a7msmh7bqb/${TARBALL}" $SECTION
+gettar "https://github.com/KeithDHedger/ClipboardViewer/archive/master.zip" $SECTION ${TARBALL}
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
+unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+
+pushd "${TARNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
@@ -48,4 +49,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-master"

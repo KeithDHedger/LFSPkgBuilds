@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.50.3 GnuTLS-3.5.9 libsigc++-2.4.1"
+DEPENDS="GLib-2.50.3 GnuTLS-3.5.9 libsigc-2.10.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="glibmm"
 TARNAME="$PKGNAME"
-VERSION="2.44.0"
+VERSION="2.50.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -26,6 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	sed -e '/^libdocdir =/ s/$(book_name)/glibmm-2.50.0/' -i docs/Makefile.in
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1

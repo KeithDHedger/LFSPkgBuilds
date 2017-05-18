@@ -2,16 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="libsigc++"
+DEPENDS=""
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="autoconf"
 TARNAME="$PKGNAME"
-VERSION="2.4.1"
-BUILD=${BUILD:-1}
-SECTION="LIBS"
+VERSION="2.13"
+BUILD=1
+SECTION="TMP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://ftp.gnu.org/gnu/autoconf/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,9 +31,10 @@ pushd "${TARNAME}-${VERSION}"
 	make install DESTDIR=$PKG || exit 1
 popd
 
-checketc $PKG
+checketc "$PKG"
 packageclean "$PKG"
 
+cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd

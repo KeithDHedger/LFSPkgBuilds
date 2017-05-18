@@ -2,21 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ATK-2.22.0 GLibmm-2.50.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="atkmm"
-TARNAME="$PKGNAME"
-VERSION="2.24.2"
+PKGNAME="libsigc"
+TARNAME="libsigc++"
+VERSION="2.10.0"
 BUILD=${BUILD:-1}
-SECTION="GTK"
+SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/atkmm/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "ftp://ftp.gnome.org/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,6 +21,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	sed -e '/^libdocdir =/ s/$(book_name)/libsigc++-2.10.0/' -i docs/Makefile.in
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1

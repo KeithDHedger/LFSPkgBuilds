@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtkmm-2.24.4 Intltool-0.51.0 parted-3.2"
+DEPENDS="gtkmm-2.24.5 Intltool-0.51.0 parted-3.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cairo-1.14.8 libsigc++-2.3.1"
+DEPENDS="Cairo-1.14.8 libsigc-2.3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 TARNAME="cairomm"
 PKGNAME="cairomm"
-VERSION="1.10.0"
+VERSION="1.12.2"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -26,6 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	sed -e '/^libdocdir =/ s/$(book_name)/cairomm-1.12.2/' -i docs/Makefile.in
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1

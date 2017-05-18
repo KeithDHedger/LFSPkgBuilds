@@ -17,15 +17,15 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/AspellGUI/archive/${TARBALL}" $SECTION
-PKG="${OUTPUT}/${PKGNAME}"
+gettar "https://github.com/KeithDHedger/AspellGUI/archive/master.zip" $SECTION ${TARBALL}
 
+PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
+unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+pushd "${TARNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	mkdir -vp $PKG/usr/share/applications $PKG/usr/share/pixmaps
 	make $MAKEFLAGS||make|| exit 1
@@ -54,4 +54,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-master"

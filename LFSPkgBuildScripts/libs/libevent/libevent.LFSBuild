@@ -9,17 +9,16 @@ fi
 
 PKGNAME="libevent"
 TARNAME="$PKGNAME"
-VERSION="2.0.22"
+VERSION="2.1.8"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}-stable.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/levent/${TARBALL}" $SECTION
+gettar "https://github.com/libevent/libevent/releases/download/release-${VERSION}-stable/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

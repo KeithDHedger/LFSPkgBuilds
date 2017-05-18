@@ -9,15 +9,16 @@ fi
 
 PKGNAME="ImageMagick"
 TARNAME="$PKGNAME"
-VERSION="6.9.2"
-REVISION="8"
+VERSION="7.0.5"
+REVISION="6"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}.tar.xz"
+URL="ftp://ftp.imagemagick.org/pub/${PKGNAME}"
+TARBALL=$(findArchive "${URL}" "${PKGNAME}" ".tar.xz")
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.imagemagick.org/pub/${PKGNAME}/${TARBALL}" $SECTION
+gettar "${URL}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,15 +27,10 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}"*
-	CWD=$(pwd)
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr -with-modules --with-perl --with-gslib=/usr/lib --enable-static=no --enable-shared --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
-	make $MAKEFLAGS INSTALLDIRS=vendor|| exit 1
-	make DOCUMENTATION_PATH=/usr/share/doc/imagemagick--${VERSION} install  INSTALLDIRS=vendor DESTDIR=$PKG || exit 1
-	pushd "$PKG"
-		find | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-	popd
-	ldconfig||true
+pushd "${TARNAME}-${VERSION}-${REVISION}"
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} -with-modules --with-perl  --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
+	make $MAKEFLAGS||make|| exit 1
+	make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${VERSION} install DESTDIR=$PKG || exit 1
 popd
 
 checketc $PKG
@@ -58,4 +54,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${CWD}"
+rm -r "$PKG" "${TARNAME}-${VERSION}-${REVISION}"

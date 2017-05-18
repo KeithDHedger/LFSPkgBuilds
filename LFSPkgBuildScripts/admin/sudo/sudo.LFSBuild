@@ -4,15 +4,15 @@
 
 PKGNAME="sudo"
 TARNAME="$PKGNAME"
-VERSION="1.8.12"
-MINORREVISION=""
+VERSION="1.8.19"
+MINORREVISION="p2"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}${MINORREVISION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.sudo.ws/sudo/dist/${TARBALL}" $SECTION
+gettar "http://www.sudo.ws/dist/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,6 +25,8 @@ pushd "${TARNAME}-${VERSION}${MINORREVISION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libexecdir=/usr/lib${LIBDIRSUFFX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}${MINORREVISION} --with-all-insults --with-env-editor --with-passprompt="[sudo] password for %p"
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
+	mkdir -p $PKG/usr/lib/sudo ||true
+	ln -sfv libsudo_util.so.0.0.0 $PKG/usr/lib/sudo/libsudo_util.so.0
 popd
 
 checketc $PKG
