@@ -2,21 +2,17 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=""
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="autoconf"
-TARNAME="$PKGNAME"
+PKGNAME="autoconf213"
+TARNAME="autoconf"
 VERSION="2.13"
 BUILD=1
-SECTION="TMP"
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnu.org/gnu/autoconf/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/8.0/${TARNAME}-${VERSION}-consolidated_fixes-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,9 +22,14 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-consolidated_fixes-1.patch
+	mv -v autoconf.texi autoconf213.texi
+	rm -v autoconf.info
+	./configure ${CONFIGOPTIONS} --program-suffix=2.13
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
+	install -v -m644 autoconf213.info $PKG/usr/share/info
+	install-info --info-dir=$PKG/usr/share/info autoconf213.info
 popd
 
 checketc "$PKG"
