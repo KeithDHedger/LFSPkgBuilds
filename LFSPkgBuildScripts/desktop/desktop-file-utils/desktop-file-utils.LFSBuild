@@ -2,21 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libusb-1.0.21"
+DEPENDS="GLib-2.50.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="usbutils"
+PKGNAME="desktop-file-utils"
 TARNAME="$PKGNAME"
-VERSION="008"
-BUILD=1
-SECTION="SYS"
+VERSION="0.23"
+BUILD=${BUILD:-1}
+SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.kernel.org/pub/linux/utils/usb/usbutils/${TARBALL}" $SECTION
+gettar "http://freedesktop.org/software/${TARNAME}/releases/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,13 +26,12 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -i '/^usbids/ s:usb.ids:hwdata/&:' lsusb.py
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --datadir=/usr/share/hwdata
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
 
-checketc "$PKG"
+checketc $PKG
 packageclean "$PKG"
 
 pushd "$PKG"

@@ -4,14 +4,15 @@
 
 PKGNAME="krb5"
 TARNAME="$PKGNAME"
-VERSION="1.12.2"
+VERSION="1.15"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}-signed.tar"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://web.mit.edu/kerberos/www/dist/krb5/1.12/${TARBALL}" $SECTION
+gettar "http://web.mit.edu/kerberos/dist/${TARNAME}/${VERSION}/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/8.0/mitkrb-1.15-fix_ipv4_only-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -20,16 +21,17 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-tar -xvf ${TARNAME}-${VERSION}.tar.gz
-rm ${TARNAME}-${VERSION}.tar.gz.asc
+tar -xvf ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}.tar.gz
 pushd ${TARNAME}-${VERSION}
+	patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/mitkrb-1.15-fix_ipv4_only-1.patch
 	cd src
 	sed -e "s@python2.5/Python.h@& python2.7/Python.h@g" -e "s@-lpython2.5]@&,\n  AC_CHECK_LIB(python2.7,main,[PYTHON_LIB=-lpython2.7])@g" -i configure.in
-	sed -e "s@interp->result@Tcl_GetStringResult(interp)@g" -i kadmin/testing/util/tcl_kadm5.c
+#	sed -e "s@interp->result@Tcl_GetStringResult(interp)@g" -i kadmin/testing/util/tcl_kadm5.c
+	sed -e '/eq 0/{N;s/12 //}' -i plugins/kdb/db2/libdb2/test/run.test
 	sed -e 's@\^u}@^u cols 300}@' -i tests/dejagnu/config/default.exp
 
 	autoconf
-	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib --with-system-et --with-system-ss --enable-dns-for-realm
+	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib --with-system-et --with-system-ss --with-system-verto=no --enable-dns-for-realm
 
 	make $MAKEFLAGS||make||exit 1
 	make install DESTDIR=$PKG || exit 1
@@ -79,4 +81,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}.tar.gz" "${PKGNAME}-${VERSION}"
+rm -r "$PKG" "${PKGNAME}-${VERSION}"

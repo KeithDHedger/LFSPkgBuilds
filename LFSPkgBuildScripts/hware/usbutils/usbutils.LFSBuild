@@ -9,27 +9,27 @@ fi
 
 TARNAME="usbutils"
 PKGNAME="usbutils"
-VERSION="007"
+VERSION="008"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.kernel.org/pub/linux/utils/usb/usbutils/${TARBALL}" $SECTION
+gettar "https://www.kernel.org/pub/linux/utils/usb/usbutils/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-zlib --datadir=/usr/share/misc
+	sed -i '/^usbids/ s:usb.ids:hwdata/&:' lsusb.py
+
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --datadir=/usr/share/hwdata
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
-	mv -v $PKG/usr/sbin/update-usbids.sh $PKG/usr/sbin/update-usbids
 popd
 
 checketc $PKG
@@ -53,7 +53,5 @@ case $DOWHAT in
 		echo "*** Unknown command ***"
 		exit 1
 esac
-
-update-usbids
 
 rm -r "$PKG" "${TARNAME}-${VERSION}"

@@ -2,36 +2,38 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.50.3"
+DEPENDS="Python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="desktopfile-utils"
-TARNAME="desktop-file-utils"
-VERSION="0.22"
-BUILD=${BUILD:-1}
-SECTION="DESKTOP"
+PKGNAME="ninja"
+TARNAME="$PKGNAME"
+VERSION="1.7.2"
+BUILD=1
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://freedesktop.org/software/${TARNAME}/releases/${TARBALL}" $SECTION
+gettar "https://github.com/ninja-build/ninja/archive/v${VERSION}.tar.gz" $SECTION $TARBALL
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	./configure.py --bootstrap
+	mkdir -vp $PKG/usr/bin
+	install -vm755 ninja $PKG/usr/bin/
+	install -vDm644 misc/ninja.vim  $PKG/usr/share/vim/vim74/syntax/ninja.vim
+	install -vDm644 misc/bash-completion $PKG/usr/share/bash-completion/completions/ninja
+	install -vDm644 misc/zsh-completion $PKG/usr/share/zsh/site-functions/_ninja
 popd
 
-checketc $PKG
+checketc "$PKG"
 packageclean "$PKG"
 
 pushd "$PKG"

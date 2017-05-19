@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="krb5-1.12.2"
+DEPENDS="krb5-1.15"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
