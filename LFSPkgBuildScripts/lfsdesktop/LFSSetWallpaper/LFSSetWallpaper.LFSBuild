@@ -2,30 +2,27 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.1.1"
+DEPENDS="LFSToolKit-0.2.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="LFSSetWallpaper"
-TARNAME="$PKGNAME"
 VERSION="0.1.0"
 BUILD=1
 SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dl.dropboxusercontent.com/s/562342ncltvsslm/${TARBALL}" $SECTION
+gettar "https://github.com/KeithDHedger/LFSDesktopProject/archive/master.zip"  $SECTION "LFSDesktopProject.zip"
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}"
+unzip ${SOURCEARCHIVES}/${SECTION}/LFSDesktopProject.zip  "LFSDesktopProject-master/$PKGNAME/*"
+pushd "LFSDesktopProject-master/$PKGNAME"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
@@ -53,4 +50,6 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}"
+rm -r "$PKG" "LFSDesktopProject-master"
+
+

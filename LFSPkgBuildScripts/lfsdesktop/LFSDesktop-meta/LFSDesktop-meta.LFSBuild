@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.1.1
+DEPENDS="LFSToolKit-0.2.2
 LFSWManager-0.1.0
 LFSDesktop-0.1.0
 LFSApplications-0.1.0

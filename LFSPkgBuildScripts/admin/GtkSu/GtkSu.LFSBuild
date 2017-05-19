@@ -27,7 +27,7 @@ mkdir -p "$PKG"
 
 unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${PKGNAME}-${TARNAME}-master"
+pushd "${PKGNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-ktsuss-link
 	make
 	make install DESTDIR=$PKG || exit 1
@@ -55,4 +55,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${PKGNAME}-${TARNAME}-master"
+rm -r "$PKG" "${PKGNAME}-master"
