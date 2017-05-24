@@ -1,10 +1,9 @@
 #!/bin/bash -e
 
-#!/bin/bash -e
-
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libgcrypt-1.6.3 libexif-0.6.21 git-2.11.1 pulseaudio-10.0 bzip2-1.0.6 flac-1.3.1 harfbuzz-1.4.2 icu-58.2 libevent-2.1.8 openjpeg-1.5.2 libpng-1.6.28 nspr-4.13.1 openssl-1.0.2 xdg-utils-1.1.1 yasm-1.3.0 krb5-1.15 desktop-file-utils-0.23 File-BaseDir-0.07 usbutils-008 ninja-1.7.2"
+DEPENDS="libgcrypt-1.6.3 libexif-0.6.21 git-2.11.1 pulseaudio-10.0 bzip2-1.0.6 flac-1.3.1 harfbuzz-1.4.2 icu-58.2 libevent-2.1.8 openjpeg-1.5.2 libpng-1.6.28 nspr-4.13.1 openssl-1.0.2 xdg-utils-1.1.1 yasm-1.3.0 krb5-1.15 desktop-file-utils-0.23 File-BaseDir-0.07 usbutils-008 ninja-1.7.2 gtk3-3.22.8"
+
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -24,11 +23,18 @@ GOOGLE_DEFAULT_CLIENT_SECRET="XU4b-j0Ssy-XkTvSVmiFMvNY"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
 gettar "https://github.com/foutrelis/chromium-launcher/archive/v3.tar.gz" $SECTION "chromium-launcher-3.tar.gz"
+gettar "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_58.0.3029.96-1_amd64.deb" $SECTION
+
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	sed 's/#include <sys\/mman\.h>/&\n\n#if defined(MADV_FREE)\n#undef MADV_FREE\n#endif\n/' -i third_party/WebKit/Source/wtf/allocator/PageAllocator.cpp
 	sed "s/^config(\"compiler\") {/&\ncflags_cc = [ \"-fno-delete-null-pointer-checks\" ]/" -i build/config/linux/BUILD.gn
+	sed "s/WIDEVINE_CDM_AVAILABLE/&\n\n#define WIDEVINE_CDM_VERSION_STRING \"Pinkie Pie\"/" -i third_party/widevine/cdm/stub/widevine_cdm_version.h
 
 	for LIB in flac harfbuzz-ng libwebp libxslt yasm
 		do
@@ -44,7 +50,7 @@ pushd "${TARNAME}-${VERSION}"
 'enable_hangout_services_extension=true'
 'enable_nacl=false'
 'enable_nacl_nonsfi=false'
-'enable_widevine=false'
+'enable_widevine=true'
 'fatal_linker_warnings=false'
 'ffmpeg_branding="Chrome"'
 'fieldtrial_testing_like_official_build=true'
@@ -75,8 +81,9 @@ pushd "${TARNAME}-${VERSION}"
 	install -vDm4755 out/Release/chrome_sandbox $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chrome-sandbox
 	install -vDm755  out/Release/chromedriver $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chromedriver
 
-	ln -svf /usr/lib/chromium/chromium $PKG/usr/bin
-	ln -svf /usr/lib/chromium/chromedriver $PKG/usr/bin
+	mkdir -vp $PKG/usr/bin||true
+	ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromium $PKG/usr/bin
+	ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromedriver $PKG/usr/bin
 
 	install -vm755 out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
 	install -vDm644 out/Release/icudtl.dat $PKG/usr/lib${LIBDIRSUFFIX}/chromium
@@ -98,6 +105,7 @@ pushd "${TARNAME}-${VERSION}"
 			install -vDm644 "chrome/app/theme/chromium/product_logo_$size.png" "$PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium.png"
 		done
 
+	mkdir -vp $PKG/usr/share/applications||true
 	cat > $PKG/usr/share/applications/chromium.desktop << "EOF"
 [Desktop Entry]
 Encoding=UTF-8
@@ -118,6 +126,20 @@ EOF
 	rm -f $PKG/usr/bin/chromium
 	make PREFIX=/usr install-strip DESTDIR=$PKG||exit 1
 	cd ..
+
+	mkdir temp||true
+	cd temp
+	case $(uname -m) in
+		x86_64) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_58.0.3029.96-1_amd64.deb
+		;;
+		x86) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_48.0.2564.116-1_i386.deb
+		;;
+	esac
+
+	tar -xf data.tar.xz
+	mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
+	install -vm755 ../out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+	install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
 popd
 
 checketc $PKG
@@ -142,177 +164,7 @@ case $DOWHAT in
 		exit 1
 esac
 
+echo "Removing source folder, please wait ..."
 rm -r "$PKG" "${TARNAME}-${VERSION}"
 
 exit 0
-
-pushd ${SOURCEARCHIVES}/${SECTION}
-	wget https://projects.archlinux.org/svntogit/packages.git/plain/trunk/chromium-fix-print-preview-on-en_GB-locale.patch?h=packages/chromium -O chromium-fix-print-preview-on-en_GB-locale.patch
-	wget https://projects.archlinux.org/svntogit/packages.git/plain/trunk/chromium-widevine.patch?h=packages/chromium -O chromium-widevine.patch
-	wget https://projects.archlinux.org/svntogit/packages.git/plain/trunk/0001-Add-FPDFAPIJPEG_-prefix-to-more-libjpeg-functions.patch?h=packages/chromium -O 0001-Add-FPDFAPIJPEG_-prefix-to-more-libjpeg-functions.patch
-popd
-
-if [ ! -d ${SOURCEARCHIVES}/depot_tools ];then
-	pushd ${SOURCEARCHIVES}
-		git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-	popd
-fi
-
-DDSSE=" -Ddisable_sse2=1 "
-GOOGLE_API_KEY=AIzaSyBhWJ-j5RXyt5911BMuVen-WuS10mvOnrY
-GOOGLE_DEFAULT_CLIENT_ID=952820686433-mbp5sv9scfj78siq96jlvrem47qgvbi3.apps.googleusercontent.com
-GOOGLE_DEFAULT_CLIENT_SECRET=XU4b-j0Ssy-XkTvSVmiFMvNY
-
-LFSFLAGS="${LFSFLAGS}  -Wno-unused-local-typedefs "
-export -n CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS"
-export GYP_DEFINES=system_libdir=lib64
-export GYP_DEFINES=python_ver=2.7.10
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/$TARBALL"
-
-LFSFLAGS="${LFSFLAGS} -Wno-unused-local-typedefs "
-DNACL=1
-DSSE=1
-PATH="${SOURCEARCHIVES}/depot_tools:${PATH}"
-export PATH
-
-pushd "${TARNAME}-${VERSION}"
-	touch chrome/test/data/webui/i18n_process_css_test.html
-	sed -i "/'target_name': 'libvpx'/s/libvpx/&_new/" build/linux/unbundle/libvpx.gyp
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/chromium-fix-print-preview-on-en_GB-locale.patch
-	patch -d third_party/pdfium -Np1 <${SOURCEARCHIVES}/${SECTION}/0001-Add-FPDFAPIJPEG_-prefix-to-more-libjpeg-functions.patch
-	sed "s/@WIDEVINE_VERSION@/Pinkie Pie/" ${SOURCEARCHIVES}/${SECTION}/chromium-widevine.patch | patch -Np1
-
-	find third_party/icu -type f \! -regex '.*\.\(gyp\|gypi\|isolate\)' -delete
-	find . -name '*.py' -exec sed -i -r 's|/usr/bin/python$|&2|g' {} +
-	mkdir "python2-path"
-	ln -s /usr/bin/python2 "python2-path/python"
-
-	_chromium_conf=(
-	-Dclang=0
-    -Ddisable_glibc=1
-    -Denable_pepper_cdms=1
-    -Denable_webrtc=1
-    -Dffmpeg_branding=Chrome
-    -Dgoogle_api_key=$GOOGLE_API_KEY
-    -Dgoogle_default_client_id=$GOOGLE_DEFAULT_CLIENT_ID
-    -Dgoogle_default_client_secret=$GOOGLE_DEFAULT_CLIENT_SECRET
-    -Dicu_use_data_file_flag=0
-    -Dlinux_sandbox_path=/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chrome_sandbox
-    -Dlinux_strip_binary=1
-    -Dlinux_use_bundled_binutils=0
-    -Dlinux_use_bundled_gold=0
-    -Dlinux_use_gold_binary=0
-    -Dlinux_use_gold_flags=0
-    -Dlogging_like_official_build=1
-    -Dproprietary_codecs=1
-    -Dremove_webcore_debug_symbols=1
-    -Duse_allocator=none
-    -Duse_gconf=0
-    -Duse_kerberos=0
-    -Duse_pulseaudio=1
-    -Duse_system_bzip2=1
-    -Duse_system_flac=1
-    -Duse_system_ffmpeg=0
-    -Duse_system_harfbuzz=1
-    -Duse_system_icu=1
-    -Duse_system_libevent=1
-    -Duse_system_libjpeg=1
-    -Duse_system_libpng=1
-    -Duse_system_libxml=0
-    -Duse_system_libxstl=0
-    -Duse_system_nspr=1
-    -Duse_system_opus=0
-    -Duse_system_snappy=0
-    -Duse_system_openssl=1
-    -Duse_system_xdg_utils=1
-    -Duse_system_yasm=1
-    -Duse_system_zlib=0
-    -Dwerror=
-    -Drelease_extra_cflags="$LFSFLAGS"
-    -Ddisable_nacl=${DNACL}
-    -Ddisable_sse2=${DSSE}
-    -Duse_gnome_keyring=0
-	-Dlinux_link_gnome_keyring=0
-	-Denable_hangout_services_extension=0
-	-Ddisable_fatal_linker_warnings=1
-	-Duse_mojo=0
-	)
-
-	third_party/libaddressinput/chromium/tools/update-strings.py
-	build/linux/unbundle/replace_gyp_files.py "${_chromium_conf[@]}"
-	build/gyp_chromium --depth=. "${_chromium_conf[@]}"
-	ninja $MAKEFLAGS -C out/Release chrome chrome_sandbox chromedriver
-
-# Manually install everything:
-# The main binary:
-	install -D out/Release/chrome $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/${PKGNAME}
-# The sandbox:
-	install -D -m4755 -o root -g root out/Release/chrome_sandbox $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chrome-sandbox
-# The Chromium implementation of the WebDriver wire protocol
-# (automated testing of web apps):
-	install -D out/Release/chromedriver $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chromedriver
-# Copy over the remaining binaries:
-	cp -a out/Release/{*.pak,*.bin} $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
-#	if [ -f out/Release/natives_blob.bin ];then
-#  		cp -a out/Release/{natives_blob.bin,snapshot_blob.bin} $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
-#	fi
-# Manually strip binaries so that 'nacl_irt_*.nexe' is left intact
-	strip  --strip-unneeded $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/{${PKGNAME},chrome-sandbox} $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chromedriver
-# Add locales:
-	cp -a out/Release/locales $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
-# Add resource files:
-	cp -a out/Release/resources $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
-# Install a man page:
-	install -D -m0644 out/Release/chrome.1 $PKG/usr/man/man1/${PKGNAME}.1
-## Without this file, chromium refuses to start:
-#	cp -a third_party/icu/source/data/in/icudtl.dat $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
-
-
-# Install a wrapper script:
-	install -D -m0755 ../${PKGNAME}.sh $PKG/usr/bin/${PKGNAME}
-	sed -i -e "s/@LIBDIRSUFFIX@/${LIBDIRSUFFIX}/g" $PKG/usr/bin/${PKGNAME}
-# Make the chromedriver available in the $PATH :
-	ln -s ../lib${LIBDIRSUFFIX}/${PKGNAME}/chromedriver $PKG/usr/bin/chromedriver${SRCEXT}
-# Install desktop icons:
-	for size in 16 32
-		do
-			install -D -m0644 chrome/app/theme/default_100_percent/chromium/product_logo_$size.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps/${PKGNAME}.png
-		done
-
-	for size in 22 24 48 64 128 256
-		do
-			install -D -m0644 chrome/app/theme/chromium/product_logo_$size.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps/${PKGNAME}.png
-		done
-# Add a desktop file:
-	install -D -m0644 ../${PKGNAME}.desktop $PKG/usr/share/applications/${PKGNAME}.desktop
-popd
-
-checketc "$PKG"
-packageclean "$PKG"
-
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
-
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
-
-rm -r "$PKG" "${TARNAME}-${VERSION}"

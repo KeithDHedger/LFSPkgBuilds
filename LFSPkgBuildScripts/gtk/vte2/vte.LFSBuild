@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK3-3.8.4 "
+DEPENDS="GTK3-3.22.8 "
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

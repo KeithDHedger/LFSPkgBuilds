@@ -9,23 +9,22 @@ fi
 
 PKGNAME="KKEdit"
 TARNAME="$PKGNAME"
-VERSION="0.2.11"
+VERSION="0.4.2"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.zip"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dl.dropboxusercontent.com/s/g4v0jr6cpr70xpl/${TARBALL}" $SECTION
+gettar "https://github.com/KeithDHedger/KKEdit/archive/master.zip" $SECTION ${TARBALL}
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
+unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+pushd "${TARNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell --enable-docviewer
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
@@ -53,4 +52,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-master"
