@@ -1,0 +1,58 @@
+#!/bin/bash
+
+#©keithhedger Tue 23 May 11:09:13 BST 2017 kdhedger68713@gmail.com
+
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+BLACK='\e[0;30m'
+NORMAL='\e[0;0m'
+BLUE='\e[1;34m'
+
+if [ "X$1" = "X" ];then
+	echo "Need input file ..."
+	exit 1
+fi
+
+LINENUM=1
+while :
+	do
+		LINE=$(sed -n "${LINENUM}p" "$1")
+		echo -e "${GREEN}${LINE}${NORMAL}"
+		echo -n "(R)un Line" "(P)rint Variable" "(S)et Variable" "(M)anual Command" "(N)ext" "ENTER" "(Q)uit" " "
+		read -n1 com
+		case $com in
+			R|r)
+				eval $LINE
+				echo
+				;;
+			P|p)
+				echo
+				read -p "Enter Variable Name: " var
+				echo ${!var}
+				continue
+				;;
+			S|s)
+				echo
+				read -p "Enter Variable Name: " var
+				read -p "Enter Variable Value: " val
+				eval $var=$val
+				echo "$var=${!var}"
+				continue
+				;;
+			M|m)
+				echo
+				echo "Manual Command"
+				read -p "Enter command: " val
+				eval $val
+				continue
+				;;
+			Q|q)
+				echo
+				exit 0
+				;;
+			"*")
+				echo
+				;;
+		esac
+		((LINENUM++))
+	done
