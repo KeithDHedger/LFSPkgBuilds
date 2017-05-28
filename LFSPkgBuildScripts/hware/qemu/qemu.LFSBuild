@@ -27,8 +27,6 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 
-#	patch -Np1 -i ../qemu.patch
-#	sed -i '/resource/ i#include <sys/xattr.h>' fsdev/virtfs-proxy-helper.c
 	mkdir -vp build
 	cd	build
 

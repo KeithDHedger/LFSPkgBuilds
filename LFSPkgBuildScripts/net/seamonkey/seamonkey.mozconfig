@@ -17,10 +17,13 @@ ac_add_options --disable-necko-wifi
 # Comment out following option if you have PulseAudio installed
 #ac_add_options --disable-pulseaudio
 
+# Comment out following option if you have gconf installed
+ac_add_options --disable-gconf
+
 # GStreamer is necessary for H.264 video playback in HTML5 Video Player;
 # to be enabled, also remember to set "media.gstreamer.enabled" to "true"
 # in about:config. If you have GStreamer 0.x.y, uncomment this line:
-ac_add_options --enable-gstreamer
+#ac_add_options --enable-gstreamer
 
 # Uncomment these if you have installed them:
 ac_add_options --enable-startup-notification

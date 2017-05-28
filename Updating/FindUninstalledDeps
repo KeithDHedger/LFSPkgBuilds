@@ -43,7 +43,6 @@ for ((j=0;j<${#DEPENDSON[@]};j++))
 			exit 0
 		fi
 		PACKAGE=$(stripVar "${DEPENDSON[j]}")
-		#PACKAGE=$(echo ${DEPENDSON[j]//[$'\t\r\n ']}|sed -r 's/\x1b\[[0-9;]*m?//g')
 		if ! lfspkg -R $LFS "${PACKAGE%-?*}" &>/dev/null;then
 			echo "$PACKAGE"
 		fi

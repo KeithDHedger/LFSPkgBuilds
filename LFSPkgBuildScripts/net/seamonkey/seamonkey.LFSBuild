@@ -11,7 +11,7 @@ fi
 
 PKGNAME="seamonkey"
 TARNAME="$PKGNAME"
-VERSION="2.38"
+VERSION="2.46"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -31,18 +31,32 @@ pushd "comm-release"
 	cp ../seamonkey.mozconfig ./mozconfig
 #set the lib suffix in the config file
 	sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
-	sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers
 
-	mkdir -vp mozilla/moz-build-dir $PKG/usr/share/man/man1 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}||true
+	CFLAGS_HOLD=$CFLAGS
+	CXXFLAGS_HOLD=$CXXFLAGS
+	EXTRA_FLAGS=" -fno-delete-null-pointer-checks -fno-lifetime-dse -fno-schedule-insns2"
+	export CFLAGS+=$EXTRA_FLAGS
+	export CXXFLAGS+=$EXTRA_FLAGS
 	export SHELL=/bin/sh
-	make -f client.mk || exit 1
-	make -f client.mk install INSTALL_SDK= DESTDIR=$PKG || exit 1
+	unset EXTRA_FLAGS
+
+	sed -e 's/256/224/' -i mozilla/netwerk/protocol/http/Http2Session.cpp &&
+	sed -e '/version=/s/:space:/[&]/' -i ./mozilla/build/autoconf/icu.m4 &&
+	sed -e s/_EVENT_SIZEOF/EVENT__SIZEOF/ -i mozilla/ipc/chromium/src/base/message_pump_libevent.cc
+
+	make -f client.mkk || exit 1
+	make  -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 1
 
 	chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}||true
+	mkdir -vp $PKG/usr/share/man/man1  $PKG/usr/share/{applications,pixmaps}|| true
+	cp -v $(find -name seamonkey.1 | head -n1) $PKG/usr/share/man/man1
+
+	export CFLAGS=$CFLAGS_HOLD
+	export CXXFLAGS=$CXXFLAGS_HOLD
+	unset CFLAGS_HOLD CXXFLAGS_HOLD
 	cp -v moz-build-dir/dist/man/man1/seamonkey.1 $PKG/usr/share/man/man1
 
-	mkdir -pv $PKG/usr/share/{applications,pixmaps}||true
-	ln -sfv $PKG/usr/lib/${PKGNAME}-${VERSION}/chrome/icons/default/seamonkey.png $PKG/usr/share/pixmaps
+	ln -sfv /usr/lib/${PKGNAME}-${VERSION}/chrome/icons/default/seamonkey.png $PKG/usr/share/pixmaps
 popd
 
 checketc $PKG
