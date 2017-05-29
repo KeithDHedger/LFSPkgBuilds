@@ -22,32 +22,42 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/lua-5.3.4-shared_library-1.patch
+	sed -i '/#define LUA_ROOT/s:/usr/local/:/usr/:' src/luaconf.h
+
 # Fix up a to-be-installed header and the pkgconfig file
-	sed -i "s|/usr/local|/usr|" src/luaconf.h
-	sed -i "s|lib/lua|lib/lua|" src/luaconf.h
-	sed -i "s|/usr/local|/usr|" etc/lua.pc
-	sed -i "s|prefix}/lib|prefix}/lib|g" etc/lua.pc
+#	sed -i "s|/usr/local|/usr|" src/luaconf.h
+#	sed -i "s|lib/lua|lib/lua|" src/luaconf.h
+#	sed -i "s|/usr/local|/usr|" etc/lua.pc
+#	sed -i "s|prefix}/lib|prefix}/lib|g" etc/lua.pc
 
-	make linux CFLAGS=" \$(MYCFLAGS) -O2 -fPIC" INSTALL_TOP=/usr INSTALL_LIB=/usr/lib INSTALL_LMOD=/usr/share/lua/5.1 INSTALL_CMOD=/usr/lib/lua/5.1
-	make linux install CFLAGS=" \$(MYCFLAGS) -O2 -fPIC" INSTALL_TOP=$PKG/usr INSTALL_LIB=$PKG/usr/lib INSTALL_LMOD=$PKG/usr/share/lua/5.1 INSTALL_CMOD=$PKG/usr/lib/lua/5.1
+#	make linux CFLAGS=" \$(MYCFLAGS) -O2 -fPIC" INSTALL_TOP=/usr INSTALL_LIB=/usr/lib INSTALL_LMOD=/usr/share/lua/5.1 INSTALL_CMOD=/usr/lib/lua/5.1 -DLUA_COMPAT_5_2 -DLUA_COMPAT_5_1
+#
+#	make linux install CFLAGS=" \$(MYCFLAGS) -O2 -fPIC" INSTALL_TOP=$PKG/usr INSTALL_LIB=$PKG/usr/lib INSTALL_LMOD=$PKG/usr/share/lua/5.1 INSTALL_CMOD=$PKG/usr/lib/lua/5.1
 
-# Now let's build the shared library
-	mkdir -p shared
-	cd shared
-	ar -x $PKG/usr/lib/liblua.a
-	gcc -ldl -lreadline -lhistory -lncurses -lm -shared *.o -O2 -fPIC -o liblua.so.$VERSION
-	cp -a liblua.so.$VERSION $PKG/usr/lib
-	(
-		cd $PKG/usr/lib
-		ln -s liblua.so.$VERSION liblua.so.5.1
-		ln -s liblua.so.$VERSION liblua.so.5
-		ln -s liblua.so.$VERSION liblua.so
-	)
-	cd ..
+	make MYCFLAGS="-DLUA_COMPAT_5_2 -DLUA_COMPAT_5_1" linux
+	make INSTALL_TOP=$PKG/usr INSTALL_DATA="cp -d" INSTALL_MAN=$PKG/usr/share/man/man1 TO_LIB="liblua.so liblua.so.5.3 liblua.so.5.3.4" install
+	mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	cp -v doc/*.{html,css,gif,png} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 
 # and install the pkgconfig file
 	mkdir -p $PKG/usr/lib/pkgconfig
-	cat etc/lua.pc > $PKG/usr/lib/pkgconfig/lua.pc
+	cp ../lua.pc $PKG/usr/lib/pkgconfig/lua.pc
+#
+## Now let's build the shared library
+#	mkdir -p shared
+#	cd shared
+#	ar -x $PKG/usr/lib/liblua.a
+#	gcc -ldl -lreadline -lhistory -lncurses -lm -shared *.o -O2 -fPIC -o liblua.so.$VERSION
+#	cp -a liblua.so.$VERSION $PKG/usr/lib
+#	(
+#		cd $PKG/usr/lib
+#		ln -s liblua.so.$VERSION liblua.so.5.1
+#		ln -s liblua.so.$VERSION liblua.so.5
+#		ln -s liblua.so.$VERSION liblua.so
+#	)
+#	cd ..
+#
 popd
 
 checketc $PKG
