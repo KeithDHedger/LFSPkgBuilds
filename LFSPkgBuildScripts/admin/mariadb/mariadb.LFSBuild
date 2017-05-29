@@ -9,17 +9,16 @@ fi
 
 PKGNAME="mariadb"
 TARNAME="$PKGNAME"
-VERSION="10.0.21"
+VERSION="10.1.21"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.mariadb.org/interstitial/${TARNAME}-${VERSION}/source/${TARBALL}" $SECTION
+gettar "ftp://mirrors.fe.up.pt/pub/${PKGNAME}/${TARNAME}-${VERSION}/source/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Lua-5.3.1 SCons-2.3.6"
+DEPENDS="Lua-5.3.4 SCons-2.3.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

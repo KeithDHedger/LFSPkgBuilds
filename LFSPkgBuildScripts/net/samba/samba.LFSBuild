@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.13 libtirpc-0.3.2"
+DEPENDS="Python-2.7.13 libtirpc-1.0.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="samba"
 TARNAME="$PKGNAME"
-VERSION="4.2.3"
+VERSION="4.5.5"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --with-piddir=/run/samba --with-pammodulesdir=/lib/security --enable-fhs --without-systemd --without-ldap --without-ads
+	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --with-piddir=/run/samba --with-pammodulesdir=/lib/security --enable-fhs --without-systemd --without-ldap --without-ad-dc --without-ads
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	mkdir -vp $PKG/lib||true
@@ -37,12 +37,10 @@ pushd "${TARNAME}-${VERSION}"
 
 	mkdir -pv $PKG/etc/openldap/schema $PKG/etc/samba $PKG/usr/lib/cups/backend/||true
 
-	install -v -m644    examples/smb.conf.default $PKG/etc/samba || exit 1
+	install -v -m644 examples/smb.conf.default $PKG/etc/samba || exit 1
 	install -v -m644 examples/LDAP/README $PKG/etc/openldap/schema/README.LDAP || exit 1
 	install -v -m644 examples/LDAP/samba* $PKG/etc/openldap/schema        || exit 1             
 	install -v -m755 examples/LDAP/{get*,ol*} $PKG/etc/openldap/schema || exit 1
-	install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION} || exit 1
-	install -v -m644 lib/ntdb/doc/design.pdf $PKG/usr/share/doc/${PKGNAME}-${VERSION} || exit 1
 
 	ln -v -sf $PKG/usr/bin/smbspool $PKG/usr/lib/cups/backend/smb
 popd

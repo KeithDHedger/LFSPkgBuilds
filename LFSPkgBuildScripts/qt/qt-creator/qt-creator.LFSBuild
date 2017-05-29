@@ -2,26 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="qt-creator-opensource-src"
-TARNAME="$PKGNAME"
-VERSION="3.2.0"
+PKGNAME="qt-creator"
+TARNAME="${PKGNAME}-opensource-src"
+VERSION="4.2.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.qt-project.org/official_releases/qtcreator/3.2/3.2.0/${TARBALL}" $SECTION
+gettar "https://download.qt.io/official_releases/qtcreator/${VERSION%.?*}/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-
 	qmake
 	make $MAKEFLAGS||make|| exit 1
 	make install INSTALL_ROOT=$PKG/usr

@@ -179,7 +179,6 @@ cd /LFSPkgBuildScripts/qt/qt-creator
 cd /LFSPkgBuildScripts/admin/mariadb
 ./mariadb.LFSBuild install
 
-
 #Busybox init
 #cd /LFSPkgBuildScripts/sys/busybox
 #./busybox.LFSBuild install

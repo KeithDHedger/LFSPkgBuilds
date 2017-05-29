@@ -2,21 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="imake-1.0.6"
+DEPENDS="imake-1.0.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xvkbd"
 TARNAME="$PKGNAME"
-VERSION="3.6"
+VERSION="3.7"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://homepage3.nifty.com/tsato/xvkbd/${TARBALL}" $SECTION
+gettar "http://t-sato.in.coocan.jp/${PKGNAME}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -27,7 +27,6 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	touch host.def
-	#sed -i '/#define XAW3D/d' Imakefile
 	xmkmf
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1

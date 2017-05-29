@@ -2,9 +2,9 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="libatomic"
-TARNAME="${PKGNAME}_ops"
-VERSION="7.4.2"
+PKGNAME="libatomic_ops"
+TARNAME="${PKGNAME}"
+VERSION="7.4.4"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.0 xorg-cf-files-1.0.5"
+DEPENDS="xorg-libs-8.0 xorg-cf-files-1.0.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="imake"
 TARNAME="$PKGNAME"
-VERSION="1.0.6"
+VERSION="1.0.7"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"

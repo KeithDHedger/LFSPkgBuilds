@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GC-7.4.2 libffi-3.2.1 libunistring-0.9.7"
+DEPENDS="GC-7.6.0 libffi-3.2.1 libunistring-0.9.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="guile"
 TARNAME="$PKGNAME"
-VERSION="2.0.11"
+VERSION="2.0.14"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

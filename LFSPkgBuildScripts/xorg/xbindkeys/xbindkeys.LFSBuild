@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="guile-2.0.11 xvkbd-3.6"
+DEPENDS="guile-2.0.14 xvkbd-3.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

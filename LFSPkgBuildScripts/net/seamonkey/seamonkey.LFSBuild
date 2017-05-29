@@ -27,7 +27,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "comm-release"
+pushd ${TARNAME}-${VERSION}
 	cp ../seamonkey.mozconfig ./mozconfig
 #set the lib suffix in the config file
 	sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
@@ -44,8 +44,8 @@ pushd "comm-release"
 	sed -e '/version=/s/:space:/[&]/' -i ./mozilla/build/autoconf/icu.m4 &&
 	sed -e s/_EVENT_SIZEOF/EVENT__SIZEOF/ -i mozilla/ipc/chromium/src/base/message_pump_libevent.cc
 
-	make -f client.mkk || exit 1
-	make  -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 1
+	make -f client.mk || exit 1
+	make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 1
 
 	chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}||true
 	mkdir -vp $PKG/usr/share/man/man1  $PKG/usr/share/{applications,pixmaps}|| true
@@ -54,7 +54,6 @@ pushd "comm-release"
 	export CFLAGS=$CFLAGS_HOLD
 	export CXXFLAGS=$CXXFLAGS_HOLD
 	unset CFLAGS_HOLD CXXFLAGS_HOLD
-	cp -v moz-build-dir/dist/man/man1/seamonkey.1 $PKG/usr/share/man/man1
 
 	ln -sfv /usr/lib/${PKGNAME}-${VERSION}/chrome/icons/default/seamonkey.png $PKG/usr/share/pixmaps
 popd
@@ -81,4 +80,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "comm-release"
+rm -r "$PKG" ${TARNAME}-${VERSION}

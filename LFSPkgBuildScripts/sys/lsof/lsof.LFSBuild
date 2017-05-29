@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libtirpc-0.3.2"
+DEPENDS="libtirpc-1.0.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
