@@ -2,11 +2,11 @@
 
 PKGNAME="LFSPkg"
 TARNAME="$PKGNAME"
-VERSION="0.4.18"
+VERSION="0.4.20"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.zip"
 HELPER=finddepends
 HELPERCODE=main.cpp
 FUNCTIONS=LFSFunctions
@@ -16,17 +16,16 @@ RCFILE=lfspkg.rc
 DOWHAT=${1:-"build"}
 
 if [ ! -e $TARBALL ];then
-	wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/v${VERSION}.tar.gz" -O  $TARBALL||true
+	wget -c --no-check-certificate "https://github.com/KeithDHedger/$PKGNAME/archive/master.zip" -O $TARBALL||true
 fi
 
-tar -xvf "$TARBALL"
-pushd "${TARNAME}-${VERSION}"
-	. ./$FUNCTIONS
-	if [ -e /etc/$RCFILE ];then
-		. /etc/$RCFILE
-	else
+unzip "$TARBALL"
+pushd "${TARNAME}-master"
+	if [ ! -e /etc/$RCFILE ];then
 		. ./$RCFILE
 	fi
+	. ./$FUNCTIONS
+
 	PKG="${OUTPUT}/${PKGNAME}"
 	rm -rf "$PKG" || true
 	mkdir -p "$PKG"
@@ -59,4 +58,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-master"
