@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Lua-5.3.4 SCons-2.3.6"
+DEPENDS="Lua-5.1.5 SCons-2.3.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,8 +14,6 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ponce.cc/slackware/sources/repo/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"

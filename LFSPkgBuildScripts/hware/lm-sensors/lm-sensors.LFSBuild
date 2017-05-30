@@ -16,8 +16,8 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://dl.lm-sensors.org/lm-sensors/releases/${TARBALL}" $SECTION
-
+#gettar "http://dl.lm-sensors.org/lm-sensors/releases/${TARBALL}" $SECTION
+gettar "http://pkgs.fedoraproject.org/repo/pkgs/lm_sensors/lm_sensors-3.4.0.tar.bz2/c03675ae9d43d60322110c679416901a/lm_sensors-3.4.0.tar.bz2" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}

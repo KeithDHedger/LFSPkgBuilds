@@ -2,21 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="lua-5.3.4 tolua++-1.0.93 Imlib2-1.4.9 lm-sensors-3.4.0"
+DEPENDS="lua-5.1.5 tolua++-1.0.93 Imlib2-1.4.7 lm-sensors-3.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="conky"
 TARNAME="$PKGNAME"
-VERSION="1.10.6"
+VERSION="1.9.0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 #gettar "http://netcologne.dl.sourceforge.net/project/conky/conky/1.9.0/${TARBALL}"
-
-scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://dfn.dl.sourceforge.net/project/conky/conky/1.9.0/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,14 +24,9 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-
-	mkdir -p build
-	cd build
-	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH -DDOC_PATH=/usr/doc/$PKGNAME-$VERSION -DMAN_INSTALL_DIR=/usr/man -DMAINTAINER_MODE=ON -DBUILD_XDBE=ON -DBUILD_AUDACIOUS=OFF -DBUILD_NVIDIA=OFF -DBUILD_CURL=ON -DBUILD_WLAN=ON -DBUILD_RSS=ON -DBUILD_WEATHER_METAR=ON -DBUILD_WEATHER_XOAP=ON -DBUILD_MPD=ON -DBUILD_IMLIB2=ON -DBUILD_LUA_CAIRO=ON -DBUILD_LUA_IMLIB2=ON -DCMAKE_BUILD_TYPE=Release ..
-
-#	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib --enable-shared=yes --enable-static=no --enable-ibm --enable-hddtemp --enable-xft --enable-lua --enable-lua-cairo --enable-imlib2 --enable-lua-imlib2 --disable-mpd
-#	make $MAKEFLAGS||make|| exit 1
-#	make install DESTDIR=$PKG || exit 1
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib --enable-shared=yes --enable-static=no --enable-ibm --enable-hddtemp --enable-xft --enable-lua --enable-lua-cairo --enable-imlib2 --enable-lua-imlib2 --disable-mpd
+	make $MAKEFLAGS||make|| exit 1
+	make install DESTDIR=$PKG || exit 1
 popd
 
 checketc $PKG
