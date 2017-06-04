@@ -56,6 +56,9 @@ cd /LFSPkgBuildScripts/system/system-meta
 #for a RECOMMENDED busy box init system ( non standard ) like so:
 ./system-bbinit-meta.LFSBuild install
 
+#Or for ##experimental## custom init system use:
+./system-LFSInit-meta.LFSBuild install
+
 9)
 #logout from temporary system
 exit

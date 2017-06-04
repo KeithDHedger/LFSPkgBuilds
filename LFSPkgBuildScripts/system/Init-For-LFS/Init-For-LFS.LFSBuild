@@ -4,7 +4,7 @@
 
 PKGNAME="Init-For-LFS"
 TARNAME="$PKGNAME"
-VERSION="0.0.2"
+VERSION="0.0.3"
 BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -19,7 +19,6 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-
 pushd "${TARNAME}-master"
 	make install DESTDIR=$PKG || exit 1
 popd
