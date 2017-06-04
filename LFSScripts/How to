@@ -14,12 +14,10 @@
 #sudo ln -sv LFSPkgBuilds/LFSScripts LFSScripts
 
 2)
-#Download LFSPkg archive into LFSPkgBuildScripts/admin/LFSPkg.
-#wget -c --no-check-certificate https://github.com/KeithDHedger/LFSPkg/archive/v0.4.18.tar.gz -O LFSPkg.tar.gz
 
+3)
 #cd into the lfsscripts folder
 cd ./LFSScripts
-3)
 #Set variables in ./SystemData !!IMPORTANT!!
 #Run
 ./ShowSystemData
