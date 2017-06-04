@@ -4,8 +4,11 @@
 #https://github.com/KeithDHedger/LFSPkgBuilds
 #either via git clone or downloading the zip file and unpacking it.
 #you should place the LFSPkgBuildScripts and LFSScripts folder in the root of what will be your new LFS eg /mnt/lfs/LFSPkgBuildScripts
+
+###RECOMMENDED####
 #or cd into the mounted partition wher you intend to build LFS
 #sudo git clone https://github.com/KeithDHedger/LFSPkgBuilds.git --branch version8 --single-branch
+
 #sudo chown -R $USER:$USER LFSPkgBuilds
 #sudo ln -sv LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
 #sudo ln -sv LFSPkgBuilds/LFSScripts LFSScripts
