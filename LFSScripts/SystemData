@@ -15,7 +15,7 @@ LFSVERSION=8.0
 #Computer name
 LFSNAME="LFSJane"
 #LFS init type eithe bbinit or sysvinit
-INITTYPE=bbinit
+INITTYPE=LFSInit
 #Place to store built packages, defaults to /tmp
 BUILTPACKAGES="/media/SkyNet/LFSBuiltPackages-${LFSVERSION}"
 #Place to store downloaded source archives, defaults to /tmp
