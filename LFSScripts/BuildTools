@@ -134,8 +134,7 @@ echo 'int main(){}' > dummy.c
 $LFS_TGT-gcc dummy.c
 readelf -l a.out | grep ': /tools'
 
-#read -t 10 -p "check out " ||true
-read -p "check out " ||true
+read -t 30 -p "check out " ||true
 rm -v dummy.c a.out
 
 #libstdc++
@@ -208,8 +207,7 @@ echo 'int main(){}' > dummy.c
 cc dummy.c
 readelf -l a.out | grep ': /tools'
 
-#read -t 10 -p "check out "||true
-read -p "check out "||true
+read -t 30 -p "check out "||true
 rm -v dummy.c a.out
 
 NAME=tcl-core
