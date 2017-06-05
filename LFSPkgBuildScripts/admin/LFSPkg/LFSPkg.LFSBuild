@@ -15,6 +15,14 @@ MANPAGE=${PROGRAM}.1
 RCFILE=lfspkg.rc
 DOWHAT=${1:-"build"}
 
+if [ "X$BOOTSTRAP" != "X" ];then
+	pushd "${TARNAME}-master"
+		make install
+		SIMPLEUPDATE=1 lfspkg -U
+	popd
+	rm -r "${TARNAME}-master"
+else
+
 if [ ! -e $TARBALL ];then
 	wget -c --no-check-certificate "https://github.com/KeithDHedger/$PKGNAME/archive/master.zip" -O $TARBALL||true
 fi
@@ -59,3 +67,5 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${TARNAME}-master"
+fi
+

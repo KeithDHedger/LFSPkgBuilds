@@ -67,6 +67,5 @@ grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
 grep "/lib.*/libc.so.6 " dummy.log
 grep found dummy.log
 
-#read -t 20 -p "check out " ||true
-read -p "check out " ||true
+read -t 30 -p "check out " ||true
 rm -v dummy.c a.out

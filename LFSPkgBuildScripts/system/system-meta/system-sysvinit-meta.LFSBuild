@@ -73,7 +73,11 @@ Texinfo-6.3
 Vim-8.0.069
 lfs-bootscripts-20140815
 OpenSSL-1.0.2
-Wget-1.19.1"
+Wget-1.19.1
+unzip-6.0
+GPM-1.20.7
+Links-2.14"
+
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

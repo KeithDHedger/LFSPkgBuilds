@@ -47,4 +47,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${PKGNAME}-${VERSION}" build
+rm -r "$PKG" "${PKGNAME}-${VERSION}"

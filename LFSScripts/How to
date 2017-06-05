@@ -14,6 +14,12 @@
 #sudo ln -sv LFSPkgBuilds/LFSScripts LFSScripts
 
 2)
+#cd into the lfskg folder
+#get the lfspkg tarball and unpack
+#This MUST be done from the host as the new system does not yet have wget/curl or unzip.
+cd LFSPkgBuilds/LFSPkgBuildScripts/admin/LFSPkg
+wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/master.zip" -O LFSPkg.zip
+unzip LFSPkg.zip
 
 3)
 #cd into the lfsscripts folder
@@ -39,7 +45,7 @@ sudo ./Chroot system
 #You should now be in the chroot
 #First install lfspkg
 cd /LFSPkgBuildScripts/admin/LFSPkg
-./LFSPkg.LFSBuild install
+BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 #Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from SystemData as that's where the main LFS sytem source files are, you can do this either from in the chroot environment or from the host with root permisions.
 #The default SOURCEARCHIVES vaiable is set to /tmp/LFSSourceArchives.
 #You may also want to save built packages by setting the OUTPUT variable in lfspkg.rc, you may want to mount another folder in the chroot environment from the host for this, as you will need a fair amount of storage space for all the built packages for a full desktop system, you don't of course need to keep the built packages you can if space is short just delete them, in which case leave the OUTPUT variable as is and periodically delete everything in it.
@@ -74,7 +80,7 @@ sudo ./Chroot
 
 12)
 #You MUST rebuild lfspkg after completeing the the basic system and removing the tools folder.
-#Use same process as 5)/7)
+#Use same process as 2)/7) EXCEPT do NOT use BOOTSTRAP=1
 #If you have set any vairiable in /etc/lfspkg.rc then reply 'R' ( without the quotes ) when asked about replacing files in /etc.
 #If you forgot to do the above bit just re-edit /etc/lfspkg.rc
 cd /LFSPkgBuildScripts/admin/LFSPkg
