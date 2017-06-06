@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GPM-1.20.7 OpenSSL-1.0.2"
+DEPENDS="GPM-1.20.7 OpenSSL-1.0.2 libpng-1.6.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
