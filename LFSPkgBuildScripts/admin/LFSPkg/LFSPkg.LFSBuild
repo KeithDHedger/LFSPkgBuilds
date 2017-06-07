@@ -20,7 +20,6 @@ if [ "X$BOOTSTRAP" != "X" ];then
 		make install
 		SIMPLEUPDATE=1 lfspkg -U
 	popd
-	rm -r "${TARNAME}-master"
 else
 
 if [ ! -e $TARBALL ];then
