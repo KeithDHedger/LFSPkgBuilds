@@ -92,6 +92,14 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
 
+13.5)
+#Optional install grub and setup
+
+
+
+
+
+
 14)
 #Build xorg
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
