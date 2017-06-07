@@ -21,7 +21,7 @@ unzip LFSPkg.zip
 
 3)
 #cd into the lfsscripts folder
-cd ./LFSScripts
+cd $LFS/LFSScripts
 #Set variables in ./SystemData !!IMPORTANT!!
 #Run
 ./ShowSystemData
