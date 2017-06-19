@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #©keithhedger Mon 2 Feb 12:38:29 GMT 2015 kdhedger68713@gmail.com
 
@@ -7,19 +7,23 @@
 #And then remove/comment out the next line
 #echo -e "\n!!! WARNING !!!\nYou must set the variables in ./SystemData before proceeding!\n";exit 1
 
+if [ -e "SystemData.local" ];then
+	. "SystemData.local"
+fi
+
 #basic stuff
 #Mount point for your new LFS system
-LFS=/media/LFSJane
+LFS=${LFS:-/media/LFSJane}
 #LFS Version
-LFSVERSION=8.0
+LFSVERSION=${LFSVERSION:-8.0}
 #Computer name
-LFSNAME="LFSJane"
+LFSNAME=${LFSNAME:-"LFSJane"}
 #LFS init type eithe bbinit or sysvinit
 INITTYPE=LFSInit
 #Place to store built packages, defaults to /tmp
-BUILTPACKAGES="/media/SkyNet/LFSBuiltPackages-${LFSVERSION}"
+BUILTPACKAGES=${BUILTPACKAGES:-"/media/SkyNet/LFSBuiltPackages-${LFSVERSION}"}
 #Place to store downloaded source archives, defaults to /tmp
-SOURCEARCHIVES="/media/SkyNet/LFSSourceArchives/${LFSVERSION}"
+SOURCEARCHIVES=${SOURCEARCHIVES:-"/media/SkyNet/LFSSourceArchives/${LFSVERSION}"}
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
@@ -33,7 +37,7 @@ KEYBOARD=uk
 #network
 #Set up the network
 GATEWAY="192.168.1.254"
-SUBNET="192.168.1.255"
+SUBNET="255.255.255.0"
 NAMESERVERS="208.67.222.222 208.67.220.220 8.8.8.8 $GATEWAY"
 
 #File system type, probably ext2 or ext4
@@ -43,8 +47,8 @@ ROOTFSTYPE="ext2"
 #Variable below this line are computed and probably don't need changing, but feel free.
 #computed stuff
 LANGUAGE=$LANG
-ROOTDEV=$(df --output=source $LFS|tail -n 1)
-SWAP=$(/sbin/swapon --noheadings --show|awk '{print $1}')
+ROOTDEV=$(df|grep -i $LFS|awk '{print $1}')
+SWAP=$(fdisk -l|grep swap|awk '{print $1}')
 case $(uname -m) in
 	x86_64)
 		LIBDIRSUFFIX=64
@@ -62,4 +66,8 @@ sed -ri "s/linuxheaders-[0-9]+.[0-9]+.[0-9]+/linuxheaders-${KERNELVERSION}/i" ${
 
 #network
 IP="192.168.1.1"$(echo $ROOTDEV|sed 's/^[a-zA-Z\/]*//')
+
+if [ -e SystemData.local ];then
+	. SystemData.local
+fi
 
