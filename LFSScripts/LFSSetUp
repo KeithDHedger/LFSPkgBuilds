@@ -156,7 +156,6 @@ sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LF
 sed -ri "s/linuxheaders-[0-9]+.[0-9]+.[0-9]+/linuxheaders-${KERNELVERSION}/i" ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
 
 cat > $LFS/LFSScripts/SystemData.local << EOF
-CDROMMOUNT=$CDROMMOUNT
 
 LFS=$LFS
 LFSNAME=$LFSNAME
