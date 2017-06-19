@@ -44,10 +44,6 @@ esac
 #set default language
 LANG=${LANG:-"en_GB"}
 
-#cdrom mount point
-CDROMMOUNT=${CDROMMOUNT:-/cdrom}
-readWithDefault "CDROMMOUNT"  "Enter Mountpoint OF CDROM"
-
 #Mount point for your new LFS system
 LFS=${LFS:-"/mnt/LFS"}
 readWithDefault "LFS"  "Enter Mountpoint For LFS"
@@ -97,7 +93,7 @@ readWithDefault "ROOTFSTYPE"  "Enter Root FS Type"
 #Variable below this line are computed and probably don't need changing, but feel free.
 #computed stuff
 
-ROOTDEV=$(df|grep -i $LFS|awk '{print $1}')
+ROOTDEV=$(df $LFS|tail -n1|awk '{print $1}')
 readWithDefault "ROOTDEV"  "Enter Root Device"
 
 SWAP=$(fdisk -l|grep swap|awk '{print $1}')
@@ -152,26 +148,6 @@ readWithDefault "SUMMARY"  "Write Config Files And Copy Data Etc"
 if [ $SUMMARY = "n" ];then
 	exit 1
 fi
-
-#cp files etc
-cp -r ${CDROMMOUNT}/LFS/LFSPkgBuilds ${LFS}
-ln -sv LFSPkgBuilds/LFSPkgBuildScripts ${LFS}/LFSPkgBuildScripts
-ln -sv LFSPkgBuilds/LFSScripts ${LFS}/LFSScripts
-
-mkdir ${LFS}/tools
-pushd ${LFS}/tools
-	case $(uname -m) in
-		*64)
-			tar -xvf ${CDROMMOUNT}/LFS/tools-8.0_64.tar.bz2
-			;;
-		*)
-			tar -xvf ${CDROMMOUNT}/LFS/tools-8.0_32.tar.bz2
-			;;
-	esac
-popd
-
-mkdir -vp "${LFS}/$SOURCEARCHIVES"
-cp -rv ${CDROMMOUNT}/LFS/LFSSourceArchives/8.0/* ${LFS}/$SOURCEARCHIVES
 
 #set kernel version in build scripts
 #build scripts should be at $LFS/LFSPkgBuildScripts
