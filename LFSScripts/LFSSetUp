@@ -117,7 +117,6 @@ NAMESERVERS=${NAMESERVERS:-"208.67.222.222 208.67.220.220 8.8.8.8 $GATEWAY"}
 readWithDefault "NAMESERVERS"  "Enter Name Servers IP List"
 
 echo "----SUMMARY----"
-echo "CDROMMOUNT=$CDROMMOUNT"
 echo 
 echo "LFS=$LFS"
 echo "LFSVERSION=$LFSVERSION"
