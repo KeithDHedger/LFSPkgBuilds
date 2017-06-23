@@ -58,7 +58,7 @@ readWithDefault "LFSNAME"  "Enter Hostname"
 
 #LFS init type eithe bbinit or sysvinit
 INITTYPE=${INITTYPE:-"LFSInit"}
-readWithDefault "INITTYPE"  "Enter Init Type"
+readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|sysvinit)"
 
 #libdir suffix
 readWithDefault "LIBDIRSUFFIX"  "Enter Suffix For Lib Folders"
@@ -93,7 +93,7 @@ readWithDefault "ROOTFSTYPE"  "Enter Root FS Type"
 #Variable below this line are computed and probably don't need changing, but feel free.
 #computed stuff
 
-ROOTDEV=$(df $LFS|tail -n1|awk '{print $1}')
+ROOTDEV=$(df|grep -i $LFS|awk '{print $1}')
 readWithDefault "ROOTDEV"  "Enter Root Device"
 
 SWAP=$(fdisk -l|grep swap|awk '{print $1}')
@@ -179,6 +179,14 @@ GATEWAY=$GATEWAY
 SUBNET=$SUBNET
 NAMESERVERS="$NAMESERVERS"
 EOF
+
+if [ ! -e ~/.lfspkg.rc ];then
+	cat > ~/.lfspkg.rc << EOF
+OUTPUT=$BUILTPACKAGES
+SOURCEARCHIVES=$SOURCEARCHIVES
+BUILDSCRIPTS=$BUILDSCRIPTS
+EOF
+fi
 
 cat > ${LFS}/${BUILDSCRIPTS}/system/grub/grub.cfg << EOF
 # Begin /boot/grub/grub.cfg
