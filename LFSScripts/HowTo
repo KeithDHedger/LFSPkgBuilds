@@ -1,7 +1,8 @@
 
 1)
 
-It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/sda1 which your LFS user has r/w permissions to and /dev/sda2 as swap, alter as needed.
+It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/sda1 and /dev/sda2 as swap, alter as needed.
+Use sudo where necessary to create links etc.
 
 #Get the build scripts and helper scripts from:
 #https://github.com/KeithDHedger/LFSPkgBuilds
@@ -11,12 +12,12 @@ It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/sd
 ###RECOMMENDED####
 #or cd into the mounted partition wher you intend to build LFS:
 cd /mnt/LFS
-git clone https://github.com/KeithDHedger/LFSPkgBuilds.git --branch version8 --single-branch
+[sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git --branch version8 --single-branch
 
 Own the files:
-chown -R $USER:$USER LFSPkgBuilds
-ln -sv LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
-ln -sv LFSPkgBuilds/LFSScripts LFSScripts
+[sudo] chown -R $USER:$USER LFSPkgBuilds
+[sudo] ln -sv LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
+[sudo] ln -sv LFSPkgBuilds/LFSScripts LFSScripts
 
 2)
 #get the package manager archive via the host system:
@@ -26,10 +27,11 @@ unzip LFSPkg.zip
 
 3)
 #cd into the lfsscripts folder
-cd $LFS/LFSScripts
+cd /mnt/LFS/LFSScripts
 #Set up config files !!IMPORTANT!!
+#You can just press 'Return' to accept the default.
 #Run:
-./LFSSetup
+[sudo] ./LFSSetup
 
 #To check config:
 ./ShowSystemData

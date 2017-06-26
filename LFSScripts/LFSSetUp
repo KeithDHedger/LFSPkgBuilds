@@ -182,7 +182,6 @@ EOF
 
 mkdir -vp $LFS/root||true
 cat > $LFS/root/.lfspkg.rc << EOF
-	cat > ~/.lfspkg.rc << EOF
 OUTPUT=$BUILTPACKAGES
 SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
