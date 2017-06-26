@@ -9,9 +9,9 @@ else
 	exit 0
 fi
 
-umount ${LFS}/${SOURCEARCHIVES} ||true
 #this is optional see the Chroot script and the how to.
-umount ${LFS}/${BUILTPACKAGES} ||true
+#umount ${LFS}/${SOURCEARCHIVES} ||true
+#umount ${LFS}/${BUILTPACKAGES} ||true
 
 umount ${LFS}/dev/pts ||true
 umount -lf ${LFS}/dev ||true  

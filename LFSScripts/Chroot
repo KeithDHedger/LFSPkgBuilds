@@ -24,12 +24,12 @@ pushd $LFS
 #dont forget to add the unmount commands to the AfterExitChroot script or unmount them before leaving the chroot.
 #you will probably need both of these ( see the how to )
 #this is the folder for the source archives:
-	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
-	mount --bind ${SOURCEARCHIVES} ${LFS}/${SOURCEARCHIVES}
+#	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
+#	mount --bind ${SOURCEARCHIVES} ${LFS}/${SOURCEARCHIVES}
 
 #this is a folder to contain the built binary packages ( not needed but useful if you want to save all the packages ):
-	mkdir -vp ${LFS}/${BUILTPACKAGES}||true
-	mount --bind ${BUILTPACKAGES} ${LFS}/${BUILTPACKAGES}
+#	mkdir -vp ${LFS}/${BUILTPACKAGES}||true
+#	mount --bind ${BUILTPACKAGES} ${LFS}/${BUILTPACKAGES}
 
 	if [ X$1 = "Xsystem" ];then
 		chroot "$LFS" /tools/bin/env -i HOME=/root TERM="$TERM" PS1='\u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /tools/bin/bash --login +h
