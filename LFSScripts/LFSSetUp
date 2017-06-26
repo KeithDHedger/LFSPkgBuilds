@@ -65,7 +65,7 @@ readWithDefault "LIBDIRSUFFIX"  "Enter Suffix For Lib Folders"
 
 #buildscripts location
 BUILDSCRIPTS="/LFSPkgBuildScripts/"
-#readWithDefault "BUILDSCRIPTS"  "Enter Folder For Build Scripts"
+readWithDefault "BUILDSCRIPTS"  "Enter Folder For Build Scripts"
 
 #Place to store built packages, defaults to /LFSBuiltPackages/${LFSVERSION}
 BUILTPACKAGES=${BUILTPACKAGES:-"/LFSBuiltPackages/${LFSVERSION}"}
@@ -124,7 +124,7 @@ echo "LFSNAME=$LFSNAME"
 echo "INITTYPE=$INITTYPE"
 
 echo "LIBDIRSUFFIX=$LIBDIRSUFFIX"
-#echo "BUILDSCRIPTS=$BUILDSCRIPTS"
+echo "BUILDSCRIPTS=$BUILDSCRIPTS"
 echo "BUILTPACKAGES=$BUILTPACKAGES"
 echo "SOURCEARCHIVES=$SOURCEARCHIVES"
 echo "KERNELVERSION=$KERNELVERSION"
@@ -180,7 +180,8 @@ SUBNET=$SUBNET
 NAMESERVERS="$NAMESERVERS"
 EOF
 
-if [ ! -e ~/.lfspkg.rc ];then
+mkdir -vp $LFS/root||true
+cat > $LFS/root/.lfspkg.rc << EOF
 	cat > ~/.lfspkg.rc << EOF
 OUTPUT=$BUILTPACKAGES
 SOURCEARCHIVES=$SOURCEARCHIVES
