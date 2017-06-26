@@ -20,7 +20,7 @@ echo $ADMINPWD|sudo -S mkdir -vp "$SYSTEMSOURCE" "$NETSOURCE"|| true
 echo $ADMINPWD|sudo -S mkdir -vp "$LFS/tools" "${SYSTEMSOURCE}"|| true
 echo $ADMINPWD|sudo -S rm /tools  2>/dev/null||true
 echo $ADMINPWD|sudo -S ln -sv $LFS/tools /  2>/dev/null|| true
-echo $ADMINPWD|sudo -S chown -R $USER:$USER $LFS/tools/  "${SYSTEMSOURCE}" 2>/dev/null
+echo $ADMINPWD|sudo -S chown -R $USER:$USER $LFS/tools/  "${SYSTEMSOURCE}" "$NETSOURCE" 2>/dev/null
 echo $ADMINPWD|sudo -S chmod -R 777 $LFS/tools/ 2>/dev/null
 
 cp ./SystemData $SYSTEMSOURCE
