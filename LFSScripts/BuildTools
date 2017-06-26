@@ -14,7 +14,7 @@ fi
 read -sp "Enter admin password :" ADMINPWD
 echo
 
-SYSTEMSOURCE="${SOURCEARCHIVES}/SYSTEM"
+SYSTEMSOURCE="${LFS}${SOURCEARCHIVES}/SYSTEM"
 NETSOURCE="${SOURCEARCHIVES}/NET"
 echo $ADMINPWD|sudo -S mkdir -vp "$SYSTEMSOURCE" "$NETSOURCE"|| true
 echo $ADMINPWD|sudo -S mkdir -vp "$LFS/tools" "${SYSTEMSOURCE}"|| true
