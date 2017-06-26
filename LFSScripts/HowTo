@@ -46,7 +46,7 @@ cd /mnt/LFS/LFSScripts
 
 6)
 #Chroot into tempory system:
-sudo ./Chroot system
+[sudo] ./Chroot system
 
 7)
 #You should now be in the chroot
@@ -70,46 +70,48 @@ Or use system-bbinit-meta.LFSBuildfor a busy box init system ( non standard ) li
 Or for ##experimental## custom init system use:
 ./system-LFSInit-meta.LFSBuild install
 
-Wait for script to complete ...
+Wait for script to complete:
+...
 Have coffee
 Walk the dog
 ...
 
 9)
-#logout from temporary system
+#logout from temporary system:
 exit
 
 10)
-#Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe.
+#Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
 sudo rm /tools
-#Remove the tools folder from your LFS install disk.
+#Remove the tools folder from your LFS install disk:
 sudo rm -rf ${LFS}/tools
 
 11)
-#Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ).
-sudo ./Chroot
+#Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
+[sudo] ./Chroot
 
 12)
 #You MUST rebuild lfspkg after completeing the the basic system and removing the tools folder.
 #Use same process as 2)/7) EXCEPT do NOT use BOOTSTRAP=1
 #If you have set any vairiable in /etc/lfspkg.rc then reply 'R' ( without the quotes ) when asked about replacing files in /etc.
-#If you forgot to do the above bit just re-edit /etc/lfspkg.rc
+#If you forgot to do the above bit just re-edit /etc/lfspkg.rc:
+
 cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild install
 
 13)
-#Configure and build the kernel
+#Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
 
 13.5)
 #Optional install of grub, see here:
-http://www.linuxfromscratch.org/lfs/view/stable/chapter08/grub.html
+#http://www.linuxfromscratch.org/lfs/view/stable/chapter08/grub.html
 
-The LFSSetup script will install a basic grub.cfg file in ${LFS}/${BUILDSCRIPTS}/system/grub/ based on the details given to the script.
-Check that the grub.cfg file is OK, make any changes and just copy it to /boot/grub, or manually do this:
+#The LFSSetup script will install a basic grub.cfg file in ${LFS}/${BUILDSCRIPTS}/system/grub/ based on the details given to the script.
+#Check that the grub.cfg file is OK, make any changes and just copy it to /boot/grub, or manually do this:
 
-#assuming root device is /dev/sda and LFS system is on /dev/sda1 mounted at /mnt/LFS
+#assuming root device is /dev/sda and LFS system is on /dev/sda1 mounted at /mnt/LFS:
 grub-install /dev/sda
 
 cat > /boot/grub/grub.cfg << "EOF"
@@ -120,13 +122,14 @@ set timeout=30
 insmod ext2
 set root=(hd0,1)
 
-menuentry "GNU/Linux, Linux 4.9.9-lfs-8.0" {
-	linux /boot/vmlinuz-4.9.9-lfs-8.0 root=/dev/sda1 ro
+menuentry "GNU/Linux, Linux 4.9.9" {
+	linux /boot/vmlinuz-4.9.9 root=/dev/sda1 ro
 }
 EOF
 
 14)
-#Build xorg
+#Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboor back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
+#Build xorg:
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
 
