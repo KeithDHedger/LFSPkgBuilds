@@ -31,7 +31,7 @@ cd /mnt/LFS/LFSScripts
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
-[sudo] ./LFSSetup
+[sudo] ./LFSSetUp
 
 #To check config:
 ./ShowSystemData
@@ -84,7 +84,7 @@ exit
 #Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
 sudo rm /tools
 #Remove the tools folder from your LFS install disk:
-sudo rm -rf ${LFS}/tools
+[sudo] rm -rf /mnt/LFS/tools
 
 11)
 #Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
