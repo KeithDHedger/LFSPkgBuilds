@@ -2,11 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=""
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="libva-intel-driver"
 TARNAME="$PKGNAME"
 VERSION="1.7.3"
