@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="MesaLib-13.0.4 libva-intel-driver-1.7.3 giflib-5.1.4 libcdio-0.94"
+DEPENDS="MesaLib-13.0.4 libva-intel-driver-1.7.3 giflib-5.1.4 libcdio-0.94 rapidjson-1.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -27,10 +27,11 @@ unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "xbmc-master"
 	make -C tools/depends/target/libfmt PREFIX=$PKG/usr
 	make -C tools/depends/target/crossguid PREFIX=$PKG/usr
+
 	make -C tools/depends/target/binary-addons PREFIX=$PKG/usr
 	mkdir build||true
 	cd build
-	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH ..
+	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$PKG/usr/lib/cmake;$PKG/usr/include;$PKG/usr/lib/" ..
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
