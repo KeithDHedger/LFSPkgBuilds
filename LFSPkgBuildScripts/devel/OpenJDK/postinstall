@@ -16,7 +16,7 @@ Icon=javaws
 Categories=Settings;
 EOF
 
-rm /opt/jdk
+rm -f /opt/jdk
 (cd /opt;ln -sv OpenJDK-${JDKVERSION} jdk)
 
 cat > /opt/jdk/bin/mkcacerts << "EOF"
