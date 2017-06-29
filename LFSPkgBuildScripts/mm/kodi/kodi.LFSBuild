@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="mm-meta-8.0"
+DEPENDS="MesaLib-13.0.4 libva-intel-driver-1.7.3 giflib-5.1.4 libcdio-1.3.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
