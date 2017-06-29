@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="MesaLib-13.0.4 libva-intel-driver-1.7.3"
+DEPENDS="MesaLib-13.0.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
