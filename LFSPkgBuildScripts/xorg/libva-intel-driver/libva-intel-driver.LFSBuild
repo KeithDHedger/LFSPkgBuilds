@@ -2,35 +2,31 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libva-1.7.3"
+DEPENDS=""
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="kodi"
+PKGNAME="libva-intel-driver"
 TARNAME="$PKGNAME"
-VERSION="18.0"
+VERSION="1.7.3"
 BUILD=1
-SECTION="MM"
+SECTION="XORG"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/xbmc/xbmc/archive/master.zip" $SECTION $TARBALL
+gettar "http://www.freedesktop.org/software/vaapi/releases/libva-intel-driver/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
+
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-pushd "xbmc-master"
-	make -C tools/depends/target/libfmt PREFIX=$PKG/usr
-	make -C tools/depends/target/crossguid PREFIX=$PKG/usr
-	make -C tools/depends/target/binary-addons PREFIX=$PKG/usr
-	mkdir build||true
-	cd build
-	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH ..
+pushd "${TARNAME}-${VERSION}"
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
@@ -58,4 +54,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "xbmc-master"
+rm -r "$PKG" "${TARNAME}-${VERSION}"
