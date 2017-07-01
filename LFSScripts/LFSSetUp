@@ -41,6 +41,11 @@ case $(uname -m) in
 		;;
 esac
 
+#set variables if possible
+if [ -f ./SystemData.local ];then
+	. ./SystemData.local
+fi
+
 #set default language
 LANG=${LANG:-"en_GB"}
 
@@ -74,6 +79,10 @@ readWithDefault "BUILTPACKAGES"  "Enter Folder For Built Packages"
 #Place to store downloaded source archives, defaults to /LFSSourceArchives/${LFSVERSION}
 SOURCEARCHIVES=${SOURCEARCHIVES:-"/LFSSourceArchives/${LFSVERSION}"}
 readWithDefault "SOURCEARCHIVES"  "Enter Folder For Source Archives"
+
+#if non empty mount the builtpackages and source folders from external disk
+EXTFOLDER=""
+readWithDefault "EXTFOLDER"  "External Folder For Built Packages And Sources"
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
@@ -127,6 +136,7 @@ echo "LIBDIRSUFFIX=$LIBDIRSUFFIX"
 echo "BUILDSCRIPTS=$BUILDSCRIPTS"
 echo "BUILTPACKAGES=$BUILTPACKAGES"
 echo "SOURCEARCHIVES=$SOURCEARCHIVES"
+echo "EXTFOLDER=$EXTFOLDER"
 echo "KERNELVERSION=$KERNELVERSION"
 echo "KEYBOARD=$KEYBOARD"
 echo "ROOTFSTYPE=$ROOTFSTYPE"
@@ -165,6 +175,7 @@ INITTYPE=$INITTYPE
 LIBDIRSUFFIX=$LIBDIRSUFFIX
 BUILTPACKAGES=$BUILTPACKAGES
 SOURCEARCHIVES=$SOURCEARCHIVES
+EXTFOLDER=$EXTFOLDER
 BUILDSCRIPTS=$BUILDSCRIPTS
 
 KEYBOARD=$KEYBOARD

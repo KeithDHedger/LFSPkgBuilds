@@ -24,6 +24,14 @@ pushd $LFS
 #dont forget to add the unmount commands to the AfterExitChroot script or unmount them before leaving the chroot.
 #you will probably need both of these ( see the how to )
 #this is the folder for the source archives:
+
+	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
+	mkdir -vp ${LFS}/${BUILTPACKAGES}||true
+	if [ "X$EXTFOLDER" != "X" ];then
+		mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
+		mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+	fi
+
 #	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
 #	mount --bind ${SOURCEARCHIVES} ${LFS}/${SOURCEARCHIVES}
 

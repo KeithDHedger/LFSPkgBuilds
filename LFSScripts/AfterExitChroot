@@ -10,8 +10,10 @@ else
 fi
 
 #this is optional see the Chroot script and the how to.
-#umount ${LFS}/${SOURCEARCHIVES} ||true
-#umount ${LFS}/${BUILTPACKAGES} ||true
+if [ "X$EXTFOLDER" != "X" ];then
+	umount ${LFS}/${SOURCEARCHIVES} ||true
+	umount ${LFS}/${BUILTPACKAGES} ||true
+fi
 
 umount ${LFS}/dev/pts ||true
 umount -lf ${LFS}/dev ||true  
