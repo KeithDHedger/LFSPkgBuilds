@@ -82,7 +82,7 @@ readWithDefault "SOURCEARCHIVES"  "Enter Folder For Source Archives"
 
 #if non empty mount the builtpackages and source folders from external disk
 EXTFOLDER=""
-readWithDefault "EXTFOLDER"  "External Folder For Built Packages And Sources"
+readWithDefault "EXTFOLDER"  "Bind Built Packages And Source Folders To Folder"
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
