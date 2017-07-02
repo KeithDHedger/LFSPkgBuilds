@@ -2,11 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=""
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="fortune"
 TARNAME="${PKGNAME}-mod"
 VERSION="9708"
