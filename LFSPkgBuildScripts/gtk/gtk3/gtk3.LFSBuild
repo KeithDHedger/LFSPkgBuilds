@@ -25,19 +25,16 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
+glib-compile-schemas /usr/share/glib-2.0/schemas
+
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-wayland-backend --enable-broadway-backend --enable-x11-backend
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-wayland-backend --enable-broadway-backend --enable-x11-backend --enable-gtk2-dependency
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
 
 checketc "$PKG"
 packageclean "$PKG"
-
-#pushd "$PKG"
-#	find | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
-#popd
-#ldconfig||true
 
 cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 
@@ -60,4 +57,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+#rm -r "$PKG" "${TARNAME}-${VERSION}"

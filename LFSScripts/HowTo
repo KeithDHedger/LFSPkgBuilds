@@ -172,7 +172,7 @@ cd /LFSPkgBuildScripts/devel/development-meta
 #this is for an xfce4 desktop.
 cd /LFSPkgBuildScripts/desktop/desktop-meta
 ./desktop-meta.LFSBuild  install
-#Or for an LFSDesktop
+#Or fo r an LFSDesktop
 cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
 ./LFSDesktop-meta.LFSBuild install
 

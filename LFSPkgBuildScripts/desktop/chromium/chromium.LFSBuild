@@ -23,7 +23,7 @@ GOOGLE_DEFAULT_CLIENT_SECRET="XU4b-j0Ssy-XkTvSVmiFMvNY"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
 gettar "https://github.com/foutrelis/chromium-launcher/archive/v3.tar.gz" $SECTION "chromium-launcher-3.tar.gz"
-gettar "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_58.0.3029.96-1_amd64.deb" $SECTION
+#gettar "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_58.0.3029.96-1_amd64.deb" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
@@ -129,17 +129,17 @@ EOF
 
 	mkdir temp||true
 	cd temp
-	case $(uname -m) in
-		x86_64) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_58.0.3029.96-1_amd64.deb
-		;;
-		x86) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_48.0.2564.116-1_i386.deb
-		;;
-	esac
-
-	tar -xf data.tar.xz
-	mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
-	install -vm755 ../out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-	install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
+#	case $(uname -m) in
+#		x86_64) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_58.0.3029.96-1_amd64.deb
+#		;;
+#		x86) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_48.0.2564.116-1_i386.deb
+#		;;
+#	esac
+#
+#	tar -xf data.tar.xz
+#	mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
+#	install -vm755 ../out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+#	install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
 popd
 
 checketc $PKG
