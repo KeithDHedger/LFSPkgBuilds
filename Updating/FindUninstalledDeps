@@ -11,8 +11,8 @@ NORMAL='\e[0;0m'
 
 declare -a DEPENDSON
 
-if [ -e ../LFSScripts/SystemData ];then
-	. ../LFSScripts/SystemData
+if [ -e ../LFSScripts/SystemData.local ];then
+	. ../LFSScripts/SystemData.local
 else
 	echo "No SystemData file found ..."
 	exit 1
