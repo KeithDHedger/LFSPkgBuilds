@@ -2,3 +2,4 @@ LFSPkgBuildScripts/.svn
 LFSScripts/.svn
 *.BAK
 grub.cfg
+SystemData.local

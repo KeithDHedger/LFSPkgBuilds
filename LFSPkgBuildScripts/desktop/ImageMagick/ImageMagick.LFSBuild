@@ -9,17 +9,16 @@ fi
 
 PKGNAME="ImageMagick"
 TARNAME="$PKGNAME"
-VERSION="7.0.5"
-REVISION="6"
+VERSION="7.0.0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 URL="ftp://ftp.imagemagick.org/pub/${PKGNAME}"
 TARBALL=$(findArchive "${URL}" "${PKGNAME}" ".tar.xz")
-VERSION=${TARBALL#?*-}
-VERSION=${VERSION/.tar.xz}
+LATESTVERSION=${TARBALL#?*-}
+LATESTVERSION=${LATESTVERSION/.tar.xz}
 
-scriptLog "${PKGNAME}-${VERSION}"
+scriptLog "${PKGNAME}-${LATESTVERSION}"
 gettar "${URL}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
@@ -29,7 +28,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
+pushd "${TARNAME}-${LATESTVERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} -with-modules --with-perl  --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
 	make $MAKEFLAGS||make|| exit 1
 	make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${VERSION} install DESTDIR=$PKG || exit 1

@@ -29,7 +29,7 @@ rm ${SOURCEARCHIVES}/${SECTION}/dvdauthor.zip
 pushd "dvdauthor-master"
 	sed -i 's/ doc / /' Makefile.am
 	./bootstrap
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}  --disable-dvdunauthor
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
