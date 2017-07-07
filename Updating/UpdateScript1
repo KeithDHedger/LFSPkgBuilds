@@ -1,0 +1,73 @@
+#!/bin/bash
+
+#©keithhedger Sat 1 Jul 15:42:25 BST 2017 kdhedger68713@gmail.com
+
+indent=0
+caseindent=0
+
+#$1 indent $2 line
+printLine ()
+{
+local ind
+ind=$1
+		#	echo ">>> $ind $indent"
+	for ((j=0;j<$ind;j++))
+		do
+		#echo ">>>$j<<"
+			echo -en "\t"
+		done
+	echo "$2"
+}
+
+cp "$1" /tmp/txt
+
+sed -i 's|^\t*||g' /tmp/txt
+sed -i 's@mkdir -p "$PKG"@mkdir -p "$PKG"\npushd $COMPILEAT 2>/dev/null||true@' /tmp/txt
+sed -i 's@\(rm -r "$PKG".*\)@\1\npopd 2>/dev/null||true@' /tmp/txt
+sed -i -e '/./b' -e :n -e 'N;s|\n$||;tn' /tmp/txt
+
+while read
+	do
+		case $REPLY in
+			*')')
+				printLine $indent "$REPLY"
+				((indent++))
+				;;			
+			"pushd"*)
+				printLine $indent "$REPLY"
+				((indent++))
+				;;
+			"case"*)
+				caseindent=$indent
+				printLine $indent "$REPLY"
+				((indent++))
+				;;
+			"if "*)
+				printLine $indent "$REPLY"
+				((indent++))
+				;;
+			";;")
+				printLine $indent "$REPLY"
+				((indent--))
+				;;
+			fi)
+				((indent--))
+				printLine $indent "$REPLY"
+				;;
+			"popd"*)
+				((indent--))
+				printLine $indent "$REPLY"
+				;;
+			"esac")
+				indent=$caseindent
+#				((indent--))
+				printLine $indent "$REPLY"
+				;;
+			*)
+				printLine $indent "$REPLY"
+				;;		
+		esac
+				
+	done< <(cat /tmp/txt) >/tmp/clean.txt
+
+cp /tmp/clean.txt "$1"
