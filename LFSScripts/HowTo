@@ -12,7 +12,7 @@ Use sudo where necessary to create links etc.
 ###RECOMMENDED####
 #or cd into the mounted partition wher you intend to build LFS:
 cd /mnt/LFS
-[sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git --branch version8 --single-branch
+[sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
 
 Own the files:
 [sudo] chown -R $USER:$USER LFSPkgBuilds
