@@ -26,12 +26,19 @@ libtheora-1.1.1
 x264-2245 
 lsdvd-0.17
 cdrkit-1.1.11
+GStreamer-0.10.36
+gst-plugins-base-0.10.36 
+gst-plugins-good-0.10.31
+gst-plugins-bad-0.10.23
+gst-plugins-ugly-0.10.19
+gst-ffmpeg-0.10.13
 GStreamer1.0-1.10.3
 gst-plugins-base1.0-1.10.3
 gst-plugins-good1.0-1.10.3
 gst-plugins-bad1.0-1.10.3
 gst-plugins-ugly1.0-1.10.3
 gst-libav1.0-1.10.3
+dvdauthor-0.7.1
 gtkpod-1.0.0"
 
 #GStreamer-0.10.36
@@ -41,7 +48,6 @@ gtkpod-1.0.0"
 #gst-plugins-ugly-0.10.19
 #gst-ffmpeg-0.10.13
 
-#dvdauthor-0.7.1
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
