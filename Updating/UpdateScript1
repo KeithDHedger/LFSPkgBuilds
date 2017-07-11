@@ -60,7 +60,6 @@ while read
 				;;
 			"esac")
 				indent=$caseindent
-#				((indent--))
 				printLine $indent "$REPLY"
 				;;
 			*)
@@ -70,4 +69,5 @@ while read
 				
 	done< <(cat /tmp/txt) >/tmp/clean.txt
 
+sed -i 's/^[\s\t]*$//g' /tmp/clean.txt
 cp /tmp/clean.txt "$1"

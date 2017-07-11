@@ -1,7 +1,7 @@
 # If you have a multicore machine, firefox will now use all the cores by
 # default. Exceptionally, you can reduce the number of cores, e.g. to 1,
 # by uncommenting the next line and setting a valid number of CPU cores.
-#mk_add_options MOZ_MAKE_FLAGS="-j4"
+#mk_add_options MOZ_MAKE_FLAGS="-j2"
 
 # If you have installed DBus-Glib comment out this line:
 #ac_add_options --disable-dbus

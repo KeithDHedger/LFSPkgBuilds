@@ -34,6 +34,8 @@ DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+IMAGEPATH=$(pwd)/javaws.png
+
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARROOTPKGNAME}${TARROOTPKGVERSION}.tar.bz2"
 	pushd "${TARROOTPKGNAME}-${TARROOTPKGNAME}${TARROOTPKGVERSION}"
@@ -44,23 +46,23 @@ pushd $COMPILEAT 2>/dev/null||true
 			done
 		unset JAVA_HOME
 		PATH="${PATH}:/opt/jdk/bin"
-		
+
 		sh ./configure --with-update-version=${TARROOTPKGVERSION} --with-build-number=${TARROOTPKGSUBVERSION} --with-milestone=BLFS --enable-unlimited-crypto --with-zlib=system --with-giflib=system --with-extra-cflags="-std=c++98 -Wno-error -fno-delete-null-pointer-checks -fno-lifetime-dse" --with-extra-cxxflags="-std=c++98 -fno-delete-null-pointer-checks -fno-lifetime-dse"
 		make DEBUG_BINARIES=true SCTP_WERROR= all
 		find build/*/images/j2sdk-image -iname *.diz -delete
 		mkdir -vp $PKG/opt/${PKGNAME}-${VERSION} $PKG/opt/jdk $PKG/usr/share/pixmaps||true
 		cp -RT build/*/images/j2sdk-image $PKG/opt/${PKGNAME}-${VERSION}
 		chown -R root:root $PKG/opt/${PKGNAME}-${VERSION}
-		cp ../javaws.png $PKG/usr/share/pixmaps
+		cp "$IMAGEPATH" $PKG/usr/share/pixmaps
 	popd
-	
+
 	checketc $PKG
 	packageclean "$PKG"
-	
+
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
-	
+
 	case $DOWHAT in
 		up*)
 			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
@@ -75,7 +77,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			echo "*** Unknown command ***"
 			exit 1
 	esac
-	
+
 	rm -r "$PKG" "${TARROOTPKGNAME}-${TARROOTPKGNAME}${TARROOTPKGVERSION}"
 popd 2>/dev/null||true
 
