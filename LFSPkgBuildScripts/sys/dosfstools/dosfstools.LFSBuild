@@ -4,14 +4,14 @@
 
 PKGNAME="dosfstools"
 TARNAME="$PKGNAME"
-VERSION="3.0.26"
+VERSION="4.1"
 BUILD=1
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://daniel-baumann.ch/files/software/dosfstools/${TARBALL}" $SECTION
+gettar "https://github.com/dosfstools/dosfstools/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,7 +21,9 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	make install PREFIX=/usr DESTDIR=$PKG || exit 1
+	./configure --prefix=/ --enable-compat-symlinks --mandir=/usr/share/man --docdir=/usr/share/doc/dosfstools-4.1
+	make
+	make install DESTDIR=$PKG || exit 1
 popd
 
 checketc "$PKG"
@@ -46,4 +48,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+#rm -r "$PKG" "${TARNAME}-${VERSION}"

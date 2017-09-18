@@ -28,11 +28,12 @@ pushd "xbmc-master"
 #	make -C tools/depends/target/libfmt PREFIX=$PKG/usr
 #	make -C tools/depends/target/crossguid PREFIX=$PKG/usr
 
-	make -C tools/depends/target/binary-addons PREFIX=$PKG/usr
+	make -C tools/depends/target/binary-addons PREFIX=$PKG/usr $MAKEFLAGS|| make -C tools/depends/target/binary-addons PREFIX=$PKG/usr||true
 	mkdir build||true
 	cd build
-	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$PKG/usr/lib/cmake;$PKG/usr/include;$PKG/usr/lib/;/opt/jdk" $CMAKEBUILDTYPE -Wno-dev ..
-	make $MAKEFLAGS||make|| exit 1
+	cmake $CMAKEINSTALLPREFIX -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$PKG/usr/lib/cmake;$PKG/usr/include;$PKG/usr/lib/;/opt/jdk" $CMAKEBUILDTYPE -Wno-dev ..
+	cmake --build . -- VERBOSE=1 $MAKEFLAGS|| cmake --build . -- VERBOSE=1|| exit 1
+#	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
 
