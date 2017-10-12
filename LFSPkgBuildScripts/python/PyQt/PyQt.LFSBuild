@@ -8,16 +8,15 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="pyqt"
-TARNAME="PyQt-gpl"
-VERSION="5.2.1"
+TARNAME="PyQt5_gpl"
+VERSION="5.8"
 BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.2.1/${TARBALL}" $SECTION
-
+gettar "https://downloads.sourceforge.net/project/pyqt/PyQt5/PyQt-${VERSION}/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -26,7 +25,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	echo "yes"|python configure.py
+	python configure.py --confirm-license --verbose -q /usr/bin/qmake
 	make $MAKEFLAGS||make|| exit 1
 	make install INSTALL_ROOT=$PKG || exit 1
 popd

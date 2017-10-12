@@ -26,6 +26,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
+	sed -i '/^#include <sigc++\/class_slot.h>/d' include/Win_GParted.h
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-doc
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
