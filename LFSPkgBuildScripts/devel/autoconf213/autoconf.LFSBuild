@@ -26,6 +26,8 @@ pushd "${TARNAME}-${VERSION}"
 	mv -v autoconf.texi autoconf213.texi
 	rm -v autoconf.info
 	./configure ${CONFIGOPTIONS} --program-suffix=2.13
+
+exit 0
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	install -v -m644 autoconf213.info $PKG/usr/share/info

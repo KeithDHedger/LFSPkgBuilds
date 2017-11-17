@@ -41,7 +41,8 @@ KKEdit-0.2.11
 xarchiver-0.5.4
 ClipboardViewer-2.2.1
 LibreOffice-5.3.0
-GtkSu-0.1.6"
+GtkSu-0.1.6
+xscreensaver-5.36"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

@@ -31,21 +31,21 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${LATESTVERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} -with-modules --with-perl  --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
 	make $MAKEFLAGS||make|| exit 1
-	make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${VERSION} install DESTDIR=$PKG || exit 1
+	make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${LATESTVERSION} install DESTDIR=$PKG || exit 1
 popd
 
 checketc $PKG
 
 pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	/usr/bin/lfspkg -n "$PKGNAME" -p "$LATESTVERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
 
 case $DOWHAT in
 	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${LATESTVERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
 		;;
 	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${LATESTVERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
 		;;
 	"build")
 		echo "Just built"
@@ -55,4 +55,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-${LATESTVERSION}"

@@ -2,21 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ATK-2.22.0 gdk-pixbuf-2.36.5 Pango-1.40.3 hicolor-icon-theme-0.15 at-spi2-atk-2.22.0 libepoxy-1.4.0"
+DEPENDS="python-2.7.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gtk3"
-TARNAME="gtk+"
-VERSION="3.18.9"
+PKGNAME="youtube-dl"
+TARNAME="$PKGNAME"
+VERSION="2017.11.06"
 BUILD=1
-SECTION="GTK"
+SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://yt-dl.org/downloads/2017.11.06/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,19 +25,15 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-glib-compile-schemas /usr/share/glib-2.0/schemas
-
-pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-wayland-backend --enable-broadway-backend --enable-x11-backend --enable-gtk2-dependency  --disable-cups
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+pushd "${TARNAME}"
+	chmod +x ./setup.py
+	./setup.py install --compile --root=$PKG --prefix=/usr
 popd
 
 checketc "$PKG"
 packageclean "$PKG"
 
 cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
-
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
@@ -57,4 +53,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-#rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}"

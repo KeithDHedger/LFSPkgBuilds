@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="MesaLib-13.0.4 libva-intel-driver-1.7.3 giflib-5.1.4 libcdio-0.94 rapidjson-1.1.0 sqlite-3.17.0 taglib-1.11.1 tinyxml-2.6.2 OpenJDK-1.8.0.121 swig-3.0.12 mariadb-10.1.22 samba-4.5.5 openssh-7.4"
+DEPENDS="MesaLib-13.0.4 libva-intel-driver-1.7.3 giflib-5.1.4 libcdio-0.94 rapidjson-1.1.0 sqlite-3.17.0 taglib-1.11.1 tinyxml-2.6.2 OpenJDK-1.8.0.121 swig-3.0.12 mariadb-10.1.22 samba-4.5.5 openssh-7.4 fmt-3.0.1 crossguid-2.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -25,14 +25,15 @@ mkdir -p "$PKG"
 
 unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "xbmc-master"
-	make -C tools/depends/target/libfmt PREFIX=$PKG/usr
-	make -C tools/depends/target/crossguid PREFIX=$PKG/usr
+#	make -C tools/depends/target/libfmt PREFIX=$PKG/usr
+#	make -C tools/depends/target/crossguid PREFIX=$PKG/usr
 
-	make -C tools/depends/target/binary-addons PREFIX=$PKG/usr
+	make -C tools/depends/target/binary-addons PREFIX=$PKG/usr $MAKEFLAGS|| make -C tools/depends/target/binary-addons PREFIX=$PKG/usr||true
 	mkdir build||true
 	cd build
-	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$PKG/usr/lib/cmake;$PKG/usr/include;$PKG/usr/lib/;/opt/jdk" ..
-	make $MAKEFLAGS||make|| exit 1
+	cmake $CMAKEINSTALLPREFIX -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$PKG/usr/lib/cmake;$PKG/usr/include;$PKG/usr/lib/;/opt/jdk" $CMAKEBUILDTYPE -Wno-dev ..
+	cmake --build . -- VERBOSE=1 $MAKEFLAGS|| cmake --build . -- VERBOSE=1|| exit 1
+#	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 popd
 

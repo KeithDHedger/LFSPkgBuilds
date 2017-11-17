@@ -10,7 +10,7 @@ fi
 
 PKGNAME="webkitgtk3"
 TARNAME="webkitgtk"
-VERSION="2.4.9"
+VERSION="2.4.11"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -18,6 +18,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
+gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk3/webkitgtk-2.4.9-abs.patch"  $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
@@ -26,14 +27,37 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	sed -e '/generate-gtkdoc --rebase/s:^:# :' -i GNUmakefile.in
-	rm -rf build-3||true
-	mkdir -vp build-3
-	cp -a Documentation build-3
-	cd build-3
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure ${CONFIGOPTIONS} --with-gtk=3.0 --disable-geolocation --enable-introspection
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+#mkdir -vp build
+#cd        build
+#
+#cmake -DCMAKE_BUILD_TYPE=Release  \
+#      -DCMAKE_INSTALL_PREFIX=/usr \
+#      -DCMAKE_SKIP_RPATH=ON       \
+#      -DPORT=GTK                  \
+#      -DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX}  \
+#      -DUSE_LIBHYPHEN=OFF         \
+#      -DENABLE_MINIBROWSER=ON     \
+#      -DENABLE_GEOLOCATION=OFF \
+#      -DUSE_SYSTEM_MALLOC=ON \
+#      -DENABLE_GTKDOC=ON \
+#      -Wno-dev ..
+#make
+#	make install DESTDIR=$PKG || exit 1
+
+#	sed -e '/generate-gtkdoc --rebase/s:^:# :' -i GNUmakefile.in
+#	rm -rf build-3||true
+#	mkdir -vp build-3
+#	cp -a Documentation build-3
+#	cd build-3
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/webkitgtk-2.4.9-abs.patch
+	CFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks" CXXFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks" ./configure ${CONFIGOPTIONS} --with-gtk=3.0 --disable-geolocation --enable-introspection --enable-webkit2 --disable-geolocation
+
+	make clean
+	make Programs_DumpRenderTree_LDFLAGS="-no-fast-install -no-install -lfontconfig"
+	make install-strip DESTDIR=$PKG||make|| exit 1
+
+#//	make $MAKEFLAGS||make|| exit 1
+#//	make install DESTDIR=$PKG || exit 1
 #	rm -rf $PKG/usr/share/gtk-doc/html/webkitgtk-2.4.9
 #	mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
 popd

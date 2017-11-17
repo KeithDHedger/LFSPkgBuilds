@@ -2,21 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ATK-2.22.0 gdk-pixbuf-2.36.5 Pango-1.40.3 hicolor-icon-theme-0.15 at-spi2-atk-2.22.0 libepoxy-1.4.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="gtk3"
-TARNAME="gtk+"
-VERSION="3.18.9"
+PKGNAME="six"
+TARNAME="$PKGNAME"
+VERSION="1.11.0"
 BUILD=1
-SECTION="GTK"
+SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://pypi.python.org/packages/16/d8/bc6316cf98419719bd59c91742194c111b6f2e85abac88e496adefaf7afe/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,19 +20,14 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-glib-compile-schemas /usr/share/glib-2.0/schemas
-
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-wayland-backend --enable-broadway-backend --enable-x11-backend --enable-gtk2-dependency  --disable-cups
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	python setup.py install --root=$PKG || exit 1
 popd
 
 checketc "$PKG"
 packageclean "$PKG"
 
 cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
-
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
@@ -57,4 +47,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-#rm -r "$PKG" "${TARNAME}-${VERSION}"
+rm -r "$PKG" "${TARNAME}-${VERSION}"

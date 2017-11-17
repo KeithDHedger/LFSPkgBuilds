@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+#©keithhedger Sat 22 Jul 17:24:05 BST 2017 kdhedger68713@gmail.com
+
+dot -c

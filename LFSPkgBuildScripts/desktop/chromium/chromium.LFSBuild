@@ -16,6 +16,7 @@ SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
+#The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at http://www.chromium.org/developers/how-tos/api-keys.
 GOOGLE_API_KEY="AIzaSyBhWJ-j5RXyt5911BMuVen-WuS10mvOnrY"
 GOOGLE_DEFAULT_CLIENT_ID="952820686433-mbp5sv9scfj78siq96jlvrem47qgvbi3.apps.googleusercontent.com"
 GOOGLE_DEFAULT_CLIENT_SECRET="XU4b-j0Ssy-XkTvSVmiFMvNY"
@@ -23,90 +24,101 @@ GOOGLE_DEFAULT_CLIENT_SECRET="XU4b-j0Ssy-XkTvSVmiFMvNY"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
 gettar "https://github.com/foutrelis/chromium-launcher/archive/v3.tar.gz" $SECTION "chromium-launcher-3.tar.gz"
-#gettar "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_58.0.3029.96-1_amd64.deb" $SECTION
+
+case "$ARCH" in
+	x86_64)
+		gettar "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_59.0.3071.115-1_amd64.deb" $SECTION
+		gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux64/flash_player_ppapi_linux.x86_64.tar.gz" $SECTION
+		;;
+	*)
+		gettar "http://mirror.retrosnub.co.uk/apt/google/pool/main/g/google-chrome-stable/google-chrome-stable_48.0.2564.116-1_i386.deb" $SECTION
+		gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux32/flash_player_ppapi_linux.i386.tar.gz" $SECTION
+		;;
+esac
 
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-pushd "${TARNAME}-${VERSION}"
-	sed 's/#include <sys\/mman\.h>/&\n\n#if defined(MADV_FREE)\n#undef MADV_FREE\n#endif\n/' -i third_party/WebKit/Source/wtf/allocator/PageAllocator.cpp
-	sed "s/^config(\"compiler\") {/&\ncflags_cc = [ \"-fno-delete-null-pointer-checks\" ]/" -i build/config/linux/BUILD.gn
-	sed "s/WIDEVINE_CDM_AVAILABLE/&\n\n#define WIDEVINE_CDM_VERSION_STRING \"Pinkie Pie\"/" -i third_party/widevine/cdm/stub/widevine_cdm_version.h
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		sed 's/#include <sys\/mman\.h>/&\n\n#if defined(MADV_FREE)\n#undef MADV_FREE\n#endif\n/' -i third_party/WebKit/Source/wtf/allocator/PageAllocator.cpp
+		sed "s/^config(\"compiler\") {/&\ncflags_cc = [ \"-fno-delete-null-pointer-checks\" ]/" -i build/config/linux/BUILD.gn
+		sed "s/WIDEVINE_CDM_AVAILABLE/&\n\n#define WIDEVINE_CDM_VERSION_STRING \"Pinkie Pie\"/" -i third_party/widevine/cdm/stub/widevine_cdm_version.h
 
-	for LIB in flac harfbuzz-ng libwebp libxslt yasm
-		do
-			find -type f -path "*third_party/$LIB/*" \! -path "*third_party/$LIB/chromium/*" \! -path "*third_party/$LIB/google/*" \! -regex '.*\.\(gn\|gni\|isolate\|py\)' -delete
-		done
+		for LIB in flac harfbuzz-ng libwebp libxslt yasm
+			do
+				find -type f -path "*third_party/$LIB/*" \! -path "*third_party/$LIB/chromium/*" \! -path "*third_party/$LIB/google/*" \! -regex '.*\.\(gn\|gni\|isolate\|py\)' -delete
+			done
 
-	python build/linux/unbundle/replace_gn_files.py --system-libraries flac harfbuzz-ng libwebp libxslt yasm
+		python build/linux/unbundle/replace_gn_files.py --system-libraries flac harfbuzz-ng libwebp libxslt yasm
 
-	GN_CONFIG=("google_api_key=\"$GOOGLE_API_KEY\""
-"google_default_client_id=\"$GOOGLE_DEFAULT_CLIENT_ID\""
-"google_default_client_secret=\"$GOOGLE_DEFAULT_CLIENT_SECRET\""
-'clang_use_chrome_plugins=false'
-'enable_hangout_services_extension=true'
-'enable_nacl=false'
-'enable_nacl_nonsfi=false'
-'enable_widevine=true'
-'fatal_linker_warnings=false'
-'ffmpeg_branding="Chrome"'
-'fieldtrial_testing_like_official_build=true'
-'is_debug=false'
-'is_clang=false'
-'link_pulseaudio=true'
-'linux_use_bundled_binutils=false'
-'proprietary_codecs=true'
-'remove_webcore_debug_symbols=true'
-'symbol_level=0'
-'treat_warnings_as_errors=false'
-'use_allocator="none"'
-'use_cups=true'
-'use_gconf=false'
-'use_gnome_keyring=false'
-'use_gold=false'
-'use_gtk3=false'
-'use_kerberos=true'
-'use_pulseaudio=true'
-'use_sysroot=false')
+		GN_CONFIG=("google_api_key=\"$GOOGLE_API_KEY\""
+		"google_default_client_id=\"$GOOGLE_DEFAULT_CLIENT_ID\""
+		"google_default_client_secret=\"$GOOGLE_DEFAULT_CLIENT_SECRET\""
+		'clang_use_chrome_plugins=false'
+		'enable_hangout_services_extension=true'
+		'enable_nacl=false'
+		'enable_nacl_nonsfi=false'
+		'enable_widevine=true'
+		'fatal_linker_warnings=false'
+		'ffmpeg_branding="Chrome"'
+		'fieldtrial_testing_like_official_build=true'
+		'is_debug=false'
+		'is_clang=false'
+		'link_pulseaudio=true'
+		'linux_use_bundled_binutils=false'
+		'proprietary_codecs=true'
+		'remove_webcore_debug_symbols=true'
+		'symbol_level=0'
+		'treat_warnings_as_errors=false'
+		'use_allocator="none"'
+		'use_cups=true'
+		'use_gconf=false'
+		'use_gnome_keyring=false'
+		'use_gold=false'
+		'use_gtk3=false'
+		'use_kerberos=true'
+		'use_pulseaudio=true'
+		'use_sysroot=false')
 
-	python tools/gn/bootstrap/bootstrap.py --gn-gen-args "${GN_CONFIG[*]}"
-	out/Release/gn gen out/Release --args="${GN_CONFIG[*]}"
+		python tools/gn/bootstrap/bootstrap.py --gn-gen-args "${GN_CONFIG[*]}"
+		out/Release/gn gen out/Release --args="${GN_CONFIG[*]}"
 
-	ninja -C out/Release chrome chrome_sandbox chromedriver widevinecdmadapter
+		ninja -C out/Release chrome chrome_sandbox chromedriver widevinecdmadapter
 
-	install -vDm755  out/Release/chrome $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chromium
-	install -vDm4755 out/Release/chrome_sandbox $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chrome-sandbox
-	install -vDm755  out/Release/chromedriver $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chromedriver
+		install -vDm755  out/Release/chrome $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chromium
+		install -vDm4755 out/Release/chrome_sandbox $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chrome-sandbox
+		install -vDm755  out/Release/chromedriver $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chromedriver
 
-	mkdir -vp $PKG/usr/bin||true
-	ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromium $PKG/usr/bin
-	ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromedriver $PKG/usr/bin
+		mkdir -vp $PKG/usr/bin||true
+		ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromium $PKG/usr/bin
+		ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromedriver $PKG/usr/bin
 
-	install -vm755 out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-	install -vDm644 out/Release/icudtl.dat $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-	install -vDm644 out/Release/gen/content/content_resources.pak $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-	install -vm644 out/Release/{*.pak,*.bin} $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+		install -vm755 out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+		install -vDm644 out/Release/icudtl.dat $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+		install -vDm644 out/Release/gen/content/content_resources.pak $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+		install -vm644 out/Release/{*.pak,*.bin} $PKG/usr/lib${LIBDIRSUFFIX}/chromium
 
-	cp -av out/Release/locales $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-	chown -Rv root:root $PKG/usr/lib${LIBDIRSUFFIX}/chromium/locales
+		cp -av out/Release/locales $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+		chown -Rv root:root $PKG/usr/lib${LIBDIRSUFFIX}/chromium/locales
 
-	install -vDm644 out/Release/chrome.1 $PKG/usr/share/man/man1/chromium.1
+		install -vDm644 out/Release/chrome.1 $PKG/usr/share/man/man1/chromium.1
 
-	for size in 16 32
-		do
-			install -vDm644 "chrome/app/theme/default_100_percent/chromium/product_logo_$size.png" "$PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium.png"
-		done
+		for size in 16 32
+			do
+				install -vDm644 "chrome/app/theme/default_100_percent/chromium/product_logo_$size.png" "$PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium.png"
+			done
 
-	for size in 22 24 48 64 128 256
-		do
-			install -vDm644 "chrome/app/theme/chromium/product_logo_$size.png" "$PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium.png"
-		done
+		for size in 22 24 48 64 128 256
+			do
+				install -vDm644 "chrome/app/theme/chromium/product_logo_$size.png" "$PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium.png"
+			done
 
-	mkdir -vp $PKG/usr/share/applications||true
-	cat > $PKG/usr/share/applications/chromium.desktop << "EOF"
+		mkdir -vp $PKG/usr/share/applications||true
+		cat > $PKG/usr/share/applications/chromium.desktop << "EOF"
 [Desktop Entry]
 Encoding=UTF-8
 Name=Chromium Web Browser
@@ -120,51 +132,65 @@ Categories=GTK;Network;WebBrowser;
 MimeType=application/xhtml+xml;text/xml;application/xhtml+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
 EOF
 
-	tar -xf ${SOURCEARCHIVES}/${SECTION}/chromium-launcher-3.tar.gz
-	cd chromium-launcher-3
-	make PREFIX=/usr
-	rm -f $PKG/usr/bin/chromium
-	make PREFIX=/usr install-strip DESTDIR=$PKG||exit 1
-	cd ..
+		tar -xf ${SOURCEARCHIVES}/${SECTION}/chromium-launcher-3.tar.gz
+		cd chromium-launcher-3
+		make PREFIX=/usr
+		rm -f $PKG/usr/bin/chromium
+		make PREFIX=/usr install-strip DESTDIR=$PKG||exit 1
+		cd ..
 
-	mkdir temp||true
-	cd temp
-#	case $(uname -m) in
-#		x86_64) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_58.0.3029.96-1_amd64.deb
-#		;;
-#		x86) ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_48.0.2564.116-1_i386.deb
-#		;;
-#	esac
-#
-#	tar -xf data.tar.xz
-#	mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
-#	install -vm755 ../out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-#	install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/popd
-popd
+		mkdir temp||true
+		cd temp
+		case $ARCH in
+			x86_64)
+				ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_59.0.3071.115-1_amd64.deb
+				;;
+			*)
+				ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_48.0.2564.116-1_i386.deb
+				;;
+		esac
 
-checketc $PKG
-packageclean "$PKG"
+		tar -xf data.tar.xz
+		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+		install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+		install -vm755 ../out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+		case "$ARCH" in
+			x86_64)
+				tar -xf "${SOURCEARCHIVES}/${SECTION}/flash_player_ppapi_linux.x86_64.tar.gz"
+				;;
+			*)
+				tar -xf "${SOURCEARCHIVES}/${SECTION}/flash_player_ppapi_linux.i386.tar.gz"
+				;;
+		esac
+		install -vdm755 $PKG/usr/lib/PepperFlash
+		install -vm755 libpepflashplayer.so $PKG/usr/lib/PepperFlash
+		install -vm644 manifest.json $PKG/usr/lib/PepperFlash
+	
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	checketc $PKG
+	packageclean "$PKG"
 
-echo "Removing source folder, please wait ..."
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-exit 0
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	echo "Removing source folder, please wait ..."
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

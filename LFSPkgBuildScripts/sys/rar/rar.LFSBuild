@@ -4,11 +4,11 @@
 
 PKGNAME="rar"
 TARNAME="rarlinux-x64"
-VERSION="5.1.2"
+VERSION="5.5.0"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-5.1.b2.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.rarlab.com/rar/${TARBALL}" $SECTION
