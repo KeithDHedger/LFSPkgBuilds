@@ -4,7 +4,7 @@
 
 PKGNAME="Init-For-LFS"
 TARNAME="$PKGNAME"
-VERSION="0.0.4"
+VERSION="0.0.5"
 BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -25,7 +25,7 @@ popd
 
 packageclean "$PKG"
 
-cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
+cp ./info "$PKG" &>/dev/null || true
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
