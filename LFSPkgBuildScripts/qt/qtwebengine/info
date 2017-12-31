@@ -1,0 +1,1 @@
+QtWebEngine integrates chromium"s web capabilities into Qt. It ships with its own copy of Ninja-1.7.2 which it uses for the build, and various copies of libraries from ffmpeg, icu, libvpx, and zlib (including libminizip) which have been forked by the chromium developers.

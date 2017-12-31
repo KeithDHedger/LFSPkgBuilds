@@ -10,6 +10,12 @@ SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
+BUILDSTATIC="--disable-static"
+if [ "X$ENABLESTATIC" != "X" ];then
+	BUILDSTATIC="--enable-static --disable-shared"
+	PKGNAME="readline-static"
+fi
+
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -20,15 +26,19 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	sed -i '/MV.*old/d' Makefile.in
 	sed -i '/{OLDSUFF}/c:' support/shlib-install
-	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static
+	./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} $BUILDSTATIC
 	make $MAKEFLAGS SHLIB_LIBS=-lncurses||make SHLIB_LIBS=-lncurses|| exit
-	make install SHLIB_LIBS=-lncurses DESTDIR="$PKG" || exit
-
-	mkdir -vp $PKG/usr/lib  $PKG/lib||true
-	mv -v $PKG/usr/lib/lib{readline,history}.so.* $PKG/lib
-	ln -sfv ../../lib/$(readlink $PKG/usr/lib/libreadline.so) $PKG/usr/lib/libreadline.so
-	ln -sfv ../../lib/$(readlink $PKG/usr/lib/libhistory.so ) $PKG/usr/lib/libhistory.so
-	install -v -m644 doc/*.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	if [ "X$ENABLESTATIC" != "X" ];then
+		make install DESTDIR="$PKG" || exit
+		rm -rf $PKG/usr/include $PKG/usr/share
+	else
+		make install SHLIB_LIBS=-lncurses DESTDIR="$PKG" || exit
+		mkdir -vp $PKG/usr/lib  $PKG/lib||true
+		mv -v $PKG/usr/lib/lib{readline,history}.so.* $PKG/lib
+		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libreadline.so) $PKG/usr/lib/libreadline.so
+		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libhistory.so ) $PKG/usr/lib/libhistory.so
+		install -v -m644 doc/*.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	fi
 popd
 
 checketc "$PKG"

@@ -18,6 +18,12 @@ TARBALL="${TARNAME}-0.4b44.tar.gz"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://kent.dl.sourceforge.net/project/dump/dump/0.4b44/${TARBALL}" $SECTION
 
+BUILDSTATIC=""
+if [ "X$ENABLESTATIC" != "X" ];then
+	BUILDSTATIC="--enable-static"
+	PKGNAME="dump-static"
+fi
+
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -26,20 +32,27 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-0.4b44"
-	EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root
-	# --enable-static
+	EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root $BUILDSTATIC
 
 	make $MAKEFLAGS||make|| exit 1
-	make install  prefix=$PKG || exit 1
-	mv $PKG/sbin/dump $PKG/sbin/dump-static
-	mv $PKG/sbin/restore $PKG/sbin/restore-static
+	make install  prefix=$PKG|| exit 1
+	if [ "X$ENABLESTATIC" != "X" ];then
+		mv $PKG/sbin/dump $PKG/sbin/dump-static
+		mv $PKG/sbin/restore $PKG/sbin/restore-static
+		rm $PKG/sbin/rdump
+		rm $PKG/sbin/rrestore
+		pushd $PKG/sbin
+			ln -sv dump-static rdump-static
+			ln -sv restore-static rrestore-static
+		popd
+		rm -rf $PKG/usr
+	fi
+#	make distclean
 
-	make distclean
-
-	EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root
-
-	make $MAKEFLAGS||make|| exit 1
-	make install  prefix=$PKG || exit 1
+#	EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root
+#
+#	make $MAKEFLAGS||make|| exit 1
+#	make install  prefix=$PKG || exit 1
 popd
 
 checketc "$PKG"

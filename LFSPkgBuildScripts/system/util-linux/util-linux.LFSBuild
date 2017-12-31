@@ -10,18 +10,27 @@ SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
-PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+
+BUILDSTATIC="--disable-static"
+if [ "X$ENABLESTATIC" != "X" ];then
+	BUILDSTATIC="--disable-all-programs --enable-libuuid --enable-libblkid --enable-libmount --enable-libsmartcols --enable-libfdisk --enable-static --disable-shared"
+	PKGNAME="util-linux-static"
+fi
+
+PKG="${OUTPUT}/${PKGNAME}"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	mkdir -pv $PKG/var/lib/hwclock
-	./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --without-systemd --without-systemdsystemunitdir
+	./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python --without-systemd --without-systemdsystemunitdir $BUILDSTATIC
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
+	if [ "X$ENABLESTATIC" != "X" ];then
+		rm -rf $PKG/var/ $PKG/usr/share $PKG/usr/bin $PKG/usr/sbin $PKG/usr/include $PKG/bin $PKG/sbin $PKG/usr/lib/pkgconfig/
+	fi
 popd
 
 checketc "$PKG"
