@@ -54,12 +54,12 @@ case "$1" in
 	reload)
 		MOUNTRESULT="OK"
 		prettyMsgStart "Reloading smbd ..."
-		/bin/kill /usr/sbin/smbd -HUP|| MOUNTRESULT="FAIL"
+		/bin/kill -SIGHUP $(pgrep smbd)|| MOUNTRESULT="FAIL"
 		prettyMsgResult $MOUNTRESULT
 
 		MOUNTRESULT="OK"
 		prettyMsgStart "Reloading nmbd ..."
-		/bin/kill /usr/sbin/nmbd -HUP|| MOUNTRESULT="FAIL"
+		/bin/kill -SIGHUP $(pgrep nmbd)|| MOUNTRESULT="FAIL"
 		prettyMsgResult $MOUNTRESULT
 		;;
 
