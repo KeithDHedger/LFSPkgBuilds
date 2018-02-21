@@ -1,0 +1,78 @@
+#!/bin/sh
+
+# Begin /etc/init.d/samba
+#/*
+# *
+# * ©K. D. Hedger. Wed 21 Feb 12:47:20 GMT 2018 kdhedger68713@gmail.com
+#
+# * This file (samba) is part of net/samba.
+#
+# * net is free software: you can redistribute it and/or modify
+# * it under the terms of the GNU General Public License as published by
+# * the Free Software Foundation, either version 3 of the License, or
+# * at your option) any later version.
+#
+# * net is distributed in the hope that it will be useful,
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+# * You should have received a copy of the GNU General Public License
+# * along with net.  If not, see <http://www.gnu.org/licenses/>.
+# */
+
+. /etc/init.d/init-functions
+
+case "$1" in
+	start)
+
+		mkdir -p /run/samba
+
+	 	MOUNTRESULT="OK"
+		prettyMsgStart "Starting nmbd ..."
+		/usr/sbin/nmbd -D|| MOUNTRESULT="FAIL"
+		prettyMsgResult $MOUNTRESULT
+
+	 	MOUNTRESULT="OK"
+		prettyMsgStart "Starting smbd ..."
+		/usr/sbin/smbd -D|| MOUNTRESULT="FAIL"
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	stop)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Stopping smbd ..."
+		/bin/killall -q /usr/sbin/smbd|| MOUNTRESULT="FAIL"
+		prettyMsgResult $MOUNTRESULT
+ 
+ 		MOUNTRESULT="OK"
+		prettyMsgStart "Stopping nmbd ..."
+		/bin/killall -q /usr/sbin/nmbd|| MOUNTRESULT="FAIL"
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	reload)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Reloading smbd ..."
+		/bin/kill /usr/sbin/smbd -HUP|| MOUNTRESULT="FAIL"
+		prettyMsgResult $MOUNTRESULT
+
+		MOUNTRESULT="OK"
+		prettyMsgStart "Reloading nmbd ..."
+		/bin/kill /usr/sbin/nmbd -HUP|| MOUNTRESULT="FAIL"
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	restart)
+		$0 stop
+		sleep 1
+		$0 start
+		;;
+
+   *)
+      echo "Usage: $0 {start|stop|reload|restart}"
+      exit 1
+      ;;
+esac
+
+# End /etc/init.d/samba
