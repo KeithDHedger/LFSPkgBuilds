@@ -32,14 +32,7 @@ readWithDefault ()
 	fi
 }
 
-case $(uname -m) in
-	x86_64)
-		LIBDIRSUFFIX=64
-		;;
-	*)
-		LIBDIRSUFFIX=""
-		;;
-esac
+LIBDIRSUFFIX=""
 
 #set variables if possible
 if [ -f ./SystemData.local ];then
@@ -54,7 +47,7 @@ LFS=${LFS:-"/mnt/LFS"}
 readWithDefault "LFS"  "Enter Mountpoint For LFS"
 
 #LFS Version
-LFSVERSION=${LFSVERSION:-8.0}
+LFSVERSION=${LFSVERSION:-8.1}
 readWithDefault "LFSVERSION"  "Enter Version"
 
 #Computer name
@@ -62,7 +55,7 @@ LFSNAME=${LFSNAME:-"LFSDev"}
 readWithDefault "LFSNAME"  "Enter Hostname"
 
 #LFS init type eithe bbinit or sysvinit
-INITTYPE=${INITTYPE:-"LFSInit"}
+INITTYPE=${INITTYPE:-"sysvinit"}
 readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|sysvinit)"
 
 #libdir suffix
@@ -86,7 +79,7 @@ readWithDefault "EXTFOLDER"  "Bind Built Packages And Source Folders To Folder"
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
-KERNELVERSION=${KERNELVERSION:-"4.9.9"}
+KERNELVERSION=${KERNELVERSION:-$(uname -r)}
 readWithDefault "KERNELVERSION"  "Enter Kernel Version"
 
 #keyboard
@@ -96,23 +89,23 @@ KEYBOARD=${KEYBOARD:-"uk"}
 read -e -p "Enter Keyboard " -i "[ $KEYBOARD ] "
 
 #File system type, probably ext2 or ext4
-ROOTFSTYPE=${ROOTFSTYPE:-"ext2"}
+ROOTFSTYPE=${ROOTFSTYPE:-$(findmnt -no FSTYPE $LFS)}
 readWithDefault "ROOTFSTYPE"  "Enter Root FS Type"
 
 #Variable below this line are computed and probably don't need changing, but feel free.
 #computed stuff
 
-ROOTDEV=$(df|grep -i $LFS|awk '{print $1}')
+ROOTDEV=$(findmnt -no SOURCE $LFS)
 readWithDefault "ROOTDEV"  "Enter Root Device"
 
-SWAP=$(fdisk -l|grep swap|awk '{print $1}')
+SWAP=$(blkid|grep swap|awk -F: '{print $1}')
 readWithDefault "SWAP"  "Enter Swap Device"
 
 LANGUAGE=${LANGUAGE:-$LANG}
 readWithDefault "LANGUAGE"  "Enter Language"
 
 #network
-IP="192.168.1.1"$(echo $ROOTDEV|sed 's/^[a-zA-Z\/]*//')
+IP=${IP:-"192.168.1.1"$(echo $ROOTDEV|sed 's/^[a-zA-Z\/]*//')}
 readWithDefault "IP"  "Enter IP"
 
 #Set up the network
@@ -180,8 +173,8 @@ BUILDSCRIPTS=$BUILDSCRIPTS
 
 KEYBOARD=$KEYBOARD
 ROOTFSTYPE=$ROOTFSTYPE
-ROOTDEV=$ROOTDEV
-SWAP=$SWAP
+ROOTDEV=\$(findmnt -no SOURCE \$LFS)
+SWAP=\$(blkid|grep swap|awk -F: '{print \$1}')
 
 LANGUAGE=$LANGUAGE
 
@@ -198,16 +191,3 @@ SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
 EOF
 
-cat > ${LFS}/${BUILDSCRIPTS}/system/grub/grub.cfg << EOF
-# Begin /boot/grub/grub.cfg
-
-set default=0
-set timeout=30
-
-insmod ext2
-set root=(hd0,$(echo $ROOTDEV|sed 's@^[/[:alpha:]]*@@'))
-
-menuentry "$LFSNAME" {
-    linux /boot/vmlinuz-${KERNELVERSION} root=$ROOTDEV ro
-}
-EOF
