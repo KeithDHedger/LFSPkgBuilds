@@ -9,16 +9,21 @@ NORMAL='\e[0;0m'
 
 
 UF="updatefile"
+ROOT="$(readlink -f ..)"
+lfspkg -R "$ROOT" -U
+
+links http://www.linuxfromscratch.org/lfs/view/8.1/chapter01/whatsnew.html -dump |sed 's/^ *\* *//g'|sed 's/^ *//g' |sed 's/^ *\* *//g' > "$UF"
 
 while read
 	do
 		pkg=$(echo "$REPLY"|sed 's/^\s*\(.*\) \(.*\)$/\1/')
 		if [ X$pkg != "X" ] && [ X$pkg != "XAdded:" ] && [ X$pkg != "XUpgraded" ];then
-			if lfspkg -C $pkg 2>/dev/null|grep -i "ok" >/dev/null;then
+			if lfspkg -R "$ROOT" -C $pkg 2>&1|grep -i "ok" 2>&1>/dev/null;then
 				:
 			else
-				echo -e "${RED}$pkg${NORMAL} needs upgrading to ${BLUE}$(echo "$REPLY"|sed 's/^\s*\(.*\) \(.*\)$/\1-\2/')${NORMAL} from ${RED}${pkg}-$(lfspkg -S $pkg 2)${NORMAL}" 
-				lfspkg -S $pkg 3
+				echo -e "${RED}$pkg${NORMAL} needs up/downgrading to ${BLUE}$(echo "$REPLY"|sed 's/^\s*\(.*\) \(.*\)$/\1-\2/')${NORMAL} from ${RED}${pkg}-$(lfspkg -R "$ROOT" -S $pkg 2)${NORMAL}"
+				lfspkg -R "$ROOT" -S $pkg 3
+				echo
 			fi
 		fi
 	done < <(sed -n '/^Upgraded to:$/,/^Added/ p' "$UF"|sort)
