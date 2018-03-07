@@ -12,6 +12,8 @@ mkdir -vp /var/lib/sshd||true
 chmod 700 /var/lib/sshd||true
 chown   -v root:sys /var/lib/sshd||true
 
+/usr/bin/ssh-keygen -A
+
 if [ ! -r /etc/ssh/ssh_host_key ]; then
 	/usr/bin/ssh-keygen -t rsa1 -f /etc/ssh/ssh_host_key -N '' 
 fi
