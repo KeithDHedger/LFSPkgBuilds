@@ -1,0 +1,47 @@
+#!/bin/bash -e
+
+#©keithhedger Fri 9 Mar 15:19:11 GMT 2018 kdhedger68713@gmail.com
+
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+BLUE='\e[1;34m'
+NORMAL='\e[0;0m'
+
+FORWHAT="$1"
+DATAFILE=/tmp/data$$
+LOGCHANGES=/tmp/changes
+:>$LOGCHANGES
+
+DEPENDS=$(lfspkg -S $FORWHAT 4)
+if [ "X$DEPENDS" = "X" ];then
+	echo "No deps found for $FORWHAT ..."
+fi
+
+DEPS=( $(lfspkg -F "$DEPENDS" 2>/dev/null) )
+
+for arg in ${DEPS[@]}
+	do
+		echo -e "${BLUE}Checking $arg ...${NORMAL}"
+		NAME=${arg%-?*}
+		if ! links -dump ftp://ftp.lfs-matrix.net/pub/blfs/conglomeration/$NAME >$DATAFILE 2>/dev/null;then
+			if ! links -dump ftp://ftp.lfs-matrix.net/pub/blfs/conglomeration/${NAME,,} >$DATAFILE 2>/dev/null ;then
+				if ! links -dump ftp://ftp.lfs-matrix.net/pub/blfs/conglomeration/${NAME^^} >$DATAFILE 2>/dev/null ;then
+					echo -e "${RED}Can't find $arg in BLFS ...${NORMAL}"
+					echo "Can't find $arg in BLFS ..." >> $LOGCHANGES
+					continue
+				fi
+			fi
+		fi
+		FILE=$(cat "$DATAFILE"|awk '{print $NF}'|grep -v ".patch"|tail -n1)
+		TFILE=${FILE,,}
+		if [ "X${TFILE%%.tar?*}" != "X${arg,,}" ];then
+			echo -e "${GREEN}Pkg $arg needs updating to $FILE here:${NORMAL}"
+			echo "Pkg $arg needs updating to $FILE here:" >> $LOGCHANGES
+			lfspkg -S ${arg%-?*} 3|tee -a $LOGCHANGES
+			echo|tee -a $LOGCHANGES
+			lfspkg -I ${arg%-?*} 2>/dev/null|head -n1|tee -a $LOGCHANGES
+			echo|tee -a $LOGCHANGES
+		fi 
+	done
+
+rm $DATAFILE
