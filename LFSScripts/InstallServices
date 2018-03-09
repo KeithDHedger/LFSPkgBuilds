@@ -30,12 +30,14 @@ installScript ()
 uninstallScript ()
 {
 	echo -e "${RED}Un-Installing $arg ...${NORMAL}"
-	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
-		make -C "$BOOTSCRIPTS" "install-$1" 2>/dev/null
-	fi
+	make -C "$BOOTSCRIPTS" "uninstall-$1" 2>/dev/null
 }
 
 BOOTSCRIPTS="$1"
+if [ ! -e "${BOOTSCRIPTS}/Makefile" ];then
+	echo -e "${RED}You need to supply the path to the unpacked blfs-bootscripts folder ...${NORMAL}"
+	exit 1
+fi
 
 cd $BOOTSCRIPTS
 
