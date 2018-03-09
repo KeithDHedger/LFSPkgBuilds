@@ -1,0 +1,74 @@
+#!/bin/bash
+
+#©keithhedger Thu 8 Mar 12:20:25 GMT 2018 kdhedger68713@gmail.com
+
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+NORMAL='\e[0;0m'
+
+DREPLY=/tmp/dialogreply$$
+export DIALOGOPTS="--backtitle \"Enable/Disbale services at boot\""
+
+setvariable ()
+{
+	THEVAR=$1
+	eval $THEVAR=\"$(<$DREPLY)\"
+	if [ "X${!THEVAR}" = X ];then
+		exit 0
+	fi
+	:>$DREPLY
+}
+
+installScript ()
+{
+	echo -e "${GREEN}Installing $arg ...${NORMAL}"
+	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
+		make -C "$BOOTSCRIPTS" "install-$1" 2>/dev/null
+	fi
+}
+
+uninstallScript ()
+{
+	echo -e "${RED}Un-Installing $arg ...${NORMAL}"
+	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
+		make -C "$BOOTSCRIPTS" "install-$1" 2>/dev/null
+	fi
+}
+
+BOOTSCRIPTS="$1"
+
+cd $BOOTSCRIPTS
+
+SERVICEARRAY=( $(sed -n 's/^install-\([a-z]*-*[a-z]*\):.*$/\1/p' Makefile |sed 's/^service-//g'|sort) )
+
+DIAOPTS=""
+
+for (( j=0;j<${#SERVICEARRAY[@]};j++ ))
+	do
+		if [ -e /etc/init.d/${SERVICEARRAY[j]} ];then
+			STATE="on"
+		else
+			STATE="off"
+		fi
+		DIAOPTS="${DIAOPTS}${SERVICEARRAY[j]} "\"\"" $STATE "
+	done
+
+eval dialog --checklist \"Select Startup Services\" $(($(tput lines) -6 )) 40 $(tput lines) $DIAOPTS 2>$DREPLY
+setvariable DATA
+
+#install selected
+for arg in ${DATA}
+	do
+		if [ ! -e /etc/init.d/$arg ];then
+			installScript $arg
+		fi
+	done
+
+#uninstall deselected
+for arg in ${SERVICEARRAY[@]}
+	do
+		if [ -e /etc/init.d/$arg ] && [ "X$(echo $DATA|sed -n "/$arg/p")" = "X" ];then
+			uninstallScript $arg
+		fi
+	done
+
