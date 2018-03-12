@@ -8,7 +8,7 @@ BLUE='\e[1;34m'
 NORMAL='\e[0;0m'
 
 FORWHAT="$1"
-DATAFILE=/tmp/data$$
+DATAFILE=/tmp/datafile
 LOGCHANGES=/tmp/changes
 :>$LOGCHANGES
 
