@@ -1,0 +1,33 @@
+*** Makefile	1999-01-17 19:15:46.000000000 +0000
+--- Makefile.mine	2018-03-19 12:45:36.827984886 +0000
+***************
+*** 24,41 ****
+  		$(BISON) modes.y
+  
+  install:	fbset
+! 		if [ -f /sbin/fbset ]; then rm /sbin/fbset; fi
+! 		$(INSTALL) fbset /usr/sbin
+! 		$(INSTALL) fbset.8 /usr/man/man8
+! 		$(INSTALL) fb.modes.5 /usr/man/man5
+! 		if [ ! -c /dev/fb0 ]; then mknod /dev/fb0 c 29 0; fi
+! 		if [ ! -c /dev/fb1 ]; then mknod /dev/fb1 c 29 32; fi
+! 		if [ ! -c /dev/fb2 ]; then mknod /dev/fb2 c 29 64; fi
+! 		if [ ! -c /dev/fb3 ]; then mknod /dev/fb3 c 29 96; fi
+! 		if [ ! -c /dev/fb4 ]; then mknod /dev/fb4 c 29 128; fi
+! 		if [ ! -c /dev/fb5 ]; then mknod /dev/fb5 c 29 160; fi
+! 		if [ ! -c /dev/fb6 ]; then mknod /dev/fb6 c 29 192; fi
+! 		if [ ! -c /dev/fb7 ]; then mknod /dev/fb7 c 29 224; fi
+  
+  clean:
+  		$(RM) *.o fbset lex.yy.c modes.tab.c modes.tab.h
+--- 24,33 ----
+  		$(BISON) modes.y
+  
+  install:	fbset
+! 		mkdir -vp  $(DESTDIR)/usr/sbin $(DESTDIR)/usr/man/man8 $(DESTDIR)/usr/man/man5
+! 		$(INSTALL) fbset $(DESTDIR)/usr/sbin
+! 		$(INSTALL) fbset.8 $(DESTDIR)/usr/man/man8
+! 		$(INSTALL) fb.modes.5 $(DESTDIR)/usr/man/man5
+  
+  clean:
+  		$(RM) *.o fbset lex.yy.c modes.tab.c modes.tab.h
