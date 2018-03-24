@@ -2,7 +2,7 @@
 
 #©keithhedger Sun  1 Feb 14:56:11 GMT 2015
 #kdhedger68713@gmail.com
-#Version 8.0
+#Version 8.2
 
 if [ -e ./SystemData ];then
 	. ./SystemData
@@ -26,7 +26,6 @@ echo $ADMINPWD|sudo -S chmod -R 777 $LFS/tools/ 2>/dev/null
 cp ./SystemData $SYSTEMSOURCE
 
 WGETTAR="http://ftp.gnu.org/gnu/wget/wget-1.19.1.tar.xz"
-OPENSSLTAR=https://openssl.org/source/openssl-1.0.2k.tar.gz
 
 set +h
 umask 022
@@ -42,9 +41,8 @@ if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	mv md5sums $SYSTEMSOURCE
 	wget -i wget-list -c -P $SYSTEMSOURCE||true
 
-#wget/openssl from the blfs book I prefer to make this as part of the main system
+#wget from the blfs book I prefer to make this as part of the main system
 	wget -c "$WGETTAR" -P $NETSOURCE
-	wget -c "$OPENSSLTAR" -P $NETSOURCE
 fi
 
 cd "$SYSTEMSOURCE"
@@ -56,428 +54,562 @@ else
 	touch "${SYSTEMSOURCE}/gotsystem"
 fi
 
-NAME=binutils
-VERSION=2.27
-tar -xvf ${NAME}-${VERSION}.tar.bz2
-pushd ${NAME}-${VERSION}
-	mkdir -v build
-	cd build
-	../configure --prefix=/tools --with-sysroot=$LFS --with-lib-path=/tools/lib --target=$LFS_TGT --disable-nls --disable-werror
-	make || exit 0
-	case $(uname -m) in
-  		x86_64) mkdir -v /tools/lib && ln -sv lib /tools/lib64 ;;
+TOOLNUM=$(cat ${SYSTEMSOURCE}/toolnum 2>/dev/null||true)
+
+if [ "X$TOOLNUM" = "X" ];then
+	TOOLNUM=1
+	echo $TOOLNUM > ${SYSTEMSOURCE}/toolnum
+fi
+
+while [ $TOOLNUM != "DONE" ]
+do
+	cd "$SYSTEMSOURCE"
+	case $TOOLNUM in
+		1)
+			NAME=binutils
+			VERSION=2.29
+			tar -xvf ${NAME}-${VERSION}.tar.bz2
+			pushd ${NAME}-${VERSION}
+				mkdir -v build
+				cd build
+				../configure --prefix=/tools --with-sysroot=$LFS --with-lib-path=/tools/lib --target=$LFS_TGT --disable-nls --disable-werror
+				make || exit 0
+				case $(uname -m) in
+					x86_64) mkdir -v /tools/lib && ln -sv lib /tools/lib64 ;;
+				esac
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+		2)
+			#pass 1
+			NAME=gcc
+			VERSION=7.2.0
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				case $(uname -m) in
+					armv6l)
+						patch -Np1 -i ../gcc-5.3.0-rpi1-cpu-default.patch
+						;;
+					armv7l)
+						case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
+							a02082|a22082|a32082)
+								patch -Np1 -i ../gcc-5.3.0-rpi3-cpu-default.patch
+								;;
+							*)
+								patch -Np1 -i ../gcc-5.3.0-rpi2-cpu-default.patch
+								;;
+						esac
+						;;
+				esac
+
+				tar -Jxf ../mpfr-3.1.5.tar.xz
+				mv -v mpfr-3.1.5 mpfr
+				tar -Jxf ../gmp-6.1.2.tar.xz
+				mv -v gmp-6.1.2 gmp
+				tar -zxf ../mpc-1.0.3.tar.gz
+				mv -v mpc-1.0.3 mpc
+
+				for file in gcc/config/arm/linux-eabi.h
+				do
+					cp -uv $file{,.orig}
+					sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
+					echo '
+					#undef STANDARD_STARTFILE_PREFIX_1
+					#undef STANDARD_STARTFILE_PREFIX_2
+					#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+					#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+					touch $file.orig
+				done
+
+				mkdir -v build
+				cd build
+				../configure --target=$LFS_TGT --prefix=/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --disable-nls --disable-shared --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libmpx --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		3)
+			NAME=linux
+			VERSION=4.9.y
+			tar -xvf rpi-${VERSION}.tar.gz
+			pushd ${NAME}-rpi-${VERSION}
+				make mrproper
+				make INSTALL_HDR_PATH=dest headers_install
+				cp -rv dest/include/* /tools/include
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		4)
+			NAME=glibc
+			VERSION=2.26
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				mkdir -v build
+				cd build
+				../configure --prefix=/tools --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=3.2 --with-headers=/tools/include libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes
+				make $MAKEFLAGS||make
+				make install
+				ln -sv ld-2.26.so $LFS/tools/lib/ld-linux.so.3
+			popd
+			rm -rf ${NAME}-${VERSION} glibc-build
+			echo 'int main(){}' > dummy.c
+			$LFS_TGT-gcc dummy.c
+			readelf -l a.out | grep ': /tools'
+			read -t 30 -p "check out " ||true
+			rm -v dummy.c a.out
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		5)
+			#libstdc++
+			NAME=gcc
+			VERSION=7.2.0
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				mkdir -pv build
+				cd build
+				../libstdc++-v3/configure --host=$LFS_TGT --prefix=/tools --disable-multilib --disable-nls --disable-libstdcxx-threads --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/${VERSION}
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		6)
+			#pass 2
+			NAME=binutils
+			VERSION=2.29
+			tar -xvf ${NAME}-${VERSION}.tar.bz2
+			pushd ${NAME}-${VERSION}
+				mkdir -v build
+				cd build
+				CC=$LFS_TGT-gcc AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --disable-nls --disable-werror --with-lib-path=/tools/lib --with-sysroot
+				make $MAKEFLAGS||make
+				make install
+				make -C ld clean
+				make -C ld LIB_PATH=/usr/lib:/lib
+				cp -v ld/ld-new /tools/bin
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		7)
+			#pass2
+			NAME=gcc
+			VERSION=7.2.0
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				case $(uname -m) in
+					armv6l)
+						patch -Np1 -i ../gcc-5.3.0-rpi1-cpu-default.patch
+						;;
+					armv7l)
+						case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
+							a02082|a22082|a32082)
+								patch -Np1 -i ../gcc-5.3.0-rpi3-cpu-default.patch
+								;;
+							*)
+								patch -Np1 -i ../gcc-5.3.0-rpi2-cpu-default.patch
+								;;
+						esac
+						;;
+				esac
+
+				cat gcc/limitx.h gcc/glimits.h gcc/limity.h > $(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/include-fixed/limits.h
+				for file in gcc/config/arm/linux-eabi.h
+				do
+					cp -uv $file{,.orig}
+					sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
+					echo '
+					#undef STANDARD_STARTFILE_PREFIX_1
+					#undef STANDARD_STARTFILE_PREFIX_2
+					#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+					#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+					touch $file.orig
+				done
+
+				tar -Jxf ../mpfr-3.1.5.tar.xz
+				mv -v mpfr-3.1.5 mpfr
+				tar -Jxf ../gmp-6.1.2.tar.xz
+				mv -v gmp-6.1.2 gmp
+				tar -zxf ../mpc-1.0.3.tar.gz
+				mv -v mpc-1.0.3 mpc
+				mkdir -v build
+				cd build
+				CC=$LFS_TGT-gcc CXX=$LFS_TGT-g++ AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --enable-languages=c,c++ --disable-libstdcxx-pch --disable-multilib --disable-bootstrap --disable-libgomp
+				make $MAKEFLAGS||make
+				make install
+				ln -sv gcc /tools/bin/cc
+			popd
+			rm -rf ${NAME}-${VERSION}
+
+			echo 'int main(){}' > dummy.c
+			cc dummy.c
+			readelf -l a.out | grep ': /tools'
+			read -t 30 -p "check out "||true
+			rm -v dummy.c a.out
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		8)
+			NAME=tcl-core
+			VERSION=8.6.7
+			tar -xvf ${NAME}${VERSION}-src.tar.gz
+			pushd tcl${VERSION}
+				cd unix
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+				chmod -v u+w /tools/lib/libtcl8.6.so
+				make install-private-headers
+				ln -sv tclsh8.6 /tools/bin/tclsh
+			popd
+			rm -rf tcl${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		9)
+			NAME=expect
+			VERSION=5.45
+			tar -xvf ${NAME}${VERSION}.tar.gz
+			pushd ${NAME}${VERSION}
+				cp -v configure{,.orig}
+				sed 's:/usr/local/bin:/bin:' configure.orig > configure
+				./configure --prefix=/tools --with-tcl=/tools/lib --with-tclinclude=/tools/include
+				make $MAKEFLAGS||make
+				make SCRIPTS="" install
+			popd
+			rm -rf ${NAME}${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		10)
+			NAME=dejagnu
+			VERSION=1.6
+			tar -xvf ${NAME}-${VERSION}.tar.gz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		11)
+			NAME=check
+			VERSION=0.11.0
+			tar -xvf ${NAME}-${VERSION}.tar.gz
+			pushd ${NAME}-${VERSION}
+				PKG_CONFIG= ./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		12)
+			NAME=ncurses
+			VERSION=6.0
+			tar -xvf  ${NAME}-${VERSION}.tar.gz
+			pushd  ${NAME}-${VERSION}
+				sed -i s/mawk// configure
+				./configure --prefix=/tools --with-shared --without-debug --without-ada --enable-widec --enable-overwrite
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		13)
+			NAME=bash
+			VERSION=4.4
+			tar -xvf ${NAME}-${VERSION}.tar.gz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools --without-bash-malloc
+				make $MAKEFLAGS||make
+				make install
+				ln -sv bash /tools/bin/sh
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		14)
+			NAME=bison
+			VERSION=3.0.4
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		15)
+			NAME=bzip2
+			VERSION=1.0.6
+			tar -xvf ${NAME}-${VERSION}.tar.gz
+			pushd ${NAME}-${VERSION}
+				make $MAKEFLAGS||make
+				make PREFIX=/tools install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		16)
+			NAME=coreutils
+			VERSION=8.27
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools --enable-install-program=hostname
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		17)
+			NAME=diffutils
+			VERSION=3.6
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		18)
+			NAME=file
+			VERSION=5.31
+			tar -xvf ${NAME}-${VERSION}.tar.gz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		19)
+			NAME=findutils
+			VERSION=4.6.0
+			tar -xvf ${NAME}-${VERSION}.tar.gz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		20)
+			NAME=gawk
+			VERSION=4.1.4
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		21)
+			NAME=gettext
+			VERSION=0.19.8.1
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				cd gettext-tools
+				EMACS="no" ./configure --prefix=/tools --disable-shared
+				make -C gnulib-lib
+				make -C intl pluralx.c
+				make -C src msgfmt
+				make -C src msgmerge
+				make -C src xgettext
+				cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		22)
+			NAME=grep
+			VERSION=3.1
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		23)
+			NAME=gzip
+			VERSION=1.8 
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		24)
+			NAME=m4
+			VERSION=1.4.18
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		25)
+			NAME=make
+			VERSION=4.2.1
+			tar -xvf ${NAME}-${VERSION}.tar.bz2
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools --without-guile
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		26)
+			NAME=patch
+			VERSION=2.7.5
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		27)
+			NAME=perl
+			VERSION=5.26.0
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				sed -e '9751 a#ifndef PERL_IN_XSUB_RE' -e '9808 a#endif' -i regexec.c
+				sh Configure -des -Dprefix=/tools -Dlibs=-lm
+				make $MAKEFLAGS||make
+				cp -v perl cpan/podlators/scripts/pod2man /tools/bin
+				mkdir -pv /tools/lib/perl5/${VERSION}
+				cp -Rv lib/* /tools/lib/perl5/${VERSION}
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		28)
+			NAME=sed
+			VERSION=4.4
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		29)
+			NAME=tar
+			VERSION=1.29
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+		30)
+			NAME=texinfo
+			VERSION=6.4
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		31)
+			NAME=util-linux
+			VERSION=2.30.1
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools --without-python --disable-makeinstall-chown --without-systemdsystemunitdir --without-ncurses PKG_CONFIG=""
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		32)
+			NAME=xz
+			VERSION=5.2.3
+			tar -xvf${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		33)
+			#/usr/bin/strip --strip-debug /tools/lib/* || true
+			/usr/bin/strip --strip-unneeded /tools/{,s}bin/* || true
+			rm -rf /tools/{,share}/{info,man,doc}
+
+			echo $ADMINPWD|sudo -S chown -R root:root $LFS/tools 2>/dev/null
+			cd $LFS/tools
+			echo $ADMINPWD|sudo -S tar -zpcvf ../tools-${LFSVERSION}.tar.gz .
+			echo "DONE" > ${SYSTEMSOURCE}/toolnum
+			TOOLNUM="DONE"
 	esac
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-#pass 1
-NAME=gcc
-VERSION=6.3.0
-tar -xvf ${NAME}-${VERSION}.tar.bz2
-pushd ${NAME}-${VERSION}
-	tar -xf ../mpfr-3.1.5.tar.xz
-	mv -v mpfr-3.1.5 mpfr
-	tar -xf ../gmp-6.1.2.tar.xz
-	mv -v gmp-6.1.2 gmp
-	tar -xf ../mpc-1.0.3.tar.gz
-	mv -v mpc-1.0.3 mpc
-
-	for file in gcc/config/{linux,i386/linux{,64}}.h
-		do
-			cp -uv $file{,.orig}
-			sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
-			echo '
-#undef STANDARD_STARTFILE_PREFIX_1
-#undef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
-			touch $file.orig
-		done
-
-	rm -r build||true
-	mkdir -v build
-	cd build
-	../configure --target=$LFS_TGT --prefix=/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --with-local-prefix=/tools --with-native-system-header-dir=/tools/include  --disable-nls --disable-shared --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libmpx --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
-#	../configure --target=$LFS_TGT --prefix=/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --disable-nls --disable-shared --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libmpx --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=linux
-VERSION=$KERNELVERSION
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	make mrproper
-	make INSTALL_HDR_PATH=dest headers_install
-	cp -rv dest/include/* /tools/include
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=glibc
-VERSION=2.25
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	mkdir -v build
-	cd build
-
-#	../configure --prefix=/tools --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=2.6.32 --with-headers=/tools/include libc_cv_forced_unwind=yes  libc_cv_c_cleanup=yes
-	../configure --prefix=/tools --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=2.6.32 --with-headers=/tools/include libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION} glibc-build
-
-echo 'int main(){}' > dummy.c
-$LFS_TGT-gcc dummy.c
-readelf -l a.out | grep ': /tools'
-
-read -t 30 -p "check out " ||true
-rm -v dummy.c a.out
-
-#libstdc++
-NAME=gcc
-VERSION=6.3.0
-tar -xvf ${NAME}-${VERSION}.tar.bz2
-pushd ${NAME}-${VERSION}
-	mkdir -pv build
-	cd build
-#	../libstdc++-v3/configure --host=$LFS_TGT --prefix=/tools --disable-multilib --disable-nls --disable-libstdcxx-threads --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/${VERSION}
-	../libstdc++-v3/configure --host=$LFS_TGT --prefix=/tools --disable-multilib --disable-nls --disable-libstdcxx-threads --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/${VERSION}
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-#pass 2
-NAME=binutils
-VERSION=2.27
-tar -xvf ${NAME}-${VERSION}.tar.bz2
-pushd ${NAME}-${VERSION}
-	mkdir -v build
-	cd build
-
-#	CC=$LFS_TGT-gcc AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --disable-nls --disable-werror --with-lib-path=/tools/lib --with-sysroot
-	CC=$LFS_TGT-gcc AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --disable-nls --disable-werror --with-lib-path=/tools/lib --with-sysroot
-	make $MAKEFLAGS||make
-	make install
-	make -C ld clean
-	make -C ld LIB_PATH=/usr/lib:/lib
-	cp -v ld/ld-new /tools/bin
-popd
-rm -rf ${NAME}-${VERSION}
-
-#pass2
-NAME=gcc
-VERSION=6.3.0
-tar -xvf ${NAME}-${VERSION}.tar.bz2
-pushd ${NAME}-${VERSION}
-	cat gcc/limitx.h gcc/glimits.h gcc/limity.h > $(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/include-fixed/limits.h
-	for file in gcc/config/{linux,i386/linux{,64}}.h
-		do
-			cp -uv $file{,.orig}
-			sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
-			echo '
-#undef STANDARD_STARTFILE_PREFIX_1
-#undef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
-			touch $file.orig
-		done
-	tar -xf ../mpfr-3.1.5.tar.xz
-	mv -v mpfr-3.1.5 mpfr
-	tar -xf ../gmp-6.1.2.tar.xz
-	mv -v gmp-6.1.2 gmp
-	tar -xf ../mpc-1.0.3.tar.gz
-	mv -v mpc-1.0.3 mpc
-	mkdir -v build
-	cd build
-
-#	CC=$LFS_TGT-gcc CXX=$LFS_TGT-g++ AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --enable-languages=c,c++ --disable-libstdcxx-pch --disable-multilib --disable-bootstrap --disable-libgomp
-	CC=$LFS_TGT-gcc CXX=$LFS_TGT-g++ AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --enable-languages=c,c++ --disable-libstdcxx-pch --disable-multilib --disable-bootstrap --disable-libgomp
-	make $MAKEFLAGS||make
-	make install
-	ln -sv gcc /tools/bin/cc
-popd
-rm -rf ${NAME}-${VERSION}
-
-echo 'int main(){}' > dummy.c
-cc dummy.c
-readelf -l a.out | grep ': /tools'
-
-read -t 30 -p "check out "||true
-rm -v dummy.c a.out
-
-NAME=tcl-core
-VERSION=8.6.6
-tar -xvf ${NAME}${VERSION}-src.tar.gz
-pushd tcl${VERSION}
-	cd unix
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-	chmod -v u+w /tools/lib/libtcl8.6.so
-	make install-private-headers
-	ln -sv tclsh8.6 /tools/bin/tclsh
-popd
-rm -rf tcl${VERSION}
-
-NAME=expect
-VERSION=5.45
-tar -xvf ${NAME}${VERSION}.tar.gz
-pushd ${NAME}${VERSION}
-	cp -v configure{,.orig}
-	sed 's:/usr/local/bin:/bin:' configure.orig > configure
-	./configure --prefix=/tools --with-tcl=/tools/lib --with-tclinclude=/tools/include
-	make $MAKEFLAGS||make
-	make SCRIPTS="" install
-popd
-rm -rf ${NAME}${VERSION}
-
-NAME=dejagnu
-VERSION=1.6
-tar -xvf ${NAME}-${VERSION}.tar.gz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=check
-VERSION=0.11.0
-tar -xvf ${NAME}-${VERSION}.tar.gz
-pushd ${NAME}-${VERSION}
-	PKG_CONFIG= ./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=ncurses
-VERSION=6.0
-tar -xvf  ${NAME}-${VERSION}.tar.gz
-pushd  ${NAME}-${VERSION}
-	./configure --prefix=/tools --with-shared --without-debug --without-ada --enable-widec --enable-overwrite
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=bash
-VERSION=4.4
-tar -xvf ${NAME}-${VERSION}.tar.gz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools --without-bash-malloc
-	make $MAKEFLAGS||make
-	make install
-	ln -sv bash /tools/bin/sh
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=bison
-VERSION=3.0.4
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=bzip2
-VERSION=1.0.6
-tar -xvf ${NAME}-${VERSION}.tar.gz
-pushd ${NAME}-${VERSION}
-	make $MAKEFLAGS||make
-	make PREFIX=/tools install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=coreutils
-VERSION=8.26
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools --enable-install-program=hostname
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=diffutils
-VERSION=3.5
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=file
-VERSION=5.30
-tar -xvf ${NAME}-${VERSION}.tar.gz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=findutils
-VERSION=4.6.0 
-tar -xvf ${NAME}-${VERSION}.tar.gz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=gawk
-VERSION=4.1.4
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=gettext
-VERSION=0.19.8.1
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	cd gettext-tools
-	EMACS="no" ./configure --prefix=/tools --disable-shared
-	make -C gnulib-lib
-	make -C intl pluralx.c
-	make -C src msgfmt
-	make -C src msgmerge
-	make -C src xgettext
-	cp -v src/{msgfmt,msgmerge,xgettext} /tools/bin
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=grep
-VERSION=3.0
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=gzip
-VERSION=1.8 
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=m4
-VERSION=1.4.18
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=make
-VERSION=4.2.1
-tar -xvf ${NAME}-${VERSION}.tar.bz2
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools --without-guile
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=patch
-VERSION=2.7.5
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=perl
-VERSION=5.24.1
-tar -xvf ${NAME}-${VERSION}.tar.bz2
-pushd ${NAME}-${VERSION}
-	sh Configure -des -Dprefix=/tools -Dlibs=-lm
-	make $MAKEFLAGS||make
-	cp -v perl cpan/podlators/scripts/pod2man /tools/bin
-	mkdir -pv /tools/lib/perl5/${VERSION}
-	cp -Rv lib/* /tools/lib/perl5/${VERSION}
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=sed
-VERSION=4.4
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=tar
-VERSION=1.29
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=texinfo
-VERSION=6.3
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=util-linux
-VERSION=2.29.1
-tar -xvf ${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools --without-python --disable-makeinstall-chown --without-systemdsystemunitdir PKG_CONFIG=""
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-NAME=xz
-VERSION=5.2.3
-tar -xvf${NAME}-${VERSION}.tar.xz
-pushd ${NAME}-${VERSION}
-	./configure --prefix=/tools
-	make $MAKEFLAGS||make
-	make install
-popd
-rm -rf ${NAME}-${VERSION}
-
-#/usr/bin/strip --strip-debug /tools/lib/* || true
-/usr/bin/strip --strip-unneeded /tools/{,s}bin/* || true
-rm -rf /tools/{,share}/{info,man,doc}
-
-echo $ADMINPWD|sudo -S chown -R root:root $LFS/tools 2>/dev/null
-cd $LFS/tools
-echo $ADMINPWD|sudo -S tar -zpcvf ../tools-${LFSVERSION}.tar.gz .
+done
 
 
