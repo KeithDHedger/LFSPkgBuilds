@@ -2,9 +2,9 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="libpipeline"
-TARNAME="$PKGNAME"
-VERSION="1.5.0"
+PKGNAME="libffi"
+TARNAME="${PKGNAME}"
+VERSION="3.2.1"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -20,12 +20,14 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
+		sed -e '/^includesdir/ s:$(libdir)/@PACKAGE_NAME@-@PACKAGE_VERSION@/include:$(includedir):' -i include/Makefile.in
+		sed -e '/^includedir/ s:${libdir}/@PACKAGE_NAME@-@PACKAGE_VERSION@/include:@includedir@:' -e 's/^Cflags: -I${includedir}/Cflags:/' -i libffi.pc.in
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-static
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
 
-	checketc "$PKG"
+	checketc $PKG
 	packageclean "$PKG"
 
 	pushd "$PKG"

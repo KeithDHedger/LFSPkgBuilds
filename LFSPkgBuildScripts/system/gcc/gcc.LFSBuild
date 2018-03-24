@@ -4,7 +4,7 @@
 
 PKGNAME="gcc"
 TARNAME="$PKGNAME"
-VERSION="6.3.0"
+VERSION="7.3.0"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -15,58 +15,62 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+scriptLog "${PKGNAME}-${VERSION}"
 
-pushd "${TARNAME}-${VERSION}"
-	mkdir -v build
-	cd build
-	SED=sed ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		rm -f /usr/lib/gcc||true
+		mkdir -v build
+		cd build
+		SED=sed ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
 
-	make $MAKEFLAGS||make|| exit
-	make install DESTDIR="$PKG" || exit
+		make $MAKEFLAGS||make|| exit
+		make install DESTDIR="$PKG" || exit
 
-	mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib
-	ln -sv ../usr/bin/cpp $PKG/lib
-	ln -sv gcc $PKG/usr/bin/cc
-	install -v -dm755 $PKG/usr/lib/bfd-plugins
-	ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/${VERSION}/liblto_plugin.so $PKG/usr/lib/bfd-plugins/
-	mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib
-	mv -v $PKG/usr/lib${LIBDIRSUFFIX}/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib
-popd
+		mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib
+		ln -sv ../usr/bin/cpp $PKG/lib
+		ln -sv gcc $PKG/usr/bin/cc
+		install -v -dm755 $PKG/usr/lib/bfd-plugins
+		ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/${VERSION}/liblto_plugin.so $PKG/usr/lib/bfd-plugins/
+		mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib
+		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib
+	popd
 
-checketc "$PKG"
-packageclean "$PKG"
+	checketc "$PKG"
+	packageclean "$PKG"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 
-echo 'int main(){}' > dummy.c
-cc dummy.c -v -Wl,--verbose &> dummy.log
-readelf -l a.out | grep ': /lib'
-grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
-grep -B4 '^ /usr/include' dummy.log
-grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
-grep "/lib.*/libc.so.6 " dummy.log
-grep found dummy.log
+	echo 'int main(){}' > dummy.c
+	cc dummy.c -v -Wl,--verbose &> dummy.log
+	readelf -l a.out | grep ': /lib'
+	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+	grep -B4 '^ /usr/include' dummy.log
+	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+	grep "/lib.*/libc.so.6 " dummy.log
+	grep found dummy.log
 
-sleep 30
-#read -t 30 -p "check out " ||true
-rm -v dummy.c a.out dummy.log ||true
+	sleep 30
+	#read -t 30 -p "check out " ||true
+	rm -v dummy.c a.out dummy.log ||true
+popd 2>/dev/null||true

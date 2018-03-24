@@ -2,16 +2,20 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="libpipeline"
+DEPENDS="Python-2.7.13"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="ninja"
 TARNAME="$PKGNAME"
-VERSION="1.5.0"
-BUILD=${BUILD:-1}
+VERSION="1.8.2"
+BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -20,9 +24,13 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-add_NINJAJOBS_var-1.patch
+
+		python3 configure.py --bootstrap
+		mkdir -vp $PKG/usr/bin
+		install -vm755 ninja $PKG/usr/bin/
+		install -vDm644 misc/bash-completion $PKG/usr/share/bash-completion/completions/ninja
+		install -vDm644 misc/zsh-completion $PKG/usr/share/zsh/site-functions/_ninja
 	popd
 
 	checketc "$PKG"

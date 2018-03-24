@@ -2,13 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="libpipeline"
-TARNAME="$PKGNAME"
-VERSION="1.5.0"
+PKGNAME="openssl"
+TARNAME="${PKGNAME}"
+VERSION="1.1.0"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+MINORSUFFIX="f"
+TARBALL="${TARNAME}-${VERSION}${MINORSUFFIX}.tar.gz"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -19,13 +20,17 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
+	pushd "${TARNAME}-${VERSION}${MINORSUFFIX}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./config --prefix=/usr --openssldir=/etc/ssl shared zlib-dynamic --libdir=/lib${LIBDIRSUFFIX} shared zlib-dynamic
+		make depend|| exit 1
 		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
+		make MANSUFFIX=ssl install INSTALL_PREFIX=$PKG || exit 1
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
+		cp -vfr doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
 
-	checketc "$PKG"
+	checketc $PKG
 	packageclean "$PKG"
 
 	pushd "$PKG"
@@ -47,5 +52,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}${MINORSUFFIX}"
 popd 2>/dev/null||true

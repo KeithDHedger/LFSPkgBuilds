@@ -4,7 +4,7 @@
 
 PKGNAME="gzip"
 TARNAME="$PKGNAME"
-VERSION="1.8"
+VERSION="1.9"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -15,10 +15,12 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+scriptLog "${PKGNAME}-${VERSION}"
 
+pushd $COMPILEAT 2>/dev/null||true
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
 	mkdir -vp $PKG/usr/bin $PKG/bin || exit 1
@@ -48,3 +50,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

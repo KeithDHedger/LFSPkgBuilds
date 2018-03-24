@@ -4,7 +4,7 @@
 
 PKGNAME="binutils"
 TARNAME="$PKGNAME"
-VERSION="2.27"
+VERSION="2.30"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -15,36 +15,40 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${PKGNAME}-${VERSION}"
-	mkdir -v build
-	cd build
-	../configure --prefix=/usr --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --with-system-zlib
-	make $MAKEFLAGS tooldir=/usr||make tooldir=/usr|| exit 1
-	make $MAKEFLAGS tooldir=/usr install DESTDIR=$PKG||make tooldir=/usr install DESTDIR=$PKG|| exit 1
-popd
+scriptLog "${PKGNAME}-${VERSION}"
 
-checketc "$PKG"
-packageclean "$PKG"
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${PKGNAME}-${VERSION}"
+		mkdir -v build
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd --libdir=/usr/lib${LIBDIRSUFFIX}
+		make $MAKEFLAGS tooldir=/usr||make tooldir=/usr|| exit 1
+		make $MAKEFLAGS tooldir=/usr install DESTDIR=$PKG||make tooldir=/usr install DESTDIR=$PKG|| exit 1
+	popd
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	checketc "$PKG"
+	packageclean "$PKG"
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-rm -r "$PKG" "${PKGNAME}-${VERSION}"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${PKGNAME}-${VERSION}"
+popd 2>/dev/null||true

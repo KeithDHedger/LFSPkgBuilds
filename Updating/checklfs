@@ -8,11 +8,12 @@ BLACK='\e[0;30m'
 NORMAL='\e[0;0m'
 
 
+LFSVERS=8.2
 UF="updatefile"
 ROOT="$(readlink -f ..)"
 lfspkg -R "$ROOT" -U
 
-links http://www.linuxfromscratch.org/lfs/view/8.1/chapter01/whatsnew.html -dump |sed 's/^ *\* *//g'|sed 's/^ *//g' |sed 's/^ *\* *//g' > "$UF"
+links http://www.linuxfromscratch.org/lfs/view/${LFSVERS}/chapter01/whatsnew.html -dump |sed 's/^ *\* *//g'|sed 's/^ *//g' |sed 's/^ *\* *//g' > "$UF"
 
 while read
 	do

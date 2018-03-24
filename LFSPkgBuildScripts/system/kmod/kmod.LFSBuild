@@ -4,7 +4,7 @@
 
 PKGNAME="kmod"
 TARNAME="$PKGNAME"
-VERSION="23"
+VERSION="25"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -15,40 +15,43 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+scriptLog "${PKGNAME}-${VERSION}"
 
-pushd "${TARNAME}-${VERSION}"
-	./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --with-xz --with-zlib
-	make $MAKEFLAGS||make|| exit
-	make install DESTDIR="$PKG" || exit
-	mkdir -vp $PKG/sbin $PKG/bin||true
-	for target in depmod insmod modinfo modprobe rmmod
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib${LIBDIRSUFFIX} --with-xz --with-zlib
+		make $MAKEFLAGS||make|| exit
+		make install DESTDIR="$PKG" || exit
+		mkdir -vp $PKG/sbin $PKG/bin||true
+		for target in depmod insmod modinfo modprobe rmmod
 		do
 			ln -sv ../bin/kmod $PKG/sbin/$target
 		done
-	ln -sv kmod $PKG/bin/lsmod
-popd
+		ln -sv kmod $PKG/bin/lsmod
+	popd
 
-checketc "$PKG"
-packageclean "$PKG"
+	checketc "$PKG"
+	packageclean "$PKG"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

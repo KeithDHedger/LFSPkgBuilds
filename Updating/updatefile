@@ -1,4 +1,4 @@
-Linux From Scratch - Version 8.1
+Linux From Scratch - Version 8.2
 
 Chapter 1. Introduction
 
@@ -20,73 +20,87 @@ book.
 
 Upgraded to:
 
-Automake 1.15.1
+Bash 4.4.18
 
-Bc 1.07.1
+Binutils-2.30
 
-Binutils 2.29
+Check-0.12.0
 
-Coreutils 8.27
+Coreutils-8.29
 
-Diffutils 3.6
+DejaGNU-1.6.1
 
-Eudev 3.2.2
+Eudev-3.2.5
 
-E2fsprogs 1.43.5
+E2fsprogs-1.43.9
 
-Expat-2.2.3
+Expat-2.2.5
 
-File 5.31
+Expect-5.45.4
 
-Flex 2.6.4
+File-5.32
 
-GCC 7.2.0
+Gawk-4.2.0
 
-GDBM 1.13
+GCC-7.3.0
 
-Glibc 2.26
+GDBM-1.14.1
 
-Gperf-3.1
+Glibc-2.27
 
-Grep 3.1
+Gzip-1.9
 
-GRUB 2.02
+IPRoute2-4.15.0
 
-IPRoute2 4.12.0
+Kmod-25
 
-Kmod 24
+Less-530
 
-Less 487
+Libelf-0.170
 
-Libpipeline 1.4.2
+Libpipeline-1.5.0
 
-Linux 4.12.7
+Linux-4.15.3
 
-Man-pages 4.12
+Man-DB-2.8.1
 
-Perl 5.26.0
+Man-pages-4.15
 
-Pkg-config 0.29.2
+MPC-1.1.0
 
-Psmisc 23.1
+MPFR-4.0.1
 
-Shadow 4.5
+Ncurses-6.1
 
-Tcl-core-8.6.7
+Patch-2.7.6
 
-Texinfo 6.4
+Perl-5.26.1
 
-Tzdata 2017b
+Tar-1.30
 
-Util-Linux 2.30.1
+Tcl-core-8.6.8
 
-Vim 8.0.586
+Texinfo-6.5
+
+Tzdata-2018c
+
+Util-Linux-2.31.1
 
 Added:
 
+Libffi-3.2.1
+
+Openssl-1.1.0g
+
+Python-3.6.4
+
+Ninja-1.8.2
+
+Meson-0.44.0
+
 Removed:
 
-bc-1.06.95-memory_leak-1.patch
+bash-4.4-upstream_fixes-1.patch
 
 Prev
 
