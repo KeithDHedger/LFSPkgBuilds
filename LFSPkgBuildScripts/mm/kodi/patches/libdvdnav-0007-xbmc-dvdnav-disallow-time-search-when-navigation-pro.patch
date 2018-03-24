@@ -1,0 +1,30 @@
+From af1b101e01a66912c6d2a595a16b9e3f4530b406 Mon Sep 17 00:00:00 2001
+From: Voyager1 <voyager@xbmc.org>
+Date: Sun, 14 Feb 2016 17:24:01 +0100
+Subject: [PATCH 07/10] [xbmc][dvdnav] disallow time search when navigation
+ prohibits
+
+---
+ src/searching.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/searching.c b/src/searching.c
+index fd28fb3..1c9ed6f 100644
+--- a/libdvdnav-5-0-3/src/searching.c
++++ b/libdvdnav-5-0-3/src/searching.c
+@@ -121,6 +121,12 @@ dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
+     return DVDNAV_STATUS_ERR;
+   }
+ 
++  if ((state->pgc->prohibited_ops.title_or_time_play == 1) ||
++    (this->pci.pci_gi.vobu_uop_ctl.title_or_time_play == 1)){
++    printerr("operation forbidden.");
++    pthread_mutex_unlock(&this->vm_lock);
++    return DVDNAV_STATUS_ERR;
++  }
+ 
+   this->cur_cell_time = 0;
+   if (this->pgc_based) {
+-- 
+2.1.4
+

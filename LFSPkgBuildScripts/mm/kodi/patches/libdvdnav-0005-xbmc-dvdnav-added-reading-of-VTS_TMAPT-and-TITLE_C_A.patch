@@ -1,0 +1,33 @@
+From 27fd0e17a3bfe2a592563061ddc36824bece1a7c Mon Sep 17 00:00:00 2001
+From: Voyager1 <voyager@xbmc.org>
+Date: Sun, 14 Feb 2016 17:20:50 +0100
+Subject: [PATCH 05/10] [xbmc][dvdnav] added reading of VTS_TMAPT and
+ TITLE_C_ADT
+
+---
+ src/vm/vm.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/src/vm/vm.c b/src/vm/vm.c
+index 7ff285d..1794ce7 100644
+--- a/libdvdnav-5-0-3/src/vm/vm.c
++++ b/libdvdnav-5-0-3/src/vm/vm.c
+@@ -252,6 +252,15 @@ int ifoOpenNewVTSI(vm_t *vm, dvd_reader_t *dvd, int vtsN) {
+     fprintf(MSG_OUT, "libdvdnav: ifoRead_TITLE_VOBU_ADMAP vtsi failed\n");
+     return 0;
+   }
++  if (!ifoRead_VTS_TMAPT(vm->vtsi)) {
++    fprintf(MSG_OUT, "libdvdnav: ifoRead_VTS_TMAPT vtsi failed\n");
++    return 0;    
++  }
++  if (!ifoRead_TITLE_C_ADT(vm->vtsi)) {
++    fprintf(MSG_OUT, "libdvdnav: ifoRead_TITLE_C_ADT vtsi failed\n");
++    return 0;
++  }
++
+   vm->state.vtsN = vtsN;
+ 
+   return 1;
+-- 
+2.1.4
+

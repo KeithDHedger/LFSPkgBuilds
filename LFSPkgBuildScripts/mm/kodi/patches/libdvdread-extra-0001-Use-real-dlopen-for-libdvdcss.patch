@@ -1,0 +1,40 @@
+From e2ac58de6a9cf04e8905cb9b37e23d38c5add1eb Mon Sep 17 00:00:00 2001
+From: Balint Reczey <balint@balintreczey.hu>
+Date: Tue, 24 Jan 2017 01:03:47 +0100
+Subject: [PATCH] Use real dlopen() for libdvdcss
+
+---
+ src/dvd_input.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/dvd_input.c b/src/dvd_input.c
+index d28efe7..ec3ce67 100644
+--- a/libdvdread-5-0-3/src/dvd_input.c
++++ b/libdvdread-5-0-3/src/dvd_input.c
+@@ -19,6 +19,8 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+ 
++#define _GNU_SOURCE
++
+ #include "config.h"                  /* Required for HAVE_DVDCSS_DVDCSS_H */
+ #include <stdio.h>                               /* fprintf */
+ #include <stdlib.h>                              /* free */
+@@ -284,7 +286,13 @@ int dvdinput_setup(void)
+ #else
+   #define CSS_LIB "libdvdcss.so.2"
+ #endif
+-  dvdcss_library = dlopen(CSS_LIB, RTLD_LAZY);
++  // skip dlopen() wrapper of kodi, it is not needed here
++  void*(*real_dlopen)(const char*, int) = dlsym(RTLD_DEFAULT, "dlopen");
++  if (real_dlopen) {
++    dvdcss_library = real_dlopen(CSS_LIB, RTLD_LAZY);
++  } else {
++    dvdcss_library = NULL;
++  }
+ 
+   if(dvdcss_library != NULL) {
+ #if defined(__OpenBSD__) && !defined(__ELF__) || defined(__OS2__)
+-- 
+2.1.4
+

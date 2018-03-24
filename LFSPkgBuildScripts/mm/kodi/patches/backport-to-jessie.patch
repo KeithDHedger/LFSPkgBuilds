@@ -1,0 +1,16 @@
+Description: Help back-porting to Jessie
+Author: Balint Reczey <balint@balintreczey.hu>
+Forwarded: not-needed
+diff --git a/debian/control b/debian/control
+index d8c750f..3523628 100644
+--- a/debian/control
++++ b/debian/control
+@@ -156,7 +156,7 @@ Architecture: any
+ Depends: ${shlibs:Depends},
+          ${dlopenlibs:Depends},
+          ${misc:Depends}
+-Recommends: ${shlibs:Recommends}, udisks2
++Recommends: ${shlibs:Recommends}, udisks
+ Provides: xbmc-bin, xbmc-common
+ Replaces: xbmc-bin, xbmc-common
+ Conflicts: xbmc-bin, xbmc-common, libgl1-mesa-swx11

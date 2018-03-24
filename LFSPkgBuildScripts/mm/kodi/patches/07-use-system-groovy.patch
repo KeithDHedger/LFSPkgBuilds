@@ -1,0 +1,22 @@
+Description: Use system's groovy instead of the embedded one
+ .
+Author: Balint Reczey <balint@balintreczey.hu>
+Forwarded: not-needed
+
+--- a/codegenerator.mk
++++ b/codegenerator.mk
+@@ -35,10 +35,10 @@
+ 
+ $(GENDIR)/%.cpp: $(GENDIR)/%.xml $(JAVA) $(SWIG)
+ 	# Work around potential groovy bug reported at: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=733234
+-	$(JAVA) -cp "$(GROOVY_DIR)/groovy-all-2.4.4.jar:$(GROOVY_DIR)/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
+-          org.codehaus.groovy.tools.FileSystemCompiler -d $(TOPDIR)/tools/codegenerator $(TOPDIR)/tools/codegenerator/Helper.groovy  $(TOPDIR)/tools/codegenerator/SwigTypeParser.groovy $(INTERFACES_DIR)/python/MethodType.groovy $(INTERFACES_DIR)/python/PythonTools.groovy
+-	$(JAVA) -cp "$(GROOVY_DIR)/groovy-all-2.4.4.jar:$(GROOVY_DIR)/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
+-          groovy.ui.GroovyMain $(TOPDIR)/tools/codegenerator/Generator.groovy $< $(INTERFACES_DIR)/python/PythonSwig.cpp.template $@
++	groovyc -cp "/usr/share/java/groovy.jar:/usr/share/java/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
++		-d tools/codegenerator tools/codegenerator/Helper.groovy  tools/codegenerator/SwigTypeParser.groovy $(INTERFACES_DIR)/python/MethodType.groovy $(INTERFACES_DIR)/python/PythonTools.groovy
++	groovy -cp "/usr/share/java/groovy.jar:/usr/share/java/commons-lang-2.6.jar:$(TOPDIR)/tools/codegenerator:$(INTERFACES_DIR)/python" \
++		$(TOPDIR)/tools/codegenerator/Generator.groovy $< $(INTERFACES_DIR)/python/PythonSwig.cpp.template $@
+ 	rm $<
+ 
+ $(GENDIR)/%.xml: %.i $(SWIG) $(JAVA) $(GENERATE_DEPS)
