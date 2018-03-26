@@ -54,8 +54,13 @@ cd /mnt/LFS/LFSScripts
 cd /LFSPkgBuildScripts/admin/LFSPkg
 BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 
-As part of the LFSSetUp script /mnt/LFS/root/.lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
-Set /mnt/LFS/etc/lfspkg.rc or /mnt/LFS/root/.lfspkg.rc (preferred) variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
+#As part of the LFSSetUp script /mnt/LFS/root/.lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
+#Set /mnt/LFS/etc/lfspkg.rc or /mnt/LFS/root/.lfspkg.rc (preferred) variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
+#At this point wget/openssl is not installed so you will get a load of complaints from lfspkg, ignore them as lfspkg will be reinstalled later with the main system.
+
+#You should run lfspkg --setup to create the lfspkg.rc file ( in ~ (/root) )
+#Rc files are sourced from /etc/lfspkg.rc then ~/.lfspkg.rc.
+lfspkg --setup
 
 8)
 #Build main system:

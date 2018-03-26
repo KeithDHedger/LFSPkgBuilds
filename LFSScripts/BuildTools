@@ -25,7 +25,7 @@ echo $ADMINPWD|sudo -S chmod -R 777 $LFS/tools/ 2>/dev/null
 
 cp ./SystemData $SYSTEMSOURCE
 
-WGETTAR="http://ftp.gnu.org/gnu/wget/wget-1.19.1.tar.xz"
+WGETTAR="https://ftp.gnu.org/gnu/wget/wget-1.19.4.tar.gz"
 
 set +h
 umask 022
@@ -67,13 +67,12 @@ do
 	case $TOOLNUM in
 		1)
 			NAME=binutils
-			VERSION=2.29
-			tar -xvf ${NAME}-${VERSION}.tar.bz2
+			VERSION=2.30
+			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				mkdir -v build
 				cd build
 				../configure --prefix=/tools --with-sysroot=$LFS --with-lib-path=/tools/lib --target=$LFS_TGT --disable-nls --disable-werror
-				make || exit 0
 				case $(uname -m) in
 					x86_64) mkdir -v /tools/lib && ln -sv lib /tools/lib64 ;;
 				esac
@@ -86,7 +85,7 @@ do
 		2)
 			#pass 1
 			NAME=gcc
-			VERSION=7.2.0
+			VERSION=7.3.0
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
@@ -105,25 +104,48 @@ do
 						;;
 				esac
 
-				tar -Jxf ../mpfr-3.1.5.tar.xz
-				mv -v mpfr-3.1.5 mpfr
+				tar -Jxf ../mpfr-4.0.1.tar.xz
+				mv -v mpfr-4.0.1 mpfr
 				tar -Jxf ../gmp-6.1.2.tar.xz
 				mv -v gmp-6.1.2 gmp
-				tar -zxf ../mpc-1.0.3.tar.gz
-				mv -v mpc-1.0.3 mpc
+				tar -zxf ../mpc-1.1.0.tar.gz
+				mv -v mpc-1.1.0 mpc
 
-				for file in gcc/config/arm/linux-eabi.h
-				do
-					cp -uv $file{,.orig}
-					sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
-					echo '
-					#undef STANDARD_STARTFILE_PREFIX_1
-					#undef STANDARD_STARTFILE_PREFIX_2
-					#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-					#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
-					touch $file.orig
-				done
+#for pi
+				case $(uname -m) in
+					armv?l)
+						for file in gcc/config/arm/linux-eabi.h
+							do
+								cp -uv $file{,.orig}
+								sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
+								echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+								touch $file.orig
+							done
+						;;
+					*)
+						for file in gcc/config/{linux,i386/linux{,64}}.h
+							do
+								cp -uv $file{,.orig}
+								sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
+								echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+								touch $file.orig
+							done
+						;;
+				esac
 
+				case $(uname -m) in
+					x86_64)
+						sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+						;;
+				esac
 				mkdir -v build
 				cd build
 				../configure --target=$LFS_TGT --prefix=/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --disable-nls --disable-shared --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libmpx --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
@@ -135,10 +157,11 @@ do
 			;;
 
 		3)
+#TODO rpi odd version string
 			NAME=linux
-			VERSION=4.9.y
-			tar -xvf rpi-${VERSION}.tar.gz
-			pushd ${NAME}-rpi-${VERSION}
+			VERSION=$KERNELVERSION
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
 				make mrproper
 				make INSTALL_HDR_PATH=dest headers_install
 				cp -rv dest/include/* /tools/include
@@ -149,7 +172,7 @@ do
 
 		4)
 			NAME=glibc
-			VERSION=2.26
+			VERSION=2.27
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				mkdir -v build
@@ -171,7 +194,7 @@ do
 		5)
 			#libstdc++
 			NAME=gcc
-			VERSION=7.2.0
+			VERSION=7.3.0
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				mkdir -pv build
@@ -187,8 +210,8 @@ do
 		6)
 			#pass 2
 			NAME=binutils
-			VERSION=2.29
-			tar -xvf ${NAME}-${VERSION}.tar.bz2
+			VERSION=2.30
+			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				mkdir -v build
 				cd build
@@ -206,7 +229,7 @@ do
 		7)
 			#pass2
 			NAME=gcc
-			VERSION=7.2.0
+			VERSION=7.3.0
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
@@ -226,24 +249,31 @@ do
 				esac
 
 				cat gcc/limitx.h gcc/glimits.h gcc/limity.h > $(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/include-fixed/limits.h
-				for file in gcc/config/arm/linux-eabi.h
+				for file in gcc/config/{linux,i386/linux{,64}}.h gcc/config/arm/linux-eabi.h
 				do
 					cp -uv $file{,.orig}
 					sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
 					echo '
-					#undef STANDARD_STARTFILE_PREFIX_1
-					#undef STANDARD_STARTFILE_PREFIX_2
-					#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-					#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
 					touch $file.orig
 				done
 
-				tar -Jxf ../mpfr-3.1.5.tar.xz
-				mv -v mpfr-3.1.5 mpfr
+				case $(uname -m) in
+					x86_64)
+					sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+					;;
+				esac
+
+				tar -Jxf ../mpfr-4.0.1.tar.xz
+				mv -v mpfr-4.0.1 mpfr
 				tar -Jxf ../gmp-6.1.2.tar.xz
 				mv -v gmp-6.1.2 gmp
-				tar -zxf ../mpc-1.0.3.tar.gz
-				mv -v mpc-1.0.3 mpc
+				tar -zxf ../mpc-1.1.0.tar.gz
+				mv -v mpc-1.1.0 mpc
+
 				mkdir -v build
 				cd build
 				CC=$LFS_TGT-gcc CXX=$LFS_TGT-g++ AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --enable-languages=c,c++ --disable-libstdcxx-pch --disable-multilib --disable-bootstrap --disable-libgomp
@@ -261,56 +291,57 @@ do
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
+#I dont run the test suits if you do re-enable this lot
 		8)
-			NAME=tcl-core
-			VERSION=8.6.7
-			tar -xvf ${NAME}${VERSION}-src.tar.gz
-			pushd tcl${VERSION}
-				cd unix
-				./configure --prefix=/tools
-				make $MAKEFLAGS||make
-				make install
-				chmod -v u+w /tools/lib/libtcl8.6.so
-				make install-private-headers
-				ln -sv tclsh8.6 /tools/bin/tclsh
-			popd
-			rm -rf tcl${VERSION}
+#			NAME=tcl-core
+#			VERSION=8.6.8
+#			tar -xvf ${NAME}${VERSION}-src.tar.gz
+#			pushd tcl${VERSION}
+#				cd unix
+#				./configure --prefix=/tools
+#				make $MAKEFLAGS||make
+#				make install
+#				chmod -v u+w /tools/lib/libtcl8.6.so
+#				make install-private-headers
+#				ln -sv tclsh8.6 /tools/bin/tclsh
+#			popd
+#			rm -rf tcl${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
 		9)
-			NAME=expect
-			VERSION=5.45
-			tar -xvf ${NAME}${VERSION}.tar.gz
-			pushd ${NAME}${VERSION}
-				cp -v configure{,.orig}
-				sed 's:/usr/local/bin:/bin:' configure.orig > configure
-				./configure --prefix=/tools --with-tcl=/tools/lib --with-tclinclude=/tools/include
-				make $MAKEFLAGS||make
-				make SCRIPTS="" install
-			popd
-			rm -rf ${NAME}${VERSION}
+#			NAME=expect
+#			VERSION=5.45.4
+#			tar -xvf ${NAME}${VERSION}.tar.gz
+#			pushd ${NAME}${VERSION}
+#				cp -v configure{,.orig}
+#				sed 's:/usr/local/bin:/bin:' configure.orig > configure
+#				./configure --prefix=/tools --with-tcl=/tools/lib --with-tclinclude=/tools/include
+#				make $MAKEFLAGS||make
+#				make SCRIPTS="" install
+#			popd
+#			rm -rf ${NAME}${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
 		10)
-			NAME=dejagnu
-			VERSION=1.6
-			tar -xvf ${NAME}-${VERSION}.tar.gz
-			pushd ${NAME}-${VERSION}
-				./configure --prefix=/tools
-				make install
-			popd
-			rm -rf ${NAME}-${VERSION}
+#			NAME=dejagnu
+#			VERSION=1.6.1
+#			tar -xvf ${NAME}-${VERSION}.tar.gz
+#			pushd ${NAME}-${VERSION}
+#				./configure --prefix=/tools
+#				make install
+#			popd
+#			rm -rf ${NAME}-${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
 		11)
-			NAME=check
-			VERSION=0.11.0
-			tar -xvf ${NAME}-${VERSION}.tar.gz
+			NAME=m4
+			VERSION=1.4.18
+			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
-				PKG_CONFIG= ./configure --prefix=/tools
+				./configure --prefix=/tools
 				make $MAKEFLAGS||make
 				make install
 			popd
@@ -318,9 +349,22 @@ do
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
+#		11)
+#			NAME=check
+#			VERSION=0.11.0
+#			tar -xvf ${NAME}-${VERSION}.tar.gz
+#			pushd ${NAME}-${VERSION}
+#				PKG_CONFIG= ./configure --prefix=/tools
+#				make $MAKEFLAGS||make
+#				make install
+#			popd
+#			rm -rf ${NAME}-${VERSION}
+#			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+#			;;
+
 		12)
 			NAME=ncurses
-			VERSION=6.0
+			VERSION=6.1
 			tar -xvf  ${NAME}-${VERSION}.tar.gz
 			pushd  ${NAME}-${VERSION}
 				sed -i s/mawk// configure
@@ -334,7 +378,7 @@ do
 
 		13)
 			NAME=bash
-			VERSION=4.4
+			VERSION=4.4.18
 			tar -xvf ${NAME}-${VERSION}.tar.gz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools --without-bash-malloc
@@ -373,7 +417,7 @@ do
 
 		16)
 			NAME=coreutils
-			VERSION=8.27
+			VERSION=8.29
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools --enable-install-program=hostname
@@ -399,7 +443,7 @@ do
 
 		18)
 			NAME=file
-			VERSION=5.31
+			VERSION=5.32
 			tar -xvf ${NAME}-${VERSION}.tar.gz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools
@@ -425,7 +469,7 @@ do
 
 		20)
 			NAME=gawk
-			VERSION=4.1.4
+			VERSION=4.2.0
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools
@@ -469,7 +513,7 @@ do
 
 		23)
 			NAME=gzip
-			VERSION=1.8 
+			VERSION=1.9
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools
@@ -481,16 +525,17 @@ do
 			;;
 
 		24)
-			NAME=m4
-			VERSION=1.4.18
-			tar -xvf ${NAME}-${VERSION}.tar.xz
-			pushd ${NAME}-${VERSION}
-				./configure --prefix=/tools
-				make $MAKEFLAGS||make
-				make install
-			popd
-			rm -rf ${NAME}-${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+#			NAME=m4
+#			VERSION=1.4.18
+#			tar -xvf ${NAME}-${VERSION}.tar.xz
+#			pushd ${NAME}-${VERSION}
+#				./configure --prefix=/tools
+#				make $MAKEFLAGS||make
+#				make install
+#			popd
+#			rm -rf ${NAME}-${VERSION}
+#			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
 		25)
@@ -498,6 +543,7 @@ do
 			VERSION=4.2.1
 			tar -xvf ${NAME}-${VERSION}.tar.bz2
 			pushd ${NAME}-${VERSION}
+				sed -i '211,217 d; 219,229 d; 232 d' glob/glob.c
 				./configure --prefix=/tools --without-guile
 				make $MAKEFLAGS||make
 				make install
@@ -508,7 +554,7 @@ do
 
 		26)
 			NAME=patch
-			VERSION=2.7.5
+			VERSION=2.7.6
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools
@@ -521,10 +567,9 @@ do
 
 		27)
 			NAME=perl
-			VERSION=5.26.0
+			VERSION=5.26.1
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
-				sed -e '9751 a#ifndef PERL_IN_XSUB_RE' -e '9808 a#endif' -i regexec.c
 				sh Configure -des -Dprefix=/tools -Dlibs=-lm
 				make $MAKEFLAGS||make
 				cp -v perl cpan/podlators/scripts/pod2man /tools/bin
@@ -550,7 +595,7 @@ do
 
 		29)
 			NAME=tar
-			VERSION=1.29
+			VERSION=1.30
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools
@@ -562,7 +607,7 @@ do
 			;;
 		30)
 			NAME=texinfo
-			VERSION=6.4
+			VERSION=6.5
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools
@@ -575,7 +620,7 @@ do
 
 		31)
 			NAME=util-linux
-			VERSION=2.30.1
+			VERSION=2.31.1
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools --without-python --disable-makeinstall-chown --without-systemdsystemunitdir --without-ncurses PKG_CONFIG=""
@@ -601,8 +646,10 @@ do
 
 		33)
 			#/usr/bin/strip --strip-debug /tools/lib/* || true
+			strip --strip-debug /tools/lib/*|| true
 			/usr/bin/strip --strip-unneeded /tools/{,s}bin/* || true
 			rm -rf /tools/{,share}/{info,man,doc}
+			find /tools/{lib,libexec} -name \*.la -delete
 
 			echo $ADMINPWD|sudo -S chown -R root:root $LFS/tools 2>/dev/null
 			cd $LFS/tools

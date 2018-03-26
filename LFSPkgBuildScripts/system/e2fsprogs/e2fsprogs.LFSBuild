@@ -22,7 +22,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -v build||true
 		cd build
-		LIBS=-L/tools/lib CFLAGS="-I/tools/include LFSFLAGS" PKG_CONFIG_PATH=/tools/lib/pkgconfig ../configure --prefix=/usr --with-root-prefix="" --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck --libdir=/usr/lib${LIBDIRSUFFIX}
+		LIBS=-L/tools/lib CFLAGS="-I/tools/include $LFSFLAGS" PKG_CONFIG_PATH=/tools/lib/pkgconfig ../configure --prefix=/usr --with-root-prefix="" --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck --libdir=/usr/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		make install-libs DESTDIR="$PKG" || exit

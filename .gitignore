@@ -4,3 +4,5 @@ LFSScripts/.svn
 grub.cfg
 SystemData.local
 LFSPkg.zip
+LFSPkg-master
+wget-list*

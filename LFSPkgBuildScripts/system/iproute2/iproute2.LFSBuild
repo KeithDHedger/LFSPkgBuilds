@@ -21,8 +21,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i /ARPD/d Makefile
-		sed -i 's/arpd.8//' man/man8/Makefile
-		rm -v doc/arpd.sgml
+		rm -fv man/man8/arpd.8
 		sed -i 's/m_ipt.o//' tc/Makefile
 		make $MAKEFLAGS||make|| exit
 		make LIBDIR=/usr/lib${LIBDIRSUFFIX}/ DESTDIR=$PKG DOCDIR=/usr/share/doc/${PKGNAME}-${VERSION} MANDIR=/usr/share/man install || exit

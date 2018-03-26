@@ -22,21 +22,21 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fhs-1.patch
-		ln -sfv /tools/lib/gcc /usr/lib
-		mkdir -vp ${PKG/lib${LIBDIRSUFFIX}||true
+		ln -sfv /tools/lib/gcc /usr/lib||true
+		mkdir -vp ${PKG}/lib${LIBDIRSUFFIX}||true
 		case $(uname -m) in
 			i?86|armv?l)
 				GCC_INCDIR=/usr/lib/gcc/$(uname -m)-pc-linux-gnu/${VERSION}/include
-				ln -sfv ld-linux.so.2 ${PKG/lib${LIBDIRSUFFIX}/ld-lsb.so.3
+				ln -sfv ld-linux.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb.so.3
 				;;
 			x86_64)
 				GCC_INCDIR=/usr/lib/gcc/x86_64-pc-linux-gnu/${VERSION}/include
 				ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}
-				ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
+				ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
 				;;
 		esac
-		rm -f /usr/include/limits.h
 
+		rm -f /usr/include/limits.h
 		mkdir -v build || true
 		cd build
 		CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 1

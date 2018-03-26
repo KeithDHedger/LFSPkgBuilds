@@ -2,11 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.13"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="ninja"
 TARNAME="$PKGNAME"
 VERSION="1.8.2"
@@ -25,7 +20,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-add_NINJAJOBS_var-1.patch
-
 		python3 configure.py --bootstrap
 		mkdir -vp $PKG/usr/bin
 		install -vm755 ninja $PKG/usr/bin/
