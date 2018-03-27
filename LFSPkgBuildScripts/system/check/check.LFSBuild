@@ -17,6 +17,7 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -28,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	popd
 
 	checketc "$PKG"
-	packageclean "$PKG"
+	packageclean "$PKG" "$CWD"
 
 	cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 	pushd "$PKG"

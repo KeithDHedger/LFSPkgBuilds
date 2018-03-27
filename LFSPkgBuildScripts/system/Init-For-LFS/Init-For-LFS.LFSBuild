@@ -17,6 +17,7 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -24,7 +25,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 1
 	popd
 
-	packageclean "$PKG"
+	packageclean "$PKG" "$CWD"
 
 	cp ./info "$PKG" &>/dev/null || true
 	pushd "$PKG"
