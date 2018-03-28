@@ -109,6 +109,8 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
 
+#You may prefer to manually copy all modules from the host sytem from /lib/firmware to your new LFS system.
+
 13.5)
 #Optional install of grub, see here:
 #http://www.linuxfromscratch.org/lfs/view/stable/chapter08/grub.html

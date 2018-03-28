@@ -48,6 +48,7 @@ pushd "${KERNELSOURCEDIR}"
 		make $MAKEFLAGS modules||make modules||exit 1
 		make modules_install INSTALL_MOD_PATH=$PKG INSTALL_PATH=$PKG
 
+#you may prefer t manually copy all modules from the host sytem fro /lib/firmware to your new LFS system.
 #you may (probably) not need the next two lines
 		mkdir -vp $PKG/lib/firmware/radeon
 		cp ${SOURCEARCHIVES}/${SECTION}/R700_rlc.bin ${SOURCEARCHIVES}/${SECTION}/RV710_uvd.bin ${SOURCEARCHIVES}/${SECTION}/RV710_smc.bin $PKG/lib/firmware/radeon
