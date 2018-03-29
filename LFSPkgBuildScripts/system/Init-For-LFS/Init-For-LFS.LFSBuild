@@ -2,11 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="sudo-1.8.22"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="Init-For-LFS"
 TARNAME="$PKGNAME"
 VERSION="0.0.5"

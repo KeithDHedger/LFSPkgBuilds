@@ -10,53 +10,31 @@ BUILD=${BUILD:-1}
 SECTION="KERNEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-CONFIG=$(pwd)/config-${VERSION}
+KERNELCONFIG=$(pwd)/config-${VERSION}
 
-mkdir -vp ${SOURCEARCHIVES}/tempfolder||true
-TMPDIR=${SOURCEARCHIVES}/tempfolder
-export TMPDIR
-
-KERNELSOURCEDIR="${SOURCEARCHIVES}/SYSTEM/${PKGNAME}-${VERSION}_${BUILD}"
+KERNELSOURCEDIR="${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}_${BUILD}"
 mkdir -vp ${KERNELSOURCEDIR}||true
 
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
-
+gunzip < /proc/config.gz > ${KERNELCONFIG}
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" "SYSTEM"
-#extra ucode and firmware can be retreived from here:
-#http://git.exherbo.org/summer/repositories/hardware/index.html
-#need this for my radeon driver
-gettar "http://people.freedesktop.org/~agd5f/radeon_ucode/R700_rlc.bin" ${SECTION}
-gettar "http://people.freedesktop.org/~agd5f/radeon_ucode/RV710_uvd.bin" ${SECTION}
-gettar "http://people.freedesktop.org/~agd5f/radeon_ucode/RV710_smc.bin" ${SECTION}
-gettar "http://mirror.lchost.net/debian/pool/non-free/f/firmware-nonfree/firmware-nonfree_0.43.tar.gz"  ${SECTION}
+gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION}
 
 pushd "${KERNELSOURCEDIR}"
-	tar -xvf "${SOURCEARCHIVES}/SYSTEM/${TARBALL}"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/boot $PKG/usr/src||true
 		make $MAKEFLAGS mrproper
-		cp $CONFIG .config
+		cp $KERNELCONFIG .config
 		make menuconfig||exit 1
-		make $MAKEFLAGS bzImage||make bzImage||exit 1
-		make $MAKEFLAGS modules||make modules||exit 1
+		make $MAKEFLAGS bzImage||make bzImage||exit 100
+		make $MAKEFLAGS modules||make modules||exit 100
 		make modules_install INSTALL_MOD_PATH=$PKG INSTALL_PATH=$PKG
 
-#you may prefer t manually copy all modules from the host sytem fro /lib/firmware to your new LFS system.
-#you may (probably) not need the next two lines
-		mkdir -vp $PKG/lib/firmware/radeon
-		cp ${SOURCEARCHIVES}/${SECTION}/R700_rlc.bin ${SOURCEARCHIVES}/${SECTION}/RV710_uvd.bin ${SOURCEARCHIVES}/${SECTION}/RV710_smc.bin $PKG/lib/firmware/radeon
-		pushd /tmp
-			tar -xvf ${SOURCEARCHIVES}/${SECTION}/firmware-nonfree_0.43.tar.gz
-			cp -rvp firmware-nonfree/realtek/* $PKG/lib/firmware
-			rm -rf firmware-nonfree
-		popd
 		ARCH=${ARCH:-$(uname -m)}
 		case $ARCH in
 			i*86)

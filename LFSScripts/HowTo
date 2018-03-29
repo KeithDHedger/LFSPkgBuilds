@@ -44,6 +44,12 @@ cd /mnt/LFS/LFSScripts
 #Run BuildFileSystem script:
 ./BuildFileSystem
 
+5.5)
+#Create a link from downloaded linux tarball to /LFSSourceArchives/8.2/KERNEL to prevent re-downloading source tarball.
+mkdir LFSSourceArchives/$LFSVERSION/KERNEL
+cd /LFSSourceArchives/$LFSVERSION/KERNEL
+ln -sv ../SYSTEM/linux-4.15.3.tar.xz linux-4.15.3.tar.xz
+
 6)
 #Chroot into tempory system:
 [sudo] ./Chroot system
@@ -109,7 +115,9 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
 
-#You may prefer to manually copy all modules from the host sytem from /lib/firmware to your new LFS system.
+#You may prefer to manually copy all firmware modules from the host sytem from /lib/firmware to your new LFS system.
+#Or use the firmware build script to install all the latest firmware from https://git.kernel.org/ eg Whilst still in the kernel build folder:
+./firmware.LFSBuild install
 
 13.5)
 #Optional install of grub, see here:
