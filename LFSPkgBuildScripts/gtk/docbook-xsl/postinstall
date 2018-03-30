@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#©keithhedger Wed 11 Feb 15:18:13 GMT 2015 kdhedger68713@gmail.com
+
+mkdir -vp /etc/xml||true
+
+if [ ! -f /etc/xml/catalog ]; then
+	xmlcatalog --noout --create /etc/xml/catalog||true
+fi
+
+xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/1.77.1" "/usr/share/xml/docbook/xsl-stylesheets-${VERSION}" /etc/xml/catalog||true
+xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/1.77.1" "/usr/share/xml/docbook/xsl-stylesheets-${VERSION}" /etc/xml/catalog||true
+xmlcatalog --noout --add "rewriteSystem" "http://docbook.sourceforge.net/release/xsl/current" "/usr/share/xml/docbook/xsl-stylesheets-${VERSION}" /etc/xml/catalog||true
+xmlcatalog --noout --add "rewriteURI" "http://docbook.sourceforge.net/release/xsl/current" "/usr/share/xml/docbook/xsl-stylesheets-${VERSION}" /etc/xml/catalog||true
+
+exit 0

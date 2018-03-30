@@ -4,6 +4,9 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+chown -v root:messagebus /usr/libexec/dbus-daemon-launch-helper
+chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper
+
 mkdir -vp /etc/dbus-1/session.d||true
 dbus-uuidgen --ensure||true
 
