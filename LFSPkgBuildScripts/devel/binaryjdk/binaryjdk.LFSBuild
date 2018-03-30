@@ -26,38 +26,38 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+11-$ARCHBIN-bin.tar.xz" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz"
-pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"
-	mkdir -vp $PKG/opt
-	install -vdm755 $PKG/opt/${TARNAME}-${VERSION}+11-bin
-	mv -v * $PKG/opt/${TARNAME}-${VERSION}+11-bin
-	ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
-	chown -R root:root $PKG/opt/${TARNAME}-${VERSION}+11-bin
-popd
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}+11-$ARCHBIN-bin.tar.xz"
+	pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"
+		mkdir -vp $PKG/opt
+		install -vdm755 $PKG/opt/${TARNAME}-${VERSION}+11-bin
+		mv -v * $PKG/opt/${TARNAME}-${VERSION}+11-bin
+		ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
+		chown -R root:root $PKG/opt/${TARNAME}-${VERSION}+11-bin
+	popd
 
-checketc $PKG
-packageclean "$PKG" "$CWD"
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG"
-rm -r "${TARNAME}-${VERSION}-$ARCHBIN-bin"
+	rm -r "$PKG"
+	rm -r "${TARNAME}-${VERSION}-$ARCHBIN-bin"
 popd 2>/dev/null||true
 
