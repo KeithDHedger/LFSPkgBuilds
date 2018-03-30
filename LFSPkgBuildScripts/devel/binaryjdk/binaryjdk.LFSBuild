@@ -4,7 +4,7 @@
 
 PKGNAME="BinaryJDK"
 TARNAME="OpenJDK"
-VERSION="1.8.0.121"
+VERSION="9.0.4"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -14,6 +14,7 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
 
 if [ $ARCH = "x86_64" ];then
 	ARCHBIN=x86_64
@@ -22,19 +23,20 @@ else
 fi
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+11-$ARCHBIN-bin.tar.xz" $SECTION
 
+pushd $COMPILEAT 2>/dev/null||true
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz"
 pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"
 	mkdir -vp $PKG/opt
-	install -vdm755 $PKG/opt/${PKGNAME}-${VERSION}-bin
-	mv -v * $PKG/opt/${PKGNAME}-${VERSION}-bin
+	install -vdm755 $PKG/opt/${TARNAME}-${VERSION}+11-bin
+	mv -v * $PKG/opt/${TARNAME}-${VERSION}+11-bin
 	ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
-	chown -R root:root $PKG/opt/${PKGNAME}-${VERSION}-bin
+	chown -R root:root $PKG/opt/${TARNAME}-${VERSION}+11-bin
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -57,4 +59,5 @@ esac
 
 rm -r "$PKG"
 rm -r "${TARNAME}-${VERSION}-$ARCHBIN-bin"
+popd 2>/dev/null||true
 

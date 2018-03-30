@@ -1,0 +1,16 @@
+#!/bin/bash -e
+
+#©keithhedger Fri 30 Mar 14:36:16 BST 2018 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+mkdir -vp /etc/profile.d/||true
+
+cat > /etc/profile.d/ant.sh << EOF
+# Begin /etc/profile.d/ant.sh
+
+pathappend /opt/ant/bin
+export ANT_HOME=/opt/ant
+
+# End /etc/profile.d/ant.sh
+EOF

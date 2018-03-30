@@ -2,62 +2,73 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="BinaryJDK-1.8.0.121 alsa-lib-1.1.3 certdata-8.0 giflib-5.1.4 cpio-2.12 Cups-2.2.2 UnZip-6.0 Wget-1.19.1 Which-2.21 xorg-libs-8.0 Zip-3.0"
+DEPENDS="BinaryJDK-9.0.4 alsa-lib-1.1.5 make-ca-0.7 giflib-5.1.4 cpio-2.12 Cups-2.2.2 UnZip-6.0 Wget-1.19.1 Which-2.21 xorg-libs-8.0 Zip-3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="OpenJDK"
 TARNAME="$PKGNAME"
-VERSION="1.8.0.121"
+VERSION="9.0.4"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 
-TARROOTPKGNAME="jdk8u"
-TARROOTPKGSUBVERSION="b13"
-TARROOTPKGVERSION="121-${TARROOTPKGSUBVERSION}"
+TARROOTPKGNAME="jdk9u"
+TARROOTPKGSUBVERSION="+11"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://hg.openjdk.java.net/${TARROOTPKGNAME}/${TARROOTPKGNAME}/archive/${TARROOTPKGNAME}${TARROOTPKGVERSION}.tar.bz2" $SECTION
-
-pushd ${SOURCEARCHIVES}/${SECTION}
-	for subproject in corba hotspot jaxp jaxws langtools jdk nashorn
-		do
-			wget -c http://hg.openjdk.java.net/${TARROOTPKGNAME}/${TARROOTPKGNAME}/${subproject}/archive/${TARROOTPKGNAME}${TARROOTPKGVERSION}.tar.bz2 -O ${subproject}.tar.bz2
-		done
-popd
+gettar "http://hg.openjdk.java.net/jdk-updates/${TARROOTPKGNAME}/archive/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
-IMAGEPATH=$(pwd)/javaws.png
+CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARROOTPKGNAME}${TARROOTPKGVERSION}.tar.bz2"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2"
 	pushd "${TARROOTPKGNAME}-${TARROOTPKGNAME}${TARROOTPKGVERSION}"
-		for subproject in corba hotspot jaxp jaxws langtools jdk nashorn
+		cat > subprojects.md5 << EOF
+dbc62e27a93686a9aea12e9c97c2f765  corba.tar.bz2
+25853ba33123397b2e755249f102ae73  hotspot.tar.bz2
+f5ab5e468565e1ab3a181d2efb45b51f  jaxp.tar.bz2
+520ff49cb470fbcec2f46cbb3fdb377d  jaxws.tar.bz2
+be9f261b19451ab1300c5842188e3fe2  jdk.tar.bz2
+22b65322d04c8ffafd77230dbe5f178f  langtools.tar.bz2
+729d03b0cede2f697ad77170a9d89095  nashorn.tar.bz2
+EOF
+
+		for subproject in corba hotspot jaxp jaxws jdk langtools nashorn
+			do
+				wget -c http://hg.openjdk.java.net/jdk-updates/jdk9u/${subproject}/archive/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2 -O ${subproject}.tar.bz2
+			done
+
+		md5sum -c subprojects.md5
+
+		for subproject in corba hotspot jaxp jaxws jdk langtools nashorn
 			do
 				mkdir -pv ${subproject}
-				tar -xf ${SOURCEARCHIVES}/${SECTION}/${subproject}.tar.bz2 --strip-components=1 -C ${subproject}
+				tar -xf ${subproject}.tar.bz2 --strip-components=1 -C ${subproject}
 			done
 		unset JAVA_HOME
 		PATH="${PATH}:/opt/jdk/bin"
 
-		sh ./configure --with-update-version=${TARROOTPKGVERSION} --with-build-number=${TARROOTPKGSUBVERSION} --with-milestone=BLFS --enable-unlimited-crypto --with-zlib=system --with-giflib=system --with-extra-cflags="-std=c++98 -Wno-error -fno-delete-null-pointer-checks -fno-lifetime-dse" --with-extra-cxxflags="-std=c++98 -fno-delete-null-pointer-checks -fno-lifetime-dse"
-		make DEBUG_BINARIES=true SCTP_WERROR= all
-		find build/*/images/j2sdk-image -iname *.diz -delete
-		mkdir -vp $PKG/opt/${PKGNAME}-${VERSION} $PKG/opt/jdk $PKG/usr/share/pixmaps||true
-		cp -RT build/*/images/j2sdk-image $PKG/opt/${PKGNAME}-${VERSION}
-		chown -R root:root $PKG/opt/${PKGNAME}-${VERSION}
-		cp "$IMAGEPATH" $PKG/usr/share/pixmaps
+		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-jtreg=$PWD/jtreg --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="11" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/ssl/java/cacerts.jks
+
+		make images
+		install -vdm755 $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}
+		cp -Rpv build/*/images/jdk/* $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}
+		find $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION} -name \*.diz -delete
+		for s in 16 24 32 48
+			do
+				install -Dm 644 jdk/src/java.desktop/unix/classes/sun/awt/X11/java-icon${s}.png $PKG/usr/share/icons/hicolor/${s}x${s}/apps/java9.png
+			done
 	popd
 
 	checketc $PKG
-	packageclean "$PKG"
+	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

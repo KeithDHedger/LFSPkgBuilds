@@ -2,22 +2,18 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="at-spi2-core-2.22.0 ATK-2.22.0"
+DEPENDS="OpenSSL-1.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="at-spi2-atk"
+PKGNAME="make-ca"
 TARNAME="$PKGNAME"
-VERSION="2.22.0"
-BUILD=1
-SECTION="GTK"
+VERSION="0.7"
+BUILD=${BUILD:-1}
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
-
+TARBALL="${TARNAME}-${VERSION}-tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -25,18 +21,18 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
 
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/djlucas/make-ca/archive/v${VERSION}/${TARBALL}" $SECTION
+
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man||true
+		make install DESTDIR=$PKG
 	popd
 
-	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
-	cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
@@ -56,5 +52,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${PKGNAME}-${VERSION}"
 popd 2>/dev/null||true

@@ -7,6 +7,8 @@
 ALPHA=${1:-"a"}
 LFSGLOB="${ALPHA}.*"
 DATAFILE="/tmp/$$${ALPHA}-site"
+OPENINKKEDIT=${OPENINKKEDIT:=1}
+ROOT=$(findmnt --target=. -no TARGET)
 
 links -dump ftp://ftp.lfs-matrix.net/pub/blfs/8.1/$ALPHA > "$DATAFILE"
 while read
@@ -17,11 +19,15 @@ while read
 				echo -e "${GREEN}Manually check $(lfspkg -S $REPLY 3) ...${NORMAL}"
 				continue
 			fi
-			OLDVERSION=$(lfspkg -S $REPLY 2)
+			OLDVERSION=$(lfspkg -R "$ROOT" -S $REPLY 2)
 
 			if [ $(checkversion $NEWVERSION $OLDVERSION) -ne 0 ];then
 				echo -e "${RED}$REPLY needs adjusting ..${NORMAL}"
-				lfspkg -S $REPLY 3
+				lfspkg -R "$ROOT" -S $REPLY 3
+				if  [ $OPENINKKEDIT -eq 1 ];then
+					kkedit "${ROOT}$(lfspkg -R "$ROOT" -S $REPLY 3)"
+					lfspkg --webpage $REPLY
+				fi
 				echo
 			fi
 		fi

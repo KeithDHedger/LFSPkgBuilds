@@ -32,15 +32,15 @@ sed -e '1   s/^/{"/' \
 sed -e '$ s/$/0}/' \
 -i libmath.h
 EOF
-		ln -sv /tools/lib/libncursesw.so.6 /usr/lib/libncursesw.so.6
-		ln -sfv libncurses.so.6 /usr/lib/libncurses.so
+		ln -sv /tools/lib/libncursesw.so.6 /usr/lib/libncursesw.so.6||true
+		ln -sfv libncurses.so.6 /usr/lib/libncurses.so||true
 		sed -i -e '/flex/s/as_fn_error/: ;; # &/' configure
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-readline --infodir=/usr/share/info --mandir=/usr/share/man
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
-
+exit 100
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
