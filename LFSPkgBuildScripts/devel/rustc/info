@@ -1,0 +1,7 @@
+The Rust programming language is designed to be a safe, concurrent, practical language.
+
+As with many other programming languages, rustc (the rust compiler) needs a binary from which to bootstrap. It will download a stage0 binary, and several cargo files (these are actually .tar.gz source archives) at the start of the build, so you cannot compile it without an internet connection.
+
+The current rustbuild build-system will use all available processors, although it does not scale well and often falls back to just using one core while waiting for a library to compile.
+
+At the moment Rust does not provide any guarantees of a stable ABI

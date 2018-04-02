@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.0.2 Nettle-3.3 Pixman-0.34.0 x-fonts-8.0 xkeyboard-config-2.20 libepoxy-1.4.0 acpid-2.0.28 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
+DEPENDS="OpenSSL-1.1.0 Nettle-3.4 Pixman-0.34.0 x-fonts-8.2 xkeyboard-config-2.20 libepoxy-1.4.0 acpid-2.0.28 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -24,6 +24,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
 
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
@@ -35,7 +37,7 @@ pushd "${TARNAME}-${VERSION}"
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

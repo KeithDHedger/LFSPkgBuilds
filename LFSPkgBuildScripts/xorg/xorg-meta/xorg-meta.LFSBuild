@@ -3,7 +3,7 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="xorg-meta"
-VERSION="8.0"
+VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -17,13 +17,13 @@ export CHECKETC=0
 mkdir -vp ${SOURCEARCHIVES}/${SECTION}||true
 
 DEPENDS="util-macros-1.19.1
-proto-8.0
+proto-8.2
 libXau-1.0.8
 libXdmcp-1.1.2
 xcb-proto-1.12
-Fontconfig-2.12.1
+Fontconfig-2.12.6
 libxcb-1.12 
-xorg-libs-8.0
+xorg-libs-8.2
 xcb-util-0.4.0
 xcb-util-image-0.4.0
 xcb-util-keysyms-0.4.0
@@ -33,12 +33,12 @@ xcb-util-cursor-0.1.3
 MesaLib-13.0.4
 glu-9.0.0
 xbitmaps-1.1.1
-x-apps-8.0
+x-apps-8.2
 xcursor-themes-1.0.4
-x-fonts-8.0
+x-fonts-8.2
 xkeyboard-config-2.20
 Xorg-Server-1.19.1
-xorg-drivers-8.0
+xorg-drivers-8.2
 twm-1.0.9
 xterm-327
 xclock-1.0.7
@@ -57,8 +57,9 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
 
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd

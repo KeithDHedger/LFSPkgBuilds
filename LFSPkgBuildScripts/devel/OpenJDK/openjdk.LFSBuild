@@ -29,7 +29,7 @@ CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2"
-	pushd "${TARROOTPKGNAME}-${TARROOTPKGNAME}${TARROOTPKGVERSION}"
+	pushd "${TARROOTPKGNAME}-jdk-${VERSION}+11"
 		cat > subprojects.md5 << EOF
 dbc62e27a93686a9aea12e9c97c2f765  corba.tar.bz2
 25853ba33123397b2e755249f102ae73  hotspot.tar.bz2
@@ -42,7 +42,7 @@ EOF
 
 		for subproject in corba hotspot jaxp jaxws jdk langtools nashorn
 			do
-				wget -c http://hg.openjdk.java.net/jdk-updates/jdk9u/${subproject}/archive/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2 -O ${subproject}.tar.bz2
+				wget -c http://hg.openjdk.java.net/jdk-updates/jdk9u/${subproject}/archive/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2 -O ${subproject}.tar.bz2||exit 100
 			done
 
 		md5sum -c subprojects.md5
@@ -55,7 +55,7 @@ EOF
 		unset JAVA_HOME
 		PATH="${PATH}:/opt/jdk/bin"
 
-		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-jtreg=$PWD/jtreg --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="11" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/ssl/java/cacerts.jks
+		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="11" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/ssl/java/cacerts.jks
 
 		make images
 		install -vdm755 $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}
@@ -89,6 +89,6 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARROOTPKGNAME}-${TARROOTPKGNAME}${TARROOTPKGVERSION}"
+	rm -r "$PKG" "${TARROOTPKGNAME}-jdk-${VERSION}+11"
 popd 2>/dev/null||true
 

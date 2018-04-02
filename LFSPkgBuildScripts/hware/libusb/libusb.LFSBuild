@@ -26,10 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i "s/^PROJECT_LOGO/#&/" doc/doxygen.cfg.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make|| exit 100
-		make -C doc docs||make -C doc docs|| exit 100
 		make install DESTDIR=$PKG || exit 1
-		install -v -d -m755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}/apidocs
-		install -v -m644 doc/html/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}/apidocs
 	popd
 
 	checketc $PKG

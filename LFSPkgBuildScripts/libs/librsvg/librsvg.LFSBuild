@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gdk-pixbuf-2.36.5 libcroco-0.6.11 Pango-1.40.3 gobject-introspection-1.50.0 Vala-0.34.4 GTK-Doc-1.25"
+DEPENDS="gdk-pixbuf-2.36.5 libcroco-0.6.12 Pango-1.40.14 gobject-introspection-1.54.1 GTK-Doc-1.27"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -16,41 +16,44 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/librsvg/2.40/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/librsvg/${VERSION%.?*}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+CWD=$(pwd)
 
-pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-vala --disable-static --enable-gtk-doc
-	make $MAKEFLAGS||make||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-vala --disable-static --enable-gtk-doc
+		make $MAKEFLAGS||make||make|| exit 1
+		make install DESTDIR=$PKG || exit 1
+	popd
 
-checketc $PKG
-packageclean "$PKG"
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

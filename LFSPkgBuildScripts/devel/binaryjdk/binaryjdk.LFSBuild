@@ -27,12 +27,12 @@ gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}+11-$ARCHBIN-bin.tar.xz"
-	pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"
+	pushd "${TARNAME}-${VERSION}+11-$ARCHBIN-bin"
 		mkdir -vp $PKG/opt
-		install -vdm755 $PKG/opt/${TARNAME}-${VERSION}+11-bin
-		mv -v * $PKG/opt/${TARNAME}-${VERSION}+11-bin
-		ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
-		chown -R root:root $PKG/opt/${TARNAME}-${VERSION}+11-bin
+		install -vdm755 $PKG/opt/${PKGNAME}-${VERSION}
+		mv -v * $PKG/opt/${PKGNAME}-${VERSION}
+		ln -sf ${PKGNAME}-${VERSION} $PKG/opt/jdk
+		chown -R root:root $PKG/opt/${PKGNAME}-${VERSION}
 	popd
 
 	checketc $PKG
@@ -58,6 +58,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	rm -r "$PKG"
-	rm -r "${TARNAME}-${VERSION}-$ARCHBIN-bin"
+	rm -r "${TARNAME}-${VERSION}+11-$ARCHBIN-bin"
 popd 2>/dev/null||true
 

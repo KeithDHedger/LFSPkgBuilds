@@ -18,10 +18,12 @@ DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
 
-mkdir -vp ${COMPILEAT}${SOURCEARCHIVES}/${SECTION}/proto||true
+pushd $COMPILEAT 2>/dev/null||true
+	mkdir -vp ${SOURCEARCHIVES}/${SECTION}/proto||true
 
-cat > ${SOURCEARCHIVES}/${SECTION}/proto/${PKGNAME}-${VERSION}.md5 << "EOF"
+	cat > ${SOURCEARCHIVES}/${SECTION}/proto/${PKGNAME}-${VERSION}.md5 << "EOF"
 1a05fb01fa1d5198894c931cf925c025  bigreqsproto-1.1.2.tar.bz2
 98482f65ba1e74a08bf5b056a4031ef0  compositeproto-0.4.2.tar.bz2
 998e5904764b82642cc63d97b4ba9e95  damageproto-1.2.1.tar.bz2
@@ -50,7 +52,6 @@ e793ecefeaecfeabd1aed6a01095174e  xf86vidmodeproto-2.3.1.tar.bz2
 16791f7ca8c51a20608af11702e51083  xproto-7.0.31.tar.bz2
 EOF
 
-pushd $COMPILEAT 2>/dev/null||true
 	pushd ${SOURCEARCHIVES}/${SECTION}/proto
 		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B http://xorg.freedesktop.org/releases/individual/proto/ -P  ${SOURCEARCHIVES}/${SECTION}/proto
 		if ! md5sum -c ${PKGNAME}-${VERSION}.md5;then

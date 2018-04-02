@@ -2,33 +2,56 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="pixman"
+DEPENDS="cURL-7.58.0 CMake-3.10.2 Python-2.7.14"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="rustc"
 TARNAME="$PKGNAME"
-VERSION="0.34.0"
-BUILD=${BUILD:-1}
-SECTION="LIBS"
+VERSION="1.22.1"
+BUILD=1
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}-src.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://cairographics.org/releases/${TARBALL}" $SECTION
+gettar "https://static.rust-lang.org/dist/${TARBALL}" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "${TARNAME}-${VERSION}-src"
+		cat <<EOF > config.toml
+# see config.toml.example for more possible options
+[llvm]
+targets = "X86"
+
+[build]
+# install cargo as well as rust
+extended = true
+
+[install]
+prefix = "/usr"
+docdir = "share/doc/rustc-1.22.1"
+
+[rust]
+channel = "stable"
+rpath = false
+EOF
+	./x.py build
+	DESTDIR=$PKG ./x.py install
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make || exit 1
+		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -50,6 +73,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}-src"
 popd 2>/dev/null||true
-

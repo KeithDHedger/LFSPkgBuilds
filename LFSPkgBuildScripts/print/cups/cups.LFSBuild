@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Colord-1.4.1 dbus-1.10.14 libusb-1.0.21 xdg-utils-1.1.2 GnuTLS-3.5.9"
+DEPENDS="Colord-1.4.1 dbus-1.10.14 libusb-1.0.21 xdg-utils-1.1.2 GnuTLS-3.6.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

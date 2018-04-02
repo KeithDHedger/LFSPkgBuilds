@@ -12,7 +12,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xmlsoft.org/sources/${TARBALL}" $SECTION
-gettar "" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-python3_hack-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

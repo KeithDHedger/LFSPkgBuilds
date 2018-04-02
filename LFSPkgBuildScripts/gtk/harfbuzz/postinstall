@@ -4,8 +4,9 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-pushd ${BUILDSCRIPTSlibs}/libs/freetype
-	./freetype.LFSBuild install
-popd
+lfspkg -r FreeType||true
+lfspkg -r fontconfig||true
+lfspkg -B "fontconfig-2.12.6"||true
+
 exit 0
 

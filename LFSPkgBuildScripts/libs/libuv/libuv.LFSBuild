@@ -2,20 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="pixman"
+PKGNAME="libuv"
 TARNAME="$PKGNAME"
-VERSION="0.34.0"
-BUILD=${BUILD:-1}
+VERSION="1.19.1"
+BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://cairographics.org/releases/${TARBALL}" $SECTION
+gettar "https://github.com/libuv/libuv/archive/v1.19.1/${TARBALL}" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
@@ -23,12 +22,13 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sh autogen.sh
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make || exit 1
+		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -52,4 +52,3 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
-

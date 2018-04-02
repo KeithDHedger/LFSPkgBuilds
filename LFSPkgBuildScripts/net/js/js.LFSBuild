@@ -2,57 +2,74 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libffi-3.2.1 NSPR-4.13.1 Python-2.7.13 Zip-3.0"
+DEPENDS="libffi-3.2.1 NSPR-4.18 Python-2.7.14 Zip-3.0 autoconf213-2.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="js"
-TARNAME="mozjs17.0.0"
-VERSION="17.0.0"
+VERSION="38.2.1"
+TARNAME="mozjs-${VERSION}"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="mozjs17.0.0.tar.gz"
+TARBALL="${TARNAME}.rc0.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.mozilla.org/pub/mozilla.org/js/${TARBALL}" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/mozjs/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}38-${VERSION}-upstream_fixes-2.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+CWD=$(pwd)
 
-pushd "${TARNAME}"
-	cd js/src
-	sed -i 's/(defined\((@TEMPLATE_FILE)\))/\1/' config/milestone.pl
-	./configure --prefix=/usr --enable-readline --enable-threadsafe --with-system-ffi --with-system-nspr
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	export SHELL=/bin/bash
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "mozjs-38.0.0"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}38-${VERSION}-upstream_fixes-2.patch
+		cd js/src
+		autoconf2.13
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-readline --enable-threadsafe --with-system-ffi --with-system-nspr --with-intl-api --with-system-zlib --with-system-icu
+		make $MAKEFLAGS||make|| exit 1
+		make install DESTDIR=$PKG || exit 1
 
-checketc $PKG
-packageclean "$PKG"
+		pushd $PKG/usr/include/mozjs-38
+			for link in $(find . -type l)
+			do
+				header=$(readlink $link)
+				rm -f $link
+				cp -pv $header $link
+				chmod 644 $link
+			done
+		popd
+		chown -Rv root.root $PKG/usr/include/mozjs-38
+	popd
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-rm -r "$PKG" "${TARNAME}"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "mozjs-38.0.0"
+popd 2>/dev/null||true

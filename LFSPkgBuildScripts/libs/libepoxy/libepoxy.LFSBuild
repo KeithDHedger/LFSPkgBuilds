@@ -23,6 +23,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
@@ -32,7 +34,7 @@ pushd "${TARNAME}-${VERSION}"
 popd
 
 checketc "$PKG"
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
