@@ -2,22 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.0 Nettle-3.4 Pixman-0.34.0 x-fonts-8.2 xkeyboard-config-2.20 libepoxy-1.4.0 acpid-2.0.28 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
+DEPENDS="OpenSSL-1.1.0 Nettle-3.4 Pixman-0.34.0 x-fonts-8.2 xkeyboard-config-2.23.1 libepoxy-1.4.3 acpid-2.0.28 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xorg-server"
 TARNAME="$PKGNAME"
-VERSION="1.19.1"
+VERSION="1.19.6"
 BUILD=${BUILD:-2}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xorg.freedesktop.org/archive/individual/xserver/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-add_prime_support-1.patch" $SECTION
+gettar "https://xorg.freedesktop.org/archive/individual/xserver/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -26,37 +25,36 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
 
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --enable-glamor --enable-install-setuid --enable-suid-wrapper --disable-systemd-logind --with-xkb-output=/var/lib/xkb --enable-dmx --enable-kdrive
+		make $MAKEFLAGS||make || exit 1
+		make install DESTDIR=$PKG || exit 1
+	popd
 
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_prime_support-1.patch
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-	./configure $XORG_CONFIG --enable-glamor --enable-install-setuid --enable-suid-wrapper --disable-systemd-logind --with-xkb-output=/var/lib/xkb --enable-dmx --enable-kdrive
-	make $MAKEFLAGS||make || exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-checketc $PKG
-packageclean "$PKG" "$CWD"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
-
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
-
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
 

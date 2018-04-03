@@ -2,26 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.19.6 Libevdev-1.5.8 mtdev-1.1.5"
+DEPENDS="Beaker-1.9.0 MarkupSafe-1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="xf86-input-evdev"
+PKGNAME="Mako"
 TARNAME="$PKGNAME"
-VERSION="2.10.5"
-BUILD=${BUILD:-1}
-SECTION="HWARE"
+VERSION="1.0.4"
+BUILD=1
+SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xorg.freedesktop.org/archive/individual/driver/${TARBALL}" $SECTION
+gettar "https://files.pythonhosted.org/packages/source/M/Mako/${TARBALL}" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
@@ -29,12 +27,12 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG
-		make $MAKEFLAGS||make || exit 1
-		make install DESTDIR=$PKG || exit 1
+		python setup.py install --optimize=1 --root=$PKG
+		sed -i "s:mako-render:&3:g" setup.py 
+		python3 setup.py install --optimize=1 --root=$PKG
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

@@ -2,13 +2,13 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xf86-video-ati-7.8.0 xf86-video-fbdev-0.4.4 xf86-input-evdev-2.10.5 xf86-video-nouveau-1.0.13 xf86-video-vesa-2.3.4"
+DEPENDS="xf86-video-ati-7.10.0 xf86-video-fbdev-0.4.4 xf86-input-evdev-2.10.5 xf86-video-nouveau-1.0.15 xf86-video-vesa-2.3.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xorg-drivers"
-VERSION="8.0"
+VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"

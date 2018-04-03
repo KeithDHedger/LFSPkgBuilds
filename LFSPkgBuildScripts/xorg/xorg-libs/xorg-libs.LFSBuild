@@ -76,19 +76,19 @@ EOF
 			pushd $packagedir
 				case $packagedir in
 					libxshmfence*)
-						./configure $XORG_CONFIG CFLAGS="$CFLAGS -D_GNU_SOURCE"
+						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG CFLAGS="$CFLAGS -D_GNU_SOURCE"
 						;;
 					libICE*)
-						./configure $XORG_CONFIG ICE_LIBS=-lpthread
+						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG ICE_LIBS=-lpthread
 						;;
 					libXfont-[0-9]*)
-						./configure $XORG_CONFIG --disable-devel-docs || exit 1
+						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --disable-devel-docs || exit 1
 						;;
 					libXt-[0-9]*)
-						./configure $XORG_CONFIG --with-appdefaultdir=/etc/X11/app-defaults || exit 1
+						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-appdefaultdir=/etc/X11/app-defaults || exit 1
 						;;
 					*)
-						./configure $XORG_CONFIG || exit 1
+						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 1
 						;;
 				esac
 				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 1

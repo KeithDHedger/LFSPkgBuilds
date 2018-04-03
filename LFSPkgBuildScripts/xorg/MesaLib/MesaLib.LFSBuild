@@ -2,21 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.2 libdrm-2.4.75 Python-2.7.14 elfutils-0.168 libvdpau-1.1.1 LLVM-3.9.1"
+DEPENDS="xorg-libs-8.2 libdrm-2.4.89 Python-2.7.14 Mako-1.0.4 elfutils-0.168 libvdpau-1.1.1 LLVM-5.0.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="mesalib"
 TARNAME="mesa"
-VERSION="13.0.4"
+VERSION="17.3.4"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.freedesktop.org/pub/mesa/${VERSION}/${TARBALL}" $SECTION
+gettar "https://mesa.freedesktop.org/archive/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-add_xdemos-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
@@ -28,17 +28,15 @@ CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch
-		sed -i "/pthread_stubs_possible=/s/yes/no/" configure.ac
 		GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast"
-		./autogen.sh CFLAGS="-O2" CXXFLAGS="-O2" --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV
+		./configure.sh CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV
 		unset GLL_DRV
-		make $MAKEFLAGS||make || exit 1
-		make $MAKEFLAGS -C xdemos DEMOS_PREFIX=$XORG_PREFIX || make -C xdemos DEMOS_PREFIX=$XORG_PREFIX ||exit 1
-		make install DESTDIR=$PKG || exit 1
-		make -C xdemos DEMOS_PREFIX=$XORG_PREFIX DESTDIR="$PKG" install || exit 1
+		make $MAKEFLAGS||make || exit 100
+		make $MAKEFLAGS -C xdemos DEMOS_PREFIX=$XORG_PREFIX || make -C xdemos DEMOS_PREFIX=$XORG_PREFIX ||exit 100
+		make install DESTDIR=$PKG || exit 100
+		make -C xdemos DEMOS_PREFIX=$XORG_PREFIX DESTDIR="$PKG" install || exit 100
 		install -v -dm755 $PKG/usr/share/doc/${TARNAME}-${VERSION}
 		cp -rfv docs/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
 	popd
