@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Which-2.2 icu-58.2 Python-2.7.13"
+DEPENDS="Which-2.21 icu-60.2 Python-2.7.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

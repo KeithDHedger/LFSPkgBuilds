@@ -31,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch
 		GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast"
-		./configure.sh CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV
+		./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV
 		unset GLL_DRV
 		make $MAKEFLAGS||make || exit 100
 		make $MAKEFLAGS -C xdemos DEMOS_PREFIX=$XORG_PREFIX || make -C xdemos DEMOS_PREFIX=$XORG_PREFIX ||exit 100

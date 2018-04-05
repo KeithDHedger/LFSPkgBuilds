@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.52.1 OpenSSL-1.0.2 Python-2.7.13 PCRE-8.40 Subversion-1.9.5"
+DEPENDS="curl-7.58.0 OpenSSL-1.1.0 Python-2.7.14 PCRE-8.41 Subversion-1.9.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.13 Cairo-1.14.8"
+DEPENDS="Python-2.7.14 Cairo-1.14.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

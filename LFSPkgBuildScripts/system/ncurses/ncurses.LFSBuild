@@ -10,12 +10,6 @@ SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
-BUILDSTATIC="--disable-static --with-shared"
-if [ "X$ENABLESTATIC" != "X" ];then
-	BUILDSTATIC="--enable-static --disable-shared"
-	PKGNAME="ncurses-static"
-fi
-
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -28,37 +22,25 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
-
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --mandir=/usr/share/man --without-debug --without-normal --enable-pc-files --enable-widec --prefix=/usr $BUILDSTATIC
-
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --mandir=/usr/share/man --without-debug --without-normal --enable-pc-files --enable-widec --prefix=/usr --with-shared
 		make $MAKEFLAGS||make|| exit
-		if [ "X$ENABLESTATIC" != "X" ];then
-			make install DESTDIR="$PKG" || exit
-			rm -rf $PKG/usr/bin $PKG/usr/include $PKG/usr/lib/terminfo $PKG/usr/share
-		else
-			make install DESTDIR="$PKG" || exit
-			mkdir -p $PKG/lib|| true
-
-			mv -v $PKG/usr/lib/libncursesw.so.6* $PKG/lib
-			ln -sfv ../../lib/$(readlink $PKG/usr/lib/libncursesw.so) $PKG/usr/lib/libncursesw.so
-			for lib in ncurses form panel menu
+		make install DESTDIR="$PKG" || exit
+		mkdir -vp $PKG/lib  $PKG/usr/lib/pkgconfig|| true
+		mv -v $PKG/usr/lib/libncursesw.so.6* $PKG/lib
+		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libncursesw.so) $PKG/usr/lib/libncursesw.so
+		for lib in ncurses form panel menu
 			do
-				rm -vf /usr/lib/lib${lib}.so
+				rm -vf $PKG/usr/lib/lib${lib}.so
 				echo "INPUT(-l${lib}w)" > $PKG/usr/lib/lib${lib}.so
-				ln -sfv lib${lib}w.a $PKG/usr/lib/lib${lib}.a
 				ln -sfv ${lib}w.pc $PKG/usr/lib/pkgconfig/${lib}.pc
 			done
 
-			ln -sfv libncurses++w.a $PKG/usr/lib/libncurses++.a
-			rm -vf $PKG/usr/lib/libcursesw.so
-			echo "INPUT(-lncursesw)" > $PKG/usr/lib/libcursesw.so
-			ln -sfv libncurses.so $PKG/usr/lib/libcurses.so
-			ln -sfv libncursesw.a $PKG/usr/lib/libcursesw.a
-			ln -sfv libncurses.a $PKG/usr/lib/libcurses.a
-			mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-			cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-			ln -sfv ../share/terminfo $PKG/usr/lib||true
-		fi
+		rm -vf $PKG/usr/lib/libcursesw.so
+		echo "INPUT(-lncursesw)" > $PKG/usr/lib/libcursesw.so
+		ln -sfv libncurses.so $PKG/usr/lib/libcurses.so
+		mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		ln -sfv ../share/terminfo $PKG/usr/lib||true
 	popd
 
 	checketc "$PKG"

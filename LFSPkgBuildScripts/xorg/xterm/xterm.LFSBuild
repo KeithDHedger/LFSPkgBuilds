@@ -16,7 +16,7 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tgz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://invisible-island.net/xterm/${TARBALL}" $SECTION
+gettar "http://invisible-mirror.net/archives/xterm/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libjpeg-turbo-1.5.1 libpng-1.6.28 LibTIFF-4.0.7"
+DEPENDS="libjpeg-turbo-1.5.3 libpng-1.6.34 LibTIFF-4.0.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

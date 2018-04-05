@@ -16,7 +16,7 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/anholt/libepoxy/releases/download/v${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://github.com/anholt/libepoxy/releases/download/${VERSION}/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

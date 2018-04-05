@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="glib-networking-2.50.0 libxml2-2.9.4 SQLite-3.17.0 vala-0.34.4"
+DEPENDS="glib-networking-2.50.0 libxml2-2.9.7 SQLite-3.22.0 vala-0.38.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
