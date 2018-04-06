@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.10.3 GTK-2.24.31 icu-60.2 libsoup-2.56.0 MesaLib-17.3.4 Ruby-2.4.0 SQLite-3.22.0 Which-2.21 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.27"
+DEPENDS="gst-plugins-base1.0-1.10.3 GTK-2.24.31 icu-60.2 libsoup-2.60.3 MesaLib-17.3.4 Ruby-2.4.0 SQLite-3.22.0 Which-2.21 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.27"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -24,8 +24,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+CWD=$(pwd)
 
+pushd $COMPILEAT 2>/dev/null||true
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-2.4.9-abs.patch
 
@@ -37,7 +39,7 @@ pushd "${TARNAME}-${VERSION}"
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -59,3 +61,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

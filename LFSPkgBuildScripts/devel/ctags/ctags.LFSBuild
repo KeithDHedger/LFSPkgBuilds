@@ -2,53 +2,58 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="docutils-0.14"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="ctags"
 TARNAME="$PKGNAME"
 VERSION="5.8"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.zip"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://kent.dl.sourceforge.net/project/ctags/ctags/5.8/${TARBALL}" $SECTION
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+#gettar "http://kent.dl.sourceforge.net/project/ctags/ctags/5.8/${TARBALL}" $SECTION
+gettar "https://github.com/universal-ctags/ctags/archive/master.zip" $SECTION $TARBALL
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-	./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-debug --disable-nls --enable-tmpdir=/tmp
-	make $MAKEFLAGS||make|| exit
-	mkdir -p $PKG/usr/man/man1 $PKG/usr/bin
-	cp ctags $PKG/usr/bin
-	chmod 755 $PKG/usr/bin/ctags
-	cp ctags.1 $PKG/usr/man/man1
-	chmod 644 $PKG/usr/man/man1/ctags.1
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "ctags-master"
+		./autogen.sh
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-debug --disable-nls --enable-tmpdir=/tmp  --mandir=/usr/man
+		make $MAKEFLAGS||make|| exit
+		make install DESTDIR="$PKG"
+	popd
 
-checketc $PKG
-packageclean "$PKG"
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "ctags-master"
+popd 2>/dev/null||true

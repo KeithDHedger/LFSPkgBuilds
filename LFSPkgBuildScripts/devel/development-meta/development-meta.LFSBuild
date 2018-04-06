@@ -12,10 +12,10 @@ DEPENDS="abs-guide-6.6
 bazaar-2.5.1
 ctags-5.8
 libglade-2.6.4
-Ruby-2.4.0
-Subversion-1.9.5
-Git-2.11.1
-Qt5-5.8.0
+Ruby-2.5.0
+Subversion-1.9.7
+Git-2.16.2
+Qt5-5.10.1
 CMake-3.10.2
 apache-ant-1.10.2
 OpenJDK-9.0.4
@@ -43,6 +43,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

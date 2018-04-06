@@ -2,25 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.1.5 DBus-1.12.4 MesaLib-17.3.4 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-10.0 pciutils-3.5.2 NSS-3.29"
+DEPENDS="alsa-lib-1.1.5 DBus-1.12.4 MesaLib-17.3.4 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-11.1 pciutils-3.5.6 NSS-3.35"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qt5"
 TARNAME="qt-everywhere-opensource-src"
-VERSION="5.8.0"
+VERSION="5.10.1"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-	
-DOWHAT=${1:-"build"}
+gettar "http://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION	
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -28,23 +27,22 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	mkdir qt5build ||true
 	pushd qt5build
-		export QT5LINK=/usr
 		export QT5PREFIX=/usr
-		export QT5LIBS=${QT5LINK}/lib${LIBDIRSUFFIX}/${PKGNAME}
-		export QT5INCLUDES=${QT5LINK}/include/${PKGNAME}
-		export QT5DATA=${QT5LINK}/share/${PKGNAME}
-		export QT5DOCS=${QT5LINK}/share/doc/${PKGNAME}
-		export QT5TRANSLATIONS=${QT5LINK}/share/${PKGNAME}/translations
-		export QT5EXAMPLES=${QT5LINK}/share/doc/${PKGNAME}/examples
-		export QT5DEMOS=${QT5LINK}/share/doc/${PKGNAME}/demos
-		export QT5IMPORTS=${QT5LINK}/share/doc/${PKGNAME}/imports
-		export QT5PLUGINS=${QT5LINK}/share/doc/${PKGNAME}/plugins
-			
-		../${TARNAME}-${VERSION}/configure -prefix ${QT5LINK} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -examplesdir ${QT5DEMOS} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS}
-			
+		export QT5LIBS=${QT5PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
+		export QT5INCLUDES=${QT5PREFIX}/include/${PKGNAME}
+		export QT5DATA=${QT5PREFIX}/share/${PKGNAME}
+		export QT5DOCS=${QT5PREFIX}/share/doc/${PKGNAME}
+		export QT5TRANSLATIONS=${QT5PREFIX}/share/${PKGNAME}/translations
+		export QT5EXAMPLES=${QT5PREFIX}/share/doc/${PKGNAME}/examples
+		export QT5DEMOS=${QT5PREFIX}/share/doc/${PKGNAME}/demos
+		export QT5IMPORTS=${QT5PREFIX}/share/doc/${PKGNAME}/imports
+		export QT5PLUGINS=${QT5PREFIX}/share/doc/${PKGNAME}/plugins
+
+		../${TARNAME}-${VERSION}/configure -prefix ${QT5PREFIX} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -examplesdir ${QT5DEMOS} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS}
+
 		make $MAKEFLAGS||make|| exit 1
 		make install INSTALL_ROOT=$PKG || exit 1
-		
+
 		find ${PKG}${QT5LIBS}/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
 		find ${PKG}${QT5PREFIX}/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5PREFIX/lib/:g" {} \;
 		find ${PKG}${QT5PREFIX}/ -name *.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
@@ -56,90 +54,90 @@ pushd $COMPILEAT 2>/dev/null||true
 		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/linguist/linguist/images/icons/linguist-128-32.png $PKG/usr/share/pixmaps/linguist-qt5.png
 		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png $PKG/usr/share/pixmaps/qdbusviewer-qt5.png
 		install -dm755 $PKG/usr/share/applications
-			
+
 		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
 		pushd $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
 			ln -sv ../qt5/pkgconfig/*.pc .
 		popd
-			
+
 		# Recreate Makefiles in order to use the just compiled qdoc.
 		for doc in $(find . -name "Makefile*" | xargs grep "/usr/bin/" | cut -d':' -f1)
-			do
-				rm -fv $doc
-			done
+		do
+			rm -fv $doc
+		done
 		make docs
 		make install_docs INSTALL_ROOT=$PKG
 	popd
 
 	mkdir -vp ${PKG}/usr/share/applications ${PKG}/etc/profile.d||true
 	cat > ${PKG}/usr/share/applications/assistant-qt5.desktop << EOF
-[Desktop Entry]
-Name=Qt5 Assistant 
-Comment=Shows Qt5 documentation and examples
-Exec=assistant
-Icon=assistant-qt5.png
-Terminal=false
-Encoding=UTF-8
-Type=Application
-Categories=Qt;Development;Documentation;
-EOF
+	[Desktop Entry]
+	Name=Qt5 Assistant 
+	Comment=Shows Qt5 documentation and examples
+	Exec=assistant
+	Icon=assistant-qt5.png
+	Terminal=false
+	Encoding=UTF-8
+	Type=Application
+	Categories=Qt;Development;Documentation;
+	EOF
 
 	cat > ${PKG}/usr/share/applications/designer-qt5.desktop << EOF
-[Desktop Entry]
-Name=Qt5 Designer
-GenericName=Interface Designer
-Comment=Design GUIs for Qt5 applications
-Exec=designer
-Icon=designer-qt5.png
-MimeType=application/x-designer;
-Terminal=false
-Encoding=UTF-8
-Type=Application
-Categories=Qt;Development;
-EOF
+	[Desktop Entry]
+	Name=Qt5 Designer
+	GenericName=Interface Designer
+	Comment=Design GUIs for Qt5 applications
+	Exec=designer
+	Icon=designer-qt5.png
+	MimeType=application/x-designer;
+	Terminal=false
+	Encoding=UTF-8
+	Type=Application
+	Categories=Qt;Development;
+	EOF
 
 	cat > ${PKG}/usr/share/applications/linguist-qt5.desktop << EOF
-[Desktop Entry]
-Name=Qt5 Linguist
-Comment=Add translations to Qt5 applications
-Exec=linguist
-Icon=linguist-qt5.png
-MimeType=text/vnd.trolltech.linguist;application/x-linguist;
-Terminal=false
-Encoding=UTF-8
-Type=Application
-Categories=Qt;Development;
-EOF
+	[Desktop Entry]
+	Name=Qt5 Linguist
+	Comment=Add translations to Qt5 applications
+	Exec=linguist
+	Icon=linguist-qt5.png
+	MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+	Terminal=false
+	Encoding=UTF-8
+	Type=Application
+	Categories=Qt;Development;
+	EOF
 
 	cat > ${PKG}/usr/share/applications/qdbusviewer-qt5.desktop << EOF
-[Desktop Entry]
-Name=Qt5 QDbusViewer 
-GenericName=D-Bus Debugger
-Comment=Debug D-Bus applications
-Exec=qdbusviewer
-Icon=qdbusviewer-qt5.png
-Terminal=false
-Encoding=UTF-8
-Type=Application
-Categories=Qt;Development;Debugger;
-EOF
+	[Desktop Entry]
+	Name=Qt5 QDbusViewer 
+	GenericName=D-Bus Debugger
+	Comment=Debug D-Bus applications
+	Exec=qdbusviewer
+	Icon=qdbusviewer-qt5.png
+	Terminal=false
+	Encoding=UTF-8
+	Type=Application
+	Categories=Qt;Development;Debugger;
+	EOF
 
 	cat > ${PKG}/etc/profile.d/qt5.sh << EOF
-# Begin /etc/profile.d/qt5.sh
+	# Begin /etc/profile.d/qt5.sh
 
-QT5DIR=/usr
-export QT5DIR
+	QT5DIR=/usr
+	export QT5DIR
 
-# End /etc/profile.d/qt5.sh
-EOF
-			
+	# End /etc/profile.d/qt5.sh
+	EOF
+
 	checketc "$PKG"
-	packageclean "$PKG"
-			
+	packageclean "$PKG" "$CWD"
+
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
-			
+
 	case $DOWHAT in
 		up*)
 			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
@@ -154,6 +152,6 @@ EOF
 			echo "*** Unknown command ***"
 			exit 1
 	esac
-			
+
 	rm -r "$PKG" "${TARNAME}-${VERSION}" qt5build
 popd 2>/dev/null||true
