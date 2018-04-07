@@ -8,7 +8,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="qt5"
-TARNAME="qt-everywhere-opensource-src"
+TARNAME="qt-everywhere-src"
 VERSION="5.10.1"
 BUILD=${BUILD:-1}
 SECTION="QT"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION	
+gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

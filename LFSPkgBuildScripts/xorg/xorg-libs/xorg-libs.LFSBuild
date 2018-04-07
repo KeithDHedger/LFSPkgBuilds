@@ -62,7 +62,7 @@ b804b1eeba6008a1c11c767eb69f8b12  libXaw3d-1.6.2.tar.bz2
 EOF
 
 	pushd "${SOURCEARCHIVES}/${SECTION}/xorg-libs"
-		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B http://xorg.freedesktop.org/releases/individual/lib/ -P${SOURCEARCHIVES}/${SECTION}/xorg-libs
+#		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B http://xorg.freedesktop.org/releases/individual/lib/ -P${SOURCEARCHIVES}/${SECTION}/xorg-libs
 		if ! md5sum -c ${PKGNAME}-${VERSION}.md5;then
 			echo "Files don't match ..."
 			exit 1
@@ -77,24 +77,22 @@ EOF
 			pushd $packagedir
 				case $packagedir in
 					libxshmfence*)
-						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG CFLAGS="$CFLAGS -D_GNU_SOURCE"
-						;;
-					libICE*)
-						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG ICE_LIBS=-lpthread
+						./configure $XORG_CONFIG CFLAGS="$CFLAGS -D_GNU_SOURCE"
 						;;
 					libXfont-[0-9]*)
-						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --disable-devel-docs || exit 1
+						./configure $XORG_CONFIG --disable-devel-docs || exit 1
 						;;
 					libXt-[0-9]*)
-						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-appdefaultdir=/etc/X11/app-defaults || exit 1
-						;;
+						./configure $XORG_CONFIG --with-appdefaultdir=/etc/X11/app-defaults || exit 1
+						;;						
 					*)
-						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 1
+						./configure $XORG_CONFIG || exit 1
 						;;
 				esac
-				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 1
+				make install DESTDIR="$PKG" || exit 1
 				#only going to do this once but need to do 'real' install as some libs need deps
 				make install || exit 1
+				find -L /usr/lib${LIBDIRSUFFIX} -iname "*.la" -exec rm '{}' \;
 				##not sure I like this !!!!
 			popd
 			rm -r $packagedir

@@ -29,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-glibc_2.27_fix-1.patch
 		AUTOPOINT='intltoolize --automake --copy' autoreconf -fiv
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath --disable-systemd-daemon --disable-systemd-login --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath --disable-systemd-daemon --disable-systemd-login --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules --enable-nls
 
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
