@@ -37,7 +37,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	popd
 
 	checketc $PKG
-	packageclean $PKG
+	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -72,39 +72,35 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -rf "$PKG" || true
 	mkdir -p "$PKG"
-	CWD=$(pwd)
 
-	pushd $COMPILEAT 2>/dev/null||true
-		tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}-0"
+		./configure
+		make DESTDIR=$PKG || exit 1
+		make DESTDIR=$PKG install || exit 1
+	popd
 
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-		pushd "${TARNAME}-${VERSION}-0"
-			./configure
-			make DESTDIR=$PKG || exit 1
-			make DESTDIR=$PKG install || exit 1
-		popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-		checketc $PKG
-		packageclean "$PKG" "$CWD"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-		pushd "$PKG"
-			/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-		popd
-
-		case $DOWHAT in
-			up*)
-				lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-				;;
-			"install")
-				lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-				;;
-			"build")
-				echo "Just built"
-				;;
-			*)
-				echo "*** Unknown command ***"
-				exit 1
-		esac
-
-		rm -r "$PKG" "${TARNAME}-${VERSION}-0"
-	popd 2>/dev/null||true
+	rm -r "$PKG" "${TARNAME}-${VERSION}-0"
+popd 2>/dev/null||true

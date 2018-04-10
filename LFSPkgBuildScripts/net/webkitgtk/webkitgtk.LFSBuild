@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.10.3 GTK-2.24.31 icu-60.2 libsoup-2.60.3 MesaLib-17.3.4 Ruby-2.4.0 SQLite-3.22.0 Which-2.21 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.27"
+DEPENDS="gst-plugins-base1.0-1.10.3 GTK-2.24.31 icu-60.2 libsoup-2.60.3 MesaLib-17.3.4 Ruby-2.4.0 SQLite-3.22.0 Which-2.21 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.27 libgcrypt-1.8.2"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -10,55 +10,57 @@ fi
 
 PKGNAME="webkitgtk"
 TARNAME="$PKGNAME"
-VERSION="2.4.9"
+VERSION="2.4.11"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk/${TARNAME}-2.4.9-abs.patch" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-2.4.9-abs.patch
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-2.4.9-abs.patch
+		#thanks to gentoo for this patch
+		#https://bugs.gentoo.org/621532
+		patch -Np1 -i ${CWD}/js.patch
 
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gstreamer=1.0 --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib/WebKitGTK --disable-geolocation --enable-introspection
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
-	rm -rf $PKG/usr/share/gtk-doc/html/webkitgtk-2.4.9
-	mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
-popd
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gstreamer=1.0 --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib/WebKitGTK --disable-geolocation --enable-introspection
+		make $MAKEFLAGS||exit 100
+		make install DESTDIR=$PKG || exit 1
+		rm -rf $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
+		mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
+	popd
 
-checketc $PKG
-packageclean "$PKG" "$CWD"
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
