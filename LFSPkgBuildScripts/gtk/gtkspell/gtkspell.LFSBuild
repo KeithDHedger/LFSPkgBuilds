@@ -2,31 +2,38 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk-2.24.31 enchant-1.6.0"
+DEPENDS="gtk-2.24.32 enchant-2.2.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gtkspell"
-TARNAME="$PKGNAME"
-VERSION="2.0.16"
+TARNAME="${PKGNAME}3"
+VERSION="3.0.9"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://gtkspell.sourceforge.net/download/${TARBALL}" $SECTION
+#gettar "http://gtkspell.sourceforge.net/download/${TARBALL}" $SECTION
+gettar "https://sourceforge.net/projects/${PKGNAME}/files/3.0.9/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+#thanks to arch for tghis patch
+#https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/gtkspell3
+		patch -Np1 -i "$CWD/enchant-2.patch"
+		sed -e 's/enchant/enchant-2/g' -i configure.ac
+		autoreconf -vi
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-gtk2 --disable-gtk3 
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
