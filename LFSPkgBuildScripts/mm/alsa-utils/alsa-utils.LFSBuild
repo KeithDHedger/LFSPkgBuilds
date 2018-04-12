@@ -9,26 +9,24 @@ fi
 
 PKGNAME="alsa-utils"
 TARNAME="$PKGNAME"
-VERSION="1.1.3"
+VERSION="1.1.5"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.alsa-project.org/pub/utils/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-alsaconf --disable-xmlto --with-curses=ncursesw
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-alsaconf --disable-bat --disable-xmlto --with-curses=ncursesw
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd

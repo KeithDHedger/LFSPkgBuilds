@@ -23,7 +23,11 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
+pushd $COMPILEAT 2>/dev/null||true
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+
 
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
@@ -32,7 +36,7 @@ pushd "${TARNAME}-${VERSION}"
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -54,3 +58,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null

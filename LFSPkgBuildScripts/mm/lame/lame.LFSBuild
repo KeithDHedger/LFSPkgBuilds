@@ -11,39 +11,49 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/lame/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/lame/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-mp3rtp
-	make || exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		case $(uname -m) in
+			i?86|armv?l)
+				sed -i -e 's/<xmmintrin.h/&.nouse/' configure
+				;;
+		esac
 
-checketc $PKG
-packageclean "$PKG"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-mp3rtp --enable-nasm
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
+		make || exit 1
+		make install DESTDIR=$PKG pkghtmldir=$PKG/usr/share/doc/${PKGNAME}-${VERSION}|| exit 1
+	popd
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null

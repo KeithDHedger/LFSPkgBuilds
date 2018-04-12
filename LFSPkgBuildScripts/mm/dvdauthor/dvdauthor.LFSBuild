@@ -24,6 +24,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
 unzip ${SOURCEARCHIVES}/${SECTION}/dvdauthor.zip
 rm ${SOURCEARCHIVES}/${SECTION}/dvdauthor.zip
 pushd "dvdauthor-master"
@@ -35,7 +37,7 @@ pushd "dvdauthor-master"
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
