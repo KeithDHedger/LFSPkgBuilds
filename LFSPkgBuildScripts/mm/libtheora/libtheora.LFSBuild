@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libogg-1.3.2 libvorbis-1.3.5 SDL-1.2.15 libpng-1.6.34"
+DEPENDS="libogg-1.3.3 libvorbis-1.3.5 SDL-1.2.15 libpng-1.6.34"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,49 +14,45 @@ BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.xiph.org/releases/theora/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		sed -i 's/png_\(sizeof\)/\1/g' examples/png2theora.c
+		CFLAGS="$LFSFLAGS -lm" CXXFLAGS="$LFSFLAGS -lm" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 1
+		make install DESTDIR=$PKG || exit 1
+	popd
 
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-pushd "${TARNAME}-${VERSION}"
-	sed -i 's/png_\(sizeof\)/\1/g' examples/png2theora.c
-	CFLAGS="$LFSFLAGS -lm" CXXFLAGS="$LFSFLAGS -lm" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-checketc $PKG
-packageclean "$PKG" "$CWD"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
-
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
-
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null

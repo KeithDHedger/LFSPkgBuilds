@@ -2,31 +2,31 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GStreamer-0.10.36 Pango-1.40.14"
+DEPENDS="GStreamer-0.11.3 Pango-1.40.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gst-plugins-base"
 TARNAME="$PKGNAME"
-VERSION="0.10.36"
+VERSION="0.11.3"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/gst-plugins-base/0.10/${TARBALL}" $SECTION
+gettar "https://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-docbook=no --enable-gtk-doc=no
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib64 --disable-debug --disable-nls --disable-static  --disable-theora
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd

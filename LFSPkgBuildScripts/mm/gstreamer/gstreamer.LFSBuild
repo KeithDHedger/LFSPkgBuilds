@@ -9,17 +9,17 @@ fi
 
 PKGNAME="gstreamer"
 TARNAME="$PKGNAME"
-VERSION="0.10.36"
+VERSION="0.11.3"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/gstreamer/0.10/${TARBALL}" $SECTION
+gettar "https://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

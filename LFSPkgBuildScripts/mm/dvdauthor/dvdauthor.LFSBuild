@@ -9,53 +9,50 @@ fi
 
 PKGNAME="dvdauthor"
 TARNAME="$PKGNAME"
-VERSION="0.7.1"
+VERSION="0.7.2"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://codeload.github.com/ldo/dvdauthor/zip/master" $SECTION
-cp ${SOURCEARCHIVES}/${SECTION}/master ${SOURCEARCHIVES}/${SECTION}/dvdauthor.zip
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 CWD=$(pwd)
 
-unzip ${SOURCEARCHIVES}/${SECTION}/dvdauthor.zip
-rm ${SOURCEARCHIVES}/${SECTION}/dvdauthor.zip
-pushd "dvdauthor-master"
-	sed -i 's/ doc / /' Makefile.am
-	./bootstrap
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}  --disable-dvdunauthor
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://downloads.sourceforge.net/${PKGNAME}/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 
-checketc $PKG
-packageclean "$PKG" "$CWD"
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "$PKGNAME"
+		patch -Np1 -i $CWD/${PKGNAME}-${VERSION}-imagemagick7.patch
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 1
+		make install DESTDIR=$PKG || exit 1
+	popd
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-rm -r "$PKG" "dvdauthor-master"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "$PKGNAME"
+popd 2>/dev/null
