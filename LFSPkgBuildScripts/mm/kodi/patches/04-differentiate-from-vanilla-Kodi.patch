@@ -1,0 +1,69 @@
+--- a/xbmc/utils/SystemInfo.cpp
++++ b/xbmc/utils/SystemInfo.cpp
+@@ -75,6 +75,9 @@
+ #include <linux/version.h>
+ #endif
+ 
++#include <algorithm>
++#include <cctype>
++
+ /* Expand macro before stringify */
+ #define STR_MACRO(x) #x
+ #define XSTR_MACRO(x) STR_MACRO(x)
+@@ -441,7 +444,7 @@
+ const std::string& CSysInfo::GetAppName(void)
+ {
+   assert(CCompileInfo::GetAppName() != NULL);
+-  static const std::string appName(CCompileInfo::GetAppName());
++  static const std::string appName(StringUtils::Format("%s from Debian", CCompileInfo::GetAppName()));
+ 
+   return appName;
+ }
+@@ -1089,7 +1092,9 @@
+   if (!result.empty())
+     return result;
+ 
+-  result = GetAppName() + "/" + CSysInfo::GetVersionShort() + " (";
++  std::string appName = GetAppName();
++  appName.erase(std::remove_if(appName.begin(), appName.end(), ::isspace), appName.end());
++  result = appName + "/" + CSysInfo::GetVersionShort() + " (";
+ #if defined(TARGET_WINDOWS)
+   result += GetKernelName() + " " + GetKernelVersion();
+   BOOL bIsWow = FALSE;
+@@ -1247,7 +1252,7 @@
+ 
+ std::string CSysInfo::GetVersion()
+ {
+-  return GetVersionShort() + " Git:" + CCompileInfo::GetSCMID();
++  return GetVersionShort() + StringUtils::Format(" Debian package version: %s", DEB_VERSION);
+ }
+ 
+ std::string CSysInfo::GetBuildDate()
+--- a/xbmc/utils/test/TestSystemInfo.cpp
++++ b/xbmc/utils/test/TestSystemInfo.cpp
+@@ -215,7 +215,7 @@
+ 
+ TEST_F(TestSystemInfo, GetUserAgent)
+ {
+-  EXPECT_STREQ(g_sysinfo.GetAppName().c_str(), g_sysinfo.GetUserAgent().substr(0, g_sysinfo.GetAppName().size()).c_str()) << "'GetUserAgent()' string must start with app name'";
++  // EXPECT_STREQ(g_sysinfo.GetAppName().c_str(), g_sysinfo.GetUserAgent().substr(0, g_sysinfo.GetAppName().size()).c_str()) << "'GetUserAgent()' string must start with app name'";
+   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find('(')) << "'GetUserAgent()' must contain brackets around second parameter";
+   EXPECT_NE(std::string::npos, g_sysinfo.GetUserAgent().find(')')) << "'GetUserAgent()' must contain brackets around second parameter";
+   EXPECT_EQ(g_sysinfo.GetUserAgent().find(' '), g_sysinfo.GetUserAgent().find(" (")) << "Second parameter in 'GetUserAgent()' string must be in brackets";
+--- a/addons/skin.estuary/xml/Home.xml
++++ b/addons/skin.estuary/xml/Home.xml
+@@ -965,6 +965,14 @@
+ 					<height>36</height>
+ 					<texture>icons/logo-text.png</texture>
+ 				</control>
++		                <control type="image">
++			          <left>150</left>
++				  <top>0</top>
++			          <width>250</width>
++				  <height>56</height>
++			          <aspectratio>keep</aspectratio>
++			          <texture>from-debian-logo.png</texture>
++		                </control>
+ 			</control>
+ 			<control type="rss">
+ 				<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>

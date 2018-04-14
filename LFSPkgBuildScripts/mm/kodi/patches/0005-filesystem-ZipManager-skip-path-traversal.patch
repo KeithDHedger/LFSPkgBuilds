@@ -1,0 +1,107 @@
+From 35cfe35608b15335ef21d798947fceab3f47c8d7 Mon Sep 17 00:00:00 2001
+From: Rechi <Rechi@users.noreply.github.com>
+Date: Wed, 10 May 2017 10:21:42 +0200
+Subject: [PATCH] [filesystem] ZipManager: skip path traversal
+
+---
+ xbmc/filesystem/ZipManager.cpp          |  3 ++-
+ xbmc/filesystem/ZipManager.h            |  3 +++
+ xbmc/filesystem/test/CMakeLists.txt     |  3 ++-
+ xbmc/filesystem/test/TestZipManager.cpp | 38 +++++++++++++++++++++++++++++++++
+ 4 files changed, 45 insertions(+), 2 deletions(-)
+ create mode 100644 xbmc/filesystem/test/TestZipManager.cpp
+
+diff --git a/xbmc/filesystem/ZipManager.cpp b/xbmc/filesystem/ZipManager.cpp
+index df6220b..f2c6973 100644
+--- a/xbmc/filesystem/ZipManager.cpp
++++ b/xbmc/filesystem/ZipManager.cpp
+@@ -199,7 +199,8 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
+     // Jump after central file header extra field and file comment
+     mFile.Seek(ze.eclength + ze.clength,SEEK_CUR);
+ 
+-    items.push_back(ze);
++    if (!std::regex_search(strName, PATH_TRAVERSAL))
++      items.push_back(ze);
+   }
+ 
+   /* go through list and figure out file header lengths */
+diff --git a/xbmc/filesystem/ZipManager.h b/xbmc/filesystem/ZipManager.h
+index 551fe5d..93243b9 100644
+--- a/xbmc/filesystem/ZipManager.h
++++ b/xbmc/filesystem/ZipManager.h
+@@ -32,12 +32,15 @@
+ #define ECDREC_SIZE 22
+ 
+ #include <memory.h>
++#include <regex>
+ #include <string>
+ #include <vector>
+ #include <map>
+ 
+ class CURL;
+ 
++static const std::regex PATH_TRAVERSAL(R"_((^|\/|\\)\.{2}($|\/|\\))_");
++
+ struct SZipEntry {
+   unsigned int header;
+   unsigned short version;
+diff --git a/xbmc/filesystem/test/CMakeLists.txt b/xbmc/filesystem/test/CMakeLists.txt
+index 5d77633..5be4e3d 100644
+--- a/xbmc/filesystem/test/CMakeLists.txt
++++ b/xbmc/filesystem/test/CMakeLists.txt
+@@ -2,6 +2,7 @@ set(SOURCES TestDirectory.cpp
+             TestFile.cpp
+             TestFileFactory.cpp
+             TestRarFile.cpp
+-            TestZipFile.cpp)
++            TestZipFile.cpp
++            TestZipManager.cpp)
+ 
+ core_add_test_library(filesystem_test)
+diff --git a/xbmc/filesystem/test/TestZipManager.cpp b/xbmc/filesystem/test/TestZipManager.cpp
+new file mode 100644
+index 0000000..b72dbb6
+--- /dev/null
++++ b/xbmc/filesystem/test/TestZipManager.cpp
+@@ -0,0 +1,38 @@
++/*
++ *      Copyright (C) 2017 Team XBMC
++ *      http://xbmc.org
++ *
++ *  This Program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2, or (at your option)
++ *  any later version.
++ *
++ *  This Program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with XBMC; see the file COPYING.  If not, see
++ *  <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#include "filesystem/ZipManager.h"
++
++#include "gtest/gtest.h"
++
++TEST(TestZipManager, PathTraversal)
++{
++  ASSERT_TRUE(std::regex_search("..", PATH_TRAVERSAL));
++  ASSERT_TRUE(std::regex_search("../test.txt", PATH_TRAVERSAL));
++  ASSERT_TRUE(std::regex_search("..\\test.txt", PATH_TRAVERSAL));
++  ASSERT_TRUE(std::regex_search("test/../test.txt", PATH_TRAVERSAL));
++  ASSERT_TRUE(std::regex_search("test\\../test.txt", PATH_TRAVERSAL));
++  ASSERT_TRUE(std::regex_search("test\\..\\test.txt", PATH_TRAVERSAL));
++
++  ASSERT_FALSE(std::regex_search("...", PATH_TRAVERSAL));
++  ASSERT_FALSE(std::regex_search("..test.txt", PATH_TRAVERSAL));
++  ASSERT_FALSE(std::regex_search("test.txt..", PATH_TRAVERSAL));
++  ASSERT_FALSE(std::regex_search("test..test.txt", PATH_TRAVERSAL));
++}
+-- 
+2.7.4
+

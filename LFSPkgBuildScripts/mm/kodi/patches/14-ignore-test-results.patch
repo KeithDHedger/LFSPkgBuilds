@@ -1,0 +1,11 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -615,7 +615,7 @@
+ 
+ ifeq (1,@GTEST_CONFIGURED@)
+ check: testsuite
+-	for check_program in $(CHECK_PROGRAMS); do $(CURDIR)/$$check_program; done
++	for check_program in $(CHECK_PROGRAMS); do (which valgrind && valgrind --trace-children=yes $(CURDIR)/$$check_program) || $(CURDIR)/$$check_program || true; done
+ 
+ testsuite: $(CHECK_EXTENSIONS) $(CHECK_PROGRAMS)
+ 

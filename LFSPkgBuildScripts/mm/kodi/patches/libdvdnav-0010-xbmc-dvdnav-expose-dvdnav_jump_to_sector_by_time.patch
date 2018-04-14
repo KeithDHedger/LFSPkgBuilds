@@ -1,0 +1,31 @@
+From 9f6be84a6972084cc5197e5eb7d4eb482b66ee6e Mon Sep 17 00:00:00 2001
+From: Voyager1 <voyager@xbmc.org>
+Date: Sun, 14 Feb 2016 17:35:59 +0100
+Subject: [PATCH 10/10] [xbmc][dvdnav] expose dvdnav_jump_to_sector_by_time
+
+---
+ src/dvdnav/dvdnav.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/dvdnav/dvdnav.h b/src/dvdnav/dvdnav.h
+index 9f82b0f..731c0ee 100644
+--- a/libdvdnav-5-0-3/src/dvdnav/dvdnav.h
++++ b/libdvdnav-5-0-3/src/dvdnav/dvdnav.h
+@@ -382,6 +382,14 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *self,
+ int64_t dvdnav_get_current_time(dvdnav_t *self);
+ 
+ /*
++ * Find the nearest vobu and jump to it
++ *
++ * Alternative to dvdnav_time_search
++ */
++dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *this, 
++                                              uint64_t time_in_pts_ticks, int32_t mode);
++
++/*
+  * Stop playing the current position and start playback of the title
+  * from the specified timecode.
+  *
+-- 
+2.1.4
+

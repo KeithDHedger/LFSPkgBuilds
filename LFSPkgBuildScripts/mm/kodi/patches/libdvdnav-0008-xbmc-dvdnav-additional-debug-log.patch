@@ -1,0 +1,24 @@
+From a0147c857f3b877826cec68d1ef685ed0d07fb00 Mon Sep 17 00:00:00 2001
+From: Voyager1 <voyager@xbmc.org>
+Date: Sun, 14 Feb 2016 17:25:11 +0100
+Subject: [PATCH 08/10] [xbmc][dvdnav] additional debug log
+
+---
+ src/searching.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/searching.c b/src/searching.c
+index 1c9ed6f..1271f87 100644
+--- a/libdvdnav-5-0-3/src/searching.c
++++ b/libdvdnav-5-0-3/src/searching.c
+@@ -208,6 +208,7 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
+ 
+   result = dvdnav_get_position(this, &target, &length);
+   if(!result) {
++    printerr("Cannot get current position");
+     return DVDNAV_STATUS_ERR;
+   }
+ 
+-- 
+2.1.4
+

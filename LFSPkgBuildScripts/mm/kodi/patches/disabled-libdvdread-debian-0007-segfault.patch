@@ -1,0 +1,25 @@
+From: Peter Van Eynde <pvaneynd@debian.org>
+Date: Tue, 22 Apr 2014 11:52:53 +0200
+Subject: segfault
+
+Fix miscompilation leading to a segfault.
+
+Closes: #688574
+
+Signed-off-by: Matteo F. Vescovi <mfvescovi@gmail.com>
+---
+ src/dvd_reader.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/dvd_reader.c b/src/dvd_reader.c
+index fbdabb0..4db135d 100644
+--- a/src/dvd_reader.c
++++ b/src/dvd_reader.c
+@@ -30,6 +30,7 @@
+ #include <errno.h>          /* errno, EIN* */
+ #include <string.h>         /* memcpy, strlen */
+ #define _GNU_SOURCE         /* Hurd support */
++#define __USE_GNU           /* Fix segfault */
+ #include <unistd.h>         /* chdir, getcwd */
+ #include <limits.h>         /* PATH_MAX */
+ #include <dirent.h>         /* opendir, readdir */

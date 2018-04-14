@@ -1,0 +1,42 @@
+From b6e55ae95562c094f1da9f1062c6c87bb82f1013 Mon Sep 17 00:00:00 2001
+From: Voyager1 <voyager@xbmc.org>
+Date: Sun, 14 Feb 2016 17:22:15 +0100
+Subject: [PATCH 06/10] [xbmc][dvdnav] various safeguards
+
+---
+ src/dvdnav.c     | 5 +++++
+ src/read_cache.c | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/dvdnav.c b/src/dvdnav.c
+index 3b61059..c188420 100644
+--- a/libdvdnav-5-0-3/src/dvdnav.c
++++ b/libdvdnav-5-0-3/src/dvdnav.c
+@@ -1265,6 +1265,11 @@ user_ops_t dvdnav_get_restrictions(dvdnav_t* this) {
+ 
+   ops.ops_int = 0;
+ 
++  if (!this) {
++    printerr("Passed a NULL pointer.");
++    return ops.ops_struct;
++  }
++
+   if(!this->started) {
+     printerr("Virtual DVD machine not started.");
+     return ops.ops_struct;
+diff --git a/src/read_cache.c b/src/read_cache.c
+index 1b2862d..1e1c37d 100644
+--- a/libdvdnav-5-0-3/src/read_cache.c
++++ b/libdvdnav-5-0-3/src/read_cache.c
+@@ -335,7 +335,7 @@ dvdnav_status_t dvdnav_free_cache_block(dvdnav_t *self, unsigned char *buf) {
+   pthread_mutex_lock(&cache->lock);
+   for (i = 0; i < READ_CACHE_CHUNKS; i++) {
+     if (cache->chunk[i].cache_buffer && buf >= cache->chunk[i].cache_buffer &&
+-        buf < cache->chunk[i].cache_buffer + cache->chunk[i].cache_malloc_size * DVD_VIDEO_LB_LEN) {
++        buf < cache->chunk[i].cache_buffer + cache->chunk[i].cache_malloc_size * DVD_VIDEO_LB_LEN && cache->chunk[i].usage_count > 0) {
+       cache->chunk[i].usage_count--;
+     }
+   }
+-- 
+2.1.4
+

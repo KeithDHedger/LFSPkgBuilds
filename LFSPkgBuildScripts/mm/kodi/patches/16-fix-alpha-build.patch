@@ -1,0 +1,84 @@
+Description: Fix alpha build
+Forwarded: not-needed
+Author:  Michael Cree <mcree@orcon.net.nz>
+Bug: https://bugs.debian.org/856815
+
+Index: kodi-17.0+dfsg1/xbmc/cores/DllLoader/DllLoader.h
+===================================================================
+--- kodi-17.0+dfsg1.orig/xbmc/cores/DllLoader/DllLoader.h
++++ kodi-17.0+dfsg1/xbmc/cores/DllLoader/DllLoader.h
+@@ -23,7 +23,7 @@
+ #include "coffldr.h"
+ #include "LibraryLoader.h"
+ 
+-#if defined(__linux__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__) && !defined(__s390x__)
++#if defined(__linux__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__) && !defined(__s390x__) && !defined(__alpha__)
+ #define USE_LDT_KEEPER
+ #include "ldt_keeper.h"
+ #endif
+Index: kodi-17.0+dfsg1/xbmc/cores/DllLoader/ldt_keeper.c
+===================================================================
+--- kodi-17.0+dfsg1.orig/xbmc/cores/DllLoader/ldt_keeper.c
++++ kodi-17.0+dfsg1/xbmc/cores/DllLoader/ldt_keeper.c
+@@ -19,7 +19,7 @@
+  */
+ 
+ //#ifndef __powerpc__
+-#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__) && !defined(__s390x__)
++#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__) && !defined(__s390x__) && !defined(__alpha__)
+ 
+ #include "ldt_keeper.h"
+ 
+Index: kodi-17.0+dfsg1/xbmc/cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h
+===================================================================
+--- kodi-17.0+dfsg1.orig/xbmc/cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h
++++ kodi-17.0+dfsg1/xbmc/cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h
+@@ -293,7 +293,7 @@ protected:
+ 
+ 
+ inline int NP2( unsigned x ) {
+-#if defined(TARGET_POSIX) && !defined(__POWERPC__) && !defined(__PPC__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__) && !defined(__s390x__)
++#if defined(TARGET_POSIX) && !defined(__POWERPC__) && !defined(__PPC__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__) && !defined(__s390x__) && !defined(__alpha__)
+   // If there are any issues compiling this, just append a ' && 0'
+   // to the above to make it '#if defined(TARGET_POSIX) && 0'
+ 
+Index: kodi-17.0+dfsg1/xbmc/threads/Atomics.cpp
+===================================================================
+--- kodi-17.0+dfsg1.orig/xbmc/threads/Atomics.cpp
++++ kodi-17.0+dfsg1/xbmc/threads/Atomics.cpp
+@@ -106,7 +106,7 @@ long cas(volatile long *pAddr, long expe
+ ///////////////////////////////////////////////////////////////////////////
+ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
+ {
+-#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__aarch64__) || defined(__s390x__) // PowerPC and ARM
++#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__aarch64__) || defined(__s390x__) || defined(__alpha__)// PowerPC and ARM
+ // Not available/required
+ // Hack to allow compilation
+   throw "cas2 is not implemented";
+Index: kodi-17.0+dfsg1/xbmc/threads/Atomics.h
+===================================================================
+--- kodi-17.0+dfsg1.orig/xbmc/threads/Atomics.h
++++ kodi-17.0+dfsg1/xbmc/threads/Atomics.h
+@@ -22,7 +22,7 @@
+ 
+ //! @todo Inline these methods
+ long cas(volatile long *pAddr, long expectedVal, long swapVal);
+-#if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__s390x__)
++#if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__s390x__) && !defined(__alpha__)
+ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal);
+ #endif
+ long AtomicIncrement(volatile long* pAddr);
+Index: kodi-17.0+dfsg1/xbmc/utils/MathUtils.h
+===================================================================
+--- kodi-17.0+dfsg1.orig/xbmc/utils/MathUtils.h
++++ kodi-17.0+dfsg1/xbmc/utils/MathUtils.h
+@@ -37,7 +37,8 @@
+     defined(__mips__) || \
+     defined(__arm__) || \
+     defined(__s390x__) || \
+-    defined(__aarch64__)
++    defined(__aarch64__) || \
++    defined(__alpha__)
+   #define DISABLE_MATHUTILS_ASM_ROUND_INT
+ #endif
+ 
