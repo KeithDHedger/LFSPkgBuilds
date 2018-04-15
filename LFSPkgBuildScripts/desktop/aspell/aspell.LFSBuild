@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Which-2.21"
+DEPENDS="Which-2.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

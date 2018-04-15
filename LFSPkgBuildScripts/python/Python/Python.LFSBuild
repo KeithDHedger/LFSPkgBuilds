@@ -14,17 +14,15 @@ BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+PKG="${OUTPUT}/${PKGNAME}"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.python.org/ftp/python/${VERSION}/${TARBALL}" $SECTION
 gettar "http://docs.python.org/ftp/python/doc/${VERSION}/${PKGNAME}-${VERSION}-docs-html.tar.bz2" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

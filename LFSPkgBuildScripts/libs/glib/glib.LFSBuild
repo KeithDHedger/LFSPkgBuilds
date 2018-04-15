@@ -14,23 +14,20 @@ BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-
-#meson buid is fucked when trying to build docs so use configure instead!!!
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/glib/${VERSION%.?*}/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/svn/${PKGNAME}-${VERSION}-skip_warnings-1.patch" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+#meson buid is fucked when trying to build docs so use configure instead!!!
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-skip_warnings-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-pcre=system --libdir=/usr/lib${LIBDIRSUFFIX} --with-python=/usr/bin/python3
 		make $MAKEFLAGS||make|| exit 1

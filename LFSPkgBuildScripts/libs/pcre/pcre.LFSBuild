@@ -10,26 +10,21 @@ SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
-
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/pcre/${TARBALL}" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/pcre-8.37-upstream_fixes-1.patch"  $SECTION
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --enable-utf --enable-unicode-properties --enable-pcre16 --enable-pcre32 --enable-pcregrep-libz --enable-pcregrep-libbz2 --enable-pcretest-libreadline --enable-shared --enable-static
 		#needed for static linking of qemu
-		# --disable-static
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
-
 		mkdir -vp $PKG/lib || true
 		mv -v $PKG/usr/lib/libpcre.so.* $PKG/lib
 		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libpcre.so) $PKG/usr/lib/libpcre.so

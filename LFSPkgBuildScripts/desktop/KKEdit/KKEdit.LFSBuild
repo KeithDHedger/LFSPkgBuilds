@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xdg-utils-1.1.1 gtksourceview-2.11.1 GTK-2.24.31 webkitgtk-2.4.9 aspell-0.60.6.1 ctags-5.8 vte1-0.28.2"
+DEPENDS="xdg-utils-1.1.2 gtksourceview-2.11.2 GTK-2.24.32 webkitgtk-2.4.11 aspell-0.60.6.1 ctags-5.8 vte1-0.28.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,15 +14,16 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.zip"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/KeithDHedger/KKEdit/archive/master.zip" $SECTION ${TARBALL}
-
-PKG="${OUTPUT}/${PKGNAME}"
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+pushd $COMPILEAT 2>/dev/null||true
 unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-master"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell --enable-docviewer
@@ -31,7 +32,7 @@ pushd "${TARNAME}-master"
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -53,3 +54,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${TARNAME}-master"
+popd 2>/dev/null||true

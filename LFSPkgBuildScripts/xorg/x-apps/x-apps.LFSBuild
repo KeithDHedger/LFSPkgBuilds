@@ -13,11 +13,11 @@ BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 

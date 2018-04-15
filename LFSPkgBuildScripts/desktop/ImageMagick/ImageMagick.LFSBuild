@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="librsvg-2.40.16 libjpeg-turbo-1.5.1 OpenJPEG-1.5.2"
+DEPENDS="librsvg-2.42.2 libjpeg-turbo-1.5.3 OpenJPEG-2.3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ImageMagick"
 TARNAME="$PKGNAME"
-VERSION="7.0.0"
+VERSION="7.0.7"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -17,42 +17,43 @@ URL="ftp://ftp.imagemagick.org/pub/${PKGNAME}"
 TARBALL=$(findArchive "${URL}" "${PKGNAME}" ".tar.xz")
 LATESTVERSION=${TARBALL#?*-}
 LATESTVERSION=${LATESTVERSION/.tar.xz}
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${LATESTVERSION}"
 gettar "${URL}/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${LATESTVERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} -with-modules --with-perl  --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
-	make $MAKEFLAGS||make|| exit 1
-	make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${LATESTVERSION} install DESTDIR=$PKG || exit 1
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${LATESTVERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} -with-modules --with-perl  --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
+		make $MAKEFLAGS||make|| exit 1
+		make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${LATESTVERSION} install DESTDIR=$PKG || exit 1
+	popd
 
-checketc $PKG
+	checketc $PKG
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$LATESTVERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$LATESTVERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${LATESTVERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${LATESTVERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${LATESTVERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${LATESTVERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${LATESTVERSION}"
+	rm -r "$PKG" "${TARNAME}-${LATESTVERSION}"
+popd 2>/dev/null||true

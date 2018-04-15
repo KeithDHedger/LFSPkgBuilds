@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.13 six-1.11.0 docbook-xml-4.5 docbook-xsl-1.79.1 Itstool-2.0.4 libxslt-1.1.29 xmlto-0.0.28"
+DEPENDS="Python-2.7.14 six-1.11.0 docbook-xml-4.5 docbook-xsl-1.79.1 Itstool-2.0.4 libxslt-1.1.29 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,16 +14,14 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/gtk-doc/${VERSION}/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

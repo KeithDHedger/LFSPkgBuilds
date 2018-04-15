@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0 Py2cairo-1.10.0 gobject-introspection-1.54.1 libxslt-1.1.32"
+DEPENDS="GLib-2.56.0 Py2cairo-1.16.2 gobject-introspection-1.54.1 libxslt-1.1.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="pygobject"
 TARNAME="$PKGNAME"
-VERSION="2.28.6"
+VERSION="2.28.7"
 BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
@@ -20,14 +20,12 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/pygobject/2.28/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.6/${TARNAME}-${VERSION}-fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-docs
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1

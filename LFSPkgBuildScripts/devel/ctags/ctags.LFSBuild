@@ -19,7 +19,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://kent.dl.sourceforge.net/project/ctags/ctags/5.8/${TARBALL}" $SECTION
 gettar "https://github.com/universal-ctags/ctags/archive/master.zip" $SECTION $TARBALL
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
