@@ -2,9 +2,10 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ghostscript-9.20
+DEPENDS="Cups-2.2.6
+ghostscript-9.22
 cups-filters-1.13.4
-Gutenprint-5.2.10
+Gutenprint-5.2.13
 sane-backends-1.0.25
 sane-frontends-1.0.14
 hplip-3.16.11
@@ -27,7 +28,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

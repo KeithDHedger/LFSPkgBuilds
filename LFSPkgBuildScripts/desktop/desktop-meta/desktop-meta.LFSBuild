@@ -9,6 +9,7 @@ Py2cairo-1.16.2
 PyGObject-2.28.7
 PyGTK-2.24.0
 URI-1.71
+printing-meta-8.2
 vte1-0.28.2
 libnotify-0.5.2
 startup-notification-0.12
@@ -42,7 +43,7 @@ xscreensaver-5.36"
 
 #LibreOffice-5.3.0
 #Firefox-51.0.1
-#printing-meta-8.2 after uri
+# after uri
 #xfce-meta-4.10.1 ftare sudo
 
 

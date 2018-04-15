@@ -9,7 +9,7 @@ fi
 
 PKGNAME="ghostscript"
 TARNAME="$PKGNAME"
-VERSION="9.20"
+VERSION="9.22"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -20,7 +20,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs920/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.0/${TARNAME}-${VERSION}-security_fixes-1.patch" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/gnu-gs-fonts-other-6.0.tar.gz" $SECTION
 rm -rf "$PKG" || true
@@ -33,7 +32,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-security_fixes-1.patch
 		rm -rf zlib||true
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-compile-inits --enable-dynamic --with-system-libtiff
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-compile-inits --enable-dynamic --with-system-libtiff
 		make $MAKEFLAGS||make|| exit 1
 		make $MAKEFLAGS||make so|| exit 1
 		make install DESTDIR=$PKG || exit 1

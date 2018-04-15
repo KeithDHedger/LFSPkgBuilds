@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Colord-1.4.1 dbus-1.10.14 libusb-1.0.21 xdg-utils-1.1.2 GnuTLS-3.6.2"
+DEPENDS="Colord-1.4.1 dbus-1.12.4 libusb-1.0.21 xdg-utils-1.1.2 GnuTLS-3.6.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,18 +14,16 @@ BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}-source.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 ./preinstall||true
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/apple/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
