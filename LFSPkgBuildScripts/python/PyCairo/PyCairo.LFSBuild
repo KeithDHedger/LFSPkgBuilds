@@ -2,33 +2,34 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32 PyGObject-2.28.7 PyCairo-1.10.0 libglade-2.6.4 libxslt-1.1.32"
+DEPENDS="Python-2.7.14 Cairo-1.14.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="pygtk"
+PKGNAME="pycairo"
 TARNAME="$PKGNAME"
-VERSION="2.24.0"
+VERSION="1.16.2"
 BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/pygtk/2.24/${TARBALL}" $SECTION
+gettar "https://github.com/pygobject/${PKGNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-docs
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		python2 setup.py build
+		python2 setup.py install --optimize=1 --root=$PKG||exit 100
+		python3 setup.py build
+		python3 setup.py install --optimize=1 --root=$PKG||exit 100
 	popd
 
 	checketc $PKG

@@ -2,33 +2,41 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.14 Cairo-1.14.12"
+DEPENDS="GLib-2.56.0 PyCairo-1.16.2 gobject-introspection-1.54.1 libxslt-1.1.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="py2cairo"
-TARNAME="$PKGNAME"
-VERSION="1.16.2"
+PKGNAME="pygobject3"
+TARNAME="pygobject"
+VERSION="3.26.1"
 BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://cairographics.org/releases/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/pygobject/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		./waf configure --prefix=/usr
-		./waf build || exit
-		./waf --destdir=$PKG install || exit
+		mkdir python3||true
+#		pushd python2
+#			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure ${CONFIGOPTIONS} --with-python=/usr/bin/python2
+#			make $MAKEFLAGS||make|| exit 100
+#		popd
+		pushd python3
+			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure ${CONFIGOPTIONS} --with-python=/usr/bin/python3
+			make $MAKEFLAGS||make|| exit 100
+		popd
+#			make -C python2 install DESTDIR=$PKG
+			make -C python3 install DESTDIR=$PKG
 	popd
 
 	checketc $PKG

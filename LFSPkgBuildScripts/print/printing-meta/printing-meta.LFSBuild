@@ -16,7 +16,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="printing-meta"
-VERSION="8.0"
+VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"

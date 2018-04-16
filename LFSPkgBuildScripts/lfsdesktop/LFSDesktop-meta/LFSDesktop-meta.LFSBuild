@@ -10,7 +10,7 @@ LFSPanel-0.1.0
 LFSSetWallpaper-0.1.0
 compton-0.1
 dbus-glib-0.108
-Py2cairo-1.10.0
+PyCairo-1.10.0
 PyGObject-2.28.6
 PyGTK-2.24.0
 URI-1.71
