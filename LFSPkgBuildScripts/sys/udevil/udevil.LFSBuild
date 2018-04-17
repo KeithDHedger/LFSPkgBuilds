@@ -22,7 +22,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 		mkdir -vp $PKG/etc ||true
-		cp ../udevil.conf $PKG/etc/udevil
+		cp $CWD/udevil.conf $PKG/etc/udevil
 	popd
 
 	checketc $PKG

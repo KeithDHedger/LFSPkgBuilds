@@ -27,7 +27,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	#need to have user created before install
-	./preinstall
+	${CWD}/preinstall
 	pushd "${TARNAME}-${VERSION}${MINORREVISION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --enable-linuxcaps --with-binsubdir=sbin --with-lineeditlibs=readline
 		make $MAKEFLAGS||make|| exit 1

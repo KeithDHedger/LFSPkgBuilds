@@ -34,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		install -v -m644 README* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		cp -vr ../glib/reference/html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/poppler-data-0.4.8.tar.gz
 		cd poppler-data-0.4.8

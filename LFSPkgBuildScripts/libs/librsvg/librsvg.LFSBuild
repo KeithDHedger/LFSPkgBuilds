@@ -9,7 +9,7 @@ fi
 
 PKGNAME="librsvg"
 TARNAME="$PKGNAME"
-VERSION="2.42.2.16"
+VERSION="2.40.16"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -19,14 +19,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/librsvg/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/librsvg/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-vala --disable-static --enable-gtk-doc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-vala --disable-static
 		make $MAKEFLAGS||make||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd

@@ -21,6 +21,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}p1-openssl-1.1.0-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -30,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	useradd -c 'sshd PrivSep' -d /var/lib/sshd -s /bin/false -ru $UIDGIDPAIR sshd||true
 
 	pushd "${TARNAME}-${VERSION}${MINORREVISION}"
-
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}p1-openssl-1.1.0-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libexecdir=/usr/lib/openssh --sysconfdir=/etc/ssh --datadir=/usr/share/sshd --with-md5-passwords --with-privsep-path=/var/lib/sshd --with-xauth=/usr/bin/xauth --with-libedit
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1

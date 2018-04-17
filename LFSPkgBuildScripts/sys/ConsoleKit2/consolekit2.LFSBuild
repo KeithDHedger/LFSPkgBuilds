@@ -28,20 +28,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
 	pushd "${BASEPKGNAME}-master"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh ${CONFIGOPTIONS} --with-systemdsystemunitdir=no  --enable-udev-acl --enable-polkit --disable-nls
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh ${CONFIGOPTIONS} --with-systemdsystemunitdir=no  --enable-udev-acl --enable-polkit --disable-nls --with-xinitrc-dir=/etc/X11/app-defaults/xinitrc.d --enable-polkit
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
-
-		mkdir -p $PKG/etc/rc.d/init.d $PKG/etc/rc.d/rc5.d $PKG/etc/rc.d/rc3.d || true
-		cp ../rc.consolekit $PKG/etc/rc.d/init.d
-
-		pushd $PKG/etc/rc.d/rc5.d
-			ln -sv ../init.d/rc.consolekit S25consolekit || true
-		popd
-		pushd $PKG/etc/rc.d/rc3.d
-			ln -sv ../init.d/rc.consolekit S30consolekit || true
-		popd
-
 	popd
 
 	checketc "$PKG"

@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${PKGNAME}-${VERSION}
-		cp ../mozconfig.thunderbird mozconfig
+		cp $CWD/mozconfig.thunderbird mozconfig
 		#set the lib suffix in the config file
 		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
 		export SHELL=/bin/sh

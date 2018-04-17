@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gegl-0.3.28 GTK-2.24.32 PyGTK-2.24.0 librsvg-2.42.2.16 dbus-glib-0.110 ghostscript-9.22 Poppler-0.62.0 GTK-Doc-1.27 libgudev-232 webkitgtk-2.4.11"
+DEPENDS="gegl-0.3.28 GTK-2.24.32 PyGTK-2.24.0 librsvg-2.40.16 dbus-glib-0.110 ghostscript-9.22 Poppler-0.62.0 GTK-Doc-1.27 libgudev-232 webkitgtk-2.4.11 pylibxml2-2.9.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -30,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/gegl/s/2/3/' configure
 		sed -i '70,75 d' app/core/gimpparamspecs-duplicate.c
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-gvfs
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --disable-debug --disable-nls --disable-static --without-gvfs
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/gimp-help-${HELPVERSION}.tar.bz2

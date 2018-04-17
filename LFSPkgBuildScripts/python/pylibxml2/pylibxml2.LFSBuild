@@ -2,16 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32 gobject-introspection-1.54.1 GTK-Doc-1.27 libglade-2.6.4"
+DEPENDS="libxml2-2.9.7 Python-2.7.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gtksourceview"
-TARNAME="$PKGNAME"
-VERSION="2.11.1"
-BUILD=${BUILD:-1}
-SECTION="GTK"
+PKGNAME="pylibxml2"
+TARNAME="libxml2"
+VERSION="2.9.7"
+BUILD=1
+SECTION="PYTHON"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -19,19 +19,19 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.acc.umu.se/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://xmlsoft.org/sources/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" LDFLAGS="-lglib-2.0 -lgtk-x11-2.0 -lgobject-2.0 -L/usr/lib" ./configure ${CONFIGOPTIONS} --disable-introspection
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		cd python             &&
+		python setup.py build
+		python setup.py install --optimize=1 --root=$PKG||exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

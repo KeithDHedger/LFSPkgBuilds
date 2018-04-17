@@ -13,7 +13,7 @@ VERSION="1.12.0"
 BUILD=1
 SECTION="PRINT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}a-source.tar.gz"
+TARBALL="${TARNAME}-${VERSION}-source.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -27,7 +27,7 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}a-source"
+	pushd "${TARNAME}-${VERSION}-source"
 		rm -rf thirdparty/curl
 		rm -rf thirdparty/freetype
 		rm -rf thirdparty/harfbuzz
@@ -39,7 +39,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-consolidated_fixes-1.patch
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-security_fix-1.patch
 		make build=release
-		make prefix=/usr build=release docdir=/usr/share/doc/${PKGNAME}-${VERSION} installDESTDIR=$PKG || exit 1
+		make prefix=/usr build=release docdir=/usr/share/doc/${PKGNAME}-${VERSION} install DESTDIR=$PKG || exit 1
 		ln -sfv mupdf-x11-curl $PKG/usr/bin/mupdf
 	popd
 
@@ -66,5 +66,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}a-source"
+	rm -r "$PKG" "${TARNAME}-${VERSION}-source"
 popd 2>/dev/null||true

@@ -29,12 +29,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir build
 		cd build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${CONFIGOPTIONS} ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX ..
 		ninja
 		DESTDIR=$PKG ninja install
-		#	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		#	make $MAKEFLAGS||make|| exit 1
-		#	make install DESTDIR=$PKG || exit 1
 	popd
 
 	checketc "$PKG"
