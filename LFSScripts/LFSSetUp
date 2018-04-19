@@ -37,6 +37,7 @@ case $(uname -m) in
 	armv6l|armv7l)
 		PIBUILD=1
 		LIBDIRSUFFIX=""
+		PIKERNELVERSION=4.9.51
 		;;
 	"x86_64")
 		LIBDIRSUFFIX="64"
@@ -103,8 +104,13 @@ readWithDefault "EXTFOLDER"  "Bind Built Packages And Source Folders To Folder"
 
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
-KERNELVERSION=${KERNELVERSION:-$(uname -r)}
-readWithDefault "KERNELVERSION"  "Enter Kernel Version"
+#pi or normal
+if [[ $PIBUILD -eq 1 ]];then
+	KERNELVERSION=4.9.51
+else
+	KERNELVERSION=${KERNELVERSION:-$(uname -r)}
+	readWithDefault "KERNELVERSION"  "Enter Kernel Version"
+fi
 
 #keyboard
 #set keyboad lang for auto detect use
@@ -145,6 +151,7 @@ readWithDefault "NAMESERVERS"  "Enter Name Servers IP List"
 echo "----SUMMARY----"
 echo 
 echo "LFS=$LFS"
+echo "PIBUILD=$PIBUILD"
 if [ $PIBUILD -eq 1 ];then
 	echo "PIBOOT=$PIBOOT"
 fi

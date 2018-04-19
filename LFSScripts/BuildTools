@@ -30,7 +30,13 @@ WGETTAR="https://ftp.gnu.org/gnu/wget/wget-1.19.4.tar.gz"
 set +h
 umask 022
 LC_ALL=POSIX
-LFS_TGT=$(uname -m)-lfs-linux-gnu
+case $(uname -m) in
+	armv?l)
+		LFS_TGT=$(uname -m)-lfs-linux-gnueabihf
+		;;
+	*)
+		LFS_TGT=$(uname -m)-lfs-linux-gnu
+		;;
 PATH=/tools/bin:/bin:/usr/bin
 export LFS LC_ALL LFS_TGT PATH
 export MAKEFLAGS='-j4'
@@ -43,6 +49,13 @@ if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 
 #wget from the blfs book I prefer to make this as part of the main system
 	wget -c "$WGETTAR" -P $NETSOURCE
+#extra pi stuff
+	if [[ $PIBUILD -eq 1 ]];then
+		wget https://github.com/raspberrypi/linux/archive/rpi-4.9.y.tar.gz -P $SYSTEMSOURCE
+		wget http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi1-cpu-default.patch -P $SYSTEMSOURCE
+		wget http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi2-cpu-default.patch -P $SYSTEMSOURCE
+		wget http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi3-cpu-default.patch -P $SYSTEMSOURCE
+	fi
 fi
 
 cd "$SYSTEMSOURCE"
