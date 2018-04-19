@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.108 xorg-libs-8.0 Polkit-0.113 xmlto-0.0.28"
+DEPENDS="dbus-glib-0.110 xorg-libs-8.2 Polkit-0.113 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -18,7 +18,6 @@ TARBALL="${PKGNAME}.zip"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
-
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/ConsoleKit2/${PKGNAME}/archive/master.zip" $SECTION/ "${PKGNAME}.zip"

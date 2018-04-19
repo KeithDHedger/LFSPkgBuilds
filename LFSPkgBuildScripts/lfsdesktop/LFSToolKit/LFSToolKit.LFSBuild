@@ -9,7 +9,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="LFSToolKit"
-VERSION="0.2.2"
+VERSION="0.2.4"
 BUILD=1
 SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"
@@ -21,6 +21,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
 
 unzip ${SOURCEARCHIVES}/${SECTION}/LFSDesktopProject.zip  "LFSDesktopProject-master/$PKGNAME/*"
 pushd "LFSDesktopProject-master/$PKGNAME"
@@ -30,7 +32,7 @@ pushd "LFSDesktopProject-master/$PKGNAME"
 popd
 
 checketc "$PKG"
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

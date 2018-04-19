@@ -23,6 +23,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
 
 MOZCONFIGFILE="$(pwd)/mozconfig.firefox"
 

@@ -2,55 +2,54 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.2.2
-LFSWManager-0.1.0
-LFSDesktop-0.1.0
-LFSApplications-0.1.0
-LFSPanel-0.1.0
+DEPENDS="LFSToolKit-0.2.4
+LFSWManager-0.1.2
+LFSDesktop-0.1.3
+LFSApplications-0.1.2
+LFSPanel-0.1.1
 LFSSetWallpaper-0.1.0
-compton-0.1
-dbus-glib-0.108
-PyCairo-1.10.0
-PyGObject-2.28.6
+compton-0.2
+dbus-glib-0.110
+PyCairo-1.16.2
+PyGObject-2.28.7
 PyGTK-2.24.0
 URI-1.71
-printing-meta-8.0
+printing-meta-8.2
 vte1-0.28.2
 libnotify-0.5.2
 startup-notification-0.12
-NSPR-4.13.1
+NSPR-4.18
 zip-3.0
-JS-17.0.0
+JS-38.2.1
 Polkit-0.113
 UDisks-2.1.6
-ConsoleKit-1.0.0
+ConsoleKit2-1.0.2
 gnome-icon-theme-3.12.0
-Sudo-1.8.19
-xfce4-terminal-0.6.2
+Sudo-1.8.22
+xfce4-terminal-0.6.3
 xfce4-screenshooter-1.7.9
 Xfce-Theme-Manager-0.3.7
-Xfwm4CompositeEditor-0.2.1
 gtksourceview-2.11.1
 leafpad-0.8.18.1
-shared-mime-info-1.8
-OpenSSH-7.4
+shared-mime-info-1.9
+OpenSSH-7.6
 ntp-4.2.8
-xdg-utils-1.1.1
+xdg-utils-1.1.2
 desktop-file-utils-0.23
-Gimp-2.8.20
+Gimp-2.8.22
 gtkmm-2.24.5
-ImageMagick-7.0.0
-Firefox-51.0.1
-Thunderbird-45.7.1
-spacefm-1.0.5
+ImageMagick-7.0.7
+Thunderbird-52.6.0
+spacefm-1.0.6
 ManPageEditor-0.1.2
-AspellGUI-0.0.8
+AspellGUI-0.0.9
 KKEdit-0.4.2
 xarchiver-0.5.4
-ClipboardViewer-2.2.1
+ClipboardViewer-2.2.2
 GtkSu-0.1.6
-xscreensaver-5.36"
+xscreensaver-5.38"
 
+#Firefox-51.0.1
 #LibreOffice-5.3.0
 
 if ! lfspkg -B "$DEPENDS";then
@@ -58,14 +57,14 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="LFSDesktop-meta"
-VERSION="8.0"
+VERSION="8.2"
 BUILD=1
 SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libconfig-1.5 asciidoc-8.6.9"
+DEPENDS="libconfig-1.6 asciidoc-8.6.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,13 +14,12 @@ BUILD=1
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.zip"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/chjj/compton/archive/master.zip" $SECTION ${TARBALL}
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -30,14 +29,14 @@ pushd $COMPILEAT 2>/dev/null||true
 		COMPTON_VERSION=${VERSION} make $MAKEFLAGS||make|| exit 1
 		COMPTON_VERSION=${VERSION} make install DESTDIR=$PKG || exit 1
 	popd
-	
+
 	checketc "$PKG"
-	packageclean "$PKG"
-	
+	packageclean "$PKG" "$CWD"
+
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
-	
+
 	case $DOWHAT in
 		up*)
 			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
@@ -52,6 +51,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			echo "*** Unknown command ***"
 			exit 1
 	esac
-	
+
 	rm -r "$PKG" "${TARNAME}-master"
 popd 2>/dev/null||true
