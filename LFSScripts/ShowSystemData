@@ -19,6 +19,7 @@ case $(uname -m) in
 esac
 
 echo "LFS location:" $LFS
+echo "PIBUILD=$PIBUILD"
 if [ $PIBUILD -eq 1 ];then
 	echo "PIBOOT=$PIBOOT"
 fi
