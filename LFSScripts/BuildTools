@@ -14,6 +14,11 @@ fi
 read -sp "Enter admin password :" ADMINPWD
 echo
 
+if [ "X$EXTFOLDER" != "X" ];then
+	mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
+	mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+fi
+
 SYSTEMSOURCE="${LFS}${SOURCEARCHIVES}/SYSTEM"
 NETSOURCE="${LFS}${SOURCEARCHIVES}/NET"
 echo $ADMINPWD|sudo -S mkdir -vp "$SYSTEMSOURCE" "$NETSOURCE"|| true
@@ -672,5 +677,12 @@ do
 			TOOLNUM="DONE"
 	esac
 done
+
+if [ "X$EXTFOLDER" != "X" ];then
+	umount ${LFS}/${SOURCEARCHIVES} ||true
+	umount ${LFS}/${BUILTPACKAGES} ||true
+	rm $LFS/${BUILTPACKAGES} ||true
+	rm $LFS/${SOURCEARCHIVES} ||true
+fi
 
 
