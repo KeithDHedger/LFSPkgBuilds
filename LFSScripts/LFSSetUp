@@ -76,8 +76,8 @@ readWithDefault "LFSNAME"  "Enter Hostname"
 
 #LFS init type eithe bbinit or sysvinit
 if [ $PIBUILD -eq 1 ];then
-	INITTYPE=${INITTYPE:-"py-sysvinit"}
-	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|py-sysvinit)"
+	INITTYPE=${INITTYPE:-"pi-sysvinit"}
+	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|pi-sysvinit)"
 else
 	INITTYPE=${INITTYPE:-"sysvinit"}
 	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|sysvinit)"
