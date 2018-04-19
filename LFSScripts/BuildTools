@@ -17,8 +17,8 @@ echo
 echo $ADMINPWD|sudo -S mkdir -vp "${LFS}${SOURCEARCHIVES}" "$LFS/${BUILTPACKAGES}"|| true
 
 if [ "X$EXTFOLDER" != "X" ];then
-	mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
-	mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+	echo $ADMINPWD|sudo -S mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
+	echo $ADMINPWD|sudo -S mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
 fi
 
 SYSTEMSOURCE="${LFS}${SOURCEARCHIVES}/SYSTEM"
@@ -681,10 +681,8 @@ do
 done
 
 if [ "X$EXTFOLDER" != "X" ];then
-	umount ${LFS}/${SOURCEARCHIVES} ||true
-	umount ${LFS}/${BUILTPACKAGES} ||true
-	rm $LFS/${BUILTPACKAGES} ||true
-	rm $LFS/${SOURCEARCHIVES} ||true
+	echo $ADMINPWD|sudo -S umount ${LFS}/${SOURCEARCHIVES} ||true
+	echo $ADMINPWD|sudo -S umount ${LFS}/${BUILTPACKAGES} ||true
 fi
 
 
