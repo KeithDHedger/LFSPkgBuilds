@@ -1,0 +1,144 @@
+#!/bin/bash
+
+. /usr/share/LFSPkg/LFSFunctions
+
+export CHECKETC=0
+export CONFIGOPTIONS="--prefix=/usr --disable-debug"
+THISTTY=$(tty)
+export THISTTY
+export LFSVERSION
+export BUILDSCRIPTS
+export OUTPUT
+export SOURCEARCHIVES
+export COMPILEAT
+export MAKEFLAGS
+export NOLOADCONFIG=1
+
+DEPENDS="linuxheaders-4.9.51
+Man-pages-4.12
+Glibc-2.26
+Zlib-1.2.11
+File-5.31
+Readline-7.0
+M4-1.4.18
+Bc-1.07.1
+Binutils-2.29
+GMP-6.1.2
+MPFR-3.1.5
+MPC-1.0.3
+GCC-7.2.0
+Bzip2-1.0.6
+Pkg-config-0.29.2
+Ncurses-6.0
+attr-2.4.47
+acl-2.2.52
+libcap-2.25
+Sed-4.4
+Shadow-4.5
+Psmisc-23.1
+Iana-Etc-2.30
+Bison-3.0.4
+Flex-2.6.4
+Grep-3.1
+Bash-4.4
+Libtool-2.4.6
+GDBM-1.13
+gperf-3.1
+Expat-2.2.3
+Inetutils-1.9.4
+Perl-5.26.0
+XML-Parser-2.44
+intltool-0.51.0
+Autoconf-2.69
+Automake-1.15.1
+xz-5.2.3
+Kmod-24
+Gettext-0.19.8.1
+Procps-ng-3.3.12
+E2fsprogs-1.43.5
+Coreutils-8.27
+Diffutils-3.6
+Gawk-4.1.4
+Findutils-4.6.0
+Groff-1.22.3
+Less-487
+Gzip-1.8
+IPRoute2-4.12.0
+Kbd-2.0.4
+Libpipeline-1.4.2
+Make-4.2.1
+Patch-2.7.5
+Sysklogd-1.5.1
+Sysvinit-2.88
+eudev-3.2.2
+Util-linux-2.30.1
+Man-DB-2.7.6.1
+Tar-1.29
+Texinfo-6.4
+Vim-8.0.586
+OpenSSL-1.1.0
+Wget-1.19.1
+unzip-6.0
+GPM-1.20.7
+Links-2.14
+lfs-bootscripts-20170626
+blfs-bootscripts-20170731"
+
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="system-meta"
+VERSION="8.1"
+BUILD=${BUILD:-1}
+SECTION="SYSTEM"
+SUFFIX="LFSPKG"
+#Set this to your blank boot partition, if NOT set boot files are not copied.
+BOOTPART="/dev/mmcblk0p12"
+PARTUUID="77ba7de8-02"
+
+PKG="${OUTPUT}/${PKGNAME}"
+
+DOWHAT=${1:-"build"}
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+mkdir -vp ${PKG}/opt ${PKG}/etc/ld.so.conf.d ${PKG}/lib
+tar -xvf ${SOURCEARCHIVES}/${SECTION}/1.20171029.tar.gz
+cp -rv firmware-1.20171029/hardfp/opt/vc ${PKG}/opt
+echo "/opt/vc/lib" >> ${PKG}/etc/ld.so.conf.d/broadcom.conf
+cp -rv firmware-1.20171029/modules ${PKG}/lib
+
+if [ "X$BOOTPART" != "X" ];then
+	mkdir /boot
+	mount $BOOTPART /boot
+	cp -rv firmware-1.20171029/boot/ /
+	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="77ba7de8-02" rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait"
+	umount /boot
+fi
+
+checketc "$PKG"
+packageclean "$PKG"
+
+pushd "$PKG"
+	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+
+rm -rf "$PKG" firmware-1.20171029
+
+exit 
