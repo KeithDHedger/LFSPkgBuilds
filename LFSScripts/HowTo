@@ -81,6 +81,10 @@ Or use system-bbinit-meta.LFSBuildfor a busy box init system ( non standard ) li
 Or for ##experimental## custom init system use:
 ./system-LFSInit-meta.LFSBuild install
 
+Or for rpi sysvinit system use:
+./system-pi-sysvinit-meta.LFSBuild install
+
+
 Wait for script to complete:
 ...
 Have coffee

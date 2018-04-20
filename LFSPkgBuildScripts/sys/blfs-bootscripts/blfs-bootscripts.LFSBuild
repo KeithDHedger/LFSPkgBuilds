@@ -4,18 +4,17 @@
 
 PKGNAME="blfs-bootscripts"
 TARNAME="$PKGNAME"
-VERSION="20140919"
+VERSION="20180105"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.linuxfromscratch.org/blfs/downloads/7.6/${TARNAME}-${VERSION}.tar.bz2" $SECTION
+gettar "http://www.linuxfromscratch.org/BLFS/blfs-bootscripts/${TARNAME}-${VERSION}.tar.bz2" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -32,7 +31,7 @@ pushd "${TARNAME}-${VERSION}"
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
