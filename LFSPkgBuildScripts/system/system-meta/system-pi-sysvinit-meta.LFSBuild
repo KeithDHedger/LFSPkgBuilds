@@ -16,20 +16,20 @@ export NOLOADCONFIG=1
 
 DEPENDS="linuxheaders-4.9.51
 Man-pages-4.12
-Glibc-2.26
+Glibc-2.27
 Zlib-1.2.11
-File-5.31
+File-5.32
 Readline-7.0
 M4-1.4.18
 Bc-1.07.1
-Binutils-2.29
+Binutils-2.30
 GMP-6.1.2
-MPFR-3.1.5
-MPC-1.0.3
-GCC-7.2.0
+MPFR-4.0.1
+MPC-1.1.0
+GCC-7.3.0
 Bzip2-1.0.6
 Pkg-config-0.29.2
-Ncurses-6.0
+Ncurses-6.1
 attr-2.4.47
 acl-2.2.52
 libcap-2.25
@@ -40,7 +40,7 @@ Iana-Etc-2.30
 Bison-3.0.4
 Flex-2.6.4
 Grep-3.1
-Bash-4.4
+Bash-4.4.18
 Libtool-2.4.6
 GDBM-1.13
 gperf-3.1
