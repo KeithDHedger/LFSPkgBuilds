@@ -113,7 +113,7 @@ if [ "X$BOOTPART" != "X" ];then
 	mkdir /boot
 	mount $BOOTPART /boot
 	cp -rv firmware-1.20171029/boot/ /
-	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="77ba7de8-02" rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait"
+	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="77ba7de8-02"
 	umount /boot
 fi
 

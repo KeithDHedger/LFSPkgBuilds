@@ -46,9 +46,9 @@ cd /mnt/LFS/LFSScripts
 
 5.5)
 #Create a link from downloaded linux tarball to /LFSSourceArchives/8.2/KERNEL to prevent re-downloading source tarball.
-mkdir LFSSourceArchives/$LFSVERSION/KERNEL
-cd /LFSSourceArchives/$LFSVERSION/KERNEL
-ln -sv ../SYSTEM/linux-4.15.3.tar.xz linux-4.15.3.tar.xz
+mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
+cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
+ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz linux-$KERNELVERSION.tar.xz
 
 6)
 #Chroot into tempory system:
