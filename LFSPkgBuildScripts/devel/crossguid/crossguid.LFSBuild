@@ -18,7 +18,11 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
+pushd $COMPILEAT 2>/dev/null||true
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+
 
 pushd "${PKGNAME}-fef89a4174a7bf8cd99fa9154864ce9e8e3bf989"
 	cp ../Makefile Makefile
@@ -27,7 +31,7 @@ pushd "${PKGNAME}-fef89a4174a7bf8cd99fa9154864ce9e8e3bf989"
 popd
 
 checketc "$PKG"
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 pushd "$PKG"

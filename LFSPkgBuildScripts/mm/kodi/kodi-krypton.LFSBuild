@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-13.0.4 libva-intel-driver-1.7.3 giflib-5.1.4 libcdio-0.94 rapidjson-1.1.0 sqlite-3.17.0 taglib-1.11.1 tinyxml-2.6.2 OpenJDK-1.8.0.121 swig-3.0.12 mariadb-10.1.22 samba-4.5.5 openssh-7.4 fmt-3.0.1 crossguid-2.2 yajl-2.1.0"
+DEPENDS="MesaLib-17.3.4 libva-intel-driver-1.7.3 giflib-5.1.4 libcdio-2.0.0 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 OpenJDK-9.0.4 swig-3.0.12 mariadb-10.2.13 samba-4.5.5 openssh-7.4 fmt-3.0.1 crossguid-2.2 yajl-2.1.0"
 
 if ! lfspkg -B "$DEPENDS";then
 	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
@@ -17,50 +17,54 @@ BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${VERSION}-Krypton.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 #gettar "https://github.com/xbmc/xbmc/archive/master.zip" $SECTION
 gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION "kodi-${VERSION}.tar.gz"
 
-PKG="${OUTPUT}/${PKGNAME}"
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
 PATCHDIR="$(pwd)/patches"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/kodi-${VERSION}.tar.gz"
 	pushd "xbmc-${VERSION}-Krypton"
-#		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/xbmc-15.2-Isengard-rpi2-target.patch
-#		patch -Np1 -i /LFSPkgBuildScripts/mm/kodi/06-use-external-libraries.patch
-
-		cat "${PATCHDIR}/series"|while read
-			do
-				echo "Patch file $REPLY ..."
-				patch -Np1 -i "${PATCHDIR}/$REPLY"
-			done
-#		cd tools/depends/target/libdvdnav/native/
-#		cat  '/media/LinuxData/Development64/TEMPHOLD/kodi_17.1+dfsg1-3.debian/debian/patches/series2'|while read
+		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr
+#
+##		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/xbmc-15.2-Isengard-rpi2-target.patch
+##		patch -Np1 -i /LFSPkgBuildScripts/mm/kodi/06-use-external-libraries.patch
+#
+#		cat "${PATCHDIR}/series"|while read
 #			do
 #				echo "Patch file $REPLY ..."
-#				patch -Np1 -i "/media/LinuxData/Development64/TEMPHOLD/kodi_17.1+dfsg1-3.debian/debian/patches/$REPLY"
+#				patch -Np1 -i "${PATCHDIR}/$REPLY"
 #			done
-#		cd -
-
-		export PATH="$PATH:/opt/java/bin"
-		./bootstrap
-#		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-gl --enable-gles --disable-joystick --disable-x11 --disable-avahi --disable-mysql --disable-webserver --disable-ssh --enable-optical-drive --with-ffmpeg=shared --enable-player=omxplayer --disable-openmax --disable-tegra  --disable-profiling --disable-mid  --disable-airtunes --disable-dependency-tracking --disable-non-free
-#		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-x11 --disable-avahi --disable-mysql --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra  --disable-profiling --disable-mid  --disable-airtunes --disable-dependency-tracking --disable-non-free --disable-gl --enable-gles --disable-vdpau --disable-vaapi
-
-#Mon 19 Mar 13:12:14 GMT 2018
-
-	CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-x11 --disable-avahi --disable-mysql --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --disable-gl --enable-gles --disable-vdpau --disable-vaapi --disable-pulse
+##		cd tools/depends/target/libdvdnav/native/
+##		cat  '/media/LinuxData/Development64/TEMPHOLD/kodi_17.1+dfsg1-3.debian/debian/patches/series2'|while read
+##			do
+##				echo "Patch file $REPLY ..."
+##				patch -Np1 -i "/media/LinuxData/Development64/TEMPHOLD/kodi_17.1+dfsg1-3.debian/debian/patches/$REPLY"
+##			done
+##		cd -
+#
+#		export PATH="$PATH:/opt/java/bin"
+#		./bootstrap
+##		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-gl --enable-gles --disable-joystick --disable-x11 --disable-avahi --disable-mysql --disable-webserver --disable-ssh --enable-optical-drive --with-ffmpeg=shared --enable-player=omxplayer --disable-openmax --disable-tegra  --disable-profiling --disable-mid  --disable-airtunes --disable-dependency-tracking --disable-non-free
+##		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-x11 --disable-avahi --disable-mysql --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra  --disable-profiling --disable-mid  --disable-airtunes --disable-dependency-tracking --disable-non-free --disable-gl --enable-gles --disable-vdpau --disable-vaapi
+#
+##Mon 19 Mar 13:12:14 GMT 2018
+#
+#	CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-x11 --disable-avahi --disable-mysql --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --disable-gl --enable-gles --disable-vdpau --disable-vaapi --disable-pulse
 
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
 
 	checketc "$PKG"
-	packageclean "$PKG"
+	packageclean "$PKG" "$CWD"
 
 	cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 	pushd "$PKG"

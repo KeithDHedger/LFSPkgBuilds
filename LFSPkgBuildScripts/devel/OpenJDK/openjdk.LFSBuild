@@ -13,19 +13,17 @@ VERSION="9.0.4"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 TARROOTPKGNAME="jdk9u"
 TARROOTPKGSUBVERSION="+11"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://hg.openjdk.java.net/jdk-updates/${TARROOTPKGNAME}/archive/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2"
