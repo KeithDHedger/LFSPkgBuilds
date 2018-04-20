@@ -81,7 +81,9 @@ Wget-1.19.4
 unzip-6.0
 Init-For-LFS-0.0.5
 GPM-1.20.7
-Links-2.14"
+Links-2.14
+lfs-bootscripts-20170626
+blfs-bootscripts-20180105"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
