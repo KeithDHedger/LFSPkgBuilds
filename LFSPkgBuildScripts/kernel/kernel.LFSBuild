@@ -5,16 +5,14 @@
 TARNAME="linux"
 PKGNAME="kernel"
 VERSION="4.15.3"
-
 BUILD=${BUILD:-1}
 SECTION="KERNEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 KERNELCONFIG=$(pwd)/config-${VERSION}
-
 KERNELSOURCEDIR="${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}_${BUILD}"
-mkdir -vp ${KERNELSOURCEDIR}||true
 
+mkdir -vp ${KERNELSOURCEDIR}||true
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
@@ -25,7 +23,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION}
 
 pushd "${KERNELSOURCEDIR}"
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	(mkdir "${TARNAME}-${VERSION}";tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/boot $PKG/usr/src||true
 		make $MAKEFLAGS mrproper

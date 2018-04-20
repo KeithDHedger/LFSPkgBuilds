@@ -9,18 +9,17 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	(mkdir ${NAME}-${VERSION};tar -C ${NAME}-${VERSION} -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
+	(mkdir "${TARNAME}-${VERSION}";tar -C ${TARNAME}-${VERSION} -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
 		make mrproper
 		make INSTALL_HDR_PATH=dest headers_install
