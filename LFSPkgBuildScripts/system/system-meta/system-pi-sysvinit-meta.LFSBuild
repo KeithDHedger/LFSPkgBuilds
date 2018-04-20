@@ -14,7 +14,7 @@ export COMPILEAT
 export MAKEFLAGS
 export NOLOADCONFIG=1
 
-DEPENDS="linuxheaders-4.15.3
+DEPENDS="linuxheaders-4.9.51
 Man-pages-4.15
 Glibc-2.27
 Zlib-1.2.11
