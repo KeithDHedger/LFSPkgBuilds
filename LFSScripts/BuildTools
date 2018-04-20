@@ -59,10 +59,12 @@ if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	wget -c "$WGETTAR" -P $NETSOURCE
 #extra pi stuff
 	if [[ $PIBUILD -eq 1 ]];then
-		wget https://github.com/raspberrypi/linux/archive/rpi-4.9.y.tar.gz -P $SYSTEMSOURCE
-		wget http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi1-cpu-default.patch -P $SYSTEMSOURCE
-		wget http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi2-cpu-default.patch -P $SYSTEMSOURCE
-		wget http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi3-cpu-default.patch -P $SYSTEMSOURCE
+		pushd $SYSTEMSOURCE
+			wget -c https://github.com/raspberrypi/linux/archive/rpi-4.9.y.tar.gz -O linux-${KERNELVERSION}.tar.xz
+			wget -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi1-cpu-default.patch
+			wget -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi2-cpu-default.patch
+			wget -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi3-cpu-default.patch
+		popd
 	fi
 fi
 
