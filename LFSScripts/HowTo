@@ -75,13 +75,13 @@ cd /LFSPkgBuildScripts/system/system-meta
 #Use system-sysvinit-meta for standard sysvinit like so:
 ./system-sysvinit-meta.LFSBuild install
 
-Or use system-bbinit-meta.LFSBuildfor a busy box init system ( non standard ) like so:
+#Or use system-bbinit-meta.LFSBuildfor a busy box init system ( non standard ) like so:
 ./system-bbinit-meta.LFSBuild install
 
-Or for ##experimental## custom init system use:
+#Or for ##experimental## custom init system use:
 ./system-LFSInit-meta.LFSBuild install
 
-Or for rpi sysvinit system use:
+#Or for rpi sysvinit system use:
 ./system-pi-sysvinit-meta.LFSBuild install
 
 

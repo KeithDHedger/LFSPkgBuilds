@@ -40,7 +40,7 @@ EOF
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
 	popd
-exit 100
+
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
