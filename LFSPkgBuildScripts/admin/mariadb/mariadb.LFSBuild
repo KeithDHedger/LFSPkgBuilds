@@ -57,7 +57,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		rm -f $PKG/usr/lib${LIBDIRSUFFIX}/libmysqlclient_r.a
 		rm -f $PKG/usr/lib${LIBDIRSUFFIX}/libmysqld.a
 		mkdir -vp $PKG/etc/mysql
-		cp ../my.cnf $PKG/etc/mysql
+		cp $CWD/my.cnf $PKG/etc/mysql
 		rm -rf $PKG/usr/share/mysql/test||true
 	popd
 
