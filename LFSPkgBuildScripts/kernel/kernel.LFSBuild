@@ -23,7 +23,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION}
 
 pushd "${KERNELSOURCEDIR}"
-	(mkdir "${TARNAME}-${VERSION}";tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
+	(mkdir "${TARNAME}-${VERSION}"||true;tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/boot $PKG/usr/src||true
 		make $MAKEFLAGS mrproper

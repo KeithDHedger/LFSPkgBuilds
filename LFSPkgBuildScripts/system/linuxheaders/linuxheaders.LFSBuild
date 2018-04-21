@@ -19,7 +19,7 @@ mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	(mkdir "${TARNAME}-${VERSION}";tar -C ${TARNAME}-${VERSION} -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
+	(mkdir "${TARNAME}-${VERSION}"||true;tar -C ${TARNAME}-${VERSION} -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
 		make mrproper
 		make INSTALL_HDR_PATH=dest headers_install

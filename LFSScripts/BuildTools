@@ -183,7 +183,7 @@ do
 #TODO rpi odd version string
 			NAME=linux
 			VERSION=$KERNELVERSION
-			(mkdir ${NAME}-${VERSION};tar -C ${NAME}-${VERSION} -xvf ${NAME}-${VERSION}.tar.xz --strip-components=1)
+			(mkdir ${NAME}-${VERSION}||true;tar -C ${NAME}-${VERSION} -xvf ${NAME}-${VERSION}.tar.xz --strip-components=1)
 			pushd ${NAME}-${VERSION}
 				make mrproper
 				make INSTALL_HDR_PATH=dest headers_install
