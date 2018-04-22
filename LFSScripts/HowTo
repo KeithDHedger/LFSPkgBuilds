@@ -120,11 +120,13 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
 
+#Again on pi skip this bit as firmware is installed by the pi-system-meta package.
 #You may prefer to manually copy all firmware modules from the host sytem from /lib/firmware to your new LFS system.
 #Or use the firmware build script to install all the latest firmware from https://git.kernel.org/ eg Whilst still in the kernel build folder:
 ./firmware.LFSBuild install
 
 13.5)
+#No grub on pi
 #Optional install of grub, see here:
 #http://www.linuxfromscratch.org/lfs/view/stable/chapter08/grub.html
 
