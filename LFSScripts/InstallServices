@@ -8,6 +8,11 @@ NORMAL='\e[0;0m'
 
 DREPLY=/tmp/dialogreply$$
 export DIALOGOPTS="--backtitle \"Enable/Disbale services at boot\""
+BLFSBOOTSCRIPTS="blfs-bootscripts-20180105"
+if [ ! -d "$BLFSBOOTSCRIPTS" ];then
+	wget -c --no-check-certificate "http://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/$BLFSBOOTSCRIPTS.tar.xz"
+	tar -xvf $BLFSBOOTSCRIPTS.tar.xz
+fi
 
 setvariable ()
 {
@@ -33,7 +38,7 @@ uninstallScript ()
 	make -C "$BOOTSCRIPTS" "uninstall-$1" 2>/dev/null
 }
 
-BOOTSCRIPTS="$1"
+BOOTSCRIPTS="${1:-$BLFSBOOTSCRIPTS}"
 if [ ! -e "${BOOTSCRIPTS}/Makefile" ];then
 	echo -e "${RED}You need to supply the path to the unpacked blfs-bootscripts folder ...${NORMAL}"
 	exit 1
