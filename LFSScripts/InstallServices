@@ -2,6 +2,8 @@
 
 #©keithhedger Thu 8 Mar 12:20:25 GMT 2018 kdhedger68713@gmail.com
 
+export NCURSES_NO_UTF8_ACS=0
+
 RED='\e[1;31m'
 GREEN='\e[1;32m'
 NORMAL='\e[0;0m'
@@ -26,16 +28,19 @@ setvariable ()
 
 installScript ()
 {
-	echo -e "${GREEN}Installing $arg ...${NORMAL}"
+
+echo ">>>$1<<<<"
+	echo -e "${GREEN}Installing $1 ...${NORMAL}"
 	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
-		make -C "$BOOTSCRIPTS" "install-$1" 2>/dev/null
+
+	make "install-$1" 
 	fi
 }
 
 uninstallScript ()
 {
-	echo -e "${RED}Un-Installing $arg ...${NORMAL}"
-	make -C "$BOOTSCRIPTS" "uninstall-$1" 2>/dev/null
+	echo -e "${RED}Un-Installing $1 ...${NORMAL}"
+	make "uninstall-$1"
 }
 
 BOOTSCRIPTS="${1:-$BLFSBOOTSCRIPTS}"
@@ -47,7 +52,8 @@ fi
 cd $BOOTSCRIPTS
 
 SERVICEARRAY=( $(sed -n 's/^install-\([a-z]*-*[a-z]*\):.*$/\1/p' Makefile |sed 's/^service-//g'|sort) )
-
+#echo ${SERVICEARRAY[@]}
+#exit 0
 DIAOPTS=""
 
 for (( j=0;j<${#SERVICEARRAY[@]};j++ ))
