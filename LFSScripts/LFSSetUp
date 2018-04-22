@@ -192,6 +192,7 @@ sed -ri "s/linuxheaders-[0-9]+.[0-9]+.[0-9]+/linuxheaders-${KERNELVERSION}/i" ${
 if [ $PIBUILD -eq 1 ];then
 	sed -ri 's#BOOTPART=.*#BOOTPART="'$PIBOOT'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
 	sed -ri 's#PARTUUID=.*#PARTUUID="'$(lsblk -no PARTUUID $(findmnt -no SOURCE $LFS))'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
+	sed -ri 's#ROOTFSTYPE=.*#ROOTFSTYPE="'$ROOTFSTYPE'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
 else
 	sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/${BUILDSCRIPTS}/kernel/kernel.LFSBuild
 	sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/${BUILDSCRIPTS}/kernel/firmware.LFSBuild

@@ -77,6 +77,7 @@ Util-linux-2.31.1
 Man-DB-2.8.1
 Tar-1.30
 Texinfo-6.5
+lfs-bootscripts-20170626
 Vim-8.0.586
 Wget-1.19.4
 unzip-6.0
@@ -88,19 +89,19 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="system-meta"
-VERSION="8.0"
+VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 checketc "$PKG"
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

@@ -90,17 +90,16 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="system-meta"
-VERSION="8.0"
+VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 checketc "$PKG"
 packageclean "$PKG" "$CWD"

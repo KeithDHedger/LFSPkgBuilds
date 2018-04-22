@@ -95,13 +95,14 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="system-meta"
-VERSION="8.1"
+VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 #Set this to your blank boot partition, if NOT set boot files are not copied.
 BOOTPART="/dev/mmcblk0p12"
 PARTUUID="77ba7de8-02"
+ROOTFSTYPE="ext2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -119,7 +120,7 @@ if [ "X$BOOTPART" != "X" ];then
 	mkdir /boot||true
 	mount $BOOTPART /boot
 	cp -rv firmware-1.20171029/boot/ /
-	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="$PARTUUID" rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait" > /boot/cmdline.txt
+	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="$PARTUUID" rootfstype="$ROOTFSTYPE" elevator=deadline fsck.repair=yes  rootwait" > /boot/cmdline.txt
 	umount /boot
 fi
 
