@@ -84,6 +84,7 @@ Man-DB-2.8.1
 Tar-1.30
 Texinfo-6.5
 Vim-8.0.586
+lfs-bootscripts-20170626
 Wget-1.19.4
 unzip-6.0
 GPM-1.20.7
@@ -101,10 +102,10 @@ SUFFIX="LFSPKG"
 #Set this to your blank boot partition, if NOT set boot files are not copied.
 BOOTPART="/dev/mmcblk0p12"
 PARTUUID="77ba7de8-02"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -115,10 +116,10 @@ echo "/opt/vc/lib" >> ${PKG}/etc/ld.so.conf.d/broadcom.conf
 cp -rv firmware-1.20171029/modules ${PKG}/lib
 
 if [ "X$BOOTPART" != "X" ];then
-	mkdir /boot
+	mkdir /boot||true
 	mount $BOOTPART /boot
 	cp -rv firmware-1.20171029/boot/ /
-	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="$PARTUUID" rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait"
+	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="$PARTUUID" rootfstype=ext4 elevator=deadline fsck.repair=yes  rootwait" > /boot/cmdline.txt
 	umount /boot
 fi
 

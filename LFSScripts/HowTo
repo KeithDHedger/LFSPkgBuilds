@@ -115,6 +115,7 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild install
 
 13)
+#No point in compiling your own kernel on pi so prebuilt one is used, so skip this bit on pi.
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
