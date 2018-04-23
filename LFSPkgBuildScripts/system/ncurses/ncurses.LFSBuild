@@ -9,20 +9,19 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --mandir=/usr/share/man --without-debug --without-normal --enable-pc-files --enable-widec --prefix=/usr --with-shared
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --mandir=/usr/share/man --with-pkg-config-libdir=/usr/lib/pkgconfig --with-shared --with-normal --without-debug --without-ada --enable-widec --enable-pc-files --with-cxx-binding --with-cxx-shared
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/lib  $PKG/usr/lib/pkgconfig|| true
