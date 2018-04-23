@@ -8,3 +8,5 @@ LFSPkg-master
 wget-list*
 LFSPkgBuildScripts/kernel/config-*
 regexes
+LFSScripts/blfs-bootscripts-*
+
