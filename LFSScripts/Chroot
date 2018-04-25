@@ -35,10 +35,8 @@ pushd $LFS
 #	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
 #	mount --bind ${SOURCEARCHIVES} ${LFS}/${SOURCEARCHIVES}
 
-#this is a folder to contain the built binary packages ( not needed but useful if you want to save all the packages ):
-#	mkdir -vp ${LFS}/${BUILTPACKAGES}||true
-#	mount --bind ${BUILTPACKAGES} ${LFS}/${BUILTPACKAGES}
-
+#This seems to be needed now as TERM=xterm screws up ncurses
+export TERM="linux"
 	if [ X$1 = "Xsystem" ];then
 		chroot "$LFS" /tools/bin/env -i HOME=/root TERM="$TERM" PS1='\u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /tools/bin/bash --login +h
 	else

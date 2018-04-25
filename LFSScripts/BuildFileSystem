@@ -211,12 +211,6 @@ EOF
 UUID=$(findmnt -no UUID $LFS)	/		$ROOTFSTYPE		defaults		1		1
 UUID=$(lsblk -no UUID $SWAP)	swap		swap		pri=1			0		0
 
-#external folder for building if any
-#
-#$SRCLINE
-#$BILTLINE
-
- $EXTFOLDER/${SOURCEARCHIVES}
 proc						/proc		proc		nosuid,noexec,nodev	0		0
 sysfs						/sys		sysfs		nosuid,noexec,nodev	0		0
 devpts						/dev/pts	devpts		gid=5,mode=620		0		0
