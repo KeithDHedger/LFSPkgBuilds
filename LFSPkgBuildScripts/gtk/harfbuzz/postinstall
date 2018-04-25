@@ -6,7 +6,7 @@
 
 lfspkg -r FreeType||true
 lfspkg -r fontconfig||true
-lfspkg -B "fontconfig-2.12.6"||true
+lfspkg -B "fontconfig-2.12.6"
 
 exit 0
 

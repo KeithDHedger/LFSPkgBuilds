@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libconfig-1.6 asciidoc-8.6.9"
+DEPENDS="libconfig-1.6 asciidoc-8.6.9 dbus-1.12.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
