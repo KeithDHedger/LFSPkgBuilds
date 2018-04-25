@@ -28,8 +28,12 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch
-		GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast"
-		./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV
+#		GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast"
+		DRI_DRV="nouveau,r200,radeon,swrast"
+		GLL_DRV="r600,nouveau,radeonsi,svga,swrast,vc4"
+#		./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=/usr --sysconfdir=/etc --libdir=/usr/lib --mandir=/usr/man --docdir=/usr/doc/- --with-dri-driverdir=/usr/lib/xorg/modules/dri --with-dri-drivers=nouveau,r200,radeon,swrast --with-gallium-drivers=radeonsi,swrast,r600,freedreno,vc4,virgl,r300,nouveau --with-egl-platforms=drm,x11 --enable-texture-float --enable-llvm --enable-llvm-shared-libs --enable-egl --enable-xa --enable-osmesa --enable-dri --enable-dri3 --enable-shared-glapi --enable-gbm --enable-glx --enable-glx-tls --enable-gles1 --enable-gles2 --enable-vdpau
+
+		./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV --with-dri-drivers=$DRI_DRV --enable-vdpau --enable-llvm --enable-llvm-shared-libs --enable-egl --enable-glx --enable-dri --enable-dri3 --enable-shared-glapi --with-dri-driverdir="/usr/lib/xorg/modules/dri"
 		unset GLL_DRV
 		make $MAKEFLAGS||make || exit 100
 		make $MAKEFLAGS -C xdemos DEMOS_PREFIX=$XORG_PREFIX || make -C xdemos DEMOS_PREFIX=$XORG_PREFIX ||exit 100
