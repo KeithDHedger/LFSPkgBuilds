@@ -19,12 +19,6 @@ Own the files:
 [sudo] ln -sv LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
 [sudo] ln -sv LFSPkgBuilds/LFSScripts LFSScripts
 
-2)
-#get the package manager archive via the host system:
-cd LFSPkgBuildScripts/admin/LFSPkg
-wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/master.zip" -O LFSPkg.zip
-unzip LFSPkg.zip
-
 3)
 #cd into the lfsscripts folder
 cd /mnt/LFS/LFSScripts
@@ -40,6 +34,16 @@ cd /mnt/LFS/LFSScripts
 #Run BuildTools script:
 ./BuildTools
 
+4.5)
+#Mount bind external folder if set
+. ./SystemData
+mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
+mkdir -vp ${LFS}/${BUILTPACKAGES}||true
+if [ "X$EXTFOLDER" != "X" ];then
+	sudo mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
+	sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+fi
+
 5)
 #Run BuildFileSystem script:
 ./BuildFileSystem
@@ -49,6 +53,12 @@ cd /mnt/LFS/LFSScripts
 mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz linux-$KERNELVERSION.tar.xz
+
+5.6)
+#get the package manager archive via the host system:
+cd LFSPkgBuildScripts/admin/LFSPkg
+wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/master.zip" -O LFSPkg.zip
+unzip LFSPkg.zip
 
 6)
 #Chroot into tempory system:

@@ -128,7 +128,7 @@ readWithDefault "ROOTFSTYPE"  "Enter Root FS Type"
 ROOTDEV=$(findmnt -no SOURCE $LFS)
 readWithDefault "ROOTDEV"  "Enter Root Device"
 
-SWAP=$(blkid|grep swap|awk -F: '{print $1}')
+SWAP=$(blkid|grep swap|tail -n1|awk -F: '{print $1}')
 readWithDefault "SWAP"  "Enter Swap Device"
 
 LANGUAGE=${LANGUAGE:-$LANG}
@@ -216,7 +216,7 @@ BUILDSCRIPTS=$BUILDSCRIPTS
 KEYBOARD=$KEYBOARD
 ROOTFSTYPE=$ROOTFSTYPE
 ROOTDEV=\$(findmnt -no SOURCE \$LFS)
-SWAP=\$(blkid|grep swap|awk -F: '{print \$1}')
+SWAP=$SWAP
 
 LANGUAGE=$LANGUAGE
 
