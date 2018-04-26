@@ -2,9 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 OpenJDK-9.0.4 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0"
+DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 OpenJDK-9.0.4 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5"
 
-# samba-4.5.5
 # libva-intel-driver-1.7.3
 
 if ! lfspkg -B "$DEPENDS";then
@@ -26,14 +25,15 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 #gettar "https://github.com/xbmc/xbmc/archive/master.zip" $SECTION
-#gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION "kodi-${VERSION}.tar.gz"
+gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION "kodi-${VERSION}.tar.gz"
+#		https://github.com/xbmc/xbmc/archive/17.6-Krypton/xbmc-17.6-Krypton.tar.gz
 gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/kodi-texturepacker.patch" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/xbmc-Krypton-samba-4.0.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-PATCHDIR="$(pwd)/patches"
+#PATCHDIR="$(pwd)/patches"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/kodi-${VERSION}.tar.gz"
 	pushd "xbmc-${VERSION}-Krypton"
