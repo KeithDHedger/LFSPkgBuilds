@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gdk-pixbuf-2.36.5 libcroco-0.6.12 Pango-1.40.14 gobject-introspection-1.54.1 GTK-Doc-1.27"
+DEPENDS="gdk-pixbuf-2.36.5 libcroco-0.6.12 Pango-1.40.14 gobject-introspection-1.54.1 GTK-Doc-1.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

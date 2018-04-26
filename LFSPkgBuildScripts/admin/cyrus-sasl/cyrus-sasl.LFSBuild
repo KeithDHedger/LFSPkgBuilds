@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.0.2"
+DEPENDS="OpenSSL-1.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -18,6 +18,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.cyrusimap.org/cyrus-sasl/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-fixes-3.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${TARNAME}-${VERSION}-openssl-1.1.0-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -28,10 +29,12 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fixes-3.patch
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-openssl-1.1.0-1.patch
+
 	autoreconf -fi
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-auth-sasldb --with-dbpath=/var/lib/sasl/sasldb2 --with-saslauthd=/var/run/saslauthd
-	make -j1|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-auth-sasldb --with-dbpath=/var/lib/sasl/sasldb2 --with-saslauthd=/var/run/saslauthd --with-ldap
+	make -j1|| exit 100
+	make install DESTDIR=$PKG || exit 100
 	install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	install -v -m644  doc/{*.{html,txt,fig},ONEWS,TODO} saslauthd/LDAP_SASLAUTHD $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	install -v -dm700 $PKG/var/lib/sasl

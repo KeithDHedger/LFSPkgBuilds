@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="PCRE-8.41 libffi-3.2.1 Python-2.7.14 GTK-Doc-1.27"
+DEPENDS="PCRE-8.41 libffi-3.2.1 Python-2.7.14 GTK-Doc-1.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

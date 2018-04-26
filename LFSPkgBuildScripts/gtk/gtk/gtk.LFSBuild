@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ATK-2.26.1 gdk-pixbuf-2.36.11 Pango-1.40.14 hicolor-icon-theme-0.17 GTK-Doc-1.27"
+DEPENDS="ATK-2.26.1 gdk-pixbuf-2.36.11 Pango-1.40.14 hicolor-icon-theme-0.17 GTK-Doc-1.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

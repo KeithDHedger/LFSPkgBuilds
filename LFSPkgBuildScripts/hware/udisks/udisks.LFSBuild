@@ -31,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 1
 		#restore use of /media to make fhs complient 
 		mkdir -vp $PKG/etc/udev/rules.d/||true
-		cp ../99-udisks2.rules $PKG/etc/udev/rules.d/
+		cp $CWD/99-udisks2.rules $PKG/etc/udev/rules.d/
 	popd
 
 	checketc $PKG

@@ -2,6 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="Cyrus-SASL-2.1.26"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="openldap"
 TARNAME="$PKGNAME"
 VERSION="2.4.45"
@@ -25,12 +30,10 @@ useradd -c "OpenLDAP Daemon Owner" -d /var/lib/openldap -g ldap -s /bin/false -u
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-tls=openssl --with-cyrus-sasl --enable-dynamic --enable-crypt --enable-spasswd --enable-slapd --enable-modules --enable-rlookups --enable-backends=mod --disable-ndb --disable-sql --disable-shell --disable-bdb --disable-hdb --enable-overlays=mod
-#		make depend $MAKEFLAGS||make depend|| exit 100
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-consolidated-1.patch
 		autoconf
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-slapd
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-slapd --enable-dynamic --with-tls=openssl --with-cyrus-sasl --enable-crypt --enable-spasswd --enable-slapd --enable-modules --enable-rlookups --enable-backends=mod --disable-ndb --disable-sql --disable-shell --disable-bdb --disable-hdb --enable-overlays=mod
 		make depend $MAKEFLAGS||make depend|| exit 100
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
