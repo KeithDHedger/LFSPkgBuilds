@@ -20,7 +20,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/glib/${VERSION%.?*}/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/svn/${PKGNAME}-${VERSION}-skip_warnings-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -28,7 +27,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 #meson buid is fucked when trying to build docs so use configure instead!!!
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-skip_warnings-1.patch
+		patch -Np1 -i $CWD/${PKGNAME}-${VERSION}-skip_warnings-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-pcre=system --libdir=/usr/lib${LIBDIRSUFFIX} --with-python=/usr/bin/python3
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1

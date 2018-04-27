@@ -23,7 +23,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}"
 		#From slackbuilds.org
 		# Define TINYXML_USE_STL to YES and use custom SLKCFLAGS.
-		sed -i -e '/^TINYXML_USE_STL/s|=.*|= YES|' -e "s|-O3|$LFSFLAGS|" Makefile
+		sed -i -e '/^TINYXML_USE_STL/s|=.*|= YES|' -e "s|-O3|$LFSFLAGS -fPIC|" Makefile
 		# Permanently define TINYXML_USE_STL in tinyxml.h.
 		patch -p1 < $CWD/tinyxml-2.5.3-stl.patch
 		# Fix for bug

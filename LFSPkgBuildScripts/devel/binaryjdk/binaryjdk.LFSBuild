@@ -8,32 +8,55 @@ VERSION="9.0.4"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+ARCHTYPE="x86"
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
-
-if [ $ARCH = "x86_64" ];then
-	ARCHBIN=x86_64
-else
-	ARCHBIN=i686
-fi
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+11-$ARCHBIN-bin.tar.xz" $SECTION
+case $ARCH in
+	x86_64)
+		ARCHBIN=x86_64
+		;;
+	i?86)
+		ARCHBIN=i686
+		;;
+	arm*)
+		echo
+		echo "#################################################################################"
+		echo "You need to manually download a binary java from here:"
+		echo "http://www.oracle.com/technetwork/java/embedded/embedded-se/downloads/index.html"
+		echo "To here ${SOURCEARCHIVES}/${SECTION}/"
+		echo "You may need to create an account to start the download"
+		echo "Select 'ejdk-8u171-linux-arm-sflt.tar.gz'"
+		echo "#################################################################################"
+		echo
+		ARCHTYPE="arm"
+		;;
+esac
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}+11-$ARCHBIN-bin.tar.xz"
-	pushd "${TARNAME}-${VERSION}+11-$ARCHBIN-bin"
-		mkdir -vp $PKG/opt
-		install -vdm755 $PKG/opt/${PKGNAME}-${VERSION}
-		mv -v * $PKG/opt/${PKGNAME}-${VERSION}
-		ln -sf ${PKGNAME}-${VERSION} $PKG/opt/jdk
-		chown -R root:root $PKG/opt/${PKGNAME}-${VERSION}
-	popd
+	if [ "$ARCHTYPE" = "x86" ];then
+		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz" $SECTION
+		tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz"
+		pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"
+			mkdir -vp $PKG/opt
+			install -vdm755 $PKG/opt/${PKGNAME}-${VERSION}-bin
+			mv -v * $PKG/opt/${PKGNAME}-${VERSION}-bin
+			ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
+			chown -R root:root $PKG/opt/${PKGNAME}-${VERSION}-bin
+			rm -r "${TARNAME}-${VERSION}-$ARCHBIN-bin"
+		popd
+	else
+		tar -xvf "${SOURCEARCHIVES}/${SECTION}/ejdk-8u171-linux-arm-sflt.tar.gz"||exit 100
+		mkdir -vp $PKG/opt/${PKGNAME}-${VERSION}-bin
+		cp -rv ejdk1.8.0_171/linux_arm_sflt/jre/* $PKG/opt/${PKGNAME}-${VERSION}-bin
+		ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
+		rm -rf ejdk1.8.0_171
+	fi
 
 	checketc $PKG
 	packageclean "$PKG" "$CWD"
@@ -58,6 +81,4 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	rm -r "$PKG"
-	rm -r "${TARNAME}-${VERSION}+11-$ARCHBIN-bin"
 popd 2>/dev/null||true
-
