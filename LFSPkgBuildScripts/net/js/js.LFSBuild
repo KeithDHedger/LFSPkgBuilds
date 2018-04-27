@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libffi-3.2.1 NSPR-4.18 Python-2.7.14 Zip-3.0 autoconf213-2.13"
+DEPENDS="libffi-3.2.1 NSPR-4.18 Python-2.7.14 Zip-3.0 autoconf213-2.13 icu-60.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

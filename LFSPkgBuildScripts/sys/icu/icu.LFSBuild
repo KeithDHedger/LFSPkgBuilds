@@ -22,6 +22,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "icu"
+		case $ARCH in
+			armv*)
+				sed -i 's/^LDFLAGSICUDT/#LDFLAGSICUDT/' source/config/mh-linux
+				;;
+		esac
 		cd source
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc CXX=g++ ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 1
