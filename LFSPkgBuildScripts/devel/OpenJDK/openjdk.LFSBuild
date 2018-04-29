@@ -50,10 +50,10 @@ EOF
 				mkdir -pv ${subproject}
 				tar -xf ${subproject}.tar.bz2 --strip-components=1 -C ${subproject}
 			done
-		unset JAVA_HOME
-		PATH="${PATH}:/opt/jdk/bin"
+		#unset JAVA_HOME
+		#PATH="${PATH}:/opt/jdk/bin"
 
-		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="11" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/ssl/java/cacerts.jks
+		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="11" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/ssl/java/cacerts.jks --with-boot-jdk
 
 		make images
 		install -vdm755 $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}

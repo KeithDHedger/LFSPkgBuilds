@@ -8,7 +8,6 @@ PKGNAME="BinaryJDK"
 VERSION="9.0.4"
 
 mkdir -vp /etc/profile.d/||true
-chown -R root:root /opt/${PKGNAME}-${VERSION}-bin||true
 
 cat > /etc/profile.d/openjdk.sh << "EOF"
 # Begin /etc/profile.d/openjdk.sh

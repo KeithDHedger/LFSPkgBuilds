@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var -Dwith-daemon-user=colord -Denable-vala=true -Denable-systemd=false -Denable-libcolordcompat=true -Denable-argyllcms-sensor=false -Denable-bash-completion=false -Denable-docs=false -Denable-man=false ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIBDIRSUFFIX} -Dwith-daemon-user=colord -Denable-vala=true -Denable-systemd=false -Denable-libcolordcompat=true -Denable-argyllcms-sensor=false -Denable-bash-completion=false -Denable-docs=false -Denable-man=false ..
 
 		ninja ${MAKEFLAGS}||exit 100
 		DESTDIR=$PKG ninja install||exit 100

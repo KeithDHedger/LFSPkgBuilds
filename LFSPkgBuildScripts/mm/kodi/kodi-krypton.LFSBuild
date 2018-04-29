@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 OpenJDK-9.0.4 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5"
+DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 BinaryJDK-9.0.4 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.14.0"
 
 # libva-intel-driver-1.7.3
 
@@ -40,10 +40,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		export PATH="$PATH:/opt/jdk/bin"
 		patch -Np0 -i ${SOURCEARCHIVES}/${SECTION}/kodi-texturepacker.patch
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/xbmc-Krypton-samba-4.0.patch
-
+#JAVA_HOME=/opt/jdk
 		./bootstrap
-####WORKS		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-samba
-		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no
+		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-samba
+	#		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no
 		# --with-ffmpeg=shared
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
