@@ -18,6 +18,9 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 scriptLog "${PKGNAME}-${VERSION}"
+
+echo $ARCH
+
 case $ARCH in
 	x86_64)
 		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}${MINORVERSION}-x86_64-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
@@ -28,15 +31,6 @@ case $ARCH in
 	arm*)
 		TARSUFFIX=".tar.gz"
 		gettar "http://cdn.azul.com/zulu-embedded/bin/ezdk-1.8.0_162-8.27.0.91-eval-linux_aarch32hf.tar.gz"  $SECTION "${PKGNAME}${TARSUFFIX}"
-		#		echo
-		#		echo "#################################################################################"
-		#		echo "You need to manually download a binary java from here:"
-		#		echo "http://www.oracle.com/technetwork/java/embedded/embedded-se/downloads/index.html"
-		#		echo "To here ${SOURCEARCHIVES}/${SECTION}/"
-		#		echo "You may need to create an account to start the download"
-		#		echo "Select 'ejdk-8u171-linux-arm-sflt.tar.gz'"
-		#		echo "#################################################################################"
-		#		echo
 		;;
 esac
 
@@ -45,25 +39,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -C "$PKG/opt/${PKGNAME}" --strip-components=1 -xvf ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}${TARSUFFIX}
 	chown -R root:root $PKG/opt
 	ln -sv ${PKGNAME} $PKG/opt/jdk
-	#	if [ "$ARCHTYPE" = "x86" ];then
-	##		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz" $SECTION
-	##		tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz"
-	#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-$ARCHBIN-bin.tar.xz"
-	#		pushd "${TARNAME}-${VERSION}-$ARCHBIN-bin"
-	#			mkdir -vp $PKG/opt
-	#			install -vdm755 $PKG/opt/${PKGNAME}-${VERSION}-bin
-	#			mv -v * $PKG/opt/${PKGNAME}-${VERSION}-bin
-	#			ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
-	#			chown -R root:root $PKG/opt/${PKGNAME}-${VERSION}-bin
-	#			rm -r "${TARNAME}-${VERSION}-$ARCHBIN-bin"
-	#		popd
-	#	else
-	#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/ejdk-8u171-linux-arm-sflt.tar.gz"||exit 100
-	#		mkdir -vp $PKG/opt/${PKGNAME}-${VERSION}-bin
-	#		cp -rv ejdk1.8.0_171/linux_arm_sflt/jre/* $PKG/opt/${PKGNAME}-${VERSION}-bin
-	#		ln -sf ${PKGNAME}-${VERSION}-bin $PKG/opt/jdk
-	#		rm -rf ejdk1.8.0_171
-	#	fi
 
 	checketc $PKG
 	packageclean "$PKG" "$CWD"
