@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 BinaryJDK-9.0.4 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.14.0 libdvdnav-6.0.0 libdvdread-6.0.0 libdvdcss-1.4.1"
+DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 BinaryJDK-9.0.4 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.14.0"
 
 # libva-intel-driver-1.7.3
 
