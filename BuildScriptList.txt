@@ -120,6 +120,7 @@
 ./devel/xmlto/xmlto.LFSBuild
 ./devel/xorg-cf-files/xorg-cf-files.LFSBuild
 ./devel/yad/yad.LFSBuild
+./devel/yaml/yaml.LFSBuild
 ./devel/yasm/yasm.LFSBuild
 ./games/fortune/fortune.LFSBuild
 ./games/XDecorations/XDecorations.LFSBuild
@@ -265,6 +266,7 @@
 ./libs/nspr/nspr.LFSBuild
 ./libs/openal/openal.LFSBuild
 ./libs/openjpeg/openjpeg.LFSBuild
+./libs/openldap/openldap.LFSBuild
 ./libs/openmpi/openmpi.LFSBuild
 ./libs/pangox-compat/pangox-compat.LFSBuild
 ./libs/pcre2/pcre2.LFSBuild
@@ -437,14 +439,19 @@
 ./python/lxml/lxml.LFSBuild
 ./python/Mako/Mako.LFSBuild
 ./python/MarkupSafe/MarkupSafe.LFSBuild
-./python/py2cairo/py2cairo.LFSBuild
-./python/pygobject/pygobject.LFSBuild
+./python/PyCairo/PyCairo.LFSBuild
+./python/pygobject/pygobject2.LFSBuild
+./python/pygobject/pygobject3.LFSBuild
 ./python/pygtk/pygtk.LFSBuild
 ./python/pygtksourceview/pygtksourceview.LFSBuild
+./python/pylibxml2/pylibxml2.LFSBuild
 ./python/PyQt/PyQt.LFSBuild
 ./python/pysetuptools/pysetuptools.LFSBuild
+./python/pysqlite/pysqlite.LFSBuild
 ./python/python-dateutil/python-dateutil.LFSBuild
 ./python/Python/Python.LFSBuild
+./python/python-xrandr/python-xrandr.LFSBuild
+./python/PyYAML/PyYAML.LFSBuild
 ./python/sip/sip.LFSBuild
 ./python/six/six.LFSBuild
 ./qt/avidemuxqt/avidemuxqt.LFSBuild
@@ -562,6 +569,7 @@
 ./system/sysklogd/sysklogd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
+./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
 ./system/sysvinit/sysvinit.LFSBuild
 ./system/tar/tar.LFSBuild
