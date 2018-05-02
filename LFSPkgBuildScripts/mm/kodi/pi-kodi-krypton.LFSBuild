@@ -25,39 +25,39 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 #gettar "https://github.com/xbmc/xbmc/archive/master.zip" $SECTION
-gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION "kodi-${VERSION}.tar.gz"
+#gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION "kodi-${VERSION}.tar.gz"
 #		https://github.com/xbmc/xbmc/archive/17.6-Krypton/xbmc-17.6-Krypton.tar.gz
-gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/kodi-texturepacker.patch" $SECTION
-gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/xbmc-Krypton-samba-4.0.patch" $SECTION
-#gettar "https://github.com/xbmc/xbmc/archive/Krypton.zip" $SECTION
+#gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/kodi-texturepacker.patch" $SECTION
+#gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/xbmc-Krypton-samba-4.0.patch" $SECTION
+gettar "https://github.com/xbmc/xbmc/archive/Krypton.zip" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 #This for pi2 & pi3 change to arm1176jzf-s for pi 0 or pi 1
-#CPU=${CPU:-"cortex-a7"}
+CPU=${CPU:-"cortex-a7"}
 	
 #PATCHDIR="$(pwd)/patches"
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/kodi-${VERSION}.tar.gz"
-#	unzip ${SOURCEARCHIVES}/${SECTION}/Krypton.zip
-	pushd "xbmc-${VERSION}-Krypton"
-#	pushd "xbmc-Krypton"
-#		rm -rf build||true
-#		mkdir build||true
-#		cd build
+#	tar -xvf "${SOURCEARCHIVES}/${SECTION}/kodi-${VERSION}.tar.gz"
+	unzip ${SOURCEARCHIVES}/${SECTION}/Krypton.zip
+#	pushd "xbmc-${VERSION}-Krypton"
+	pushd "xbmc-Krypton"
+		rm -rf build||true
+		mkdir build||true
+		cd build
 		export PATH="$PATH:/opt/jdk/bin"
 		export JAVA_HOME=/opt/jdk
 #		patch -Np0 -i ${SOURCEARCHIVES}/${SECTION}/kodi-texturepacker.patch
 #		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/xbmc-Krypton-samba-4.0.patch
 #JAVA_HOME=/opt/jdk
-		./bootstrap||exit 100
-		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-vdpau --disable-gles
+#		./bootstrap
+#		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-samba
 #			CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-vdpau --disable-gles
 		# --with-ffmpeg=shared
-		make $MAKEFLAGS||make|| exit 100
+#		make $MAKEFLAGS||make|| exit 1
 #works pi		cmake -DVERBOSE=1 -DCORE_SYSTEM_NAME=rbpi -DENABLE_MMAL=ON -DENABLE_OPENGL=OFF -DWITH_CPU=${CPU} -DCMAKE_PREFIX_PATH=/opt/vc -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_AIRTUNES=OFF -DENABLE_ALSA=ON -DENABLE_AVAHI=OFF -DENABLE_BLURAY=OFF -DENABLE_CEC=OFF -DENABLE_DBUS=OFF -DENABLE_DVDCSS=ON -DENABLE_EGL=ON -DENABLE_EVENTCLIENTS=ON -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_CROSSGUID=ON -DENABLE_MICROHTTPD=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_NFS=OFF -DENABLE_NONFREE=ON -DENABLE_OPENSSL=ON -DENABLE_OPTICAL=ON -DENABLE_PULSEAUDIO=OFF -DENABLE_SMBCLIENT=ON -DENABLE_SSH=OFF -DENABLE_UDEV=ON -DENABLE_UPNP=ON -DENABLE_VAAPI=OFF -DENABLE_VDPAU=OFF -DENABLE_X11=OFF -DENABLE_XSLT=ON -DENABLE_LIRC=OFF ../project/cmake/ || exit 100
-#		cmake -DVERBOSE=1  -DENABLE_MMAL=OFF -DENABLE_OPENGL=OFF -DCMAKE_PREFIX_PATH=/usr -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_AIRTUNES=OFF -DENABLE_ALSA=ON -DENABLE_AVAHI=OFF -DENABLE_BLURAY=OFF -DENABLE_CEC=OFF -DENABLE_DBUS=OFF -DENABLE_DVDCSS=ON -DENABLE_EGL=ON -DENABLE_EVENTCLIENTS=ON -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_CROSSGUID=ON -DENABLE_MICROHTTPD=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_NFS=OFF -DENABLE_NONFREE=ON -DENABLE_OPENSSL=ON -DENABLE_OPTICAL=ON -DENABLE_PULSEAUDIO=OFF -DENABLE_SMBCLIENT=ON -DENABLE_SSH=OFF -DENABLE_UDEV=ON -DENABLE_UPNP=ON -DENABLE_VAAPI=OFF -DENABLE_VDPAU=OFF -DENABLE_X11=OFF -DENABLE_XSLT=ON -DENABLE_LIRC=OFF ../project/cmake/ || exit 100
-#		cmake --build . -- VERBOSE=1 -j$(($(nproc) -2 ))
+		cmake -DVERBOSE=1  -DENABLE_MMAL=OFF -DENABLE_OPENGL=OFF -DCMAKE_PREFIX_PATH=/usr -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_AIRTUNES=OFF -DENABLE_ALSA=ON -DENABLE_AVAHI=OFF -DENABLE_BLURAY=OFF -DENABLE_CEC=OFF -DENABLE_DBUS=OFF -DENABLE_DVDCSS=ON -DENABLE_EGL=ON -DENABLE_EVENTCLIENTS=ON -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_CROSSGUID=ON -DENABLE_MICROHTTPD=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_NFS=OFF -DENABLE_NONFREE=ON -DENABLE_OPENSSL=ON -DENABLE_OPTICAL=ON -DENABLE_PULSEAUDIO=OFF -DENABLE_SMBCLIENT=ON -DENABLE_SSH=OFF -DENABLE_UDEV=ON -DENABLE_UPNP=ON -DENABLE_VAAPI=OFF -DENABLE_VDPAU=OFF -DENABLE_X11=OFF -DENABLE_XSLT=ON -DENABLE_LIRC=OFF ../project/cmake/ || exit 100
+		cmake --build . -- VERBOSE=1 -j$(($(nproc) -2 ))
 		make install DESTDIR=$PKG || exit 100
 	popd
 
