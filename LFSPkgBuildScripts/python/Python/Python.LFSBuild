@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="expat-2.2.0 libffi-3.2.1 pkg-config-0.29.1"
+DEPENDS="expat-2.2.0 libffi-3.2.1 pkg-config-0.29.1 sqlite-3.22.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
