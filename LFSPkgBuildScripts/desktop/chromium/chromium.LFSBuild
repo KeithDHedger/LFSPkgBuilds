@@ -15,6 +15,9 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 #The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at http://www.chromium.org/developers/how-tos/api-keys.
 GOOGLE_API_KEY="AIzaSyBhWJ-j5RXyt5911BMuVen-WuS10mvOnrY"
@@ -24,6 +27,8 @@ GOOGLE_DEFAULT_CLIENT_SECRET="XU4b-j0Ssy-XkTvSVmiFMvNY"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
 gettar "https://github.com/foutrelis/chromium-launcher/archive/v3.tar.gz" $SECTION "chromium-launcher-3.tar.gz"
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 
 case "$ARCH" in
 	x86_64)
@@ -35,11 +40,6 @@ case "$ARCH" in
 		gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux32/flash_player_ppapi_linux.i386.tar.gz" $SECTION
 		;;
 esac
-
-PKG="${OUTPUT}/${PKGNAME}"
-DOWHAT=${1:-"build"}
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -170,7 +170,7 @@ EOF
 	popd
 
 	checketc $PKG
-	packageclean "$PKG"
+	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
