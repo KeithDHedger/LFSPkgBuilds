@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 BinaryJDK-9.0.4 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.14.0"
+DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 BinaryJDK-9.0.4 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.14.0 pysqlite-2.8.3"
 
 # libva-intel-driver-1.7.3
 
@@ -25,7 +25,8 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 #gettar "https://github.com/xbmc/xbmc/archive/master.zip" $SECTION
-gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION "kodi-${VERSION}.tar.gz"
+#gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION "kodi-${VERSION}.tar.gz"
+gettar	"https://github.com/xbmc/xbmc/archive/17.6-Krypton/xbmc-17.6-Krypton.tar.gz" $SECTION "kodi-${VERSION}.tar.gz"
 #		https://github.com/xbmc/xbmc/archive/17.6-Krypton/xbmc-17.6-Krypton.tar.gz
 gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/kodi-texturepacker.patch" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/xbmc-Krypton-samba-4.0.patch" $SECTION
@@ -47,11 +48,11 @@ pushd $COMPILEAT 2>/dev/null||true
 #		cd build
 		export PATH="$PATH:/opt/jdk/bin"
 		export JAVA_HOME=/opt/jdk
-#		patch -Np0 -i ${SOURCEARCHIVES}/${SECTION}/kodi-texturepacker.patch
-#		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/xbmc-Krypton-samba-4.0.patch
+		patch -Np0 -i ${SOURCEARCHIVES}/${SECTION}/kodi-texturepacker.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/xbmc-Krypton-samba-4.0.patch
 #JAVA_HOME=/opt/jdk
 		./bootstrap||exit 100
-		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-vdpau --disable-gles
+		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-vdpau
 #			CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-vdpau --disable-gles
 		# --with-ffmpeg=shared
 		make $MAKEFLAGS||make|| exit 100
@@ -83,5 +84,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "xbmc-Krypton"
+	rm -r "$PKG" "xbmc-${VERSION}-Krypton"
 popd 2>/dev/null||true
