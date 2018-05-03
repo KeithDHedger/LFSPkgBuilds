@@ -4,8 +4,6 @@
 
 DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 BinaryJDK-9.0.4 rapidjson-1.1.0 sqlite-3.22.0 taglib-1.11.1 tinyxml-2.6.2 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.14.0 pysqlite-2.8.3"
 
-# libva-intel-driver-1.7.3
-
 if ! lfspkg -B "$DEPENDS";then
 	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
 	exit 100
@@ -23,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/xbmc/xbmc/archive/Krypton.zip" $SECTION
+gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
