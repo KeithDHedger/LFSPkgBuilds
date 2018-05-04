@@ -1,58 +1,56 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-http://gmic.eu/download.shtml
-DEPENDS=""
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-#http://gmic.eu/files/source/gmic_1.6.5.0.tar.gz
+
 PKGNAME="gmic"
 TARNAME="$PKGNAME"
-VERSION="1.6.5.0"
+VERSION="2.0.0"
 BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}.tar.gz"
-#gettar "http://gmic.eu/files/latest/${TARBALL}" $SECTION
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://gmic.eu/files/source/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${PKGNAME}-${VERSION}"
-	cd src
-#	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${PKGNAME}-${VERSION}"
+		cd src
+		sed -i "s/LIB = lib/LIB = lib$LIBDIRSUFFIX/" Makefile
+		sed -i "s:/share/man/:/man/:g" Makefile
+		# freshen gmic_stdlib.h to stop the Makefile downloading it
+		touch gmic_stdlib.h
+		make $MAKEFLAGS||make|| exit 1
+		make install DESTDIR=$PKG || exit 1
+	popd
 
-checketc "$PKG"
-packageclean "$PKG"
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-#rm -r "$PKG" "${PKGNAME}-${VERSION}_pre"
+	rm -r "$PKG" "${PKGNAME}-${VERSION}_pre"
+popd 2>/dev/null||true

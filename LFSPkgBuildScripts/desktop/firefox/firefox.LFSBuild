@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.1.3 GTK-2.24.31 Zip-3.0 UnZip-6.0 yasm-1.3.0 libevent-2.1.8 NSS-3.29 libvpx-1.6.1 pysetuptools-18.2 SQLite-3.17.0 autoconf213-2.13 GConf-3.2.6"
+DEPENDS="alsa-lib-1.1.5 GTK-2.24.32 Zip-3.0 UnZip-6.0 yasm-1.3.0 libevent-2.1.8 NSS-3.35 libvpx-1.7.0 pysetuptools-18.2 SQLite-3.22.0 autoconf213-2.13 GConf-3.2.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,25 +14,20 @@ BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.source.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+MOZCONFIGFILE="$CWD/mozconfig.firefox"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${VERSION}/source/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
-
-
-MOZCONFIGFILE="$(pwd)/mozconfig.firefox"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-
 	pushd "${TARNAME}-${VERSION}"
-
 		mkdir -pv $PKG/usr/share/applications $PKG/usr/share/pixmaps $PKG/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 
 		cp "$MOZCONFIGFILE" mozconfig
@@ -49,7 +44,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	popd
 
 	checketc $PKG
-	packageclean "$PKG"
+	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
 		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
