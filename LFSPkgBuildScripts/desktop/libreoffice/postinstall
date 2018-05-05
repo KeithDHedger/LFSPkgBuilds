@@ -4,8 +4,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-pushd ${BUILDSCRIPTSlibs}/libs/freetype
-	./freetype.LFSBuild install
-popd
+update-desktop-database
 exit 0
 
