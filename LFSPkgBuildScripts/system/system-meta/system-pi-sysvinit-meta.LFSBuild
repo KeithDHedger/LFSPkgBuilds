@@ -126,6 +126,8 @@ if [ "X$BOOTPART" != "X" ];then
 	umount /boot
 fi
 
+cd "/LFSPkgBuilds/LFSScripts"
+
 checketc "$PKG"
 packageclean "$PKG" "$CWD"
 
