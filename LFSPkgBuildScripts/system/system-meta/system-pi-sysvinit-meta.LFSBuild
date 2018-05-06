@@ -88,7 +88,9 @@ lfs-bootscripts-20170626
 Wget-1.19.4
 unzip-6.0
 GPM-1.20.7
-Links-2.14"
+Links-2.14
+ntp-4.2.8
+pilfs-bootscripts-20170225"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

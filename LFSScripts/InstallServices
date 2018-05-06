@@ -28,12 +28,9 @@ setvariable ()
 
 installScript ()
 {
-
-echo ">>>$1<<<<"
 	echo -e "${GREEN}Installing $1 ...${NORMAL}"
 	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
-
-	make "install-$1" 
+		make "install-$1" 
 	fi
 }
 
@@ -42,6 +39,14 @@ uninstallScript ()
 	echo -e "${RED}Un-Installing $1 ...${NORMAL}"
 	make "uninstall-$1"
 }
+
+if [ "$1" != "" ];then
+	for arg in $@
+		do
+			installScript $arg
+		done
+	exit 0
+fi
 
 BOOTSCRIPTS="${1:-$BLFSBOOTSCRIPTS}"
 if [ ! -e "${BOOTSCRIPTS}/Makefile" ];then
