@@ -4,54 +4,66 @@
 
 PKGNAME="fuse"
 TARNAME="$PKGNAME"
-VERSION="2.9.7"
+VERSION="3.2.1"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/libfuse/libfuse/releases/download/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} INIT_D_PATH=/tmp/init.d
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		sed -i '/^udev/,$ s/^/#/' util/meson.build
+		mkdir build
+		cd build
 
-	mkdir -vp $PKG/lib${LIBDIRSUFFIX}||true
-	mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libfuse.so.* $PKG/lib${LIBDIRSUFFIX}
-	ln -sfv ../../lib${LIBDIRSUFFIX}/libfuse.so.${VERSION} $PKG/usr/lib${LIBDIRSUFFIX}/libfuse.so
-	rm -rf  $PKG/tmp/init.d||true
-	install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-	install -v -m644 doc/{how-fuse-works,kernel.txt} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-popd
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr ..
+		ninja|| exit 100
+		DESTDIR=$PKG ninja install|| exit 100
 
-checketc $PKG
-packageclean "$PKG"
+		mkdir -vp $PKG/lib${LIBDIRSUFFIX} $PKG/bin $PKG/sbin $PKG/usr/share/doc $PKG/usr/share/man/man{1,8}||true
+		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libfuse3.so.3* $PKG/lib${LIBDIRSUFFIX}
+		ln -sfv ../../lib${LIBDIRSUFFIX}/libfuse3.so.${VERSION} $PKG/usr/lib${LIBDIRSUFFIX}/libfuse3.so
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+		mv -vf $PKG/usr/bin/fusermount3 $PKG/bin
+		mv -vf /usr/sbin/mount.fuse3 $PKG/sbin
+		chmod u+s $PKG/bin/fusermount3
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		install -v -m644 ../doc/{README.NFS,kernel.txt} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		cp -Rv ../doc/html  $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		gunzip $PKG/usr/share/man/{man1/fusermount3.1,man8/mount.fuse.8}.gz
+	popd
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
