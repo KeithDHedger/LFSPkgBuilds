@@ -131,6 +131,9 @@ pushd "${BUILDSCRIPTS}/HelperScripts"
 	InstallServices "ntp sshd"
 popd
 
+mkdir -vp $PKG/lib/udev/rules.d
+cp $CWD/10-local-rpi.rules $CWD/60-persistent-input.rules $PKG/lib/udev/rules.d
+
 checketc "$PKG"
 packageclean "$PKG" "$CWD"
 

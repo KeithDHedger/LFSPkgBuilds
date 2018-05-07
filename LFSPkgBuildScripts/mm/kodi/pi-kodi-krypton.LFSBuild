@@ -42,6 +42,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 100
 #fix kodi exit bugs
 		cp $CWD/kodi $PKG/usr/bin
+		
 	popd
 
 	checketc "$PKG"
