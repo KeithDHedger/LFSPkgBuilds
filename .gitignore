@@ -9,4 +9,4 @@ wget-list*
 LFSPkgBuildScripts/kernel/config-*
 regexes
 LFSScripts/blfs-bootscripts-*
-
+LFSPkgBuildScripts/HelperScripts/blfs-bootscripts-*

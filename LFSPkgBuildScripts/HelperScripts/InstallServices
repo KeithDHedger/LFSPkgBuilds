@@ -2,7 +2,7 @@
 
 #©keithhedger Thu 8 Mar 12:20:25 GMT 2018 kdhedger68713@gmail.com
 
-#export NCURSES_NO_UTF8_ACS=0
+export NCURSES_NO_UTF8_ACS=0
 
 RED='\e[1;31m'
 GREEN='\e[1;32m'
@@ -15,6 +15,7 @@ if [ ! -d "$BLFSBOOTSCRIPTS" ];then
 	wget -c --no-check-certificate "http://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/$BLFSBOOTSCRIPTS.tar.xz"
 	tar -xvf $BLFSBOOTSCRIPTS.tar.xz
 fi
+BOOTSCRIPTS="$BLFSBOOTSCRIPTS"
 
 setvariable ()
 {
@@ -30,7 +31,7 @@ installScript ()
 {
 	echo -e "${GREEN}Installing $1 ...${NORMAL}"
 	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
-		make "install-$1" 
+		make -C "$BOOTSCRIPTS" "install-$1"
 	fi
 }
 
@@ -48,17 +49,15 @@ if [ "$1" != "" ];then
 	exit 0
 fi
 
-BOOTSCRIPTS="${1:-$BLFSBOOTSCRIPTS}"
-if [ ! -e "${BOOTSCRIPTS}/Makefile" ];then
-	echo -e "${RED}You need to supply the path to the unpacked blfs-bootscripts folder ...${NORMAL}"
-	exit 1
-fi
+#BOOTSCRIPTS="${1:-$BLFSBOOTSCRIPTS}"
+#if [ ! -e "${BOOTSCRIPTS}/Makefile" ];then
+#	echo -e "${RED}You need to supply the path to the unpacked blfs-bootscripts folder ...${NORMAL}"
+#	exit 1
+#fi
 
 cd $BOOTSCRIPTS
 
 SERVICEARRAY=( $(sed -n 's/^install-\([a-z]*-*[a-z]*\):.*$/\1/p' Makefile |sed 's/^service-//g'|sort) )
-#echo ${SERVICEARRAY[@]}
-#exit 0
 DIAOPTS=""
 
 for (( j=0;j<${#SERVICEARRAY[@]};j++ ))
@@ -71,7 +70,7 @@ for (( j=0;j<${#SERVICEARRAY[@]};j++ ))
 		DIAOPTS="${DIAOPTS}${SERVICEARRAY[j]} "\"\"" $STATE "
 	done
 
-eval dialog --checklist \"Select Startup Services\" $(($(tput lines) -6 )) 40 $(tput lines) $DIAOPTS 2>$DREPLY
+eval dialog --checklist \"Select Startup Services\" $(($(tput lines) -6 )) 80 $(tput lines) $DIAOPTS 2>$DREPLY
 setvariable DATA
 
 #install selected
