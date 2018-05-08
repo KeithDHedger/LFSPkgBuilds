@@ -29,6 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/docbook-dsssl-doc-1.79.tar.bz2 --strip-components=1
+		mkdir -vp $PKG/usr/bin $PKG/usr/share/man/man1
 		install -v -m755 bin/collateindex.pl $PKG/usr/bin
 		install -v -m644 bin/collateindex.pl.1 $PKG/usr/share/man/man1
 		install -v -d -m755 $PKG/usr/share/sgml/docbook/dsssl-stylesheets-1.79

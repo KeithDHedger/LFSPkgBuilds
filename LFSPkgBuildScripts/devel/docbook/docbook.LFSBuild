@@ -24,9 +24,9 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	mkdir -vp docbook||true
-	pushd "docbook"
-		unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	mkdir -vp ${PKGNAME}||true
+	pushd "${PKGNAME}"
+		unzip -o "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 		sed -i -e '/ISO 8879/d' -e 's|DTDDECL "-//OASIS//DTD DocBook V3.1//EN"|SGMLDECL|g' docbook.cat
 		install -v -d -m755 $PKG/usr/share/sgml/docbook/sgml-dtd-3.1
 		chown -R root:root .
@@ -56,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${PKGNAME}"
 popd 2>/dev/null||true
