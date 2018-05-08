@@ -16,10 +16,7 @@ TARSUFFIX=".tar.xz"
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
 scriptLog "${PKGNAME}-${VERSION}"
-
-echo $ARCH
 
 case $ARCH in
 	x86_64)

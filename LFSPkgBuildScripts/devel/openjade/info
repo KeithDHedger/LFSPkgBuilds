@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/pst/openjade.html
+The OpenJade package contains a DSSSL engine. This is useful for SGML and XML transformations into RTF, TeX, SGML and XML.

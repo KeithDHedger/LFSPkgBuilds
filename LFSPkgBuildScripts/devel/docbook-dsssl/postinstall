@@ -1,0 +1,8 @@
+#!/bin/bash
+#©keithhedger Tue  8 May 11:54:46 BST 2018
+
+. /usr/share/LFSPkg/LFSFunctions
+
+install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/catalog
+install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat /usr/share/sgml/docbook/dsssl-stylesheets-1.79/common/catalog
+install-catalog --add /etc/sgml/sgml-docbook.cat /etc/sgml/dsssl-docbook-stylesheets.cat

@@ -2,41 +2,36 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.58.0 Intltool-0.51.0 libevent-2.1.8 OpenSSL-1.1.0 qt5-5.10.1"
+DEPENDS="sgml-common-0.6.3 UnZip-6.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="transmission"
+PKGNAME="docbook"
 TARNAME="$PKGNAME"
-VERSION="2.93"
-BUILD=${BUILD:-1}
-SECTION="DESKTOP"
+VERSION="3.1"
+BUILD=1
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="docbk31.zip"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://raw.githubusercontent.com/${PKGNAME}/${PKGNAME}-releases/master/${TARBALL}" $SECTION
+gettar "http://www.docbook.org/sgml/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
-		pushd qt
-			qmake qtr.pro
-			make
-		popd
-		make install DESTDIR=$PKG || exit 1
-		make INSTALL_ROOT=$PKG/usr -C qt install
-		mkdir -vp $PKG/usr/share/applications $PKG/usr/share/pixmaps||true
-		install -m644 qt/transmission-qt.desktop $PKG/usr/share/applications/transmission-qt.desktop
-		install -m644 qt/icons/transmission.png $PKG/usr/share/pixmaps/transmission-qt.png
+	mkdir -vp docbook||true
+	pushd "docbook"
+		unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+		sed -i -e '/ISO 8879/d' -e 's|DTDDECL "-//OASIS//DTD DocBook V3.1//EN"|SGMLDECL|g' docbook.cat
+		install -v -d -m755 $PKG/usr/share/sgml/docbook/sgml-dtd-3.1
+		chown -R root:root .
+		install -v docbook.cat $PKG/usr/share/sgml/docbook/sgml-dtd-3.1/catalog
+		cp -v -af *.dtd *.mod *.dcl $PKG/usr/share/sgml/docbook/sgml-dtd-3.1
 	popd
 
 	checketc "$PKG"

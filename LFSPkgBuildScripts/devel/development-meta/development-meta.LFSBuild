@@ -2,8 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="abs-guide-6.6
-bazaar-2.5.1
+DEPENDS="abs-guide-10
+bazaar-2.7.0
 ctags-5.8
 libglade-2.6.4
 Ruby-2.5.0
@@ -14,15 +14,15 @@ CMake-3.10.2
 apache-ant-1.10.2
 OpenJDK-9.0.4
 orc-0.4.23
-astyle-3.0
-webkitgtk-2.4.9
+astyle-3.1
+webkitgtk-2.4.11
 devhelp-2.32.0
-dialog-1.2
+dialog-1.3
 gtkdialog-0.8.3
 help2man-1.46.4
 man2html-1.6
 meld-1.8.6
-poedit-1.8.12
+poedit-2.0.6
 yad-0.38.1
 xforms-1.2.4
 ddd-3.3.12
@@ -42,7 +42,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 rm -rf "$PKG" || true
-mkdir -p "$PKG"
+mkdir -p "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

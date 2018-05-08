@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/pst/opensp.html
+The OpenSP package contains a C++ library for using SGML/XML files. This is useful for validating, parsing and manipulating SGML and XML documents.

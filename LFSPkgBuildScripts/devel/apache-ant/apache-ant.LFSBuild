@@ -14,6 +14,9 @@ BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}-src.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://archive.apache.org/dist/ant/source/${TARBALL}" $SECTION
@@ -22,12 +25,8 @@ gettar "https://repository.jboss.org/nexus/content/repositories/thirdparty-relea
 gettar "http://central.maven.org/maven2/org/tukaani/xz/1.0/xz-1.0.jar" $SECTION
 gettar "http://www.netrexx.org/files/NetRexx-3.06-GA.zip" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 #make sure JAVA_HOME is set and exported ( best to do this in ~/.lfspkg.rc
 pushd $COMPILEAT 2>/dev/null||true

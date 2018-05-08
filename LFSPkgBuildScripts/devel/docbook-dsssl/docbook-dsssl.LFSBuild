@@ -2,41 +2,37 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.58.0 Intltool-0.51.0 libevent-2.1.8 OpenSSL-1.1.0 qt5-5.10.1"
+DEPENDS="sgml-common-0.6.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="transmission"
+PKGNAME="docbook-dsssl"
 TARNAME="$PKGNAME"
-VERSION="2.93"
-BUILD=${BUILD:-1}
-SECTION="DESKTOP"
+VERSION="1.79"
+BUILD=1
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://raw.githubusercontent.com/${PKGNAME}/${PKGNAME}-releases/master/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/docbook/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/docbook/docbook-dsssl-doc-1.79.tar.bz2" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
-		pushd qt
-			qmake qtr.pro
-			make
-		popd
-		make install DESTDIR=$PKG || exit 1
-		make INSTALL_ROOT=$PKG/usr -C qt install
-		mkdir -vp $PKG/usr/share/applications $PKG/usr/share/pixmaps||true
-		install -m644 qt/transmission-qt.desktop $PKG/usr/share/applications/transmission-qt.desktop
-		install -m644 qt/icons/transmission.png $PKG/usr/share/pixmaps/transmission-qt.png
+		tar -xf ${SOURCEARCHIVES}/${SECTION}/docbook-dsssl-doc-1.79.tar.bz2 --strip-components=1
+		install -v -m755 bin/collateindex.pl $PKG/usr/bin
+		install -v -m644 bin/collateindex.pl.1 $PKG/usr/share/man/man1
+		install -v -d -m755 $PKG/usr/share/sgml/docbook/dsssl-stylesheets-1.79
+		cp -v -R * $PKG/usr/share/sgml/docbook/dsssl-stylesheets-1.79
 	popd
 
 	checketc "$PKG"

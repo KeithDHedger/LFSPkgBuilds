@@ -9,63 +9,63 @@ fi
 
 TARNAME="xulrunner"
 PKGNAME="xulrunner"
-VERSION="34.0.5"
+VERSION="41.0.2"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.source.tar.bz2"
-#gettar "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${VERSION}/source/${TARBALL}"
+TARBALL="${TARNAME}-${VERSION}.source.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/${VERSION}/source/${TARBALL}" $SECTION
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+gettar "https://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/${VERSION}/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "mozilla-release"
-	cp ../mozconfig.xulrunner ./mozconfig
-	SHELL=/bin/bash make -f client.mk
-	make -C xulrunner-build-dir install DESTDIR=$PKG || exit 1
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "mozilla-release"
+		cp ../mozconfig.xulrunner ./mozconfig
+		SHELL=/bin/bash make -f client.mk
+		make -C xulrunner-build-dir install DESTDIR=$PKG || exit 1
 
+		mkdir -pv $PKG/usr/lib/mozilla/plugins
+		rm -rf $PKG/usr/lib/${PKGNAME}-${VERSION}/plugins
+		ln -sv ../mozilla/plugins $PKG/usr/lib/${PKGNAME}-${VERSION}
 
-	mkdir -pv $PKG/usr/lib/mozilla/plugins
-	rm -rf $PKG/usr/lib/${PKGNAME}-${VERSION}/plugins
-	ln -sv ../mozilla/plugins $PKG/usr/lib/${PKGNAME}-${VERSION}
+		chmod -v 755 $PKG/usr/lib/${PKGNAME}-devel-${VERSION}/sdk/bin/xpcshell
 
-	chmod -v 755 $PKG/usr/lib/${PKGNAME}-devel-${VERSION}/sdk/bin/xpcshell
+		for library in libmozalloc.so libmozjs.so libxul.so; do
+			ln -sfv ../../../${PKGNAME}-${VERSION}/$library $PKG/usr/lib/${PKGNAME}-devel-${VERSION}/sdk/lib/$library
+			ln -sfv ${PKGNAME}-${VERSION}/$library $PKG/usr/lib/$library
+		done
 
-	for library in libmozalloc.so libmozjs.so libxul.so; do
-    	ln -sfv ../../../${PKGNAME}-${VERSION}/$library $PKG/usr/lib/${PKGNAME}-devel-${VERSION}/sdk/lib/$library
-    	ln -sfv ${PKGNAME}-${VERSION}/$library $PKG/usr/lib/$library
-	done
+		ln -sfv ../${PKGNAME}-devel-${VERSION}/sdk/bin/run-mozilla.sh $PKG/usr/lib/${PKGNAME}-${VERSION}
+		ln -sfv ../${PKGNAME}-devel-${VERSION}/sdk/bin/xpcshell $PKG/usr/lib/${PKGNAME}-${VERSION}
+	popd
 
-	ln -sfv ../${PKGNAME}-devel-${VERSION}/sdk/bin/run-mozilla.sh $PKG/usr/lib/${PKGNAME}-${VERSION}
-	ln -sfv ../${PKGNAME}-devel-${VERSION}/sdk/bin/xpcshell $PKG/usr/lib/${PKGNAME}-${VERSION}
-popd
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-checketc $PKG
-packageclean "$PKG"
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
-
-rm -r "$PKG" "mozilla-release"
+	rm -r "$PKG" "mozilla-release"
+popd 2>/dev/null||true
