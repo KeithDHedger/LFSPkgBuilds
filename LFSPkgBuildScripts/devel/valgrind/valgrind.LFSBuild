@@ -24,8 +24,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i '1904s/4/5/' coregrind/m_syswrap/syswrap-linux.c
 		sed -i 's|/doc/valgrind||' docs/Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --datadir=/usr/share/doc/${PKGNAME}-${VERSION}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

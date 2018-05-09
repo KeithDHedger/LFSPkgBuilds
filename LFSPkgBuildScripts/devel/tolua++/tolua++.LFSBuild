@@ -35,7 +35,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		LIBS = ['lua', 'dl', 'm']
 		LIBPATH = ['/lib', '/usr/lib']
 		EOF
-		scons install CCFLAGS="-I/usr/include -ansi -Wall" prefix="$PKG/usr" shared="TRUE" || exit 1
+		scons install CCFLAGS="-I/usr/include -ansi -Wall" prefix="$PKG/usr" shared="TRUE" || exit 100
 	popd
 
 	checketc $PKG

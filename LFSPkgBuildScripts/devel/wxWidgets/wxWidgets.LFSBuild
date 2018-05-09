@@ -19,9 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://sourceforge.net/projects/wxwindows/files/${VERSION}/${TARBALL}/download" $SECTION ${TARBALL}
 gettar "https://github.com/wxWidgets/wxWidgets/releases/download/v${VERSION}/${TARBALL}" $SECTION ${TARBALL}
-#		https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.1/wxWidgets-3.1.1.tar.bz2
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -29,12 +27,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#patch -Np1 -i $CWD/absstd.patch
 		mkdir gtk-build||true
 		cd gtk-build
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --enable-unicode --enable-shared --enable-mediactrl
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
