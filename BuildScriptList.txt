@@ -66,7 +66,6 @@
 ./LFSPkgBuildScripts/devel/autoconf213/autoconf.LFSBuild
 ./LFSPkgBuildScripts/devel/bazaar/bazaar.LFSBuild
 ./LFSPkgBuildScripts/devel/binaryjdk/binaryjdk.LFSBuild
-./LFSPkgBuildScripts/devel/rustc/rustc.LFSBuild
 ./LFSPkgBuildScripts/devel/cflow/cflow.LFSBuild
 ./LFSPkgBuildScripts/devel/cgdb/cgdb.LFSBuild
 ./LFSPkgBuildScripts/devel/cmake/cmake.LFSBuild

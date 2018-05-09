@@ -27,8 +27,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${PKGNAME}-master"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell
 		mkdir -vp $PKG/usr/share/icons/hicolor/256x256/apps
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

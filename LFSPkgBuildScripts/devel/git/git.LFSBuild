@@ -29,8 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-gitconfig=/etc/gitconfig
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 
 		mkdir -vp $PKG/usr/share/man $PKG/usr/share/doc/||true
 		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}/man-pages/{html,text}||true

@@ -39,8 +39,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -v -sf libospgrove.so $PKG/usr/lib${LIBDIRSUFFIX}/libspgrove.so
 		ln -v -sf libostyle.so $PKG/usr/lib${LIBDIRSUFFIX}/libstyle.so
 
-		install -v -m644 dsssl/catalog $PKG/usr/share/sgml/openjade-1.3.2/
-		install -v -m644 dsssl/*.{dtd,dsl,sgm} $PKG/usr/share/sgml/openjade-1.3.2
+		install -v -m644 dsssl/catalog $PKG/usr/share/sgml/${PKGNAME}-${VERSION}/
+		install -v -m644 dsssl/*.{dtd,dsl,sgm} $PKG/usr/share/sgml/${PKGNAME}-${VERSION}
 	popd
 
 	checketc "$PKG"
