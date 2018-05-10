@@ -33,8 +33,8 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-nls --enable-icon-browser $HTML --with-gtk=gtk2 --with-rgb=/usr/share/X11/rgb.txt
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		ln -sv yad $PKG/usr/bin/zenity
 	popd
 

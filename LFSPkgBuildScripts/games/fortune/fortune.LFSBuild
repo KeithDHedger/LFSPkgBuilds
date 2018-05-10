@@ -2,49 +2,58 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="recode-3.7"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="fortune"
 TARNAME="${PKGNAME}-mod"
-VERSION="9708"
+VERSION="1.99.5"
 BUILD=${BUILD:-1}
 SECTION="GAMES"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.ibiblio.org/pub/linux/games/amusements/fortune/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+gettar "https://github.com/shlomif/fortune-mod/archive/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-	make || exit 1
-	make install FORTDIR=$PKG/usr/bin BINDIR=$PKG/usr/bin COOKIEDIR=$PKG/usr/share/games/fortunes FORTMANDIR=$PKG/usr/share/man/man.1 BINMANDIR=$PKG/usr/share/man/man.1 || exit 1 || exit 1
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${TARNAME}-${VERSION}/${TARNAME}"
+		make REGEXDEFS='-DHAVE_REGEX_H -DPOSIX_REGEX -DHAVE_STDBOOL' COOKIEDIR=/usr/share/fortune LOCALDIR=/usr/local/share/fortune all fortune/fortune.man
+		make FORTDIR="$PKG"/usr/bin COOKIEDIR="$PKG"/usr/share/fortune BINDIR="$PKG"/usr/bin BINMANDIR="$PKG"/usr/share/man/man1 FORTMANDIR="$PKG"/usr/share/man/man6 install
+		rm "$PKG"/usr/share/fortune/*.u8
+		rm "$PKG"/usr/share/fortune/off/*.u8
+		install -D -m644 ../LICENSE "$PKG/usr/share/licenses/$PKGNAME/LICENSE"
+	popd
 
-checketc "$PKG"
-packageclean "$PKG"
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
