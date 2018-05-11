@@ -29,8 +29,8 @@ glib-compile-schemas /usr/share/glib-2.0/schemas
 
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-wayland-backend --enable-broadway-backend --enable-x11-backend --enable-gtk2-dependency  --disable-cups
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"
