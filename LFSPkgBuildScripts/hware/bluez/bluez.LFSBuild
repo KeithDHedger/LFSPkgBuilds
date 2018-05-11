@@ -2,46 +2,44 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.10.14 GLib-2.50.3"
+DEPENDS="dbus-1.12.4 GLib-2.56.0 libical-3.0.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="bluez"
 TARNAME="$PKGNAME"
-VERSION="5.34"
+VERSION="5.48"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.kernel.org/pub/linux/bluetooth/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/bluez-5.34-obexd_without_systemd-1.patch" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-obexd_without_systemd-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/bluez-5.34-obexd_without_systemd-1.patch
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --enable-bccmd --enable-dfutool --enable-dund --enable-hid2hci --enable-hidd --enable-pand --enable-tools --enable-wiimote --disable-test --without-systemdunitdir --disable-systemd
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-obexd_without_systemd-1.patch
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --enable-bccmd --enable-dfutool --enable-dund --enable-hid2hci --enable-hidd --enable-pand --enable-tools --enable-wiimote --disable-test --without-systemdunitdir --disable-systemd --enable-library --disable-systemd
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 
-	mkdir -vp $PKG/etc/bluetooth/>>true
-	for CONFFILE in audio input network serial
-		do
-			install -v -m644 ${CONFFILE}/${CONFFILE}.conf $PKG/etc/bluetooth/${CONFFILE}.conf
-		done
-	unset CONFFILE
+	nkdir -vp $PKG/usr/sbin||true
+	ln -svf ../libexec/bluetooth/bluetoothd $PKG/usr/sbin
+	install -v -dm755 $PKG/etc/bluetooth
+	install -v -m644 src/main.conf $PKG/etc/bluetooth/main.conf
 popd
 
 checketc "$PKG"
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -63,3 +61,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
