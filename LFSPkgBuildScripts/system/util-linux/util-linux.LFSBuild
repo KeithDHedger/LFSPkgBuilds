@@ -29,8 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -pv $PKG/var/lib/hwclock
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python --without-systemd --without-systemdsystemunitdir $BUILDSTATIC
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		if [ "X$ENABLESTATIC" != "X" ];then
 			rm -rf $PKG/var/ $PKG/usr/share $PKG/usr/bin $PKG/usr/sbin $PKG/usr/include $PKG/bin $PKG/sbin $PKG/usr/lib/pkgconfig/
 		fi

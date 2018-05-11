@@ -24,14 +24,14 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir build
 		cd build
 		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DBUILD_SHARED_LIBS=1 -DFMT_TEST=0 -Wno-dev ..
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		cd ..
 		rm -rf build
 		mkdir build
 		cd build
 		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DFMT_TEST=0 -Wno-dev ..
-		make $MAKEFLAGS||make|| exit 1
+		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 1	
 	popd
 

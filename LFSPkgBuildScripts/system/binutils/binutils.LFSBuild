@@ -25,8 +25,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -v build
 		cd build
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd --libdir=/usr/lib${LIBDIRSUFFIX}
-		make $MAKEFLAGS tooldir=/usr||make tooldir=/usr|| exit 1
-		make $MAKEFLAGS tooldir=/usr install DESTDIR=$PKG||make tooldir=/usr install DESTDIR=$PKG|| exit 1
+		make $MAKEFLAGS tooldir=/usr||make tooldir=/usr|| exit 100
+		make $MAKEFLAGS tooldir=/usr install DESTDIR=$PKG||make tooldir=/usr install DESTDIR=$PKG|| exit 100
 	popd
 
 	checketc "$PKG"

@@ -41,8 +41,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		install -m 0644 $PKGNAME.h tinystr.h $PKG/usr/include
 
 		#	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		#	make $MAKEFLAGS||make|| exit 1
-		#	make install DESTDIR=$PKG || exit 1
+		#	make $MAKEFLAGS||make|| exit 100
+		#	make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

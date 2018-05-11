@@ -25,8 +25,8 @@ pushd "${PKGNAME}-master"
 	autoconf
 	automake --add-missing
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 	mkdir -vp $PKG/etc/xdg/autostart || true
 	cp ../xfce-polkit.desktop $PKG/etc/xdg/autostart/xfce-polkit.desktop
 popd

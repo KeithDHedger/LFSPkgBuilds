@@ -23,9 +23,9 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gif=no --localstatedir=/var
 		make bootstrap
-		make $MAKEFLAGS||make|| exit 1
+		make $MAKEFLAGS||make|| exit 100
 		chown -v -R root:root $PKG/usr/share/emacs/24.4
-		make install DESTDIR=$PKG || exit 1
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

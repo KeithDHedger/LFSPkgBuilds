@@ -24,8 +24,8 @@ pushd "${TARNAME}-${VERSION}"
 	mkdir build
 	cd build
 	cmake -DCMAKE_INSTALL_PREFIX=/usr -DLIB_SUFFIX=${LIBDIRSUFFIX} ..
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc $PKG

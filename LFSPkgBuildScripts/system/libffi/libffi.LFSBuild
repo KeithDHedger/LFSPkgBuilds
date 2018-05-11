@@ -23,8 +23,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -e '/^includesdir/ s:$(libdir)/@PACKAGE_NAME@-@PACKAGE_VERSION@/include:$(includedir):' -i include/Makefile.in
 		sed -e '/^includedir/ s:${libdir}/@PACKAGE_NAME@-@PACKAGE_VERSION@/include:@includedir@:' -e 's/^Cflags: -I${includedir}/Cflags:/' -i libffi.pc.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-static
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

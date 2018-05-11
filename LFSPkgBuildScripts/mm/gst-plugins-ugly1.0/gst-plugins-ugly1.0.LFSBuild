@@ -28,8 +28,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i $CWD/gst-plugins-ugly-1-fixes.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-package-name="GStreamer Ugly Plugins ${VERSION} BLFS" --with-package-origin="http://www.linuxfromscratch.org/blfs/view/stable/" --disable-gtk-doc
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

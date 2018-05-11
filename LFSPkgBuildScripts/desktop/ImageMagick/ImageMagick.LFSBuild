@@ -30,8 +30,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${LATESTVERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} -with-modules --with-perl  --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
-		make $MAKEFLAGS||make|| exit 1
-		make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${LATESTVERSION} install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${LATESTVERSION} install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

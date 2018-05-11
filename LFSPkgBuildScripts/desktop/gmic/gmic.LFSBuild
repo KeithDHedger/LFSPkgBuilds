@@ -26,8 +26,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i "s:/share/man/:/man/:g" Makefile
 		# freshen gmic_stdlib.h to stop the Makefile downloading it
 		touch gmic_stdlib.h
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

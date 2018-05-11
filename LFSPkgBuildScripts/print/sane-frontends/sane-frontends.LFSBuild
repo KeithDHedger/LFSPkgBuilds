@@ -23,8 +23,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i -e "/SANE_CAP_ALWAYS_SETTABLE/d" src/gtkglue.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --mandir=/usr/share/man
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/sane $PKG/usr/lib/gimp/2.0/plug-ins||true
 		install -v -m644 doc/sane.png xscanimage-icon-48x48-2.png $PKG/usr/share/sane
 		ln -v -s ../../../../bin/xscanimage $PKG/usr/lib/gimp/2.0/plug-ins

@@ -22,10 +22,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORSUFFIX}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./config --prefix=/usr --openssldir=/etc/ssl shared zlib-dynamic --libdir=/lib${LIBDIRSUFFIX} shared zlib-dynamic
-		make depend|| exit 1
-		make $MAKEFLAGS||make|| exit 1
+		make depend|| exit 100
+		make $MAKEFLAGS||make|| exit 100
 		sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
-		make MANSUFFIX=ssl install INSTALL_PREFIX=$PKG || exit 1
+		make MANSUFFIX=ssl install INSTALL_PREFIX=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
 		cp -vfr doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd

@@ -42,7 +42,7 @@ pushd "${TARNAME}-${VERSION}"
 #      -DENABLE_GTKDOC=ON \
 #      -Wno-dev ..
 #make
-#	make install DESTDIR=$PKG || exit 1
+#	make install DESTDIR=$PKG || exit 100
 
 #	sed -e '/generate-gtkdoc --rebase/s:^:# :' -i GNUmakefile.in
 #	rm -rf build-3||true
@@ -54,10 +54,10 @@ pushd "${TARNAME}-${VERSION}"
 
 	make clean
 	make Programs_DumpRenderTree_LDFLAGS="-no-fast-install -no-install -lfontconfig"
-	make install-strip DESTDIR=$PKG||make|| exit 1
+	make install-strip DESTDIR=$PKG||make|| exit 100
 
-#//	make $MAKEFLAGS||make|| exit 1
-#//	make install DESTDIR=$PKG || exit 1
+#//	make $MAKEFLAGS||make|| exit 100
+#//	make install DESTDIR=$PKG || exit 100
 #	rm -rf $PKG/usr/share/gtk-doc/html/webkitgtk-2.4.9
 #	mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
 popd

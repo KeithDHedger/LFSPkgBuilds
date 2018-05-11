@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "mozilla-release"
 		cp ../mozconfig.xulrunner ./mozconfig
 		SHELL=/bin/bash make -f client.mk
-		make -C xulrunner-build-dir install DESTDIR=$PKG || exit 1
+		make -C xulrunner-build-dir install DESTDIR=$PKG || exit 100
 
 		mkdir -pv $PKG/usr/lib/mozilla/plugins
 		rm -rf $PKG/usr/lib/${PKGNAME}-${VERSION}/plugins

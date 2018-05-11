@@ -136,7 +136,7 @@ EOF
 		cd chromium-launcher-3
 		make PREFIX=/usr
 		rm -f $PKG/usr/bin/chromium
-		make PREFIX=/usr install-strip DESTDIR=$PKG||exit 1
+		make PREFIX=/usr install-strip DESTDIR=$PKG|| exit 100
 		cd ..
 
 		mkdir temp||true

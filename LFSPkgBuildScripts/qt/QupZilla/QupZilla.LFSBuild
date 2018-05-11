@@ -30,8 +30,8 @@ pushd "${TARNAME}-${VERSION}"
 	cd  build
 	export USE_LIBPATH="/usr/lib${LIBDIRSUFFIX}"
 	qmake QMAKE_CXXFLAGS="$LFSFLAGS" ..
-	make $MAKEFLAGS||make|| exit 1
-	make install INSTALL_ROOT=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install INSTALL_ROOT=$PKG || exit 100
 	unset USE_LIBPATH
 popd
 

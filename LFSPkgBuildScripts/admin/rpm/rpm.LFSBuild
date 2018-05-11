@@ -22,8 +22,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"	
 		CFLAGS="$LFSFLAGS -I/usr/include/nspr -I/usr/include/nss" CXXFLAGS="$LFSFLAGS -I/usr/include/nspr -I/usr/include/nss" ./configure ${CONFIGOPTIONS} --with-external-db
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

@@ -29,8 +29,8 @@ pushd "${TARNAME}-${VERSION}"
 	mkdir build||true
 	cd  build
 	qmake WEBENGINE_CONFIG+=use_proprietary_codecs ..
-	make $MAKEFLAGS||make|| exit 1
-	make install INSTALL_ROOT=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install INSTALL_ROOT=$PKG || exit 100
 	find ${PKG}${QT5PREFIX}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
 popd
 

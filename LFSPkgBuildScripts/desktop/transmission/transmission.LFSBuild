@@ -27,12 +27,12 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
+		make $MAKEFLAGS||make|| exit 100
 		pushd qt
 			qmake qtr.pro
 			make
 		popd
-		make install DESTDIR=$PKG || exit 1
+		make install DESTDIR=$PKG || exit 100
 		make INSTALL_ROOT=$PKG/usr -C qt install
 		mkdir -vp $PKG/usr/share/applications $PKG/usr/share/pixmaps||true
 		install -m644 qt/transmission-qt.desktop $PKG/usr/share/applications/transmission-qt.desktop

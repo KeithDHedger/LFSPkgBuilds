@@ -32,8 +32,8 @@ pushd "${TARNAME}-${VERSION}"
 	mkdir build||true
 	cd  build
 	qmake ../WebKit.pro
-	make $MAKEFLAGS||make|| exit 1
-	make install INSTALL_ROOT=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install INSTALL_ROOT=$PKG || exit 100
 	find ${PKG}/$QT5DIR/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
 	find ${PKG}/$QT5DIR/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5DIR/lib/:g" {} \;
 	find ${PKG}/$QT5DIR/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;

@@ -31,8 +31,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-segfault-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=/usr/bin/python3 ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

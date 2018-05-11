@@ -21,7 +21,7 @@ mkdir -p "$PKG"
 unzip "$TARBALL"
 
 pushd "${PKGNAME}-${TARNAME}"
-	python setup.py install --root=$PKG || exit 1
+	python setup.py install --root=$PKG || exit 100
 popd
 
 checketc "$PKG"

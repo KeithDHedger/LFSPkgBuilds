@@ -35,7 +35,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gstreamer=1.0 --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib/WebKitGTK --disable-geolocation --enable-introspection
 		make $MAKEFLAGS||exit 100
-		make install DESTDIR=$PKG || exit 1
+		make install DESTDIR=$PKG || exit 100
 		rm -rf $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
 		mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
 	popd

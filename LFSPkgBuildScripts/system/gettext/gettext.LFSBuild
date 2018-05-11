@@ -24,8 +24,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i '/^TESTS =/d' gettext-runtime/tests/Makefile.in &&
 			sed -i 's/test-lock..EXEEXT.//' gettext-tools/gnulib-tests/Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		chmod -v 0755 $PKG/usr/lib/preloadable_libintl.so
 	popd
 

@@ -27,8 +27,8 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-jdk-home=${JAVA_HOME} --disable-docs
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 	case $(uname -m) in
 		i?86   ) iARCH=i386 ;;
 		x86_64 ) iARCH=amd64 ;;

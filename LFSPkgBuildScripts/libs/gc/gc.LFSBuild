@@ -29,8 +29,8 @@ pushd "${TARNAME}-${VERSION}"
 	sed -i 's#pkgdata#doc#' doc/doc.am
 	autoreconf -fi
 	./configure --prefix=/usr --enable-cplusplus --disable-static --docdir=/usr/share/doc/${TARNAME}-${VERSION}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc $PKG

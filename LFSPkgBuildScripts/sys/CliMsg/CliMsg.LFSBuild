@@ -21,8 +21,8 @@ mkdir -p "$PKG"
 
 unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-master"
-	PREFIX=/usr make $MAKEFLAGS||make|| exit 1
-	PREFIX=/usr make install DESTDIR=$PKG || exit 1
+	PREFIX=/usr make $MAKEFLAGS||make|| exit 100
+	PREFIX=/usr make install DESTDIR=$PKG || exit 100
 popd
 
 packageclean "$PKG"

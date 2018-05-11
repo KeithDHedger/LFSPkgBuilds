@@ -27,7 +27,7 @@ mkdir -p "$PKG"
 unzip "${SOURCEARCHIVES}/${SECTION}/$TARBALL"
 
 pushd "${PKGNAME}-master"
-	python setup.py install --root=$PKG || exit 1
+	python setup.py install --root=$PKG || exit 100
 popd
 
 checketc "$PKG"

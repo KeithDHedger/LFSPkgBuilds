@@ -79,8 +79,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}-0"
 		./configure
-		make DESTDIR=$PKG || exit 1
-		make DESTDIR=$PKG install || exit 1
+		make DESTDIR=$PKG || exit 100
+		make DESTDIR=$PKG install || exit 100
 	popd
 
 	checketc $PKG

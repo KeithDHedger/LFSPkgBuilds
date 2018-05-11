@@ -37,8 +37,8 @@ EOF
 		sed -i -e '/flex/s/as_fn_error/: ;; # &/' configure
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-readline --infodir=/usr/share/info --mandir=/usr/share/man
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

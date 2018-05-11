@@ -29,7 +29,7 @@ pushd "${TARNAME}-${VERSION}"
 	sed -e "/wpath.logrotate\|wpath.systemd/d" -e "/detection failed/ a\                self.init=\'init\/default\/wicd\'" -i setup.py 
 	rm po/*.po
 	python setup.py configure --no-install-kde --no-install-acpi --no-install-pmutils --no-install-init --no-install-gnome-shell-extensions --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-	LANG=C python setup.py install --root=$PKG || exit 1
+	LANG=C python setup.py install --root=$PKG || exit 100
 popd
 
 checketc "$PKG"

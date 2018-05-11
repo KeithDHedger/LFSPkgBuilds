@@ -22,8 +22,8 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${PKGNAME}-${VERSION}"
 	qmake PREFIX=/usr
-	make $MAKEFLAGS||make|| exit 1
-	make install INSTALL_ROOT=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install INSTALL_ROOT=$PKG || exit 100
 popd
 
 checketc "$PKG"

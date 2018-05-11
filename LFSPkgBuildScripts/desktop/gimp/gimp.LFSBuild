@@ -31,13 +31,13 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i '/gegl/s/2/3/' configure
 		sed -i '70,75 d' app/core/gimpparamspecs-duplicate.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --disable-debug --disable-nls --disable-static --without-gvfs
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/gimp-help-${HELPVERSION}.tar.bz2
 		cd gimp-help-${HELPVERSION}
 		ALL_LINGUAS="en_GB" ./configure --prefix=/usr --without-gimp
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		chown -R root:root $PKG/usr/share/gimp/2.0/help
 	popd
 

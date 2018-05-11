@@ -29,9 +29,9 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/libmusicbrainz-2.1.5-missing-includes-1.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
+	make $MAKEFLAGS||make|| exit 100
 	(cd python && python setup.py build)
-	make install DESTDIR=$PKG || exit 1
+	make install DESTDIR=$PKG || exit 100
 	(cd python && python setup.py install --root=$PKG)
 popd
 

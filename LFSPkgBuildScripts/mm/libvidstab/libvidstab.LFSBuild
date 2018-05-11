@@ -24,8 +24,8 @@ pushd "vid.stab-release-${VERSION}b"
 	mkdir build||true
 	cd  build
 	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH ..
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

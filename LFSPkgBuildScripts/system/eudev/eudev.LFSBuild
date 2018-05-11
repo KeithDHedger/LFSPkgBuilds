@@ -32,15 +32,15 @@ BLKID_CFLAGS="-I/tools/include"
 EOF
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/sbin --sbindir=/sbin --libdir=/usr/lib${LIBDIRSUFFIX} --sysconfdir=/etc --libexecdir=/lib${LIBDIRSUFFIX} --with-rootprefix= --with-rootlibdir=/lib${LIBDIRSUFFIX} --enable-manpages --disable-static --config-cache --libdir=/usr/lib${LIBDIRSUFFIX}
-		LIBRARY_PATH=/tools/lib make $MAKEFLAGS||LIBRARY_PATH=/tools/lib make||LIBRARY_PATH=/tools/lib make || exit 1
+		LIBRARY_PATH=/tools/lib make $MAKEFLAGS||LIBRARY_PATH=/tools/lib make||LIBRARY_PATH=/tools/lib make || exit 100
 
 		LIBRARY_PATH=/tools/lib make $MAKEFLAGS||make|| exit
 		mkdir -pv $PKG/lib${LIBDIRSUFFIX}/rules.d $PKG/etc/udev/rules.d||true
-		make LD_LIBRARY_PATH=/tools/lib install DESTDIR=$PKG || exit 1
+		make LD_LIBRARY_PATH=/tools/lib install DESTDIR=$PKG || exit 100
 		mkdir -pv $PKG/lib${LIBDIRSUFFIX}/{firmware,udev/devices/pts,}||true
 
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.tar.bz2
-		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 1
+		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

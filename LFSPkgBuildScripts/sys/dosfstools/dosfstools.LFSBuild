@@ -23,7 +23,7 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	./configure --prefix=/ --enable-compat-symlinks --mandir=/usr/share/man --docdir=/usr/share/doc/dosfstools-4.1
 	make
-	make install DESTDIR=$PKG || exit 1
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

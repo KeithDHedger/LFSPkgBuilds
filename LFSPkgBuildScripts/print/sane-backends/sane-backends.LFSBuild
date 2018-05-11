@@ -27,8 +27,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-group=scanner --enable-libusb_1_0
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc/udev/rules.d $PKG/var/lock/sane
 		install -m 644 -v tools/udev/libsane.rules $PKG/etc/udev/rules.d/65-scanner.rules
 		chgrp -v scanner $PKG/var/lock/sane

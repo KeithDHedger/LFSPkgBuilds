@@ -28,8 +28,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
 	pushd "${BASEPKGNAME}-master"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh ${CONFIGOPTIONS} --with-systemdsystemunitdir=no  --enable-udev-acl --enable-polkit --disable-nls --with-xinitrc-dir=/etc/X11/app-defaults/xinitrc.d --enable-polkit
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

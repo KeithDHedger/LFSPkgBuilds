@@ -28,8 +28,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's@include <freetype/@include <freetype2/@g' _imagingft.c
 		chmod +x setup.py
-		python setup.py build_ext -i --library-dirs=/usr/lib${LIBDIRSUFFIX} || exit 1
-		python setup.py install --root=$PKG || exit 1
+		python setup.py build_ext -i --library-dirs=/usr/lib${LIBDIRSUFFIX} || exit 100
+		python setup.py install --root=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

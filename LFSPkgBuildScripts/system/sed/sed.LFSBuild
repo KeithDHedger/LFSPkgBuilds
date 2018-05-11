@@ -24,9 +24,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i 's/usr/tools/' build-aux/help2man
 		sed -i 's/panic-tests.sh//' Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin
-		make $MAKEFLAGS||make|| exit 1
-		make html $MAKEFLAGS||make html|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make html $MAKEFLAGS||make html|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		install -m644 doc/sed.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd

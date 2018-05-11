@@ -22,7 +22,7 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-master"
-		make install DESTDIR=$PKG || exit 1
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	packageclean "$PKG" "$CWD"

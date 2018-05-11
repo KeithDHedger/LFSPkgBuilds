@@ -31,8 +31,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		AUTOPOINT='intltoolize --automake --copy' autoreconf -fiv
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath --disable-systemd-daemon --disable-systemd-login --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules --enable-nls
 
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		rm -r $PKG/etc/dbus-1/system.d||true
 	popd
 

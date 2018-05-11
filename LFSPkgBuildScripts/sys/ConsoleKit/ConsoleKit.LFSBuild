@@ -28,8 +28,8 @@ pushd $COMPILEAT 2>/dev/null||true
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc  --enable-udev-acl --libexecdir=/usr/lib/${PKGNAME} --localstatedir=/var  --with-systemdsystemunitdir=no --enable-docbook-docs --enable-polkit --with-xinitrc-dir=/etc/X11/app-defaults/xinitrc.d
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 
 	mkdir -p $PKG/etc/rc.d/init.d $PKG/etc/rc.d/rc5.d $PKG/var/run/ConsoleKit $PKG/etc/rc.d/rc3.d || true
 	cp ../rc.consolekit $PKG/etc/rc.d/init.d

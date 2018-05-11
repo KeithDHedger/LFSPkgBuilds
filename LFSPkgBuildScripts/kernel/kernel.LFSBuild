@@ -28,7 +28,7 @@ pushd "${KERNELSOURCEDIR}"
 		mkdir -vp $PKG/boot $PKG/usr/src||true
 		make $MAKEFLAGS mrproper
 		cp $KERNELCONFIG .config
-		make menuconfig||exit 1
+		make menuconfig|| exit 100
 		make $MAKEFLAGS bzImage||make bzImage||exit 100
 		make $MAKEFLAGS modules||make modules||exit 100
 		make modules_install INSTALL_MOD_PATH=$PKG INSTALL_PATH=$PKG

@@ -36,8 +36,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -e s/_EVENT_SIZEOF/EVENT__SIZEOF/ -i ipc/chromium/src/base/message_pump_libevent.cc
 
 		export SHELL=/bin/sh
-		make -f client.mk|| exit 1
-		make -f client.mk install INSTALL_SDK= DESTDIR=$PKG|| exit 1
+		make -f client.mk|| exit 100
+		make -f client.mk install INSTALL_SDK= DESTDIR=$PKG|| exit 100
 
 		ln -sfv ../../../usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}/browser/icons/mozicon128.png $PKG/usr/share/pixmaps/firefox.png
 		ln -sfv ../mozilla/plugins $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}

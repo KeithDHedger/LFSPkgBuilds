@@ -21,7 +21,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		make install DESTDIR=$PKG || exit 1
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

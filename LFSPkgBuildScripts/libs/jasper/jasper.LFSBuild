@@ -29,8 +29,8 @@ pushd "${TARNAME}-${VERSION}"
 	mkdir build||true
 	cd  build
 	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE   -DCMAKE_SKIP_INSTALL_RPATH=YES -Wno-dev ..
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

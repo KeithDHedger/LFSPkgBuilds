@@ -30,10 +30,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		rm -rf freetype lcms2 jpeg libpng zlib||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-compile-inits --enable-dynamic --with-system-libtiff
-		make $MAKEFLAGS||make|| exit 1
-		make $MAKEFLAGS||make so|| exit 1
-		make install DESTDIR=$PKG || exit 1
-		make soinstall DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make $MAKEFLAGS||make so|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		make soinstall DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/include/ghostscript $PKG/usr/include $PKG/usr/share/doc $PKG/usr/share/ghostscript||true
 		install -v -m644 base/*.h $PKG/usr/include/ghostscript
 		ln -v -s ghostscript $PKG/usr/include/ps

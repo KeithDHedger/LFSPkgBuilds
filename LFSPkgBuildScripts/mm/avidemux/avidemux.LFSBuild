@@ -29,8 +29,8 @@ pushd "${TARNAME}_${VERSION}"
     -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
     -DCMAKE_VERBOSE_MAKEFILE:BOOL="TRUE" \
     -DLIB_SUFFIX:STRING="$LIBDIRSUFFIX" ..
-	make || exit 1
-	make DESTDIR=$PKG install/strip || exit 1
+	make || exit 100
+	make DESTDIR=$PKG install/strip || exit 100
 
 	cd ..
 
@@ -47,8 +47,8 @@ pushd "${TARNAME}_${VERSION}"
     -DAVIDEMUX_CORECONFIG_DIR=$(cd .. ; pwd)/build/config \
     -DAVIDEMUX_INSTALL_PREFIX=$(cd .. ; pwd)/build \
     ../plugins
-	make || exit 1
-	make DESTDIR=$PKG install/strip || exit 1
+	make || exit 100
+	make DESTDIR=$PKG install/strip || exit 100
 	cd ..
 	mkdir -vp $PKG/usr/share/applications || true
 	cp avidemux2.desktop $PKG/usr/share/applications/avidemux2.desktop

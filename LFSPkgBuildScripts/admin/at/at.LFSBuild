@@ -29,9 +29,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i '/docdir/s/=.*/= @docdir@/' Makefile.in
 		autoreconf
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-daemon_username=atd --with-daemon_groupname=atd SENDMAIL=/usr/sbin/sendmail
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
-		make install docdir=/usr/share/doc/${PKGNAME}-${VERSION} atdocdir=/usr/share/doc/${PKGNAME}-${VERSION} DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		make install docdir=/usr/share/doc/${PKGNAME}-${VERSION} atdocdir=/usr/share/doc/${PKGNAME}-${VERSION} DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

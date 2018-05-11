@@ -26,8 +26,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --mandir=/usr/man --with-user=clamav --with-group=clamav --with-dbdir=/var/lib/clamav --disable-milter --enable-id-check --enable-clamdtop --disable-static --disable-experimental
 
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 
 		#thanks to slackware -->
 		pushd "$PKG"

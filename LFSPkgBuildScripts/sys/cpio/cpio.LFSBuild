@@ -24,10 +24,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --libexecdir=/tmp --enable-mt --with-rmt=/usr/sbin/rmt
-		make $MAKEFLAGS||make|| exit 1
+		make $MAKEFLAGS||make|| exit 100
 		makeinfo --html -o doc/html doc/cpio.texi
 		makeinfo --html --no-split -o doc/cpio.html doc/cpio.texi
-		make install DESTDIR=$PKG || exit 1
+		make install DESTDIR=$PKG || exit 100
 		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}/html
 		install -v -m644 doc/html/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}/html
 		install -v -m644 doc/cpio.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}

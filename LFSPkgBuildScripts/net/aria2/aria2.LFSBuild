@@ -22,8 +22,8 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 	mkdir -vp $PKG/etc/bash_completion.d
 	ln -sv /usr/share/doc/aria2/bash_completion/aria2c $PKG/etc/bash_completion.d
 	wget -c "https://github.com/ziahamza/webui-aria2/archive/master.zip"

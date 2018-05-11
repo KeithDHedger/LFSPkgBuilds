@@ -40,8 +40,8 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		../${TARNAME}-${VERSION}/configure -prefix ${QT5PREFIX} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -examplesdir ${QT5DEMOS} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS}
 
-		make $MAKEFLAGS||make|| exit 1
-		make install INSTALL_ROOT=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install INSTALL_ROOT=$PKG || exit 100
 
 		find ${PKG}${QT5LIBS}/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
 		find ${PKG}${QT5PREFIX}/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5PREFIX/lib/:g" {} \;

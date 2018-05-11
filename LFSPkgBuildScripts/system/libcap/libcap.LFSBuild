@@ -21,8 +21,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/install.*STALIBNAME/d' libcap/Makefile
-		make $MAKEFLAGS||make|| exit 1
-		make RAISE_SETFCAP=no prefix=/usr install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make RAISE_SETFCAP=no prefix=/usr install DESTDIR=$PKG || exit 100
 		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so
 		mkdir -vp  $PKG/lib${LIBDIRSUFFIX}||true
 		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so.* $PKG/lib${LIBDIRSUFFIX}

@@ -35,8 +35,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/httpd-2.4.16-blfs_layout-1.patch
 		sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --enable-authnz-fcgi --enable-layout=BLFS --enable-mods-shared="all cgi" --enable-mpms-shared=all --with-apr=/usr/bin/Apr-1.5.2-config --with-apr-util=/usr/bin/apu-1-config --enable-suexec=shared --with-suexec-bin=/usr/lib/httpd/suexec --with-suexec-docroot=/srv/www --with-suexec-caller=apache --with-suexec-userdir=public_html --with-suexec-logfile=/var/log/httpd/suexec.log --with-suexec-uidmin=100
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 
 		mkdir -vp $PKG/usr/lib/httpd $PKG/srv/www||true
 		mv -v $PKG/usr/sbin/suexec $PKG/usr/lib/httpd/suexec

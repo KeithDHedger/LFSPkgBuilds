@@ -29,8 +29,8 @@ pushd "${TARNAME}-master"
 	mkdir build||true
 	cd  build
 	cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH ..
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

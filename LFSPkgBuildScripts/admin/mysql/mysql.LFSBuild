@@ -68,8 +68,8 @@ pushd $COMPILEAT 2>/dev/null||true
 			-DWITH_SSL=system                             \
 			..
 
-		make $MAKEFLAGS||make|| make || exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| make || exit 100
+		make install DESTDIR=$PKG || exit 100
 
 		install -v -dm 755 $PKG/etc/mysql
 		cat > $PKG/etc/mysql/my.cnf << "EOF"

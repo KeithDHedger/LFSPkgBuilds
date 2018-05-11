@@ -49,8 +49,8 @@ pushd $COMPILEAT 2>/dev/null||true
 				-DWITH_UNIT_TESTS=OFF \
 				-DTOKUDB_OK=0 ..
 
-			make $MAKEFLAGS||make|| exit 1
-			make install DESTDIR=$PKG || exit 1
+			make $MAKEFLAGS||make|| exit 100
+			make install DESTDIR=$PKG || exit 100
 		popd
 		rm -rf $PKG/usr/mysql-test
 		rm -f $PKG/usr/lib${LIBDIRSUFFIX}/libmysqlclient.a

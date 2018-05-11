@@ -31,8 +31,8 @@ pushd "${TARNAME}-${VERSION}"
 # Don't disable deprecated stuff
 	patch -p1 < ${SOURCEARCHIVES}/${SECTION}/gtkglext-no-deprecated-flags.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

@@ -27,8 +27,8 @@ pushd "${TARNAME}-${VERSION}b"
 	touch NEWS AUTHORS ChangeLog
 	autoreconf -fi
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 	mkdir -vp $PKG/usr/lib64/pkgconfig || true
 	cat >$PKG/usr/lib64/pkgconfig/mad.pc <<"EOF"
 prefix=/usr

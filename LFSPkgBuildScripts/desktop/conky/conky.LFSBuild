@@ -46,8 +46,8 @@ pushd $COMPILEAT 2>/dev/null||true
 			-DBUILD_LUA_IMLIB2=ON \
 			-DCMAKE_BUILD_TYPE=Release ..
 
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 
 		cd ../doc
 		xsltproc "http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl" docs.xml > docs.html

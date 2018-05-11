@@ -28,8 +28,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's|$(PACKAGE)/doc|doc/$(PACKAGE)-$(VERSION)|' {,doc/,doc/developer/}Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		install -v -m755 -d /usr/share/doc/${PKGNAME}-${VERSION}/api/gutenprint{,ui2}
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}/api/gutenprint $PKG/usr/share/doc/${PKGNAME}-${VERSION}/api/gutenprintui2||true
 		install -v -m644 doc/gutenprint/html/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}/api/gutenprint

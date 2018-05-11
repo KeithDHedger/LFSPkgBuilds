@@ -27,8 +27,8 @@ pushd "${TARNAME}-${VERSION}"
 	sed -i "s@iomanip.h@iomanip@g" ./configure
 	patch -Np1 -i ../id3lib-3.8.3-GCC43FIX-1.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

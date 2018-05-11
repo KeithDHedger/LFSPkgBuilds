@@ -23,8 +23,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --infodir=/usr/share/info --mandir=/usr/share/man --with-socket-dir=/run/screen --with-pty-group=5 --with-sys-screenrc=/etc/screenrc
 		sed -i -e "s%/usr/local/etc/screenrc%/etc/screenrc%" {etc,doc}/*
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		mkdir -p {$PKG}/etc||true
 		install -m 644 etc/etcscreenrc {$PKG}/etc/screenrc
 	popd

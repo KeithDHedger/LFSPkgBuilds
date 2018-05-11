@@ -29,8 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 #meson buid is fucked when trying to build docs so use configure instead!!!
 		patch -Np1 -i $CWD/${PKGNAME}-${VERSION}-skip_warnings-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-pcre=system --libdir=/usr/lib${LIBDIRSUFFIX} --with-python=/usr/bin/python3
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		chmod -v 755 $PKG/usr/bin/{gdbus-codegen,glib-gettextize}
 	popd
 

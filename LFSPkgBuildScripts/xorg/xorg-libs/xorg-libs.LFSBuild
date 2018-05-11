@@ -72,25 +72,25 @@ EOF
 		for package in $(grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}')
 		do
 			packagedir=${package%.tar.bz2}
-			tar -xf $package || exit 1
+			tar -xf $package || exit 100
 			pushd $packagedir
 				case $packagedir in
 					libxshmfence*)
 						./configure $XORG_CONFIG CFLAGS="$CFLAGS -D_GNU_SOURCE"
 						;;
 					libXfont-[0-9]*)
-						./configure $XORG_CONFIG --disable-devel-docs || exit 1
+						./configure $XORG_CONFIG --disable-devel-docs || exit 100
 						;;
 					libXt-[0-9]*)
-						./configure $XORG_CONFIG --with-appdefaultdir=/etc/X11/app-defaults || exit 1
+						./configure $XORG_CONFIG --with-appdefaultdir=/etc/X11/app-defaults || exit 100
 						;;						
 					*)
-						./configure $XORG_CONFIG || exit 1
+						./configure $XORG_CONFIG || exit 100
 						;;
 				esac
-				make install DESTDIR="$PKG" || exit 1
+				make install DESTDIR="$PKG" || exit 100
 				#only going to do this once but need to do 'real' install as some libs need deps
-				make install || exit 1
+				make install || exit 100
 				find -L /usr/lib${LIBDIRSUFFIX} -iname "*.la" -exec rm '{}' \;
 				##not sure I like this !!!!
 			popd

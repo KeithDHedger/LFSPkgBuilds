@@ -27,9 +27,9 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-bluetooth=no
-	make $MAKEFLAGS||make|| exit 1
+	make $MAKEFLAGS||make|| exit 100
 	sed -i '/INSTALL_DATA.*libpcap.a\|RANLIB.*libpcap.a/ s/^/#/' Makefile
-	make install DESTDIR=$PKG || exit 1
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

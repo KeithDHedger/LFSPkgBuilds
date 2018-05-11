@@ -40,13 +40,13 @@ pushd $COMPILEAT 2>/dev/null||true
 		rm -f /usr/include/limits.h
 		mkdir -v build || true
 		cd build
-		CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 1
+		CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
 		unset GCC_INCDIR
 		make $MAKEFLAGS||make
 
 		touch /etc/ld.so.conf
 
-		make install DESTDIR="$PKG" || exit 1
+		make install DESTDIR="$PKG" || exit 100
 
 		mkdir -p "$PKG/etc/"||true
 		cp -v ../nscd/nscd.conf $PKG/etc/nscd.conf
@@ -55,7 +55,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -pv $PKG/usr/lib/locale $PKG/lib${LIBDIRSUFFIX}||true
 		#now in postinstall
 		#uncomment for all locales
-		#		make localedata/install-locales install_root="$PKG" || exit 1
+		#		make localedata/install-locales install_root="$PKG" || exit 100
 		ln -s ld-linux.so.2 $PKG/lib${LIBDIRSUFFIX}/ld-lsb.so.3||true
 	popd
 

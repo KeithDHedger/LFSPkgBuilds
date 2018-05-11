@@ -29,8 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-mp3rtp --enable-nasm
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
-		make || exit 1
-		make install DESTDIR=$PKG pkghtmldir=$PKG/usr/share/doc/${PKGNAME}-${VERSION}|| exit 1
+		make || exit 100
+		make install DESTDIR=$PKG pkghtmldir=$PKG/usr/share/doc/${PKGNAME}-${VERSION}|| exit 100
 	popd
 
 	checketc $PKG

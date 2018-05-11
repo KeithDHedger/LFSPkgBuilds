@@ -44,8 +44,8 @@ pushd ${TARNAME}-${VERSION}
 	sed -e '/version=/s/:space:/[&]/' -i ./mozilla/build/autoconf/icu.m4 &&
 	sed -e s/_EVENT_SIZEOF/EVENT__SIZEOF/ -i mozilla/ipc/chromium/src/base/message_pump_libevent.cc
 
-	make -f client.mk || exit 1
-	make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 1
+	make -f client.mk || exit 100
+	make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 100
 
 	chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}||true
 	mkdir -vp $PKG/usr/share/man/man1  $PKG/usr/share/{applications,pixmaps}|| true

@@ -24,8 +24,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
 		sed -i -e "/SUBDIRS/s|man[25]||g" man/Makefile
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static
-		make||exit 1
-		make install install-dev install-lib DESTDIR=$PKG || exit 1
+		make|| exit 100
+		make install install-dev install-lib DESTDIR=$PKG || exit 100
 		mkdir -vp  $PKG/lib||true
 		mv -v $PKG/usr/lib/libattr.so.* $PKG/lib
 		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libattr.so) $PKG/usr/lib/libattr.so

@@ -17,7 +17,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	make install DESTDIR=$PKG || exit 1
+	make install DESTDIR=$PKG || exit 100
 popd
 
 packageclean "$PKG" "$CWD"

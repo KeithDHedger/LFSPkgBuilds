@@ -23,7 +23,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --htmldir=/usr/share/doc/${PKGNAME}-${VERSION} --without-bash-malloc --with-installed-readline
 		make $MAKEFLAGS||make|| exit
-		make install DESTDIR=$PKG || exit 1
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

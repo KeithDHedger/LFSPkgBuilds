@@ -21,7 +21,7 @@ mkdir -p "$PKG"
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
-	python setup.py install --root=$PKG || exit 1
+	python setup.py install --root=$PKG || exit 100
 popd
 
 checketc "$PKG"

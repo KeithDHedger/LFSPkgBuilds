@@ -27,7 +27,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i -e 's|man/man1|share/&|' setup.py
-		python setup.py install --root=$PKG || exit 1
+		python setup.py install --root=$PKG || exit 100
 	popd
 
 	checketc $PKG

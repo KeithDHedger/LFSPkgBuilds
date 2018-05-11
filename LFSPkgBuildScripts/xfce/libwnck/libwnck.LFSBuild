@@ -27,8 +27,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --program-suffix=-1 
-		make  GETTEXT_PACKAGE=libwnck-1|| exit 1
-		make  GETTEXT_PACKAGE=libwnck-1 install DESTDIR=$PKG || exit 1
+		make  GETTEXT_PACKAGE=libwnck-1|| exit 100
+		make  GETTEXT_PACKAGE=libwnck-1 install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

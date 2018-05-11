@@ -31,8 +31,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -e '/$serverargs $vtarg/ s/serverargs/: #&/' -i startx.cpp
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-xinitdir=/etc/X11/app-defaults
-		make $MAKEFLAGS||make || exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make || exit 100
+		make install DESTDIR=$PKG || exit 100
 		(cd $PKG/usr/bin;patch -i $CWD/startx.patch)
 	popd
 

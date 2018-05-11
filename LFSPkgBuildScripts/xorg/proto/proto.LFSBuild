@@ -64,10 +64,10 @@ EOF
 		for package in $(grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}')
 		do
 			packagedir=${package%.tar.bz2}
-			tar -xf $package || exit 1
+			tar -xf $package || exit 100
 			pushd $packagedir
-				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 1
-				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 1
+				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 100
+				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 100
 			popd
 			rm -r $packagedir
 		done

@@ -19,8 +19,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
 	pushd "udevil-master"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc ||true
 		cp $CWD/udevil.conf $PKG/etc/udevil
 	popd

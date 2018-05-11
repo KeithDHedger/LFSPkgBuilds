@@ -88,8 +88,8 @@ EOF
 						sed -i -e "/D_XOPEN/s/5/6/" configure
 						;;
 				esac
-				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 1
-				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 1
+				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 100
+				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 100
 			popd
 			rm -r $packagedir
 		done

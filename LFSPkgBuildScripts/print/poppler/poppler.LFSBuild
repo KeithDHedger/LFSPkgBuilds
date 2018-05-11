@@ -31,14 +31,14 @@ pushd $COMPILEAT 2>/dev/null||true
 		cd build
 
 		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH -DCMAKE_BUILD_TYPE=Release -DTESTDATADIR=$PWD/testfiles -DENABLE_XPDF_HEADERS=ON ..                   
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -vr ../glib/reference/html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/poppler-data-0.4.8.tar.gz
 		cd poppler-data-0.4.8
-		make $MAKEFLAGS prefix=/usr install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS prefix=/usr install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

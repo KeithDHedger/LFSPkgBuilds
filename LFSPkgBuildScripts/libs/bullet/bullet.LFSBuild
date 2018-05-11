@@ -26,8 +26,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir build||true
 		cd  build
 		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH -DCMAKE_C_FLAGS="${LFSFLAGS}" -DCMAKE_CXX_FLAGS="${LFSFLAGS}" ..
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

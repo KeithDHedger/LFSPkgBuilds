@@ -29,9 +29,9 @@ pushd "${TARNAME}-${VERSION}"
 	mkdir python2
 	pushd python2
 		PYTHON=/usr/bin/python ../configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-		make || exit 1
+		make || exit 100
 	popd
-	make -C python2 install DESTDIR=$PKG || exit 1
+	make -C python2 install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

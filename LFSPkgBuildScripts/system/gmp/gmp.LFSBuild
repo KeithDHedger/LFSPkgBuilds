@@ -33,10 +33,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ABI=$ABI ./configure --prefix=/usr --enable-cxx --disable-static --docdir=/usr/share/doc/${PKGNAME}-${VERSION}a
-		make $MAKEFLAGS||make|| exit 1
-		make html $MAKEFLAGS||make html|| exit 1
-		make install DESTDIR=$PKG || exit 1
-		make install-html DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make html $MAKEFLAGS||make html|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		make install-html DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

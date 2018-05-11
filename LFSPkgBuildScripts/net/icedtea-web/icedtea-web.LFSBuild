@@ -27,8 +27,8 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=${JAVA_HOME}/jre --with-jdk-home=${JAVA_HOME} --disable-docs --mandir=${JAVA_HOME}/man
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 	install -v -Dm0644 itweb-settings.desktop $PKG/usr/share/applications/itweb-settings.desktop
 	install -v -Dm0644 javaws.png $PKG/usr/share/pixmaps/javaws.png
 popd

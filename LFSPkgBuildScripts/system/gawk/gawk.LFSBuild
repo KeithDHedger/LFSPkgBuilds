@@ -23,8 +23,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's/extras//' Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v doc/{awkforai.txt,*.{eps,pdf,jpg}} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd

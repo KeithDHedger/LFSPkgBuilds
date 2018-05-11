@@ -34,8 +34,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		autoconf -I config-scripts
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc ./configure --libdir=/usr/lib${LIBDIRSUFFIX} --disable-systemd --with-rcdir=/tmp/cupsinit --with-docdir=/usr/share/cups/doc/${PKGNAME}-${VERSION} --with-system-groups=lpadmin
-		make $MAKEFLAGS||make|| exit 1
-		make install BUILDROOT=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install BUILDROOT=$PKG || exit 100
 
 		rm -rf $PKG/tmp||true
 		mkdir -vp $PKG/etc/cups $PKG/usr/share/doc/||true

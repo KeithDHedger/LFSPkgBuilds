@@ -27,8 +27,8 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 pushd "${PKGNAME}-src-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --enable-gtk-doc --disable-debug --disable-nls --disable-static --enable-unicode  --with-expat  --with-libvorbis --with-libflac --with-libsndfile --with-libid3tag --with-libresample --with-ffmpeg=local --with-libmad --disable-nyquist --with-libsoxr --without-lv2 --without-soundtouch  --without-midi  --without-sbsms  --without-libvamp 
-	make || exit 1
-	make install DESTDIR=$PKG || exit 1
+	make || exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

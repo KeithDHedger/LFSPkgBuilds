@@ -21,8 +21,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}30"
-		make -f unix/Makefile generic_gcc || exit 1
-		make prefix=/usr -f unix/Makefile install DESTDIR=$PKG || exit 1
+		make -f unix/Makefile generic_gcc || exit 100
+		make prefix=/usr -f unix/Makefile install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

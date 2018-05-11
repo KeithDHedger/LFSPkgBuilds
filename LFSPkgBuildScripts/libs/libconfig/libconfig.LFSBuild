@@ -26,8 +26,8 @@ pushd $COMPILEAT 2>/dev/null||true
 #https://slackbuilds.org/slackbuilds/14.2/libraries/libconfig/
 		zcat ${SOURCEARCHIVES}/${SECTION}/remove_scanner.patch.gz | patch -p1
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

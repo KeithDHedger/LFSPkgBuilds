@@ -26,8 +26,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		python setup.py build || exit 1
-		python setup.py install --root=$PKG --prefix=/usr || exit 1
+		python setup.py build || exit 100
+		python setup.py install --root=$PKG --prefix=/usr || exit 100
 	popd
 
 	checketc "$PKG"

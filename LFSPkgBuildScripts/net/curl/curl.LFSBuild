@@ -27,8 +27,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-threaded-resolver --with-ca-path=/etc/ssl/certs
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION} || true
 		rm -rf docs/examples/.deps || true
 		find docs \( -name Makefile\* -o -name \*.1 -o -name \*.3 \) -exec rm {} \;

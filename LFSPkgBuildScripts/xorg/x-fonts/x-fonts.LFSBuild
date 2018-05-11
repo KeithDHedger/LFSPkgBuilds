@@ -76,14 +76,14 @@ EOF
 		for package in $(grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}')
 		do
 			packagedir=${package%.tar.bz2}
-			tar -xf $package || exit 1
+			tar -xf $package || exit 100
 			pushd $packagedir
-				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 1
-				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 1
+				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 100
+				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 100
 				#needed for ucs2any
 				case $packagedir in
 					font-util-*)
-						make install||make install|| exit 1
+						make install||make install|| exit 100
 						;;
 				esac
 

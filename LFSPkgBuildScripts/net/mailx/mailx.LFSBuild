@@ -29,8 +29,8 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fixes-1.patch
 #thanks to slackware for this
-	make PREFIX=/usr  MANDIR=/usr/man MAILSPOOL=/var/spool/mail UCBINSTALL=/usr/bin/install SENDMAIL=/usr/sbin/sendmail||exit 1
-	make install PREFIX=/usr MANDIR=/usr/man MAILSPOOL=/var/spool/mail UCBINSTALL=/usr/bin/install SENDMAIL=/usr/sbin/sendmail DESTDIR=$PKG||exit 1
+	make PREFIX=/usr  MANDIR=/usr/man MAILSPOOL=/var/spool/mail UCBINSTALL=/usr/bin/install SENDMAIL=/usr/sbin/sendmail|| exit 100
+	make install PREFIX=/usr MANDIR=/usr/man MAILSPOOL=/var/spool/mail UCBINSTALL=/usr/bin/install SENDMAIL=/usr/sbin/sendmail DESTDIR=$PKG|| exit 100
 
 	mkdir -vp $PKG/bin $PKG/usr/bin
 	pushd $PKG/bin

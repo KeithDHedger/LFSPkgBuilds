@@ -28,8 +28,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/DG_DISABLE_DEPRECATED/d' glade/Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make || exit 1
-		make install DESTDIR=$PKG || exit 1
+		make || exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

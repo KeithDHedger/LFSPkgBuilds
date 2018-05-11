@@ -27,8 +27,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		rm -v autoconf.info
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --program-suffix=2.13
 
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 		install -v -m644 autoconf213.info $PKG/usr/share/info
 		install-info --info-dir=$PKG/usr/share/info autoconf213.info
 	popd

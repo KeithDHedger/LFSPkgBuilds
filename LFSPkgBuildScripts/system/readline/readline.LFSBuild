@@ -30,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i '/MV.*old/d' Makefile.in
 		sed -i '/{OLDSUFF}/c:' support/shlib-install
 		./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} $BUILDSTATIC
-		make $MAKEFLAGS SHLIB_LIBS="-L/tools/lib -lncursesw"||make SHLIB_LIBS="-L/tools/lib -lncursesw"|| exit 1
+		make $MAKEFLAGS SHLIB_LIBS="-L/tools/lib -lncursesw"||make SHLIB_LIBS="-L/tools/lib -lncursesw"|| exit 100
 		if [ "X$ENABLESTATIC" != "X" ];then
 			make install DESTDIR="$PKG" || exit
 			rm -rf $PKG/usr/include $PKG/usr/share

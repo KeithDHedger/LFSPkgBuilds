@@ -26,9 +26,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		make PREFIX=/usr BUILD_STATIC_LIB=0 MANDIR=/usr/share/man DESTDIR=$PKG || exit 1
+		make PREFIX=/usr BUILD_STATIC_LIB=0 MANDIR=/usr/share/man DESTDIR=$PKG || exit 100
 		make PREFIX=/usr BUILD_STATIC_LIB=0 MANDIR=/usr/share/man DESTDIR=$PKG install || exit 1install -v -m755 -d /usr/share/doc/lm_sensors-3.3.5 &&
-			mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} || true
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} || true
 		cp -rv README INSTALL doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
 

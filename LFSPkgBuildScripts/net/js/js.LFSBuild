@@ -32,8 +32,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		cd js/src
 		autoconf2.13
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-readline --enable-threadsafe --with-system-ffi --with-system-nspr --with-intl-api --with-system-zlib --with-system-icu
-		make $MAKEFLAGS||make|| exit 1
-		make install DESTDIR=$PKG || exit 1
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 
 		pushd $PKG/usr/include/mozjs-38
 			for link in $(find . -type l)

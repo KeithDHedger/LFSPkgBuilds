@@ -40,8 +40,8 @@ pushd "${TARNAME}-${VERSION}"
 	sed -i 's@include <QWidget@include <QtWidgets/QWidget@' lib/srchiliteqt/SourceHighlightSettingsPage.h
 	sed -i 's@include <QDialog@include <QtWidgets/QDialog@' lib/srchiliteqt/SourceHighlightSettingsDialog.h
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 1
-	make install DESTDIR=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install DESTDIR=$PKG || exit 100
 popd
 
 checketc "$PKG"

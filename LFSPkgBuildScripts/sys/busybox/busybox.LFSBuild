@@ -25,8 +25,8 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	cp ../${CONFIGFILE} .config
 	make menuconfig
-	make $MAKEFLAGS||make|| exit 1
-	make install CONFIG_PREFIX=$PKG || exit 1
+	make $MAKEFLAGS||make|| exit 100
+	make install CONFIG_PREFIX=$PKG || exit 100
 	cp .config ../config.current
 	rm $PKG/linuxrc
 	rm $PKG/bin/kill
