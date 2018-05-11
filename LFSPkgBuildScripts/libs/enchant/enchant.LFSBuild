@@ -4,7 +4,7 @@
 
 PKGNAME="enchant"
 TARNAME="$PKGNAME"
-VERSION="1.6.0"
+VERSION="2.2.3"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -14,9 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://github.com/AbiWord/${PKGNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
-gettar "http://www.abisource.com/downloads/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
-
+gettar "https://github.com/AbiWord/${PKGNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -26,11 +24,11 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-#		rm -rf $PKG/usr/include/enchant
-#		ln -sfv enchant-2 $PKG/usr/include/enchant
-#		ln -sfv enchant-2 $PKG/usr/bin/enchant
-#		ln -sfv libenchant-2.so $PKG/usr/lib${LIBDIRSUFFIX}/libenchant.so
-#		ln -sfv enchant-2.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/enchant.pc
+		rm -rf $PKG/usr/include/enchant
+		ln -sfv enchant-2 $PKG/usr/include/enchant
+		ln -sfv enchant-2 $PKG/usr/bin/enchant
+		ln -sfv libenchant-2.so $PKG/usr/lib${LIBDIRSUFFIX}/libenchant.so
+		ln -sfv enchant-2.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/enchant.pc
 	popd
 
 	checketc "$PKG"
