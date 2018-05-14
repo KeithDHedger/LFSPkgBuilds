@@ -36,7 +36,8 @@ pushd $LFS
 #	mount --bind ${SOURCEARCHIVES} ${LFS}/${SOURCEARCHIVES}
 
 #This seems to be needed now as TERM=xterm screws up ncurses
-export TERM="linux"
+#Set TERM as dialog needs it
+	export TERM="xterm-color"
 	if [ X$1 = "Xsystem" ];then
 		chroot "$LFS" /tools/bin/env -i HOME=/root TERM="$TERM" PS1='\u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /tools/bin/bash --login +h
 	else

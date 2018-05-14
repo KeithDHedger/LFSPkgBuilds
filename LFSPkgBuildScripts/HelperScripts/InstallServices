@@ -2,7 +2,7 @@
 
 #©keithhedger Thu 8 Mar 12:20:25 GMT 2018 kdhedger68713@gmail.com
 
-export NCURSES_NO_UTF8_ACS=0
+#export NCURSES_NO_UTF8_ACS=1
 
 RED='\e[1;31m'
 GREEN='\e[1;32m'
