@@ -22,7 +22,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "unzip60"
-		make -f unix/Makefile generic
+		LOCAL_UNZIP="-DNO_LCHMOD" make -f unix/Makefile generic
 		make -f unix/Makefile prefix=$PKG/usr MANDIR=/usr/share/man/man1 install || exit 100
 	popd
 

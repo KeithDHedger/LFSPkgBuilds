@@ -25,7 +25,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	unzip ${SOURCEARCHIVES}/${SECTION}/LFSDesktopProject.zip  "LFSDesktopProject-master/$PKGNAME/*"
 	pushd "LFSDesktopProject-master/$PKGNAME"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		sed -i 's/sudo//g' Makefile
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
