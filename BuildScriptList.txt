@@ -216,7 +216,6 @@
 ./libs/gobject-introspection/gobject-introspection.LFSBuild
 ./libs/gsettings-desktop-schemas/gsettings-desktop-schemas.LFSBuild
 ./libs/gtkglext/gtkglext.LFSBuild
-./libs/gtkspell/gtkspell.LFSBuild
 ./libs/guile/guile.LFSBuild
 ./libs/imlib2/imlib2.LFSBuild
 ./libs/jasper/jasper.LFSBuild
