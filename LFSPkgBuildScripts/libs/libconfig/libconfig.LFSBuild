@@ -4,7 +4,7 @@
 
 PKGNAME="libconfig"
 TARNAME="$PKGNAME"
-VERSION="1.6"
+VERSION="1.7.2"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -15,17 +15,14 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/hyperrealm/libconfig/archive/v${VERSION}/${TARBALL}" $SECTION
-gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/libconfig/remove_scanner.patch.gz" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-#thanks to slackbuild.org for this patch
-#https://slackbuilds.org/slackbuilds/14.2/libraries/libconfig/
-		zcat ${SOURCEARCHIVES}/${SECTION}/remove_scanner.patch.gz | patch -p1
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		autoreconf -if
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-examples
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
