@@ -1,0 +1,11 @@
+#!/bin/bash
+
+mkdir -vp /etc/pango ||true
+/usr/bin/gdk-pixbuf-query-loaders --update-cache
+fc-cache -f
+gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/hicolor
+gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/gnome
+/usr/bin/pango-querymodules > /etc/pango/pango.modules
+update-mime-database /usr/share/mime
+mkdir -vp /var/cache/man/fsstnd||true
+mandb -c

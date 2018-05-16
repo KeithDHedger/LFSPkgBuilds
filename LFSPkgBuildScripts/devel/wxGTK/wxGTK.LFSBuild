@@ -15,12 +15,15 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://garr.dl.sourceforge.net/project/wxwindows/2.8.12/${TARBALL}" $SECTION
+gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/wxGTK/wxGTK-gcc.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		patch -p1 -i "${SOURCEARCHIVES}/${SECTION}/wxGTK-gcc.patch"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-unicode --enable-shared --enable-mediactrl
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
