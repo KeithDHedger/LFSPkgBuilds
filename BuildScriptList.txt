@@ -293,6 +293,7 @@
 ./lxqt/lximage-qt/lximage-qt.LFSBuild
 ./lxqt/lxqt-about/lxqt-about.LFSBuild
 ./lxqt/lxqt-admin/lxqt-admin.LFSBuild
+./lxqt/lxqt-build-tools/lxqt-build-tools.LFSBuild
 ./lxqt/lxqt-common/lxqt-common.LFSBuild
 ./lxqt/lxqt-config/lxqt-config.LFSBuild
 ./lxqt/lxqt-config-randr/lxqt-config-randr.LFSBuild
@@ -461,7 +462,6 @@
 ./qt/extra-cmake-modules/extra-cmake-modules.LFSBuild
 ./qt/kguiaddons/kguiaddons.LFSBuild
 ./qt/kwindowsystem/kwindowsystem.LFSBuild
-./qt/libsysstat/libsysstat.LFSBuild
 ./qt/polkit-qt/polkit-qt.LFSBuild
 ./qt/qt5ct/qt5ct.LFSBuild
 ./qt/qt5/qt5.LFSBuild
