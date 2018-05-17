@@ -1,0 +1,19 @@
+*** src/dbgengine/nmv-dbg-common.h	2018-05-09 20:35:30.473524306 +0100
+--- src/dbgengine/nmv-dbg-common.h.mine	2018-05-09 20:35:51.477574093 +0100
+***************
+*** 110,116 ****
+  
+      bool has_slot () const
+      {
+!         return m_slot;
+      }
+  
+      template<class T>
+--- 110,116 ----
+  
+      bool has_slot () const
+      {
+!         return static_cast<bool> (m_slot);
+      }
+  
+      template<class T>
