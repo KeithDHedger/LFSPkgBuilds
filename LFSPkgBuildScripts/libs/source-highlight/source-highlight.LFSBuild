@@ -29,6 +29,7 @@ pushd "${TARNAME}-${VERSION}"
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}  --with-doxygen --with-bash-completion --with-boost
 	make $MAKEFLAGS||make|| exit 1
 	make install DESTDIR=$PKG || exit 1
+	cp doc/source-highlight-lib.html $PKG/usr/share/doc/source-highlight
 popd
 
 checketc "$PKG"
