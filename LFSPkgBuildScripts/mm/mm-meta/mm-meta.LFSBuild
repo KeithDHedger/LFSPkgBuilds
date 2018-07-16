@@ -40,7 +40,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="mm-meta"
-VERSION="8.0"
+VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"

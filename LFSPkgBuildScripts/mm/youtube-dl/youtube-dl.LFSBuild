@@ -2,55 +2,56 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="python-2.7.13"
+DEPENDS="python-2.7.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="youtube-dl"
 TARNAME="$PKGNAME"
-VERSION="2017.11.06"
+VERSION="2018.07.10"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://yt-dl.org/downloads/2017.11.06/${TARBALL}" $SECTION
+gettar "https://github.com/rg3/youtube-dl/releases/download/${VERSION}/${TARBALL}" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}"
-	chmod +x ./setup.py
-	./setup.py install --compile --root=$PKG --prefix=/usr
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}"
+		chmod +x ./setup.py
+		./setup.py install --compile --root=$PKG --prefix=/usr
+	popd
 
-checketc "$PKG"
-packageclean "$PKG"
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
 
-cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}"
+	rm -r "$PKG" "${TARNAME}"
+popd 2>/dev/null||true

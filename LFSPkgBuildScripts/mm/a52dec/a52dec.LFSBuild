@@ -51,4 +51,4 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
-popd 2>/dev/null
+popd 2>/dev/null||true
