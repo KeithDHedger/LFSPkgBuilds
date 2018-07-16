@@ -2,32 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.10.14 libxml2-2.9.4 libnl-3.2.25"
+DEPENDS="dbus-1.12.4 libxml2-2.9.7 libnl-3.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="wpa-supplicant"
 TARNAME="wpa_supplicant"
-VERSION="2.5"
+VERSION="2.6"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://hostap.epitest.fi/releases/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-upstream_fixes-1.patch" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-
-	cat > wpa_supplicant/.config << "EOF"
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		cat > wpa_supplicant/.config << "EOF"
 CONFIG_BACKEND=file
 CONFIG_CTRL_IFACE=y
 CONFIG_DEBUG_FILE=y
@@ -57,54 +58,41 @@ CONFIG_CTRL_IFACE_DBUS=y
 CONFIG_CTRL_IFACE_DBUS_NEW=y
 CONFIG_CTRL_IFACE_DBUS_INTRO=y
 EOF
-	cd wpa_supplicant
-	make BINDIR=/sbin LIBDIR=/lib
+		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-upstream_fixes-1.patch
+		cd wpa_supplicant
+		make BINDIR=/sbin LIBDIR=/lib
 
-	mkdir -vp $PKG/sbin $PKG/usr/share/man/{man5,man8} $PKG/usr/share/dbus-1.10.14/system-services $PKG/etc/dbus-1.10.14/system.d/wpa_supplicant.conf
-	install -v -m755 wpa_{cli,passphrase,supplicant} $PKG/sbin/
-	install -v -m644 doc/docbook/wpa_supplicant.conf.5 $PKG/usr/share/man/man5/
-	install -v -m644 doc/docbook/wpa_{cli,passphrase,supplicant}.8 $PKG/usr/share/man/man8/
+		mkdir -vp $PKG/sbin $PKG/usr/share/man/{man5,man8} $PKG/usr/share/dbus-1.10.14/system-services $PKG/etc/dbus-1.10.14/system.d/wpa_supplicant.conf
+		install -v -m755 wpa_{cli,passphrase,supplicant} $PKG/sbin/
+		install -v -m644 doc/docbook/wpa_supplicant.conf.5 $PKG/usr/share/man/man5/
+		install -v -m644 doc/docbook/wpa_{cli,passphrase,supplicant}.8 $PKG/usr/share/man/man8/
 
-	install -v -m644 dbus/fi.{epitest.hostap.WPASupplicant,w1.wpa_supplicant1}.service $PKG/usr/share/dbus-1.10.14/system-services/
-	install -v -m644 dbus/dbus-wpa_supplicant.conf $PKG/etc/dbus-1.10.14/system.d/wpa_supplicant.conf
+		install -v -m644 dbus/fi.{epitest.hostap.WPASupplicant,w1.wpa_supplicant1}.service $PKG/usr/share/dbus-1.10.14/system-services/
+		install -v -m644 dbus/dbus-wpa_supplicant.conf $PKG/etc/dbus-1.10.14/system.d/wpa_supplicant.conf
+	popd
 
-popd
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
 
-checketc "$PKG"
-packageclean "$PKG"
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
-
-cat > /etc/sysconfig/ifconfig.wifi0 << "EOF"
-ONBOOT="yes"
-IFACE="wlan0"
-SERVICE="wpa"
-
-# Additional arguments to wpa_supplicant
-WPA_ARGS=""
-
-WPA_SERVICE="ipv4-static"
-IP="192.168.1.112"
-GATEWAY="192.168.1.254"
-PREFIX="24"
-BROADCAST="192.168.1.255"
-EOF
