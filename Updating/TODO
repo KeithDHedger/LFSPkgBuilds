@@ -6,8 +6,6 @@
 /media/LFSHex/LFSPkgBuildScripts/kernel/kernel.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta/LFSDesktop-meta.LFSBuild
 
-/media/LFSHex/LFSPkgBuildScripts/mm/libmad/libmad.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/mm/libmodplug/libmodplug.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/mm/libmusicbrainz/libmusicbrainz.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/mm/libsamplerate/libsamplerate.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/mm/libvidstab/libvidstab.LFSBuild
