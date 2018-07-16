@@ -2,6 +2,8 @@
 
 #©keithhedger Wed 4 Feb 13:38:52 GMT 2015 kdhedger68713@gmail.com
 
+. /usr/share/LFSPkg/LFSFunctions
+
 mkdir -vp /etc/modprobe.d||true
 cat > /etc/modprobe.d/usb.conf << "EOF"
 # Begin /etc/modprobe.d/usb.conf
@@ -11,3 +13,4 @@ install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 
 # End /etc/modprobe.d/usb.conf
 EOF
+

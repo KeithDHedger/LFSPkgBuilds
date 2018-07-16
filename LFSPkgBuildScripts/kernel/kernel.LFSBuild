@@ -51,6 +51,8 @@ pushd "${KERNELSOURCEDIR}"
 		make clean
 		make prepare
 		rm .version
+		cd /usr/src
+		ln -sv ${KERNELSOURCEDIR}/${TARNAME}-${VERSION} ${TARNAME}-${VERSION}
 	popd
 popd
 
@@ -77,7 +79,6 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG"
-unset TMPDIR
 
 
 

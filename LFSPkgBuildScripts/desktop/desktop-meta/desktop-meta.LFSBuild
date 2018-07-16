@@ -46,8 +46,6 @@ LibreOffice-6.0.1.1"
 # after uri
 #xfce-meta-4.10.1 ftare sudo
 
-
-
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
