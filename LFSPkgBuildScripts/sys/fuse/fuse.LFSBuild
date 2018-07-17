@@ -8,7 +8,7 @@ VERSION="3.2.1"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -34,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -sfv ../../lib${LIBDIRSUFFIX}/libfuse3.so.${VERSION} $PKG/usr/lib${LIBDIRSUFFIX}/libfuse3.so
 
 		mv -vf $PKG/usr/bin/fusermount3 $PKG/bin
-		mv -vf /usr/sbin/mount.fuse3 $PKG/sbin
+		mv -vf $PKG/usr/sbin/mount.fuse3 $PKG/sbin
 		chmod u+s $PKG/bin/fusermount3
 
 		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}

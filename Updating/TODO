@@ -7,12 +7,6 @@
 /media/LFSHex/LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta/LFSDesktop-meta.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/mm/mm-meta/mm-meta.LFSBuild
 
-/media/LFSHex/LFSPkgBuildScripts/net/mailx/mailx.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/net-tools/net-tools.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/nmap/nmap.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/rsync/rsync.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/seamonkey/seamonkey.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/sshfs/sshfs.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/surfraw/surfraw.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/tor/tor.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/vidalia/vidalia.LFSBuild
