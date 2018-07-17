@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.13 DBus-Python-1.2.0 Wireless-Tools-29 Net-tools-20101030 wpa-supplicant-2.5"
+DEPENDS="Python-2.7.14 DBus-Python-1.2.0 Wireless-Tools-29 Net-tools-20101030 wpa-supplicant-2.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

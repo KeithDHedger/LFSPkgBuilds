@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.10.3 GTK-2.24.31 icu-58.2 libsoup-2.56.0 MesaLib-13.0.4 Ruby-2.4.0 SQLite-3.17.0 Which-2.21 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.25"
+DEPENDS="gst-plugins-base1.0-1.12.4 GTK-2.24.32 icu-60.2 libsoup-2.60.3 MesaLib-17.3.4 Ruby-2.5.0 SQLite-3.22.0 Which-2.21 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.25"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -15,73 +15,48 @@ BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk3/webkitgtk-2.4.9-abs.patch"  $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-#mkdir -vp build
-#cd        build
-#
-#cmake -DCMAKE_BUILD_TYPE=Release  \
-#      -DCMAKE_INSTALL_PREFIX=/usr \
-#      -DCMAKE_SKIP_RPATH=ON       \
-#      -DPORT=GTK                  \
-#      -DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX}  \
-#      -DUSE_LIBHYPHEN=OFF         \
-#      -DENABLE_MINIBROWSER=ON     \
-#      -DENABLE_GEOLOCATION=OFF \
-#      -DUSE_SYSTEM_MALLOC=ON \
-#      -DENABLE_GTKDOC=ON \
-#      -Wno-dev ..
-#make
-#	make install DESTDIR=$PKG || exit 100
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/webkitgtk-2.4.9-abs.patch
+		CFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks" CXXFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks" ./configure ${CONFIGOPTIONS} --with-gtk=3.0 --disable-geolocation --enable-introspection --enable-webkit2 --disable-geolocation
 
-#	sed -e '/generate-gtkdoc --rebase/s:^:# :' -i GNUmakefile.in
-#	rm -rf build-3||true
-#	mkdir -vp build-3
-#	cp -a Documentation build-3
-#	cd build-3
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/webkitgtk-2.4.9-abs.patch
-	CFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks" CXXFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks" ./configure ${CONFIGOPTIONS} --with-gtk=3.0 --disable-geolocation --enable-introspection --enable-webkit2 --disable-geolocation
+		make clean
+		make Programs_DumpRenderTree_LDFLAGS="-no-fast-install -no-install -lfontconfig"
+		make install-strip DESTDIR=$PKG||make|| exit 100
+	popd
 
-	make clean
-	make Programs_DumpRenderTree_LDFLAGS="-no-fast-install -no-install -lfontconfig"
-	make install-strip DESTDIR=$PKG||make|| exit 100
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
 
-#//	make $MAKEFLAGS||make|| exit 100
-#//	make install DESTDIR=$PKG || exit 100
-#	rm -rf $PKG/usr/share/gtk-doc/html/webkitgtk-2.4.9
-#	mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-checketc $PKG
-packageclean "$PKG"
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
-
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
-
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

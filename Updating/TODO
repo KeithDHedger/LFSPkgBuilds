@@ -7,10 +7,6 @@
 /media/LFSHex/LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta/LFSDesktop-meta.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/mm/mm-meta/mm-meta.LFSBuild
 
-/media/LFSHex/LFSPkgBuildScripts/net/surfraw/surfraw.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/tor/tor.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/vidalia/vidalia.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/webkitgtk3/webkitgtk3.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/wicd/wicd.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/perl/Archive-Zip/Archive-Zip.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/print/printing-meta/printing-meta.LFSBuild
