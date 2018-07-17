@@ -7,11 +7,6 @@
 /media/LFSHex/LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta/LFSDesktop-meta.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/mm/mm-meta/mm-meta.LFSBuild
 
-/media/LFSHex/LFSPkgBuildScripts/net/davfs2/davfs2.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/dovecot/dovecot.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/httrack/httrack.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/icedtea-sound/icedtea-sound.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/net/icedtea-web/icedtea-web.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/mailx/mailx.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/net-tools/net-tools.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/nmap/nmap.LFSBuild
