@@ -5,12 +5,8 @@
 /media/LFSHex/LFSPkgBuildScripts/kernel/firmware.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/kernel/kernel.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta/LFSDesktop-meta.LFSBuild
-
-/media/LFSHex/LFSPkgBuildScripts/mm/libmusicbrainz/libmusicbrainz.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/mm/libsamplerate/libsamplerate.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/mm/libvidstab/libvidstab.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/mm/mm-meta/mm-meta.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/mm/soxr/soxr.LFSBuild
+
 /media/LFSHex/LFSPkgBuildScripts/mm/twolame/twolame.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/aria2/aria2.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/net/bind-utils/bind-utils.LFSBuild

@@ -2,33 +2,34 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="expat-2.2.0"
+DEPENDS="expat-2.2.5 Python-2.7.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-TARNAME="libmusicbrainz"
 PKGNAME="libmusicbrainz"
+TARNAME=$PKGNAME
 VERSION="2.1.5"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.musicbrainz.org/pub/musicbrainz/historical/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-missing-includes-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-missing-includes-1.patch" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
+pushd $COMPILEAT 2>/dev/null||true
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
-	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/libmusicbrainz-2.1.5-missing-includes-1.patch
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-missing-includes-1.patch
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS -std=c++98" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 100
 	(cd python && python setup.py build)
 	make install DESTDIR=$PKG || exit 100
@@ -36,7 +37,7 @@ pushd "${TARNAME}-${VERSION}"
 popd
 
 checketc $PKG
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -58,3 +59,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
