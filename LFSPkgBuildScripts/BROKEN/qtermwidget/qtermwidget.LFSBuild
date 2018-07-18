@@ -2,22 +2,22 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="cmake-3.7.2 qt5-5.8.0"
+DEPENDS="cmake-3.10.2 qt5-5.10.1 lxqt-build-tools-0.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qtermwidget"
 TARNAME="$PKGNAME"
-VERSION="0.6.0"
+VERSION="0.8.0"
 BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/qterminal/qtermwidget/releases/download/0.6.0/${TARBALL}" $SECTION
-
+gettar "https://github.com/lxde/${PKGNAME}/releases/download/${VERSION}/${TARBALL}" $SECTION
+		#https://github.com/lxde/qtermwidget/releases/download/0.8.0/qtermwidget-0.8.0.tar.xz
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
