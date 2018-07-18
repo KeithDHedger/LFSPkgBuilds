@@ -3,55 +3,56 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="xfce-polkit"
+TARNAME="$PKGNAME"
 VERSION="0.1"
 BUILD=1
 SECTION="XFCE"
 SUFFIX="LFSPKG"
-
+TARBALL="${TARNAME}.zip"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://codeload.github.com/ncopa/xfce-polkit/zip/master" $SECTION
-mv ${SOURCEARCHIVES}/${SECTION}/master ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip||true
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+gettar "https://codeload.github.com/ncopa/${PKGNAME}/zip/master" $SECTION ${TARBALL}.zip
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
 
-pushd "${PKGNAME}-master"
-	aclocal
-	autoconf
-	automake --add-missing
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-	make $MAKEFLAGS||make|| exit 100
-	make install DESTDIR=$PKG || exit 100
-	mkdir -vp $PKG/etc/xdg/autostart || true
-	cp ../xfce-polkit.desktop $PKG/etc/xdg/autostart/xfce-polkit.desktop
-popd
+pushd $COMPILEAT 2>/dev/null||true
+	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
+	pushd "${PKGNAME}-master"
+		aclocal
+		autoconf
+		automake --add-missing
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/etc/xdg/autostart || true
+		cp ../xfce-polkit.desktop $PKG/etc/xdg/autostart/xfce-polkit.desktop
+	popd
 
-checketc "$PKG"
-packageclean "$PKG"
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
 
-cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${PKGNAME}-master"
+	rm -r "$PKG" "${PKGNAME}-master"
+popd 2>/dev/null||true
+

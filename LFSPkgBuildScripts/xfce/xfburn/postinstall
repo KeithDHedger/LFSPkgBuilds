@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#©keithhedger Wed 11 Feb 15:18:13 GMT 2015 kdhedger68713@gmail.com
+
+
+. /usr/share/LFSPkg/LFSFunctions
+
+mkdir -vp /usr/share/icons/hicolor /usr/share/icons/gnome||true
+
+gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/hicolor
+gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/gnome
+
+exit 0
