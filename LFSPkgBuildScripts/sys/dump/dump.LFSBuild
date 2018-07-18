@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="e2fsprogs-1.43.4"
+DEPENDS="e2fsprogs-1.43.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -14,67 +14,64 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-0.4b44.tar.gz"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://kent.dl.sourceforge.net/project/dump/dump/0.4b44/${TARBALL}" $SECTION
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 BUILDSTATIC=""
 if [ "X$ENABLESTATIC" != "X" ];then
 	BUILDSTATIC="--enable-static"
 	PKGNAME="dump-static"
+	PKG="${OUTPUT}/${PKGNAME}"
 fi
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://kent.dl.sourceforge.net/project/dump/dump/0.4b44/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-0.4b44"
-	EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root $BUILDSTATIC
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-0.4b44"
+		EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root $BUILDSTATIC
 
-	make $MAKEFLAGS||make|| exit 100
-	make install  prefix=$PKG|| exit 100
-	if [ "X$ENABLESTATIC" != "X" ];then
-		mv $PKG/sbin/dump $PKG/sbin/dump-static
-		mv $PKG/sbin/restore $PKG/sbin/restore-static
-		rm $PKG/sbin/rdump
-		rm $PKG/sbin/rrestore
-		pushd $PKG/sbin
-			ln -sv dump-static rdump-static
-			ln -sv restore-static rrestore-static
-		popd
-		rm -rf $PKG/usr
-	fi
-#	make distclean
+		make $MAKEFLAGS||make|| exit 100
+		make install  prefix=$PKG|| exit 100
+		if [ "X$ENABLESTATIC" != "X" ];then
+			mv $PKG/sbin/dump $PKG/sbin/dump-static
+			mv $PKG/sbin/restore $PKG/sbin/restore-static
+			rm $PKG/sbin/rdump
+			rm $PKG/sbin/rrestore
+			pushd $PKG/sbin
+				ln -sv dump-static rdump-static
+				ln -sv restore-static rrestore-static
+			popd
+			rm -rf $PKG/usr
+		fi
+	popd
 
-#	EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root
-#
-#	make $MAKEFLAGS||make|| exit 100
-#	make install  prefix=$PKG || exit 100
-popd
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
 
-checketc "$PKG"
-packageclean "$PKG"
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	rm -r "$PKG" "${TARNAME}-0.4b44"
+popd 2>/dev/null||true
 
-rm -r "$PKG" "${TARNAME}-0.4b44"

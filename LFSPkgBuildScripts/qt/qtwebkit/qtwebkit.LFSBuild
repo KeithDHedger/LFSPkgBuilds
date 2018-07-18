@@ -2,66 +2,66 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ICU-58.2 libjpeg-turbo-1.5.1 libpng-1.6.28 libwebp-0.6.0 libxslt-1.1.29 Qt-5.8.0 Ruby-2.4.0 SQLite-3.17.0"
+DEPENDS="ICU-60.2 libjpeg-turbo-1.5.3 libpng-1.6.34 libwebp-0.6.0 libxslt-1.1.32 Qt-5.8.0 Ruby-2.5.0 SQLite-3.22.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qtwebkit"
 TARNAME="${PKGNAME}-opensource-src"
-VERSION="5.8.0"
+VERSION="5.9.0"
 BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/community_releases/${VERSION%.?*}/${VERSION}-final/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
-pushd "${TARNAME}-${VERSION}"
-	SAVEPATH=$PATH
-	export PATH=$PWD/bin:$PATH
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		SAVEPATH=$PATH
+		export PATH=$PWD/bin:$PATH
 
-	mkdir build||true
-	cd  build
-	qmake ../WebKit.pro
-	make $MAKEFLAGS||make|| exit 100
-	make install INSTALL_ROOT=$PKG || exit 100
-	find ${PKG}/$QT5DIR/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
-	find ${PKG}/$QT5DIR/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5DIR/lib/:g" {} \;
-	find ${PKG}/$QT5DIR/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
-	export PATH=$SAVEPATH
-	unset SAVEPATH
-popd
+		mkdir build||true
+		cd  build
+		qmake ../WebKit.pro
+		make $MAKEFLAGS||make|| exit 100
+		make install INSTALL_ROOT=$PKG || exit 100
+		find ${PKG}/$QT5DIR/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
+		find ${PKG}/$QT5DIR/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5DIR/lib/:g" {} \;
+		find ${PKG}/$QT5DIR/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+		export PATH=$SAVEPATH
+		unset SAVEPATH
+	popd
 
-checketc "$PKG"
-packageclean "$PKG"
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
 
-cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
-pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
-popd
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
 
-case $DOWHAT in
-	up*)
-		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
-		;;
-	"install")
-		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
-		;;
-	"build")
-		echo "Just built"
-		;;
-	*)
-		echo "*** Unknown command ***"
-		exit 1
-esac
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
