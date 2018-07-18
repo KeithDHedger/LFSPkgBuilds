@@ -13,9 +13,6 @@
 /media/LFSHex/LFSPkgBuildScripts/system/system-meta/system-sysvinit-meta.LFSBuild
 
 
-/media/LFSHex/LFSPkgBuildScripts/wms/jwm/jwm.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/wms/openbox/openbox.LFSBuild
-/media/LFSHex/LFSPkgBuildScripts/wms/sawfish/sawfish.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/xfce/Thunar/Thunar.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/xfce/gtk-xfce-engine/gtk-xfce-engine.LFSBuild
 /media/LFSHex/LFSPkgBuildScripts/xfce/thunar-volman/thunar-volman.LFSBuild
