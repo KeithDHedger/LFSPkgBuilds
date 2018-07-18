@@ -3,23 +3,23 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="qt5ct"
-TARNAME="168066-$PKGNAME"
-VERSION="0.9"
+TARNAME="$PKGNAME"
+VERSION="0.35"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://qt-apps.org/CONTENT/content-files/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+gettar "http://prdownloads.sourceforge.net/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
+pushd $COMPILEAT 2>/dev/null||true
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${PKGNAME}-${VERSION}"
 	qmake PREFIX=/usr
 	make $MAKEFLAGS||make|| exit 100
@@ -27,7 +27,7 @@ pushd "${PKGNAME}-${VERSION}"
 popd
 
 checketc "$PKG"
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -49,3 +49,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG" "${PKGNAME}-${VERSION}"
+popd 2>/dev/null||true
