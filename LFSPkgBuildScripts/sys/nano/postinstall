@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#©keithhedger Wed 11 Feb 15:18:13 GMT 2015 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+cat > /etc/nanorc << EOF
+set autoindent
+set constantshow
+set fill 72
+set historylog
+set multibuffer
+set nohelp
+set nowrap
+set positionlog
+set quickblank 
+set regexp
+set smooth
+set suspend
+EOF
+
+exit 0
