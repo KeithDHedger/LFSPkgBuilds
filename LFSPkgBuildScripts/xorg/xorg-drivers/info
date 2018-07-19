@@ -1,0 +1,7 @@
+This is a meta packages that just pulls in dependencies for a basic xorg drivers.
+
+xf86-video-ati-7.10.0
+xf86-video-fbdev-0.4.4
+xf86-input-evdev-2.10.5
+xf86-video-nouveau-1.0.15
+xf86-video-vesa-2.3.4

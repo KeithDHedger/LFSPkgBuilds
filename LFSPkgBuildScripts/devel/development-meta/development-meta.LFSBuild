@@ -26,7 +26,8 @@ poedit-2.0.6
 yad-0.38.1
 xforms-1.2.4
 ddd-3.3.12
-ManPageEditor-0.1.2"
+ManPageEditor-0.1.2
+autobook-1.5"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

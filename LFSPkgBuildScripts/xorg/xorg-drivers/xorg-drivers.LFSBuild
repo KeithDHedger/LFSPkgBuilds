@@ -16,11 +16,13 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+scriptLog "${PKGNAME}-${VERSION}"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
+
+	checketc $PKG
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

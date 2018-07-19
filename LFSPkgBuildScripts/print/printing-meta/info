@@ -1,0 +1,10 @@
+This is a meta packages that just pulls in dependencies for printing.
+
+Cups-2.2.6
+ghostscript-9.22
+cups-filters-1.13.4
+Gutenprint-5.2.13
+sane-backends-1.0.25
+sane-frontends-1.0.14
+hplip-3.16.11
+XSane-0.999 GTK-2.24.31

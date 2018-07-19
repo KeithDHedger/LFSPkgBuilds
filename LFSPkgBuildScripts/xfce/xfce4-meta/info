@@ -1,0 +1,25 @@
+This is a meta packages that just pulls in dependencies for a full xfce install.
+Please note that this is not the latest xfce as I no longer use the xfce desktop, mail me if you want to take over maintainence of the xfce scripts.
+
+gtk-xfce-engine-3.0.1
+libxfce4util-4.10.1
+libxfcegui4-4.10.0
+Exo-0.10.2
+Garcon-0.2.1
+libwnck-2.30.7
+Xfconf-4.10.0
+libxfce4ui-4.10.0
+xfce4-panel-4.10.1
+Thunar-1.6.3
+thunar-volman-0.8.0
+Tumbler-0.1.29
+xfce4-appfinder-4.10.1
+xfce4-power-manager-1.4.0
+xfce4-settings-4.10.1
+Xfdesktop-4.10.2
+Xfwm4-4.10.1
+xfce4-session-4.10.1
+xfce4-terminal-0.6.2
+xfce4-screenshooter-1.7.9
+Xfce-Theme-Manager-0.3.7
+Xfwm4CompositeEditor-0.2.1

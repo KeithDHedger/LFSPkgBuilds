@@ -34,12 +34,11 @@ VERSION="4.10.1"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
 
 export CHECKETC=0
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

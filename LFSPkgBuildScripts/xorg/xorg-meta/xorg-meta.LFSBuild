@@ -52,11 +52,14 @@ fi
 
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+checketc $PKG
 packageclean "$PKG" "$CWD"
+
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd

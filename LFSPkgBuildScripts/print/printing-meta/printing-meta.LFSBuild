@@ -20,14 +20,12 @@ VERSION="8.2"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 
 checketc $PKG
 packageclean "$PKG" "$CWD"
