@@ -17,7 +17,7 @@ TARBALL="${TARNAME}_${VERSION}.orig.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.debian.org/debian/pool/main/h/heirloom-mailx/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-fixes-1.patch"  $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-fixes-1.patch"  $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

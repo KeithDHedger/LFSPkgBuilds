@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Berkeley-DB-6.2.23"
+DEPENDS="Berkeley-DB-6.2.23 cyrus-sasl-2.1.26 OpenSSL-1.0.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="postfix"
 TARNAME="$PKGNAME"
-VERSION="3.0.2"
+VERSION="3.1.4"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -23,6 +23,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 
 UIDGIDPAIR=$(findnextpair "system")
@@ -31,21 +33,24 @@ POSTDROPGID=$(findnextgid "system")
 groupadd -g $POSTDROPGID postdrop||true
 useradd -c "Postfix Daemon User" -d /var/spool/postfix -g postfix -s /bin/false -u $UIDGIDPAIR postfix||true
 
+MYCCARGS='-DUSE_TLS -I/usr/include/openssl/ -DUSE_SASL_AUTH -DUSE_CYRUS_SASL -I/usr/include/sasl'
+MYAUXLIBS='-lssl -lcrypto -lsasl2'
+
 mkdir -vp /var/mail||true
 chown -v postfix:postfix /var/mail
 
 pushd "${TARNAME}-${VERSION}"
 	sed -i 's/.\x08//g' README_FILES/*
-	sed -i 's/Linux.3\*/Linux.[34]\*/' makedefs
-	CCARGS='-DHAS_MYSQL -I/usr/include/mysql'
-	AUXLIBS='-lmysqlclient -lz -lm'
-	make makefiles
+	#sed -i 's/Linux.3\*/Linux.[34]\*/' makedefs
+	#export CCARGS
+	#export AUXLIBS
+	make CCARGS="$MYCCARGS" AUXLIBS="$MYAUXLIBS" makefiles
 	make
-	sh postfix-install -non-interactive daemon_directory=/usr/lib/postfix manpage_directory=/usr/share/man html_directory=/usr/share/doc/Postfix-3.0.2/html readme_directory=/usr/share/doc/Postfix-3.0.2/readme install_root=$PKG
+	sh postfix-install -non-interactive daemon_directory=/usr/lib/postfix manpage_directory=/usr/share/man html_directory=/usr/share/doc/${PKGNAME}-${VERSION}/html readme_directory=/usr/share/doc/${PKGNAME}-${VERSION}/readme install_root=$PKG
 popd
 
 checketc "$PKG"
-packageclean "$PKG"
+packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

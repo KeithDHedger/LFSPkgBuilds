@@ -1,0 +1,16 @@
+#!/bin/bash
+#©keithhedger Fri 20 Jul 13:18:35 BST 2018
+
+. /usr/share/LFSPkg/LFSFunctions
+
+cat >> /etc/aliases << EOF
+# Begin /etc/aliases
+
+MAILER-DAEMON:    postmaster
+postmaster:       $USER
+
+root:             $USER
+# End /etc/aliases
+EOF
+
+/usr/sbin/postfix set-permissions

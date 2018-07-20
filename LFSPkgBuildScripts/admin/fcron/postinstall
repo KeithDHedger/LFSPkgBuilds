@@ -1,0 +1,10 @@
+#!/bin/bash
+#©keithhedger Fri 20 Jul 13:18:35 BST 2018
+
+. /usr/share/LFSPkg/LFSFunctions
+
+if ! grep "cron.*" /etc/syslog.conf &>/dev/null;then
+	sed -i  '0,/^$/s||cron.* -/var/log/cron.log|' /etc/syslog.conf
+fi
+
+/etc/rc.d/init.d/sysklogd reload

@@ -16,6 +16,12 @@ if [ "X$ENABLESTATIC" != "X" ];then
 	PKGNAME="ncurses-static"
 fi
 
+if [ "X$ENABLEDEBUG" != "X" ];then
+	DEBUGCONF="--disable-leaks"
+else
+	DEBUGCONF=""
+fi
+
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -26,23 +32,31 @@ tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
 	sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
 
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --mandir=/usr/share/man --without-debug --without-normal --enable-pc-files --enable-widec --prefix=/usr $BUILDSTATIC
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --mandir=/usr/share/man --without-debug --without-normal --enable-pc-files --enable-widec --prefix=/usr $BUILDSTATIC $DEBUGCONF
 
 	make $MAKEFLAGS||make|| exit
 	if [ "X$ENABLESTATIC" != "X" ];then
 		make install DESTDIR="$PKG" || exit
 		rm -rf $PKG/usr/bin $PKG/usr/include $PKG/usr/lib/terminfo $PKG/usr/share
+		for lib in ncurses form panel menu
+			do
+				ln -sfv lib${lib}w.a $PKG/usr/lib/lib${lib}.a
+			done
+		ln -sfv libncursesw.a $PKG/usr/lib/libcursesw.a
+		ln -sfv libncurses.a $PKG/usr/lib/libcurses.a
 	else
 		make install DESTDIR="$PKG" || exit
-		mkdir -p $PKG/lib|| true
+		mkdir -p $PKG/lib $PKG/usr/lib/pkgconfig|| true
 
 		mv -v $PKG/usr/lib/libncursesw.so.6* $PKG/lib
 		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libncursesw.so) $PKG/usr/lib/libncursesw.so
+		mv $PKG/usr/share/pkgconfig/*.pc $PKG/usr/lib/pkgconfig
+		rmdir $PKG/usr/share/pkgconfig|| true
 		for lib in ncurses form panel menu
 			do
-				rm -vf /usr/lib/lib${lib}.so
+				rm -vf $PKG/usr/lib/lib${lib}.so
 				echo "INPUT(-l${lib}w)" > $PKG/usr/lib/lib${lib}.so
-				ln -sfv lib${lib}w.a $PKG/usr/lib/lib${lib}.a
+#				ln -sfv lib${lib}w.a $PKG/usr/lib/lib${lib}.a
 				ln -sfv ${lib}w.pc $PKG/usr/lib/pkgconfig/${lib}.pc
 			done
 
@@ -50,8 +64,8 @@ pushd "${TARNAME}-${VERSION}"
 		rm -vf $PKG/usr/lib/libcursesw.so
 		echo "INPUT(-lncursesw)" > $PKG/usr/lib/libcursesw.so
 		ln -sfv libncurses.so $PKG/usr/lib/libcurses.so
-		ln -sfv libncursesw.a $PKG/usr/lib/libcursesw.a
-		ln -sfv libncurses.a $PKG/usr/lib/libcurses.a
+#		ln -sfv libncursesw.a $PKG/usr/lib/libcursesw.a
+#		ln -sfv libncurses.a $PKG/usr/lib/libcurses.a
 		mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		ln -sfv ../share/terminfo $PKG/usr/lib||true
@@ -80,4 +94,4 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -r "$PKG" "${TARNAME}-${VERSION}"
+#rm -r "$PKG" "${TARNAME}-${VERSION}"
