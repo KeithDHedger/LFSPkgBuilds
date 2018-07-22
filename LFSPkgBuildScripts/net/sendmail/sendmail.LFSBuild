@@ -1,0 +1,113 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="OpenLDAP-2.4.44 OpenSSL-1.0.2 Cyrus-SASL-2.1.26"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="sendmail"
+TARNAME="$PKGNAME"
+VERSION="8.15.2"
+BUILD=1
+SECTION="NET"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}.${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+#PKG=/tmp/LFS/sendmail
+export PKG
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "ftp://ftp.sendmail.org/pub/${PKGNAME}/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -vp "$PKG"
+
+UIDGIDPAIR=$(findnextpair "system")
+groupadd -g $UIDGIDPAIR smmsp||true
+useradd -c "Sendmail Daemon" -g smmsp -d /dev/null -s /bin/false -u $UIDGIDPAIR smmsp||true
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		mkdir -vp $PKG/usr/{bin,sbin}||true
+		mkdir -vp $PKG/usr/share/man/man{1,5,8}
+		mkdir -vp $PKG/var/spool/mqueue
+		mkdir -vp $PKG/usr/share/sendmail/cf
+		cp $CWD/install.sh devtools/bin/
+		cat >> devtools/Site/site.config.m4 << "EOF"
+APPENDDEF(`confENVDEF',`-DSTARTTLS -DSASL -DLDAPMAP')
+APPENDDEF(`confLIBS', `-lssl -lcrypto -lsasl2 -lldap -llber -ldb')
+APPENDDEF(`confINCDIRS', `-I/usr/include/sasl')
+EOF
+		cat >> devtools/Site/site.config.m4 << "EOF"
+define(`confMANGRP',`root')
+define(`confMANOWN',`root')
+define(`confSBINGRP',`root')
+define(`confUBINGRP',`root')
+define(`confUBINOWN',`root')
+EOF
+
+		sed -i 's|/usr/man/man|/usr/share/man/man|' devtools/OS/Linux
+		cd sendmail
+		sh Build
+		cd ../cf/cf
+		cp generic-linux.mc sendmail.mc
+		sh Build sendmail.cf
+	
+		install -v -d -m755 $PKG/etc/mail
+		sh Build install-cf
+		cd ../..
+		sh Build install DESTDIR=$PKG
+		install -v -m644 cf/cf/{submit,sendmail}.mc $PKG/etc/mail
+		cp -v -R cf/* $PKG/usr/share/sendmail/cf
+
+		install -v -m755 -d $PKG/usr/share/doc/sendmail-8.15.2/{cf,sendmail}
+		install -v -m644 CACerts FAQ KNOWNBUGS LICENSE PGPKEYS README RELEASE_NOTES $PKG/usr/share/doc/sendmail-8.15.2
+		install -v -m644 sendmail/{README,SECURITY,TRACEFLAGS,TUNING} $PKG/usr/share/doc/sendmail-8.15.2/sendmail
+		install -v -m644 cf/README $PKG/usr/share/doc/sendmail-8.15.2/cf
+		for manpage in sendmail editmap mailstats makemap praliases smrsh
+			do
+				install -v -m644 $manpage/$manpage.8 $PKG/usr/share/man/man8
+			done
+		install -v -m644 sendmail/aliases.5 $PKG/usr/share/man/man5
+		install -v -m644 sendmail/mailq.1 $PKG/usr/share/man/man1
+		install -v -m644 sendmail/newaliases.1 $PKG/usr/share/man/man1
+		install -v -m644 vacation/vacation.1 $PKG/usr/share/man/man1
+
+		cd doc/op
+		sed -i 's/groff/GROFF_NO_SGR=1 groff/' Makefile
+		make op.txt op.pdf
+		install -v -d -m755 $PKG/usr/share/doc/sendmail-8.15.2
+		install -v -m644 op.ps op.txt op.pdf $PKG/usr/share/doc/sendmail-8.15.2
+		cd ../..
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	unset PKG
+popd 2>/dev/null||true
