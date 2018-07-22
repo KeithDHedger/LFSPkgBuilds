@@ -1,0 +1,6 @@
+#!/bin/bash
+#©keithhedger Fri 20 Jul 13:18:35 BST 2018
+
+. /usr/share/LFSPkg/LFSFunctions
+
+chown -v root:ldap /etc/openldap/slapd.{conf,ldif}

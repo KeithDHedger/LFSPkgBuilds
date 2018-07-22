@@ -7,32 +7,32 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="fcron"
+PKGNAME="procmail"
 TARNAME="$PKGNAME"
-VERSION="3.2.0"
+VERSION="3.22"
 BUILD=1
-SECTION="ADMIN"
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.src.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://fcron.free.fr/archives/${TARBALL}" $SECTION
+gettar "http://www.ring.gr.jp/archives/net/mail/procmail/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
-UIDGIDPAIR=$(findnextpair "system")
-groupadd -g $UIDGIDPAIR fcron||true
-useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u $UIDGIDPAIR fcron||true
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-boot-install=no --with-systemdsystemunitdir=no
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		sed -i 's/getline/get_line/' src/*.[ch]
+		make LOCKINGTEST=/tmp MANDIR=${PKG}/usr/share/man BASENAME=${PKG}/usr install|| exit 100
+		chown root ${PKG}/usr/bin/procmail
+		chgrp postfix ${PKG}/usr/bin/procmail ${PKG}/usr/bin/lockfile
+		chmod 6755 ${PKG}/usr/bin/procmail
+		chmod 2755 ${PKG}/usr/bin/lockfile
+
 	popd
 
 	checketc "$PKG"

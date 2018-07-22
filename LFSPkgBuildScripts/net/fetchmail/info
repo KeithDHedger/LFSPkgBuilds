@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/fetchmail.html
+The Fetchmail package contains a mail retrieval program. It retrieves mail from remote mail servers and forwards it to the local (client) machine's delivery system, so it can then be read by normal mail user agents.

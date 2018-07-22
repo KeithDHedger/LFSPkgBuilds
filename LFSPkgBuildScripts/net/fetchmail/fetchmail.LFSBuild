@@ -2,35 +2,31 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="sendmail-8.15.2"
+DEPENDS="OpenSSL-1.0.2 Procmail-3.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="fcron"
+PKGNAME="fetchmail"
 TARNAME="$PKGNAME"
-VERSION="3.2.0"
+VERSION="6.3.26"
 BUILD=1
-SECTION="ADMIN"
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.src.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://fcron.free.fr/archives/${TARBALL}" $SECTION
+gettar "http://downloads.sourceforge.net/fetchmail/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
-UIDGIDPAIR=$(findnextpair "system")
-groupadd -g $UIDGIDPAIR fcron||true
-useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u $UIDGIDPAIR fcron||true
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-boot-install=no --with-systemdsystemunitdir=no
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-ssl --enable-fallback=procmail
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

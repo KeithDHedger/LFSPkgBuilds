@@ -1,0 +1,17 @@
+#!/bin/bash
+#©keithhedger Sat 21 Jul 18:48:26 BST 2018
+
+. /usr/share/LFSPkg/LFSFunctions
+
+mkdir -vp /etc/fetchmail||true
+cat > /etc/fetchmail/fetchmailrc << "EOF"
+set logfile /var/log/fetchmail.log
+set no bouncemail
+set postmaster root
+
+poll SERVERNAME :
+    user <username> pass <password>;
+    mda "/usr/bin/procmail -f %F -d %T";
+EOF
+
+chmod -v 0600 /etc/fetchmail/fetchmailrc
