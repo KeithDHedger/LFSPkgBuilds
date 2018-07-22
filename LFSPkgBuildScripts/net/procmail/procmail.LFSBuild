@@ -32,7 +32,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		chgrp postfix ${PKG}/usr/bin/procmail ${PKG}/usr/bin/lockfile
 		chmod 6755 ${PKG}/usr/bin/procmail
 		chmod 2755 ${PKG}/usr/bin/lockfile
-
 	popd
 
 	checketc "$PKG"

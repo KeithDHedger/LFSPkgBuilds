@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenLDAP-2.4.44 OpenSSL-1.0.2 Cyrus-SASL-2.1.26"
+DEPENDS="OpenLDAP-2.4.4 OpenSSL-1.1.0 Cyrus-SASL-2.1.26"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -18,7 +18,6 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-#PKG=/tmp/LFS/sendmail
 export PKG
 
 scriptLog "${PKGNAME}-${VERSION}"
