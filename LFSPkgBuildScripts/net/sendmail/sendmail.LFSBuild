@@ -18,7 +18,6 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-#PKG=/tmp/LFS/sendmail
 export PKG
 
 scriptLog "${PKGNAME}-${VERSION}"
