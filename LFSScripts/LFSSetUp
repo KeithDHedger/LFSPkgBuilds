@@ -108,7 +108,8 @@ readWithDefault "EXTFOLDER"  "Bind Built Packages And Source Folders To Folder"
 if [[ $PIBUILD -eq 1 ]];then
 	KERNELVERSION=4.9.51
 else
-	KERNELVERSION=${KERNELVERSION:-$(uname -r)}
+	KV=$(curl -q http://www.linuxfromscratch.org/lfs/view/stable/longindex.html 2>/dev/null|sed -n 's|<strong class="item">lfskernel-\(.*\):</strong> <span class=|\1|p'|sed -n 's|[[:space:]]||pg')
+	KERNELVERSION=${KERNELVERSION:-$KV}
 	readWithDefault "KERNELVERSION"  "Enter Kernel Version"
 fi
 

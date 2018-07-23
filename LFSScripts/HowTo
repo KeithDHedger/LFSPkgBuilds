@@ -11,13 +11,14 @@ Use sudo where necessary to create links etc.
 
 ###RECOMMENDED####
 #or cd into the mounted partition wher you intend to build LFS:
+#LFS should point to your mounted LFS partition ( eg LFS=/mnt/LFS ).
 cd /mnt/LFS
 [sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
 
 Own the files:
-[sudo] chown -R $USER:$USER LFSPkgBuilds
-[sudo] ln -sv LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
-[sudo] ln -sv LFSPkgBuilds/LFSScripts LFSScripts
+[sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds
+[sudo] ln -sv LFSPkgBuilds/LFSPkgBuildScripts $LFS/LFSPkgBuildScripts
+[sudo] ln -sv LFSPkgBuilds/LFSScripts $LFS/LFSScripts
 
 3)
 #cd into the lfsscripts folder
@@ -56,11 +57,13 @@ ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz linux-$KERNELVERSION.tar.xz
 
 5.6)
 #get the package manager archive via the host system:
-cd LFSPkgBuildScripts/admin/LFSPkg
+cd $LFS/LFSPkgBuildScripts/admin/LFSPkg
 wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/master.zip" -O LFSPkg.zip
 unzip LFSPkg.zip
 
 6)
+#Change back to $LFS/LFSScripts folder.
+cd $LFS/LFSScripts
 #Chroot into tempory system:
 [sudo] ./Chroot system
 
@@ -76,6 +79,8 @@ BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 
 #You should run lfspkg --setup to create the lfspkg.rc file ( in ~ (/root) )
 #Rc files are sourced from /etc/lfspkg.rc then ~/.lfspkg.rc.
+#lfspkg --setup can be run again later if you need/want to change source/build folders etc.
+#For building the main system you should probably set the configure options config files in /etc and log options.
 lfspkg --setup
 
 8)
