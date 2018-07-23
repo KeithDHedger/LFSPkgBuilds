@@ -134,6 +134,8 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
+#And the firmware - this installs everything including the kitchen sink!
+./firmware.LFSBuild install
 
 #Again on pi skip this bit as firmware is installed by the pi-system-meta package.
 #You may prefer to manually copy all firmware modules from the host sytem from /lib/firmware to your new LFS system.
