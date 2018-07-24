@@ -134,8 +134,6 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
 ./kernel.LFSBuild install
-#And the firmware - this installs everything including the kitchen sink!
-./firmware.LFSBuild install
 
 #Again on pi skip this bit as firmware is installed by the pi-system-meta package.
 #You may prefer to manually copy all firmware modules from the host sytem from /lib/firmware to your new LFS system.
@@ -167,7 +165,7 @@ menuentry "GNU/Linux, Linux 4.9.9" {
 EOF
 
 14)
-#Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboor back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
+#Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
 #Build xorg:
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
