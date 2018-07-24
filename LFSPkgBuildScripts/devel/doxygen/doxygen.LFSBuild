@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.10.2 Graphviz2.40.1 Python-2.7.14 Xapian-1.4.3"
+DEPENDS="CMake-3.10.2 Graphviz-2.40.1 Python-2.7.14 Xapian-1.4.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
