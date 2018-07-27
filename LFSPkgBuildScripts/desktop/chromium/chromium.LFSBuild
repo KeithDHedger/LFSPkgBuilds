@@ -32,11 +32,13 @@ mkdir -p "$PKG"
 
 case "$ARCH" in
 	x86_64)
-		gettar "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_59.0.3071.115-1_amd64.deb" $SECTION
-		gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux64/flash_player_ppapi_linux.x86_64.tar.gz" $SECTION
+		#gettar "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_59.0.3071.115-1_amd64.deb" $SECTION
+		gettar "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" $SECTION
+		#gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux64/flash_player_ppapi_linux.x86_64.tar.gz" $SECTION
 		;;
 	*)
-		gettar "http://mirror.retrosnub.co.uk/apt/google/pool/main/g/google-chrome-stable/google-chrome-stable_48.0.2564.116-1_i386.deb" $SECTION
+		#gettar "http://mirror.retrosnub.co.uk/apt/google/pool/main/g/google-chrome-stable/google-chrome-stable_48.0.2564.116-1_i386.deb" $SECTION
+		gettar "https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb" $SECTION
 		gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux32/flash_player_ppapi_linux.i386.tar.gz" $SECTION
 		;;
 esac
