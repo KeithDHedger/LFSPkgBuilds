@@ -22,13 +22,13 @@ gtkdialog-0.8.3
 help2man-1.46.4
 man2html-1.6
 meld-1.8.6
-poedit-2.0.6
 yad-0.38.1
 xforms-1.2.4
 ddd-3.3.12
 ManPageEditor-0.1.2
 autobook-1.5"
 
+#poedit-2.0.6
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

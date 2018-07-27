@@ -32,6 +32,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		PATH="${PATH}:/opt/jdk/bin"
+		export JAVA_HOME=/opt/jdk
 		cp -v ${SOURCEARCHIVES}/${SECTION}/jai-core-1.1.3.jar ${SOURCEARCHIVES}/${SECTION}/jai-codec-1.1.3.jar ${SOURCEARCHIVES}/${SECTION}/xz-1.0.jar lib
 		unzip -p ${SOURCEARCHIVES}/${SECTION}/NetRexx-3.06-GA.zip lib/NetRexxC.jar > lib/NetRexxC.jar
 		./bootstrap.sh

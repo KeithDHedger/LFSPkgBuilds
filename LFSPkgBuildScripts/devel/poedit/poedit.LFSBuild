@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtkspell-2.0.16 wxWidgets-3.0.1 luceneplus-3.0.7 berkeley-db-6.2.32"
+DEPENDS="gtkspell-3.0.9 wxWidgets-3.0.1 luceneplus-3.0.7 berkeley-db-6.2.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

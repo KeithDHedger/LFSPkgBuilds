@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cyrus-SASL-2.1.26"
+DEPENDS="Cyrus-SASL-2.1.26 openssl-1.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,7 +20,9 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-consolidated-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-consolidated-1.patch" $SECTION
+#gettar "http://www.linuxfromscratch.org/patches/blfs/8.0/openldap-2.4.44-consolidated-2.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -33,13 +35,14 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-consolidated-1.patch
 		autoconf
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-slapd --enable-dynamic --with-tls=openssl --with-cyrus-sasl --enable-crypt --enable-spasswd --enable-slapd --enable-modules --enable-rlookups --enable-backends=mod --disable-ndb --disable-sql --disable-shell --disable-bdb --disable-hdb --enable-overlays=mod
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-dynamic --with-tls=openssl --with-cyrus-sasl --enable-crypt --enable-spasswd --enable-slapd --enable-modules --enable-rlookups --enable-backends=mod --disable-ndb --disable-sql --disable-shell --disable-bdb --disable-hdb --enable-overlays=mod
 		make depend $MAKEFLAGS||make depend|| exit 100
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 
 		install -v -dm700 -o ldap -g ldap $PKG/var/lib/openldap
 		install -v -dm700 -o ldap -g ldap $PKG/etc/openldap/slapd.d
+		cp ${CWD}/*.conf ${CWD}/*.default ${CWD}/slapd.ldif $PKG/etc/openldap/
 		chmod -v 640 $PKG/etc/openldap/slapd.{conf,ldif}
 		chown -v root:ldap $PKG/etc/openldap/slapd.{conf,ldif}
 		install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}

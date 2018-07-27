@@ -52,6 +52,12 @@ EOF
 			done
 		#unset JAVA_HOME
 		PATH="${PATH}:/opt/jdk/bin"
+#make sure certs are made
+		pushd /etc/ssl/java
+			if [ ! -e cacerts.jks ];then
+				/usr/sbin/make-ca -g --force
+			fi
+		popd
 
 		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="11" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/ssl/java/cacerts.jks
 
