@@ -28,9 +28,7 @@ ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
-
-# Us the internal version of icu due to execution problems
-#ac_add_options --with-system-icu
+ac_add_options --with-system-icu
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr

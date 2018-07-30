@@ -2,31 +2,26 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GPM-1.20.7 OpenSSL-1.1.0 libpng-1.6.28 libjpeg-turbo-1.5.1 DirectFB-1.6.3"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="links"
+PKGNAME="DirectFB"
 TARNAME="$PKGNAME"
-VERSION="2.14"
-BUILD=${BUILD:-1}
-SECTION="XORG"
+VERSION="1.6.3"
+BUILD=1
+SECTION="HWARE"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://links.twibright.com/download/${TARBALL}" $SECTION
+gettar "https://src.fedoraproject.org/repo/pkgs/directfb/${TARBALL}/641e8e999c017770da647f9b5b890906/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --mandir=/usr/share/man --enable-graphics
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
