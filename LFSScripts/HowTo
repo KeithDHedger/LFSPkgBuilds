@@ -256,23 +256,12 @@ cd /LFSPkgBuildScripts/net/davfs2
 cd /LFSPkgBuildScripts/net/curlftpfs
 ./curlftpfs.LFSBuild install
 
-#Qt5 stuff
-#cd /LFSPkgBuildScripts/qt/lxqt-meta
-#./lxqt-meta.LFSBuild install
-
 #TODO
 cd /LFSPkgBuildScripts/qt/qt-creator
 ./qt-creator.LFSBuild install
 
 cd /LFSPkgBuildScripts/admin/mariadb
 ./mariadb.LFSBuild install
-
-#Busybox init
-#cd /LFSPkgBuildScripts/sys/busybox
-#./busybox.LFSBuild install
-#
-#cd /LFSPkgBuildScripts/sys/bootfiles
-#./bootfiles.LFSBuild install
 
 #Odd stuff
 cd /LFSPkgBuildScripts/xorg/xbindkeys
