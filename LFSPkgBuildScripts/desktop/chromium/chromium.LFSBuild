@@ -184,5 +184,5 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	echo "Removing source folder, please wait ..."
-#	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
