@@ -2,6 +2,7 @@
 ./admin/berkeley-db/berkeley-db.LFSBuild
 ./admin/clamav/clamav.LFSBuild
 ./admin/cyrus-sasl/cyrus-sasl.LFSBuild
+./admin/fcron/fcron.LFSBuild
 ./admin/GConf/GConf.LFSBuild
 ./admin/GtkSu/GtkSu.LFSBuild
 ./admin/LFSPkg/LFSPkg.LFSBuild
@@ -12,6 +13,7 @@
 ./admin/screen/screen.LFSBuild
 ./admin/sudo/sudo.LFSBuild
 ./admin/sysstat/sysstat.LFSBuild
+./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/qterminal/qterminal.LFSBuild
 ./BROKEN/qtermwidget/qtermwidget.LFSBuild
 ./desktop/aspell/aspell.LFSBuild
@@ -163,6 +165,7 @@
 ./gtk/vte290/vte.LFSBuild
 ./gtk/vte2/vte.LFSBuild
 ./hware/bluez/bluez.LFSBuild
+./hware/DirectFB/DirectFB.LFSBuild
 ./hware/glamor-egl/glamor-egl.LFSBuild
 ./hware/hardinfo/hardinfo.LFSBuild
 ./hware/hwinfo/hwinfo.LFSBuild
@@ -217,7 +220,6 @@
 ./libs/gnutls/gnutls.LFSBuild
 ./libs/gobject-introspection/gobject-introspection.LFSBuild
 ./libs/gsettings-desktop-schemas/gsettings-desktop-schemas.LFSBuild
-./libs/gtkglext/gtkglext.LFSBuild
 ./libs/guile/guile.LFSBuild
 ./libs/highlight/highlight.LFSBuild
 ./libs/imlib2/imlib2.LFSBuild
@@ -274,6 +276,7 @@
 ./libs/openjpeg/openjpeg.LFSBuild
 ./libs/openldap/openldap.LFSBuild
 ./libs/openmpi/openmpi.LFSBuild
+./libs/opus/opus.LFSBuild
 ./libs/pangox-compat/pangox-compat.LFSBuild
 ./libs/pcre2/pcre2.LFSBuild
 ./libs/pcre/pcre.LFSBuild
@@ -359,6 +362,7 @@
 ./net/curlftpfs/curlftpfs.LFSBuild
 ./net/davfs2/davfs2.LFSBuild
 ./net/dovecot/dovecot.LFSBuild
+./net/fetchmail/fetchmail.LFSBuild
 ./net/httrack/httrack.LFSBuild
 ./net/icedtea-sound/icedtea-sound.LFSBuild
 ./net/icedtea-web/icedtea-web.LFSBuild
@@ -369,11 +373,14 @@
 ./net/neon/neon.LFSBuild
 ./net/net-tools/net-tools.LFSBuild
 ./net/nmap/nmap.LFSBuild
+./net/node/node.LFSBuild
 ./net/npapi-sdk/npapi-sdk.LFSBuild
 ./net/nss/nss.LFSBuild
+./net/procmail/procmail.LFSBuild
 ./net/rsync/rsync.LFSBuild
 ./net/samba/samba.LFSBuild
 ./net/seamonkey/seamonkey.LFSBuild
+./net/sendmail/sendmail.LFSBuild
 ./net/sshfs/sshfs.LFSBuild
 ./net/surfraw/surfraw.LFSBuild
 ./net/tor/tor.LFSBuild
@@ -459,6 +466,7 @@
 ./sys/dump/dump.LFSBuild
 ./sys/fbset/fbset.LFSBuild
 ./sys/fribidi/fribidi.LFSBuild
+./sys/fuse2/fuse2.LFSBuild
 ./sys/fuse/fuse.LFSBuild
 ./sys/gparted/gparted.LFSBuild
 ./sys/gvfs/gvfs.LFSBuild
