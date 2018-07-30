@@ -28,7 +28,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-constexpr-1.patch" $SECTION
 
-#gettar "https://github.com/foutrelis/chromium-launcher/archive/v3.tar.gz" $SECTION "chromium-launcher-3.tar.gz"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
