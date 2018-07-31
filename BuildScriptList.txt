@@ -13,6 +13,7 @@
 ./admin/screen/screen.LFSBuild
 ./admin/sudo/sudo.LFSBuild
 ./admin/sysstat/sysstat.LFSBuild
+./BROKEN/conky/conky.LFSBuild
 ./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/qterminal/qterminal.LFSBuild
 ./BROKEN/qtermwidget/qtermwidget.LFSBuild
@@ -26,7 +27,6 @@
 ./desktop/chromium/chromium.LFSBuild
 ./desktop/ClipboardViewer/ClipboardViewer.LFSBuild
 ./desktop/comix/comix.LFSBuild
-./desktop/conky/conky.LFSBuild
 ./desktop/desktop-file-utils/desktop-file-utils.LFSBuild
 ./desktop/desktop-meta/desktop-meta.LFSBuild
 ./desktop/emacs/emacs.LFSBuild
@@ -35,6 +35,7 @@
 ./desktop/firefox/firefox.LFSBuild
 ./desktop/gegl/gegl.LFSBuild
 ./desktop/gimp/gimp.LFSBuild
+./desktop/gkrellm/gkrellm.LFSBuild
 ./desktop/gmic/gmic.LFSBuild
 ./desktop/gnome-icon-theme/gnome-icon-theme.LFSBuild
 ./desktop/gpm/gpm.LFSBuild
