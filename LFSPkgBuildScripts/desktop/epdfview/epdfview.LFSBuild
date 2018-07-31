@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Poppler-0.35.0 GTK-2.24.32 Cups-2.2.6"
+DEPENDS="Poppler-0.62.0 GTK-2.24.32 Cups-2.2.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="epdfview"
 TARNAME="$PKGNAME"
-VERSION="0.62.0"
+VERSION="0.1.8"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"

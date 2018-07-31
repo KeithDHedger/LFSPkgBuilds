@@ -260,6 +260,7 @@ cd /LFSPkgBuildScripts/net/curlftpfs
 cd /LFSPkgBuildScripts/qt/qt-creator
 ./qt-creator.LFSBuild install
 
+#If you are building in chroot you will pobably have to rerun the postinstall script for this package AFTER booting to the 'real' system.
 cd /LFSPkgBuildScripts/admin/mariadb
 ./mariadb.LFSBuild install
 
