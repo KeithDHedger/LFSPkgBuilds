@@ -274,7 +274,12 @@ cd /LFSPkgBuildScripts/net/libcddb
 cd /LFSPkgBuildScripts/desktop/epdfview
 ./epdfview.LFSBuild install
 
-cd /LFSPkgBuildScripts/desktop/conky
-./conky.LFSBuild install
+#Conky is getting increasingly tied to gnome and difficult to build.
+#cd /LFSPkgBuildScripts/desktop/conky
+#./conky.LFSBuild install
+
+#Try an alternative!
+cd /LFSPkgBuildScripts/desktop/gkrellm
+./gkrellm.LFSBuild install
 
 
