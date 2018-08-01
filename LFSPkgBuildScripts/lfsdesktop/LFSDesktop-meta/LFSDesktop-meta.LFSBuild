@@ -8,6 +8,7 @@ LFSDesktop-0.1.3
 LFSApplications-0.1.2
 LFSPanel-0.1.1
 LFSSetWallpaper-0.1.0
+CliMsg-0.1.1
 dbus-glib-0.110
 compton-0.2
 PyCairo-1.16.2
