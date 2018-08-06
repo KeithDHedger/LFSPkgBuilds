@@ -13,6 +13,7 @@
 ./admin/screen/screen.LFSBuild
 ./admin/sudo/sudo.LFSBuild
 ./admin/sysstat/sysstat.LFSBuild
+./BROKEN/chromium/chromium.LFSBuild
 ./BROKEN/conky/conky.LFSBuild
 ./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/qterminal/qterminal.LFSBuild
@@ -566,6 +567,7 @@
 ./system/xz/xz.LFSBuild
 ./system/zlib/zlib.LFSBuild
 ./sys/terminus-font/terminus-font.LFSBuild
+./sys/testdisk/testdisk.LFSBuild
 ./sys/udevil/udevil.LFSBuild
 ./sys/unrar/unrar.LFSBuild
 ./sys/unzip/unzip.LFSBuild
