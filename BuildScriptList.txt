@@ -32,6 +32,7 @@
 ./desktop/firefox/firefox.LFSBuild
 ./desktop/gegl/gegl.LFSBuild
 ./desktop/gimp/gimp.LFSBuild
+./desktop/gkrellm/gkrellm.LFSBuild
 ./desktop/gmic/gmic.LFSBuild
 ./desktop/gnome-icon-theme/gnome-icon-theme.LFSBuild
 ./desktop/gpm/gpm.LFSBuild
@@ -158,6 +159,7 @@
 ./gtk/vte290/vte.LFSBuild
 ./gtk/vte2/vte.LFSBuild
 ./hware/bluez/bluez.LFSBuild
+./hware/DirectFB/DirectFB.LFSBuild
 ./hware/glamor-egl/glamor-egl.LFSBuild
 ./hware/hardinfo/hardinfo.LFSBuild
 ./hware/hwinfo/hwinfo.LFSBuild
@@ -266,6 +268,7 @@
 ./libs/nspr/nspr.LFSBuild
 ./libs/openal/openal.LFSBuild
 ./libs/openjpeg/openjpeg.LFSBuild
+./libs/openldap/openldap.LFSBuild
 ./libs/openmpi/openmpi.LFSBuild
 ./libs/pangox-compat/pangox-compat.LFSBuild
 ./libs/pcre2/pcre2.LFSBuild
@@ -378,6 +381,7 @@
 ./net/curlftpfs/curlftpfs.LFSBuild
 ./net/davfs2/davfs2.LFSBuild
 ./net/dovecot/dovecot.LFSBuild
+./net/fetchmail/fetchmail.LFSBuild
 ./net/httrack/httrack.LFSBuild
 ./net/icedtea-sound/icedtea-sound.LFSBuild
 ./net/icedtea-web/icedtea-web.LFSBuild
@@ -391,6 +395,7 @@
 ./net/npapi-sdk/npapi-sdk.LFSBuild
 ./net/nss/nss.LFSBuild
 ./net/openssl/openssl.LFSBuild
+./net/procmail/procmail.LFSBuild
 ./net/rsync/rsync.LFSBuild
 ./net/samba/samba.LFSBuild
 ./net/seamonkey/seamonkey.LFSBuild
@@ -564,6 +569,7 @@
 ./system/xz/xz.LFSBuild
 ./system/zlib/zlib.LFSBuild
 ./sys/terminus-font/terminus-font.LFSBuild
+./sys/testdisk/testdisk.LFSBuild
 ./sys/udevil/udevil.LFSBuild
 ./sys/unrar/unrar.LFSBuild
 ./sys/unzip/unzip.LFSBuild
