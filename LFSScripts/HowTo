@@ -1,8 +1,13 @@
 
 1)
 
-It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/sda1 and /dev/sda2 as swap, alter as needed.
-Use sudo where necessary to create links etc.
+#It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/sda1 and /dev/sda2 as swap, alter as needed.
+#Use sudo where necessary to create links etc.
+
+#If compiling on raspberian you need to install some extra files like so:
+apt-get update
+apt-get install bison gawk m4 texinfo
+#Also make sure /bin/sh points to /bin/bash
 
 #Get the build scripts and helper scripts from:
 #https://github.com/KeithDHedger/LFSPkgBuilds
