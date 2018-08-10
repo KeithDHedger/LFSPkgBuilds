@@ -13,7 +13,6 @@
 ./admin/screen/screen.LFSBuild
 ./admin/sudo/sudo.LFSBuild
 ./admin/sysstat/sysstat.LFSBuild
-./BROKEN/chromium/chromium.LFSBuild
 ./BROKEN/conky/conky.LFSBuild
 ./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/qterminal/qterminal.LFSBuild
