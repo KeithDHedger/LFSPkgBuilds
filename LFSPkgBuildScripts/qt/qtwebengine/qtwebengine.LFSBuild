@@ -20,7 +20,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/submodules/${TARBALL}" $SECTION
-#	   "https://download.qt.io/archive/qt/5.10/5.10.1/submodules/qtwebengine-everywhere-src-5.10.1.tar.xz
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -19,6 +19,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+#Be aware add blockers hang this version of chromium
+
 #The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at http://www.chromium.org/developers/how-tos/api-keys.
 GOOGLE_API_KEY="AIzaSyBhWJ-j5RXyt5911BMuVen-WuS10mvOnrY"
 GOOGLE_DEFAULT_CLIENT_ID="952820686433-mbp5sv9scfj78siq96jlvrem47qgvbi3.apps.googleusercontent.com"
