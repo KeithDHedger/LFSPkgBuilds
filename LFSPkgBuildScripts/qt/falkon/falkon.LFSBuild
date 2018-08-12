@@ -2,15 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.10.2"
+DEPENDS="ki18n-5.49.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="extra-cmake-modules"
+PKGNAME="falkon"
 TARNAME="$PKGNAME"
-VERSION="5.49.0"
-BUILD=${BUILD:-1}
+VERSION="3.0.1"
+BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
@@ -19,19 +19,17 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.kde.org/stable/frameworks/${VERSION%.?*}/${TARBALL}" $SECTION
-		#http://download.kde.org/stable/frameworks/5.43/extra-cmake-modules-5.43.0.tar.xz
+gettar "https://download.kde.org/stable/falkon/3.0.1/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
+echo "$PKG"
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i "/\"lib64\"/s/64/${LIBDIRSUFFIX}/" kde-modules/KDEInstallDirs.cmake
-
 		mkdir build||true
 		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH ..
+		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -Wno-dev ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

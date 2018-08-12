@@ -1,0 +1,6 @@
+http://www.linuxfromscratch.org/blfs/view/svn/xsoft/falkon.html
+
+Falkon is a KDE web browser using the QtWebEngine rendering engine. It was previously known as QupZilla. It aims to be a lightweight web browser available through all major platforms.
+
+Although falkon is now part of KDE, it can be installed without KDE (with the loss of kwallet functionality, and of translations of the (not-installed) example hellopython.py script).
+
