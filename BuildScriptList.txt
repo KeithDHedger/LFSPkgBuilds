@@ -444,7 +444,9 @@
 ./python/six/six.LFSBuild
 ./qt/avidemuxqt/avidemuxqt.LFSBuild
 ./qt/extra-cmake-modules/extra-cmake-modules.LFSBuild
+./qt/falkon/falkon.LFSBuild
 ./qt/kguiaddons/kguiaddons.LFSBuild
+./qt/ki18n/ki18n.LFSBuild
 ./qt/kwindowsystem/kwindowsystem.LFSBuild
 ./qt/polkit-qt/polkit-qt.LFSBuild
 ./qt/qt5ct/qt5ct.LFSBuild
