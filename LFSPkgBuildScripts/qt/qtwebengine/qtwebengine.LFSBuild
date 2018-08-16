@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NSS-3.35 PulseAudio-11.1 qt5-5.10.1"
+DEPENDS="NSS-3.35 PulseAudio-11.1 qt5-5.10.1 x264-2245 libwebp-0.6.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
