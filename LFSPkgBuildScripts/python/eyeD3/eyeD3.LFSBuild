@@ -2,41 +2,32 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NSS-3.35 PulseAudio-11.1 qt5-5.10.1 x264-2245 libwebp-0.6.0"
+DEPENDS="python-2.7.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="qtwebengine"
-TARNAME="qtwebengine-everywhere-src"
-VERSION="5.10.1"
+PKGNAME="eyeD3"
+TARNAME="$PKGNAME"
+VERSION="0.8.7"
 BUILD=1
-SECTION="QT"
+SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/submodules/${TARBALL}" $SECTION
+gettar "http://eyed3.nicfit.net/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
-export NINJAJOBS=2
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build||true
-		cd  build
-		qmake  .. -- -webengine-opus -webengine-webp -webengine-proprietary-codecs
-		make $MAKEFLAGS||make|| exit 100
-		make install INSTALL_ROOT=$PKG || exit 100
-		find ${PKG}${QT5PREFIX}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
-		mkdir -vp ${PKG}${QT5PREFIX}/share/qt5/qtwebengine_dictionaries||true
-		${PKG}${QT5PREFIX}/bin/qwebengine_convert_dict /usr/lib/libreoffice/share/extensions/dict-en/en_GB.dic ${PKG}${QT5PREFIX}/qt5/qtwebengine_dictionaries/en-GB.bdic
-		chmod 644 ${PKG}${QT5PREFIX}/share/qt5/qtwebengine_dictionaries/en-GB.bdic
+		python2 setup.py build||exit 100
+		python2 setup.py install --optimize=1 --root=$PKG||exit 100
 	popd
 
 	checketc "$PKG"
