@@ -14,7 +14,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/${TARNAME}/${TARBALL}" $SECTION
+#gettar "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/${TARNAME}/${TARBALL}" $SECTION
+https://github.com/sergiomb2/libmp4v2/archive/master.zip
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

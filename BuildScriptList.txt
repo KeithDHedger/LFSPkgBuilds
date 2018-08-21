@@ -483,6 +483,7 @@
 ./sys/libnotify/libnotify.LFSBuild
 ./sys/lsof/lsof.LFSBuild
 ./sys/mbox/mbox.LFSBuild
+./sys/mtools/mtools.LFSBuild
 ./sys/nano/nano.LFSBuild
 ./sys/ntp/ntp.LFSBuild
 ./sys/openssh/openssh.LFSBuild
