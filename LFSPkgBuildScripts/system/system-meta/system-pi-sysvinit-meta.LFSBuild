@@ -68,7 +68,6 @@ Diffutils-3.6
 Gawk-4.2.0
 Findutils-4.6.0
 Groff-1.22.3
-GRUB-2.02
 Less-530
 Gzip-1.9
 IPRoute2-4.15.0
@@ -88,10 +87,10 @@ lfs-bootscripts-20170626
 Wget-1.19.4
 unzip-6.0
 GPM-1.20.7
-Links-2.14
 ntp-4.2.8
 pilfs-bootscripts-20170225
-openssh-7.6"
+openssh-7.6
+Links-ng-2.14"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -123,7 +122,7 @@ if [ "X$BOOTPART" != "X" ];then
 	mkdir /boot||true
 	mount $BOOTPART /boot
 	cp -rv firmware-1.20171029/boot/ /
-	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="000288e7-10"
+	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="$PARTUUID" rootfstype="$ROOTFSTYPE" elevator=deadline fsck.repair=yes  rootwait" > /boot/cmdline.txt
 	umount /boot
 fi
 
@@ -158,4 +157,4 @@ esac
 
 rm -rf "$PKG" firmware-1.20171029
 
-exit 
+exit
