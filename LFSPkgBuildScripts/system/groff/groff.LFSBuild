@@ -22,8 +22,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		PAGE="A4" ./configure --prefix=/usr
-		make|| exit 100
-		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}/pdf
+		make -j1|| exit 100
+		#mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}/pdf
 		make install DESTDIR="$PKG" || exit
 	popd
 
