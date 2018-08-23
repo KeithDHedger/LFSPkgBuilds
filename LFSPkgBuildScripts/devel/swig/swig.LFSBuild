@@ -2,6 +2,12 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="pcre-8.41"
+
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="swig"
 TARNAME="$PKGNAME"
 VERSION="3.0.12"
