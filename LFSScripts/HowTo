@@ -41,7 +41,7 @@ cd /mnt/LFS/LFSScripts
 ./BuildTools
 
 4.5)
-#Mount bind external folder if set
+#Mount bind external folder if set and if not already mounted.
 . ./SystemData
 mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
 mkdir -vp ${LFS}/${BUILTPACKAGES}||true
@@ -53,6 +53,10 @@ fi
 5)
 #Run BuildFileSystem script:
 ./BuildFileSystem
+
+5.2)
+#You may/will have to re-own the source folder etc, so:
+[sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds
 
 5.5)
 #Create a link from downloaded linux tarball to /LFSSourceArchives/8.2/KERNEL to prevent re-downloading source tarball.
@@ -69,6 +73,10 @@ unzip LFSPkg.zip
 6)
 #Change back to $LFS/LFSScripts folder.
 cd $LFS/LFSScripts
+
+#If you are building over ssh you may want to start a screen session that you can come back to later.
+screen
+
 #Chroot into tempory system:
 [sudo] ./Chroot system
 
@@ -103,7 +111,6 @@ cd /LFSPkgBuildScripts/system/system-meta
 
 #Or for rpi sysvinit system use:
 ./system-pi-sysvinit-meta.LFSBuild install
-
 
 Wait for script to complete:
 ...

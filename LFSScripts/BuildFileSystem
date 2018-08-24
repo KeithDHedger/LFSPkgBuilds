@@ -22,7 +22,7 @@ pushd $LFS
 	mkdir -pv {bin,boot,etc/{opt,sysconfig},home,lib${LIBDIRSUFFIX},mnt,opt,run}
 	mkdir -pv {media/{floppy,cdrom},sbin,srv,var}
 	install -dv -m 0750 root
-	install -dv -m 1777 tmp var/tmp
+	install -dv -m 777 tmp var/tmp
 	mkdir -pv usr/{,local/}{bin,include,lib${LIBDIRSUFFIX},sbin,src}
 	mkdir -pv usr/{,local/}share/{color,dict,doc,info,locale,man}
 	mkdir -v  usr/{,local/}share/{misc,terminfo,zoneinfo}
@@ -262,6 +262,6 @@ EOF
 	echo $ADMINPWD|sudo -S chmod -v 664 var/log/lastlog
 	echo $ADMINPWD|sudo -S chmod -v 600  var/log/btmp
 	echo $ADMINPWD|sudo -S chgrp -v utmp var/log/lastlog
-	echo $ADMINPWD|sudo -S chmod 777 /tmp
+	echo $ADMINPWD|sudo -S chmod 777 tmp
 popd
 
