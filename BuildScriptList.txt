@@ -132,6 +132,7 @@
 ./devel/yaml/yaml.LFSBuild
 ./devel/yasm/yasm.LFSBuild
 ./games/fortune/fortune.LFSBuild
+./games/toilet/toilet.LFSBuild
 ./games/XDecorations/XDecorations.LFSBuild
 ./gnome/gksu/gksu.LFSBuild
 ./gnome/gnome-doc-utils/gnome-doc-utils.LFSBuild
@@ -230,6 +231,7 @@
 ./libs/libarchive/libarchive.LFSBuild
 ./libs/libatomic_ops/libatomic_ops.LFSBuild
 ./libs/libburn/libburn.LFSBuild
+./libs/libcaca/libcaca.LFSBuild
 ./libs/libconfig/libconfig.LFSBuild
 ./libs/libcroco/libcroco.LFSBuild
 ./libs/libdiscid/libdiscid.LFSBuild
