@@ -9,7 +9,7 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="kodi-krypton"
+PKGNAME="pi-kodi-krypton"
 TARNAME="Krypton"
 VERSION="17.6"
 BUILD=1

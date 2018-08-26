@@ -102,7 +102,7 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 #Set this to your blank boot partition, if NOT set boot files are not copied.
-BOOTPART="/dev/mmcblk0p8"
+BOOTPART="/dev/mmcblk0p15"
 PARTUUID="000288e7-10"
 ROOTFSTYPE="ext2"
 PKG="${OUTPUT}/${PKGNAME}"
