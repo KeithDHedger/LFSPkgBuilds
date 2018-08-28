@@ -28,6 +28,9 @@ mkdir -p "$PKG"
 #This for pi2 & pi3 change to arm1176jzf-s for pi 0 or pi 1
 CPU=${CPU:-"cortex-a7"}
 
+#create input gtroup
+groupadd -g $(findnextgid system) -r input
+
 pushd $COMPILEAT 2>/dev/null||true
 	unzip ${SOURCEARCHIVES}/${SECTION}/${TARBALL}
 	pushd "xbmc-Krypton"
