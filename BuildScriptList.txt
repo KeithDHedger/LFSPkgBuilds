@@ -400,6 +400,7 @@
 ./perl/File-BaseDir/File-BaseDir.LFSBuild
 ./perl/File-DesktopEntry/File-DesktopEntry.LFSBuild
 ./perl/File-MimeInfo/File-MimeInfo.LFSBuild
+./perl/HTML-Parser/HTML-Parser.LFSBuild
 ./perl/Module-Build/Module-Build.LFSBuild
 ./perl/Switch/Switch.LFSBuild
 ./perl/UI-Dialog/UI-Dialog.LFSBuild
