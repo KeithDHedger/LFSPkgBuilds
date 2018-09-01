@@ -27,6 +27,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -p $PKG/etc||true
 		cp etc/fb.modes.* $PKG/etc/
 		mv $PKG/etc/fb.modes.PAL $PKG/etc/fb.modes
+		cd $PKG/usr/bin
+		ln -sv ../sbin/fbset fbset
 	popd
 
 	checketc "$PKG"

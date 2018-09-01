@@ -2,6 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="glib-2.56.0"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="udevil"
 VERSION="0.4.4"
 BUILD=${BUILD:-1}
@@ -18,7 +23,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
 	pushd "udevil-master"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-systemd --with-setfacl-prog="/bin/setfacl"
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc ||true
