@@ -656,7 +656,7 @@
 ./xorg/libXdmcp/libXdmcp.LFSBuild
 ./xorg/libXp/libXp.LFSBuild
 ./xorg/links/links.LFSBuild
-./xorg/links/links-ng.LFSBuild
+./xorg/links/xlinks.LFSBuild
 ./xorg/llvm/llvm.LFSBuild
 ./xorg/makedepend/makedepend.LFSBuild
 ./xorg/MesaLib/MesaLib.LFSBuild
