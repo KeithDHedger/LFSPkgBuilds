@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 export NODEPS=1
-#export PATH="$PATH:/opt/java/bin"
 
 if [ "$(lfspkg -S 5 make-ca)" = "false" ];then
 	cd /LFSPkgBuildScripts/devel/make-ca/
