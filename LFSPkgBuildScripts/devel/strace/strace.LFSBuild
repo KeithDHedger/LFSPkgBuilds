@@ -4,7 +4,7 @@
 
 PKGNAME="strace"
 TARNAME="$PKGNAME"
-VERSION="4.21"
+VERSION="4.24"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -14,7 +14,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://sourceforge.net/projects/${PKGNAME}/files/${PKGNAME}${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/strace/strace/releases/download/v${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
