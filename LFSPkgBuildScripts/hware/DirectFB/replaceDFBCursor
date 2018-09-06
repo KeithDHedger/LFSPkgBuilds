@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+#©keithhedger Sun 2 Sep 16:01:35 BST 2018 kdhedger68713@gmail.com
+
+mkdfiff ./cursor.png > ./arrow.dat
+mv ./arrow.dat "$(file /usr/share/directfb-*|awk -F: '{print $1}')/cursor.dat"
