@@ -1,0 +1,9 @@
+disable-module=linux_input
+#no-vt
+log-file=/home/keithhedger/dfb.log
+#graphics-vt
+#mouse-gpm-source
+linux-input-grab
+mode=1360x768
+
+

@@ -2,4 +2,4 @@
 
 #©keithhedger Mon 30 Jul 13:29:11 BST 2018 kdhedger68713@gmail.com
 
-sed -i '/KERNEL=="tty\[0-9\]\*", GROUP="tty", MODE="0620"/s/MODE="0620"/MODE="0660"/' /lib64/udev/rules.d/50-udev-default.rules||true
+sed -i '/KERNEL=="tty\[0-9\]\*", GROUP="tty", MODE="0620"/s/MODE="0620"/MODE="0660"/' /lib*/udev/rules.d/50-udev-default.rules||true

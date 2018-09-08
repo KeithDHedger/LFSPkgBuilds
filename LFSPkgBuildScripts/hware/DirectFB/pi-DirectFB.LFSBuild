@@ -4,7 +4,7 @@
 
 PKGNAME="DirectFB"
 TARNAME="$PKGNAME"
-VERSION="1.6.1"
+VERSION="1.6.3"
 BUILD=1
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -14,17 +14,18 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://src.fedoraproject.org/repo/pkgs/directfb/${TARBALL}/641e8e999c017770da647f9b5b890906/${TARBALL}" $SECTION
+gettar "https://src.fedoraproject.org/repo/pkgs/directfb/${TARBALL}/641e8e999c017770da647f9b5b890906/${TARBALL}" $SECTION
 #https://web.archive.org/web/20150323120731/http://www.directfb.org/downloads/Core/DirectFB-1.7/DirectFB-1.7.0.tar.gz
 #gettar "https://web.archive.org/web/20150323120731/http://www.directfb.org/downloads/Core/DirectFB-1.7/DirectFB-1.7.0.tar.gz" $SECTION
-gettar "https://src.fedoraproject.org/repo/pkgs/directfb/DirectFB-1.6.1.tar.gz/76d3066e75664aa79204af545f2f3c65/DirectFB-1.6.1.tar.gz" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS -Wno-error" CXXFLAGS="$LFSFLAGS -Wno-error" EGL_LIBS="-lEGL -lGLESv2 $LIBS -L/opt/vc/lib" EGL_CFLAGS="-I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads" ./configure ${CONFIGOPTIONS} --enable-zlib --disable-x11 --disable-sdl --disable-vnc --disable-osx --enable-fbdev --disable-x11vdpau --disable-mesa --enable-egl --with-gfxdrivers=gles2
+		sed -i 's/-Werror-implicit-function-declaration//g' systems/egl/Makefile
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		cp ${CWD}/replaceDFBCursor $PKG/usr/bin
