@@ -25,6 +25,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-ncursesw --with-shared --enable-extras
 		make $MAKEFLAGS||make|| exit 100
 		make install-full DESTDIR=$PKG || exit 100
+		cd $PKG/usr/lib${LIBDIRSUFFIX}
+		ln -sv libdialog.so.$VERSION libdialog.so 
 	popd
 
 	checketc $PKG
@@ -35,7 +37,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	popd
 
 	case $DOWHAT in
-		up*)
+                up*)
 			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
 			;;
 		"install")
