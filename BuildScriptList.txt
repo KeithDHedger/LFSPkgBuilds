@@ -376,6 +376,7 @@
 ./net/libsoup/libsoup.LFSBuild
 ./net/mailx/mailx.LFSBuild
 ./net/neon/neon.LFSBuild
+./net/netsurf/netsurf.LFSBuild
 ./net/net-tools/net-tools.LFSBuild
 ./net/nmap/nmap.LFSBuild
 ./net/node/node.LFSBuild
