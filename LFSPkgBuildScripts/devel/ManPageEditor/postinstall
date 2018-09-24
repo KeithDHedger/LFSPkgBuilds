@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+#©keithhedger Mon 24 Sep 20:20:48 BST 2018 kdhedger68713@gmail.com
+
+xdg-icon-resource install --context mimetypes --size 256 /usr/share/ManPageEditor/documenticons/256/maneditdoc.png application-x-maneditdoc
+xdg-icon-resource install --context mimetypes --size 128 /usr/share/ManPageEditor/documenticons/128/maneditdoc.png application-x-maneditdoc
+xdg-icon-resource install --context mimetypes --size 48 /usr/share/ManPageEditor/documenticons/48/maneditdoc.png application-x-maneditdoc
+xdg-mime install /usr/share/ManPageEditor/documenticons/maneditdoc-mime.xml
+update-mime-database /usr/share/mime
+gtk-update-icon-cache --force /usr/share/icons/hicolor
