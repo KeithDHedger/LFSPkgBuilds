@@ -2,11 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.2.4
+DEPENDS="LFSToolKit-0.3.0
 LFSWManager-0.1.2
 LFSDesktop-0.1.3
 LFSApplications-0.1.2
-LFSPanel-0.1.1
+LFSPanel-0.1.3
 LFSSetWallpaper-0.1.0
 CliMsg-0.1.1
 dbus-glib-0.110

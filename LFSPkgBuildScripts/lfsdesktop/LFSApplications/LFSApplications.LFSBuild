@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.2.2"
+DEPENDS="LFSToolKit-0.3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
