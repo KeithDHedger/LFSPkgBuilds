@@ -1,0 +1,51 @@
+#!/bin/sh
+
+#
+# ©K. D. Hedger. Thu  1 Jun 13:18:23 BST 2017 kdhedger68713@gmail.com
+#
+# This file (ntpd) is part of Init-For-LFS.
+#
+# rc.d is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# Init-For-LFS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Init-For-LFS.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+. /etc/init.d/init-functions
+
+case "$1" in
+	start)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Starting ntpd"
+		/usr/sbin/nullmailer-send & 2>/dev/null
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	stop)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Stopping nullmailer"
+ 		/bin/killall -q /usr/sbin/nullmailer-send|| MOUNTRESULT="FAIL"
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	restart)
+		$0 stop
+		sleep 1
+		$0 start
+		;;
+
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+		;;
+esac
+
+exit 0
