@@ -22,13 +22,13 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}-${MINORVERSION}"
+	pushd "${TARNAME}-${VERSION}${MINORVERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make -C lib/dns
 		make -C lib/isc
 		make -C lib/bind9
 		make -C lib/isccfg
-		make -C lib/lwres
+		make -C lib/irs
 		make -C bin/dig
 
 		make  -C bin/dig install DESTDIR=$PKG || exit 100

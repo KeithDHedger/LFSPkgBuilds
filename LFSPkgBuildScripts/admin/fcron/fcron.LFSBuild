@@ -2,11 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="postfix-3.2.5"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="fcron"
 TARNAME="$PKGNAME"
 VERSION="3.2.0"
@@ -30,7 +25,7 @@ useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u $UIDGIDPAIR fcron
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-sendmail --with-boot-install=no --with-systemdsystemunitdir=no
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

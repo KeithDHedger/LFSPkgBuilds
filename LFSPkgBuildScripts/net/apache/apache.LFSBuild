@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Apr-Util-1.5.4 PCRE-8.40 OpenSSL-1.0.2"
+DEPENDS="Apr-Util-1.6.1 PCRE-8.41 OpenSSL-1.0.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="apache"
 TARNAME="httpd"
-VERSION="2.4.16"
+VERSION="2.4.29"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -17,7 +17,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://archive.apache.org/dist/httpd/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/httpd-2.4.16-blfs_layout-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/7.8/httpd-2.4.29-blfs_layout-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -34,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/httpd-2.4.16-blfs_layout-1.patch
 		sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --enable-authnz-fcgi --enable-layout=BLFS --enable-mods-shared="all cgi" --enable-mpms-shared=all --with-apr=/usr/bin/Apr-1.5.2-config --with-apr-util=/usr/bin/apu-1-config --enable-suexec=shared --with-suexec-bin=/usr/lib/httpd/suexec --with-suexec-docroot=/srv/www --with-suexec-caller=apache --with-suexec-userdir=public_html --with-suexec-logfile=/var/log/httpd/suexec.log --with-suexec-uidmin=100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --enable-authnz-fcgi --enable-layout=BLFS --enable-mods-shared="all cgi" --enable-mpms-shared=all --enable-suexec=shared --with-apr=/usr/bin/apr-1-config --with-apr-util=/usr/bin/apu-1-config --with-suexec-bin=/usr/lib/httpd/suexec --with-suexec-docroot=/srv/www --with-suexec-caller=apache --with-suexec-userdir=public_html --with-suexec-logfile=/var/log/httpd/suexec.log --with-suexec-uidmin=100
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 
