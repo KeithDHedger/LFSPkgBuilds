@@ -1,0 +1,12 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/cdk
+
+Name: CDK
+Description: Curses Development Kit
+URL: http://invisible-island.net/cdk/
+Version:6.1.4
+Requires: ncurses
+Libs: -L${libdir} -lcdk -lncurses
+Cflags: -I${includedir}

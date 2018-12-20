@@ -1,0 +1,2 @@
+The rpcbind program is a replacement for portmap. It is required for import or export of Network File System (NFS) shared directories.
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/rpcbind.html

@@ -1,0 +1,2 @@
+The NFS Utilities package contains the userspace server and client tools necessary to use the kernel's NFS abilities. NFS is a protocol that allows sharing file systems over the network.
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/nfs-utils.html
