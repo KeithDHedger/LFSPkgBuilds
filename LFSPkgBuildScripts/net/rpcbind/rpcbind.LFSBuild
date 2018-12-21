@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libtirpc-1.0.2"
+DEPENDS="libtirpc-1.0.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -32,6 +32,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/sbin --with-rpcuser=root --enable-warmstarts --without-systemdsystemunitdir
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -p $PKG/etc || true
+		cp "${CWD}/netconfig" $PKG/etc
 	popd
 
 	checketc "$PKG"
