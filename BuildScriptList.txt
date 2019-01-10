@@ -97,6 +97,7 @@
 ./devel/imake/imake.LFSBuild
 ./devel/json/json.LFSBuild
 ./devel/lesstif/lesstif.LFSBuild
+./devel/libtasn1/libtasn1.LFSBuild
 ./devel/libtermkey/libtermkey.LFSBuild
 ./devel/lua/lua.LFSBuild
 ./devel/make-ca/make-ca.LFSBuild
@@ -495,6 +496,7 @@
 ./sys/mbox/mbox.LFSBuild
 ./sys/mtools/mtools.LFSBuild
 ./sys/nano/nano.LFSBuild
+./sys/notification-daemon/notification-daemon.LFSBuild
 ./sys/ntp/ntp.LFSBuild
 ./sys/openssh/openssh.LFSBuild
 ./sys/p7zip/p7zip.LFSBuild

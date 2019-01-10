@@ -2,41 +2,36 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.12.4 GTK-2.24.32 gtk3-3.22.28 icu-60.2 libsoup-2.60.3 MesaLib-17.3.4 Ruby-2.5.0 SQLite-3.22.0 Which-2.21 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.25 libtasn1-4.13"
-
+DEPENDS="six-1.11.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="webkitgtk3"
-TARNAME="webkitgtk"
-VERSION="2.18.6"
-BUILD=${BUILD:-1}
-SECTION="NET"
+PKGNAME="libtasn1"
+TARNAME="$PKGNAME"
+VERSION="4.13"
+BUILD=1
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
+gettar "https://ftp.gnu.org/gnu/libtasn1/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir -vp build
-		cd build
-
-		CFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks -Wno-expansion-to-defined" CXXFLAGS="$LFSFLAGS -fno-delete-null-pointer-checks -Wno-expansion-to-defined" cmake $CMAKEBUILDTYPE $CMAKEINSTALLPREFIX -DENABLE_PLUGIN_PROCESS_GTK2=OFF -DUSE_WOFF2=OFF -DCMAKE_SKIP_RPATH=ON -DPORT=GTK -DLIB_INSTALL_DIR=/usr/lib$LIBDIRSUFFIX -DUSE_LIBHYPHEN=OFF -DENABLE_MINIBROWSER=ON -Wno-dev -DENABLE_GEOLOCATION=OFF -DENABLE_GTKDOC=OFF -DUSE_SYSTEM_MALLOC=OFF -DUSE_LIBNOTIFY=OFF ..
-
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

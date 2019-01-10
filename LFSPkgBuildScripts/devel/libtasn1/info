@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/general/libtasn1.html
+libtasn1 is a highly portable C library that encodes and decodes DER/BER data following an ASN.1 schema.
+
