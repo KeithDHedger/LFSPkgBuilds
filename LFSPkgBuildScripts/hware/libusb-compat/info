@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/general/libusb-compat.html
+The libusb-compat package aims to look, feel and behave exactly like libusb-0.1. It is a compatibility layer needed by packages that have not been upgraded to the libusb-1.0 API.
