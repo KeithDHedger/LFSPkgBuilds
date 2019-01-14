@@ -179,6 +179,7 @@
 ./hware/libevdev/libevdev.LFSBuild
 ./hware/libgusb/libgusb.LFSBuild
 ./hware/libical/libical.LFSBuild
+./hware/libusb-compat/libusb-compat.LFSBuild
 ./hware/libusb/libusb.LFSBuild
 ./hware/lm-sensors/lm-sensors.LFSBuild
 ./hware/lshw/lshw.LFSBuild
