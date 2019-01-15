@@ -33,7 +33,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		if [ "$PIBUILD" = "1" ];then
 			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-5.40-rpi-fixes.patch
 		fi
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-systemd --enable-library
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-systemd --enable-library --enable-deprecated --mandir=/usr/share/man --sysconfdir=/etc  --localstatedir=/var  --enable-sixaxis --disable-cups --enable-experimental --enable-deprecated
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/sbin||true
