@@ -135,6 +135,7 @@
 ./devel/yaml/yaml.LFSBuild
 ./devel/yasm/yasm.LFSBuild
 ./games/fortune/fortune.LFSBuild
+./games/retroarch/retroarch.LFSBuild
 ./games/toilet/toilet.LFSBuild
 ./games/XDecorations/XDecorations.LFSBuild
 ./gnome/gksu/gksu.LFSBuild
@@ -312,6 +313,7 @@
 ./mm/easytag/easytag.LFSBuild
 ./mm/faac/faac.LFSBuild
 ./mm/faad2/faad2.LFSBuild
+./mm/ffmpeg/ffmpeg.LFSBuild
 ./mm/flac/flac.LFSBuild
 ./mm/glyr/glyr.LFSBuild
 ./mm/gst-ffmpeg/gst-ffmpeg.LFSBuild
@@ -472,6 +474,7 @@
 ./qt/qtwebengine/qtwebengine.LFSBuild
 ./qt/qtwebkit/qtwebkit.LFSBuild
 ./qt/QupZilla/QupZilla.LFSBuild
+./rpi3/bluetooth-firmware/bluetooth-firmware.LFSBuild
 ./sys/acpid/acpid.LFSBuild
 ./sys/bootfiles/bootfiles.LFSBuild
 ./sys/busybox/busybox.LFSBuild

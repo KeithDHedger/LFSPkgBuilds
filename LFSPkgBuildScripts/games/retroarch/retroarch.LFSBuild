@@ -2,43 +2,34 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.110 Python-2.7.14"
+DEPENDS="ffmpeg-4.1 dbus-1.12.4 libusb-1.0.21 libusb-compat-0.1.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="dbus-python"
-TARNAME="$PKGNAME"
-VERSION="1.2.6"
-BUILD=${BUILD:-1}
-SECTION="PYTHON"
+PKGNAME="RetroArch"
+TARNAME="retroarch"
+VERSION="1.7.5"
+BUILD=1
+SECTION="GAMES"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${PKGNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://dbus.freedesktop.org/releases/dbus-python/${TARBALL}" $SECTION
+gettar "https://github.com/libretro/RetroArch/archive/v${VERSION}.tar.gz" $SECTION "${TARBALL}"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		mkdir python2||true
-		pushd python2
-			PYTHON=/usr/bin/python ../configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-			make $MAKEFLAGS|| exit 100
-		popd
-		make -C python2 install DESTDIR=$PKG || exit 100
-
-		mkdir python3||true
-		pushd python3
-			PYTHON=/usr/bin/python3 ../configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-			make $MAKEFLAGS|| exit 100
-		popd
-		make -C python3 install DESTDIR=$PKG || exit 100
+	pushd "${PKGNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-ffmpeg --disable-systemd --disable-cg --disable-jack --disable-oss --disable-sdl2 --enable-opengles --enable-neon --enable-mmap --disable-langextra --enable-videoprocessor --enable-videocore --enable-dbus --enable-udev --enable-threads --enable-dylib --disable-pulse --enable-freetype --enable-python --enable-floathard --enable-libusb --enable-opengles --disable-wayland --enable-networking --enable-xmb --disable-lua
+		
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

@@ -2,43 +2,28 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.110 Python-2.7.14"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="dbus-python"
+PKGNAME="ffmpeg"
 TARNAME="$PKGNAME"
-VERSION="1.2.6"
-BUILD=${BUILD:-1}
-SECTION="PYTHON"
+VERSION="4.1"
+BUILD=1
+SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://dbus.freedesktop.org/releases/dbus-python/${TARBALL}" $SECTION
+gettar "https://ffmpeg.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir python2||true
-		pushd python2
-			PYTHON=/usr/bin/python ../configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-			make $MAKEFLAGS|| exit 100
-		popd
-		make -C python2 install DESTDIR=$PKG || exit 100
-
-		mkdir python3||true
-		pushd python3
-			PYTHON=/usr/bin/python3 ../configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-			make $MAKEFLAGS|| exit 100
-		popd
-		make -C python3 install DESTDIR=$PKG || exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --disable-debug --disable-static --disable-logging --enable-pthreads --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --disable-doc --disable-libaom
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
