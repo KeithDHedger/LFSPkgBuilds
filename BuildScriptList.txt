@@ -32,7 +32,6 @@
 ./desktop/emacs/emacs.LFSBuild
 ./desktop/enlightenment/enlightenment.LFSBuild
 ./desktop/epdfview/epdfview.LFSBuild
-./desktop/feh/feh.LFSBuild
 ./desktop/firefox/firefox.LFSBuild
 ./desktop/gegl/gegl.LFSBuild
 ./desktop/gimp/gimp.LFSBuild
