@@ -213,6 +213,16 @@ if [ "$(lfspkg -S 5 dialog)" = "false" ];then
 	./dialog.LFSBuild install
 fi
 
+if [ "$(lfspkg -S 5 libssh)" = "false" ];then
+	cd /LFSPkgBuildScripts/libs/libssh/
+	./libssh.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 libmicrohttpd)" = "false" ];then
+	cd /LFSPkgBuildScripts/net/libmicrohttpd/
+	./libmicrohttpd.LFSBuild install
+fi
+
 if [ "$(lfspkg -S 5 pi-kodi-krypton)" = "false" ];then
 	cd /LFSPkgBuildScripts/mm/kodi/
 	./pi-kodi-krypton.LFSBuild install
