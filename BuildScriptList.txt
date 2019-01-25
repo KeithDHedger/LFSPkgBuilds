@@ -265,6 +265,8 @@
 ./libs/librsvg/librsvg.LFSBuild
 ./libs/libsecret/libsecret.LFSBuild
 ./libs/libsigc/libsigc.LFSBuild
+./libs/libssh2/libssh2.LFSBuild
+./libs/libssh/libssh.LFSBuild
 ./libs/libtiff/libtiff.LFSBuild
 ./libs/libtirpc/libtirpc.LFSBuild
 ./libs/libunique/libunique.LFSBuild
@@ -379,6 +381,7 @@
 ./net/icedtea-web/icedtea-web.LFSBuild
 ./net/js/js.LFSBuild
 ./net/libcddb/libcddb.LFSBuild
+./net/libmicrohttpd/libmicrohttpd.LFSBuild
 ./net/libsoup/libsoup.LFSBuild
 ./net/mailx/mailx.LFSBuild
 ./net/neon/neon.LFSBuild
