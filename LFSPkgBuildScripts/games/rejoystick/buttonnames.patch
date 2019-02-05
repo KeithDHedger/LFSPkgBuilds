@@ -1,0 +1,65 @@
+*** src/sdl_misc.c	2008-03-23 14:38:40.000000000 +0000
+--- src/sdl_misc.c.mine	2019-02-05 13:32:58.000000000 +0000
+***************
+*** 5,10 ****
+--- 5,12 ----
+  #include <assign_button.h>
+  #include <list.h>
+  
++ #include "buttonnames.h"
++ 
+  extern SDL_Joystick* js;
+  extern int device_index;
+  extern list_t* button_list;
+***************
+*** 149,155 ****
+  	int 		i;
+  	char*		label;
+  
+- 	label = malloc(sizeof(char)*20);
+  	nbr_buttons = SDL_JoystickNumButtons(js);
+  	it = button_list;
+  	/*nbr_buttons = 10;*/
+--- 151,156 ----
+***************
+*** 159,178 ****
+  		it = it->next;
+  		while (it != NULL) {
+  			abutton = it->data;
+! 			sprintf(label, "Button %i", i);
+  			abutton->graph_button = gtk_button_new_with_label(label);
+! 
+  			g_signal_connect (G_OBJECT (abutton->graph_button), "clicked", 
+  					G_CALLBACK (button_axis_callback), (gpointer)abutton);
+  			gtk_box_pack_start(GTK_BOX(box), abutton->graph_button, TRUE, TRUE, 0);
+  			gtk_widget_show(abutton->graph_button);	
+  			i++;
+  			it = it->next;
+  		}
+  
+  	}
+- 
+- 	free(label);
+  }
+  
+  void create_axis(GtkWidget* box)
+--- 160,178 ----
+  		it = it->next;
+  		while (it != NULL) {
+  			abutton = it->data;
+! 			asprintf(&label,"%s",buttonNames[i]);
+  			abutton->graph_button = gtk_button_new_with_label(label);
+! 			
+  			g_signal_connect (G_OBJECT (abutton->graph_button), "clicked", 
+  					G_CALLBACK (button_axis_callback), (gpointer)abutton);
+  			gtk_box_pack_start(GTK_BOX(box), abutton->graph_button, TRUE, TRUE, 0);
+  			gtk_widget_show(abutton->graph_button);	
+  			i++;
+  			it = it->next;
++ 			free(label);
+  		}
+  
+  	}
+  }
+  
+  void create_axis(GtkWidget* box)

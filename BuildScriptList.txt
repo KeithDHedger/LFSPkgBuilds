@@ -32,6 +32,7 @@
 ./desktop/emacs/emacs.LFSBuild
 ./desktop/enlightenment/enlightenment.LFSBuild
 ./desktop/epdfview/epdfview.LFSBuild
+./desktop/feh/feh.LFSBuild
 ./desktop/firefox/firefox.LFSBuild
 ./desktop/gegl/gegl.LFSBuild
 ./desktop/gimp/gimp.LFSBuild
@@ -135,6 +136,7 @@
 ./devel/yaml/yaml.LFSBuild
 ./devel/yasm/yasm.LFSBuild
 ./games/fortune/fortune.LFSBuild
+./games/rejoystick/rejoystick.LFSBuild
 ./games/retroarch/retroarch.LFSBuild
 ./games/toilet/toilet.LFSBuild
 ./games/XDecorations/XDecorations.LFSBuild
@@ -157,6 +159,7 @@
 ./gtk/gdk-pixbuf/gdk-pixbuf.LFSBuild
 ./gtk/gtk3/gtk3.LFSBuild
 ./gtk/gtk/gtk.LFSBuild
+./gtk/gtkmm3/gtkmm3.LFSBuild
 ./gtk/gtkmm/gtkmm.LFSBuild
 ./gtk/gtksourceview3/gtksourceview3.LFSBuild
 ./gtk/gtksourceview/gtksourceview.LFSBuild
