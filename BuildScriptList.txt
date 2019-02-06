@@ -358,6 +358,7 @@
 ./mm/lsdvd/lsdvd.LFSBuild
 ./mm/mm-meta/mm-meta.LFSBuild
 ./mm/ogmtools/ogmtools.LFSBuild
+./mm/openal/openal.LFSBuild
 ./mm/schroedinger/schroedinger.LFSBuild
 ./mm/SDL2/SDL2.LFSBuild
 ./mm/SDL-image/SDL-image.LFSBuild
