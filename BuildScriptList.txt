@@ -311,6 +311,7 @@
 ./mm/alsa-utils/alsa-utils.LFSBuild
 ./mm/audacity/audacity.LFSBuild
 ./mm/avidemux/avidemux.LFSBuild
+./mm/bchunk/bchunk.LFSBuild
 ./mm/cdrkit/cdrkit.LFSBuild
 ./mm/dvdauthor/dvdauthor.LFSBuild
 ./mm/dvdbackup/dvdbackup.LFSBuild
