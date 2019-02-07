@@ -26,10 +26,16 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${PKGNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-ffmpeg --disable-systemd --disable-cg --disable-jack --disable-oss --disable-sdl2 --enable-opengles --enable-neon --enable-mmap --disable-langextra --enable-videoprocessor --enable-videocore --enable-dbus --enable-udev --enable-threads --enable-dylib --disable-pulse --enable-freetype --enable-python --enable-floathard --enable-libusb --enable-opengles --disable-wayland --enable-networking --enable-xmb --disable-lua
-		
+		if [ "$(echo $ARCH|grep -i "arm*")" != "" ];then
+			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-ffmpeg --disable-systemd --disable-cg --disable-jack --disable-oss --disable-sdl2 --enable-opengles --enable-neon --enable-mmap --disable-langextra --enable-videoprocessor --enable-videocore --enable-dbus --enable-udev --enable-threads --enable-dylib --disable-pulse --enable-freetype --enable-python --enable-floathard --enable-libusb --enable-opengles --disable-wayland --enable-networking --enable-xmb --disable-lua
+		else
+			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-ffmpeg --disable-systemd --disable-cg --disable-jack --disable-oss --disable-langextra  --enable-dbus --enable-udev --enable-threads --enable-dylib --disable-pulse --enable-freetype --enable-python --enable-libusb --disable-wayland --enable-videoprocessor  --enable-networking --enable-xmb  --enable-opengl  --enable-opengles  --enable-osmesa   --enable-mmap  --enable-flac --enable-alsa --enable-tinyalsa --enable-kms --enable-xinerama --enable-x11 --enable-sdl2 --enable-sdl
+		fi
+
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		rm $PKG/usr/share/pixmaps/retroarch.svg
+		cp ${CWD}/retroarch.png $PKG/usr/share/pixmaps/
 	popd
 
 	checketc "$PKG"
@@ -54,5 +60,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${PKGNAME}-${VERSION}"
 popd 2>/dev/null||true
