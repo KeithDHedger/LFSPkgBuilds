@@ -28,9 +28,9 @@ mkdir -p "$PKG"
 CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
-	#tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}.src"
-	#	tar -xvf ${SOURCEARCHIVES}/${SECTION}/cfe-5.0.1.src.tar.xz -C tools
+		tar -xvf ${SOURCEARCHIVES}/${SECTION}/cfe-5.0.1.src.tar.xz -C tools
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/compiler-rt-5.0.1.src.tar.xz -C projects
 
 		mv tools/cfe-5.0.1.src tools/clang
