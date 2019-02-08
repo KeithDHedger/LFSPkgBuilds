@@ -2,9 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="SDL2"
+DEPENDS="SDL2-2.0.7"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="SDL2_image"
 TARNAME="$PKGNAME"
-VERSION="2.0.8"
+VERSION="2.0.3"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -14,17 +19,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.libsdl.org/release/${TARBALL}" $SECTION
+gettar "https://www.libsdl.org/projects/SDL_image/release/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --enable-gtk-doc --disable-debug --disable-nls
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-jpg-shared=no
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		rm -v ${PKG}/usr/lib${LIBDIRSUFFIX}/libSDL2*.a
 	popd
 
 	checketc "$PKG"

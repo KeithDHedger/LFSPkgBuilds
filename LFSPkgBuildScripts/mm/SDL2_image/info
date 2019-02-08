@@ -1,0 +1,5 @@
+http://slackbuilds.org/repository/14.2/libraries/SDL2_image/
+SDL2_image is a simple library to load images of various formats as
+SDL surfaces. It is safe to install alongside Slackware's SDL libraries.
+
+libwebp is an optional dependency.

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#©keithhedger Thu 7 Feb 20:27:01 GMT 2019 kdhedger68713@gmail.com
+
+mkdir -vp /etc/mercurial/
+cat > /etc/mercurial/hgrc << "EOF"
+[web]
+cacerts = /etc/ssl/ca-bundle.crt
+EOF
