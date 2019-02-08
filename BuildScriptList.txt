@@ -105,6 +105,7 @@
 ./devel/man2html/man2html.LFSBuild
 ./devel/ManPageEditor/ManPageEditor.LFSBuild
 ./devel/meld/meld.LFSBuild
+./devel/mercurial/mercurial.LFSBuild
 ./devel/nasm/nasm.LFSBuild
 ./devel/openjade/openjade.LFSBuild
 ./devel/OpenJDK/openjdk.LFSBuild
@@ -360,6 +361,7 @@
 ./mm/ogmtools/ogmtools.LFSBuild
 ./mm/openal/openal.LFSBuild
 ./mm/schroedinger/schroedinger.LFSBuild
+./mm/SDL2_image/SDL2_image.LFSBuild
 ./mm/SDL2/SDL2.LFSBuild
 ./mm/SDL-image/SDL-image.LFSBuild
 ./mm/SDL/SDL.LFSBuild
