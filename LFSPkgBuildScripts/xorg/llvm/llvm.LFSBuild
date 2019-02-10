@@ -27,6 +27,12 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
 
+if [ "$(echo $ARCH|grep -i "arm*")" != "" ];then
+	TARGETS=${TARGETS:-"host"}
+else
+	TARGETS=${TARGETS:-"host;AMDGPU"}
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}.src"
@@ -36,9 +42,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		mv tools/cfe-5.0.1.src tools/clang
 		mv projects/compiler-rt-5.0.1.src projects/compiler-rt
 
-		mkdir build
+		mkdir build || true
 		pushd build
-			CC=gcc CXX=g++ cmake -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_FFI=ON -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_TARGETS_TO_BUILD="host;AMDGPU" -Wno-dev ..
+			CC=gcc CXX=g++ cmake -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_FFI=ON -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_TARGETS_TO_BUILD="$TARGETS" -Wno-dev ..
 			make $MAKEFLAGS||make || exit 100
 			make install DESTDIR=$PKG || exit 100
 		popd
