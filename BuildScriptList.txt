@@ -377,6 +377,7 @@
 ./net/apr-util/apr-util.LFSBuild
 ./net/aria2/aria2.LFSBuild
 ./net/bind-utils/bind-utils.LFSBuild
+./net/bridge-utils/bridge-utils.LFSBuild
 ./net/cifs-utils/cifs-utils.LFSBuild
 ./net/curl/curl.LFSBuild
 ./net/curlftpfs/curlftpfs.LFSBuild
