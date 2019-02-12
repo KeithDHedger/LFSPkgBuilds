@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/postlfs/iptables.html
+The next part of this chapter deals with firewalls. The principal firewall tool for Linux is Iptables. You will need to install Iptables if you intend on using any form of a firewall.
