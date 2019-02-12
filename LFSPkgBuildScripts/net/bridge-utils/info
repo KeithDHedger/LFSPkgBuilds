@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/bridge-utils.html
+The bridge-utils package contains a utility needed to create and manage bridge devices. This is useful in setting up networks for a hosted virtual machine (VM).

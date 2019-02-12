@@ -1,0 +1,18 @@
+#!/bin/bash
+#©keithhedger Mon 11 Feb 15:11:44 GMT 2019
+
+. /usr/share/LFSPkg/LFSFunctions
+
+cat > /etc/sysconfig/ifconfig.br0 << "EOF"
+ONBOOT=yes
+IFACE=br0
+SERVICE="bridge ipv4-static"  # Space separated
+IP=192.168.1.171
+GATEWAY=192.168.1.254
+PREFIX=24
+BROADCAST=192.168.1.255
+CHECK_LINK=no                 # Don't check before bridge is created
+STP=no                        # Spanning tree protocol, default no
+INTERFACE_COMPONENTS="eth0"   # Add to IFACE, space separated devices
+IP_FORWARD=true
+EOF
