@@ -383,10 +383,12 @@
 ./net/curlftpfs/curlftpfs.LFSBuild
 ./net/davfs2/davfs2.LFSBuild
 ./net/dovecot/dovecot.LFSBuild
+./net/fail2ban/fail2ban.LFSBuild
 ./net/fetchmail/fetchmail.LFSBuild
 ./net/httrack/httrack.LFSBuild
 ./net/icedtea-sound/icedtea-sound.LFSBuild
 ./net/icedtea-web/icedtea-web.LFSBuild
+./net/iptables/iptables.LFSBuild
 ./net/js/js.LFSBuild
 ./net/libcddb/libcddb.LFSBuild
 ./net/libmicrohttpd/libmicrohttpd.LFSBuild
