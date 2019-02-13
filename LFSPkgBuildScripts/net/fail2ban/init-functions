@@ -1,0 +1,123 @@
+#!/bin/sh
+
+#
+# ©K. D. Hedger. Thu  1 Jun 12:58:33 BST 2017 kdhedger68713@gmail.com
+#
+# This file (init-functions) is part of Init-For-LFS.
+#
+# Init-For-LFS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# Init-For-LFS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Init-For-LFS.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Set any user specified environment variables e.g. HEADLESS
+[ -r /etc/sysconfig/rc.site ]  && . /etc/sysconfig/rc.site
+
+if [ -z "${COLUMNS}" ]; then
+   COLUMNS=$(stty size)
+   COLUMNS=${COLUMNS##* }
+fi
+
+# When using remote connections, such as a serial port, stty size returns 0
+if [ "${COLUMNS}" = "0" ]; then
+   COLUMNS=80
+fi
+
+## Measurements for positioning result messages
+COL=$((${COLUMNS} - 8))
+WCOL=$((${COL} - 2))
+
+## Set Cursor Position Commands, used via echo
+SET_COL="\\033[${COL}G"      # at the $COL char
+SET_WCOL="\\033[${WCOL}G"    # at the $WCOL char
+CURS_UP="\\033[1A\\033[0G"   # Up one line, at the 0'th char
+CURS_ZERO="\\033[0G"
+
+## Set color commands, used via echo
+# Please consult `man console_codes for more information
+# under the "ECMA-48 Set Graphics Rendition" section
+#
+# Warning: when switching from a 8bit to a 9bit font,
+# the linux console will reinterpret the bold (1;) to
+# the top 256 glyphs of the 9bit font.  This does
+# not affect framebuffer consoles
+
+NORMAL="\\033[0;39m"         # Standard console grey
+SUCCESS="\\033[1;32m"        # Success is green
+WARNING="\\033[1;33m"        # Warnings are yellow
+FAILURE="\\033[1;31m"        # Failures are red
+INFO="\\033[1;36m"           # Information is light cyan
+BRACKET="\\033[1;34m"        # Brackets are blue
+
+# Use a colored prefix
+BMPREFIX="     "
+SUCCESS_PREFIX="${SUCCESS}  *  ${NORMAL}"
+FAILURE_PREFIX="${FAILURE}*****${NORMAL}"
+WARNING_PREFIX="${WARNING} *** ${NORMAL}"
+INFO_PREFIX="${INFO} *** ${NORMAL}"
+
+SUCCESS_SUFFIX="${BRACKET}[${SUCCESS}  OK  ${BRACKET}]${NORMAL}"
+FAILURE_SUFFIX="${BRACKET}[${FAILURE} FAIL ${BRACKET}]${NORMAL}"
+WARNING_SUFFIX="${BRACKET}[${WARNING} WARN ${BRACKET}]${NORMAL}"
+INFO_SUFFIX="${BRACKET}[${INFO} INFO ${BRACKET}]${NORMAL}"
+
+[ -r /etc/sysconfig/rc.site ]  && . /etc/sysconfig/rc.site
+
+prettyInfo ()
+{
+	/bin/echo -n -e "${BMPREFIX}$1"
+	/bin/echo -e "${CURS_ZERO}${INFO_PREFIX}${SET_COL}${INFO_SUFFIX}"
+}
+
+prettyMsgStart ()
+{
+	/bin/echo -en "${CURS_ZERO}${@} ... "
+}
+
+prettyMsgResult ()
+{
+	if [ $1 = "FAIL" ];then
+		/bin/echo -e "${SET_COL}${FAILURE_SUFFIX}"
+	fi
+
+	if [ $1 = "OK" ];then
+		/bin/echo -e "${SET_COL}${SUCCESS_SUFFIX}"
+	fi
+
+	if [ $1 = "INFO" ];then
+		/bin/echo -e "${SET_COL}${INFO_SUFFIX}"
+	fi
+
+	if [ $1 = "WARN" ];then
+		/bin/echo -e "${SET_COL}${WARNING_SUFFIX}"
+	fi
+
+}
+
+isTrue () 
+{
+   [ "$1" = "1" ] || [ "$1" = "yes" ] || [ "$1" = "true" ]
+}
+
+waitForUser ()
+{
+	if [ "${HEADLESS=0}" = "0" ];then
+		read -n1 -p "Press Any Key ..." ENTER
+	fi
+}
+
+waitForUserTimeOut ()
+{
+	if [ "${HEADLESS=0}" = "0" ];then
+		read -n1 -t $1 -p "Press Any Key ..." ENTER
+	fi
+}

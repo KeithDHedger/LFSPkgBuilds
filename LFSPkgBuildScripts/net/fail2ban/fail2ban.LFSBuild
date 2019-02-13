@@ -28,8 +28,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		python2 setup.py build||exit 100
 		python2 setup.py install --optimize=1 --root=$PKG||exit 100
-#		python3 setup.py build||exit 100
-#		python3 setup.py install --optimize=1 --root=$PKG||exit 100
 #thanks to sbo for this
 #http://slackbuilds.org/slackbuilds/14.2/network/fail2ban/fail2ban.SlackBuild
 # install slackware specific config file
