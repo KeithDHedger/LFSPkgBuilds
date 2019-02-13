@@ -1,5 +1,15 @@
-#Thanks to SBO, original here:
-#http://slackbuilds.org/slackbuilds/14.2/network/fail2ban/README.SBo
+Thanks to SBO, original here:
+http://slackbuilds.org/slackbuilds/14.2/network/fail2ban/README.SBo
+
+To install custom startup script on LFS do this:
+install -m 754 fail2ban /etc/rc.d/init.d/
+ln -sf  ../init.d/fail2ban /etc/rc.d/rc0.d/K32fail2ban
+ln -sf  ../init.d/fail2ban /etc/rc.d/rc1.d/K32fail2ban
+ln -sf  ../init.d/fail2ban /etc/rc.d/rc2.d/S18fail2ban
+ln -sf  ../init.d/fail2ban /etc/rc.d/rc3.d/S18fail2ban
+ln -sf  ../init.d/fail2ban /etc/rc.d/rc4.d/S18fail2ban
+ln -sf  ../init.d/fail2ban /etc/rc.d/rc5.d/S18fail2ban
+ln -sf  ../init.d/fail2ban /etc/rc.d/rc6.d/K32fail2ban
 
 Once you install the package, you can start using fail2ban by:
 1. chmod +x /etc/rc.d/rc.fail2ban
