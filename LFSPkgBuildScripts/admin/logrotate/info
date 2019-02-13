@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/general/logrotate.html
+The logrotate package allows automatic rotation, compression, removal, and mailing of log files.
