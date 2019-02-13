@@ -294,4 +294,21 @@ cd /LFSPkgBuildScripts/desktop/epdfview
 cd /LFSPkgBuildScripts/desktop/gkrellm
 ./gkrellm.LFSBuild install
 
+#System admin/security stuff
+cd /LFSPkgBuildScripts/admin/logrotate
+./logrotate.LFSBuild install
+
+cd /LFSPkgBuildScripts/admin/fcron
+./fcron.LFSBuild install
+
+cd /LFSPkgBuildScripts/admin/iptables
+./iptables.LFSBuild install
+
+cd /LFSPkgBuildScripts/admin/fail2ban
+./fail2ban.LFSBuild install
+
+
+
+
+
 
