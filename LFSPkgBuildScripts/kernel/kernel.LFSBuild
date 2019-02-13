@@ -52,7 +52,7 @@ pushd "${KERNELSOURCEDIR}"
 		make prepare
 		rm .version
 		cd /usr/src
-		ln -sv ${KERNELSOURCEDIR}/${TARNAME}-${VERSION} ${TARNAME}-${VERSION}
+		ln -sfv ${KERNELSOURCEDIR}/${TARNAME}-${VERSION} ${TARNAME}-${VERSION}
 	popd
 popd
 

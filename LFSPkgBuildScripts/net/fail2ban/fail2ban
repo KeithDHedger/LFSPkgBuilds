@@ -1,0 +1,66 @@
+#!/bin/sh
+
+#
+# ©K. D. Hedger. Thu  1 Jun 13:04:21 BST 2017 kdhedger68713@gmail.com
+#
+# This file (fail2ban) is part of Init-For-LFS.
+#
+# Init-For-LFS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# at your option) any later version.
+#
+# fail2ban is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with fail2ban.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+. /etc/init.d/init-functions
+
+case "${1}" in
+	start)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Starting fail2ban service"
+		if ! /usr/bin/fail2ban-client -x start; then
+			MOUNTRESULT="FAIL"
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	stop)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Stopping fail2ban service"
+		if ! /usr/bin/fail2ban-client stop; then
+			MOUNTRESULT="FAIL"
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	reload)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Reloading fail2ban service"
+		if ! /usr/bin/fail2ban-client reload; then
+			MOUNTRESULT="FAIL"
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+	status)
+		echo "Fail2Ban status:"
+		/usr/bin/fail2ban-client status
+		;;
+	ping)
+		echo "Fail2Ban ping:"
+		/usr/bin/fail2ban-client ping
+		;;
+
+	*)
+		echo "Usage: ${0} {start|stop|reload|status|ping}"
+		exit 1
+		;;
+esac
+
+exit 0

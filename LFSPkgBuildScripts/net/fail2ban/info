@@ -1,0 +1,8 @@
+http://slackbuilds.org/repository/14.2/network/fail2ban/?search=fail2ban
+
+Fail2Ban scans log files like /var/log/pwdfail and bans IP that makes
+too many password failures. It updates firewall rules to reject the
+IP address. These rules can be defined by the user. Fail2Ban can read
+multiple log files such as sshd, Apache web server, postfix and others.
+
+Basic confs and startuo script supplied, please alter and install according to your system.

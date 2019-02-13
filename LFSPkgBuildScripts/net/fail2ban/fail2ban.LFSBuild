@@ -1,0 +1,78 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="python-2.7.14"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="fail2ban"
+TARNAME="$PKGNAME"
+VERSION="0.10.4"
+BUILD=1
+SECTION="NET"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/fail2ban/fail2ban/archive/0.10.4/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		python2 setup.py build||exit 100
+		python2 setup.py install --optimize=1 --root=$PKG||exit 100
+#		python3 setup.py build||exit 100
+#		python3 setup.py install --optimize=1 --root=$PKG||exit 100
+#thanks to sbo for this
+#http://slackbuilds.org/slackbuilds/14.2/network/fail2ban/fail2ban.SlackBuild
+# install slackware specific config file
+		install -D -m 0644 $CWD/paths-LFS.conf $PKG/etc/fail2ban/paths-LFS.conf
+
+# remove non-slackware specific config files
+		rm -f $PKG/etc/fail2ban/paths-{arch,debian,fedora,freebsd,osx,opensuse}.conf
+
+# install bash completion script if requested
+		if [ "$BASH_COMPLETION" = "yes" ]; then
+			install -D -m 0644 files/bash-completion $PKG/etc/bash_completion.d/fail2ban
+		fi
+
+# install logrotate script
+		install -D -m 0644 files/fail2ban-logrotate $PKG/etc/logrotate.d/fail2ban
+
+# make directory for socket, pid file & db file
+		mkdir -vp $PKG/var/{run,lib}/fail2ban || true
+#set LFS conf
+		sed -i 's/^before = paths-debian.conf$/before = paths-LFS.conf/' $PKG/etc/fail2ban/jail.conf
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
