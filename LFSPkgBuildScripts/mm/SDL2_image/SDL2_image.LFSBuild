@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="SDL2-2.0.7"
+DEPENDS="SDL2-2.0.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
