@@ -30,14 +30,15 @@ pushd $COMPILEAT 2>/dev/null||true
             --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man --enable-fpm --with-fpm-user=www-data --with-fpm-group=apache --with-config-file-path=/etc --with-zlib --enable-bcmath --with-bz2 --enable-calendar --enable-dba=shared --with-gdbm --with-gmp --enable-ftp --with-gettext --enable-mbstring --with-readline --with-apxs2
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/etc/ || true
 		install -v -m644 php.ini-production $PKG/etc/php.ini
 		if [ -f /etc/php-fpm.conf.default ]; then
-			mv -v $PKG/etc/php-fpm.conf{.default,}
-			mv -v $PKG/etc/php-fpm.d/www.conf{.default,}
+			mv -v /etc/php-fpm.conf{.default,}
+			mv -v /etc/php-fpm.d/www.conf{.default,}
 		fi
 		sed -i 's@php/includes"@&\ninclude_path = ".:/usr/lib'${LIBDIRSUFFX}'/php"@' $PKG/etc/php.ini
-		sed -i -e '/proxy_module/s/^#//' -e '/proxy_fcgi_module/s/^#//' /etc/httpd/httpd.conf
-		echo "AddType application/x-httpd-php-source .phps" >> /etc/httpd/httpd.conf
+		sed -i -e '/proxy_module/s/^#//' -e '/proxy_fcgi_module/s/^#//' /etc/httpd/httpd.conf||true
+		echo "AddType application/x-httpd-php-source .phps" >> /etc/httpd/httpd.conf||true
 	popd
 
 	checketc "$PKG"
