@@ -288,7 +288,6 @@
 ./libs/menu-cache/menu-cache.LFSBuild
 ./libs/nettle/nettle.LFSBuild
 ./libs/nspr/nspr.LFSBuild
-./libs/openal/openal.LFSBuild
 ./libs/openjpeg/openjpeg.LFSBuild
 ./libs/openldap/openldap.LFSBuild
 ./libs/openmpi/openmpi.LFSBuild
@@ -404,6 +403,7 @@
 ./net/npapi-sdk/npapi-sdk.LFSBuild
 ./net/nss/nss.LFSBuild
 ./net/nullmailer/nullmailer.LFSBuild
+./net/php/php.LFSBuild
 ./net/procmail/procmail.LFSBuild
 ./net/rpcbind/rpcbind.LFSBuild
 ./net/rsync/rsync.LFSBuild
