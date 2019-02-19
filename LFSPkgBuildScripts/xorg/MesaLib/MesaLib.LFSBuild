@@ -27,13 +27,14 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch
-		DRI_DRV="nouveau,r200,radeon,swrast"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch||true
 		case $(uname -m) in
 			armv?l)
-				GLL_DRV="r600,nouveau,radeonsi,swrast,vc4"
+				DRI_DRV=
+				GLL_DRV="vc4"
 				;;
 			*)
+				DRI_DRV="nouveau,r200,radeon,swrast"
 				GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast"
 				;;
 			esac
