@@ -27,18 +27,31 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr                \
-            --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man --enable-fpm --with-fpm-user=www-data --with-fpm-group=apache --with-config-file-path=/etc --with-zlib --enable-bcmath --with-bz2 --enable-calendar --enable-dba=shared --with-gdbm --with-gmp --enable-ftp --with-gettext --enable-mbstring --with-readline --with-apxs2
+            --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --with-config-file-path=/etc --with-zlib --enable-bcmath --with-bz2 --enable-calendar --enable-dba=shared --with-gdbm --with-gmp --enable-ftp --with-gettext --enable-mbstring --with-readline --with-apxs2  --with-tsrm-pthreads
+
 		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/etc/httpd
+		cp ${CWD}/httpd.conf $PKG/etc/httpd/
+		make install INSTALL_ROOT=$PKG || exit 100
 		mkdir -vp $PKG/etc/ || true
 		install -v -m644 php.ini-production $PKG/etc/php.ini
 		if [ -f /etc/php-fpm.conf.default ]; then
 			mv -v /etc/php-fpm.conf{.default,}
 			mv -v /etc/php-fpm.d/www.conf{.default,}
 		fi
+
+#thanks to slackware for this
+#http://slackware.uk/slackware/slackware64-14.0/source/n/php/php.SlackBuild# PHP sometimes puts junk in the root directory:
+		(
+			cd $PKG
+			rm -rf .channels .depdb .depdblock .filemap .lock .registry
+		)
+		cp -a php.ini-development php.ini-production $PKG/etc/httpd
+		rm -f $PKG/etc/httpd/httpd*
+
 		sed -i 's@php/includes"@&\ninclude_path = ".:/usr/lib'${LIBDIRSUFFX}'/php"@' $PKG/etc/php.ini
-		sed -i -e '/proxy_module/s/^#//' -e '/proxy_fcgi_module/s/^#//' /etc/httpd/httpd.conf||true
-		echo "AddType application/x-httpd-php-source .phps" >> /etc/httpd/httpd.conf||true
+		sed -i -e '/proxy_module/s/^#//' -e '/proxy_fcgi_module/s/^#//' /etc/httpd/apache2.conf||true
+		echo "AddType application/x-httpd-php-source .phps" >> /etc/httpd/apache2.conf||true
 	popd
 
 	checketc "$PKG"
