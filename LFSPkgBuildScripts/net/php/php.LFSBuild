@@ -42,7 +42,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		fi
 
 #thanks to slackware for this
-#http://slackware.uk/slackware/slackware64-14.0/source/n/php/php.SlackBuild# PHP sometimes puts junk in the root directory:
+#http://slackware.uk/slackware/slackware64-14.0/source/n/php/php.SlackBuild
+# PHP sometimes puts junk in the root directory:
 		(
 			cd $PKG
 			rm -rf .channels .depdb .depdblock .filemap .lock .registry
