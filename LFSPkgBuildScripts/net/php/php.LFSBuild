@@ -17,6 +17,7 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
+APACHEUSER=${APACHEUSER:-apache}
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.php.net/distributions/${TARBALL}" $SECTION
@@ -27,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr                \
-            --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data --with-config-file-path=/etc --with-zlib --enable-bcmath --with-bz2 --enable-calendar --enable-dba=shared --with-gdbm --with-gmp --enable-ftp --with-gettext --enable-mbstring --with-readline --with-apxs2  --with-tsrm-pthreads
+            --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man --enable-fpm --with-fpm-user=$APACHEUSER --with-fpm-group=$APACHEUSER --with-config-file-path=/etc --with-zlib --enable-bcmath --with-bz2 --enable-calendar --enable-dba=shared --with-gdbm --with-gmp --enable-ftp --with-gettext --enable-mbstring --with-readline --with-apxs2  --with-tsrm-pthreads
 
 		make $MAKEFLAGS||make|| exit 100
 		mkdir -vp $PKG/etc/httpd
