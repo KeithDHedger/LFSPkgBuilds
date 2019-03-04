@@ -96,6 +96,7 @@
 ./devel/gtkdialog/gtkdialog.LFSBuild
 ./devel/gtk-doc/gtk-doc.LFSBuild
 ./devel/help2man/help2man.LFSBuild
+./devel/html-xml-utils/html-xml-utils.LFSBuild
 ./devel/imake/imake.LFSBuild
 ./devel/json/json.LFSBuild
 ./devel/lesstif/lesstif.LFSBuild
@@ -103,6 +104,7 @@
 ./devel/libtermkey/libtermkey.LFSBuild
 ./devel/lua/lua.LFSBuild
 ./devel/make-ca/make-ca.LFSBuild
+./devel/makedepend/makedepend.LFSBuild
 ./devel/man2html/man2html.LFSBuild
 ./devel/ManPageEditor/ManPageEditor.LFSBuild
 ./devel/meld/meld.LFSBuild
@@ -258,6 +260,7 @@
 ./libs/libgpod/libgpod.LFSBuild
 ./libs/libgudev/libgudev.LFSBuild
 ./libs/libid3tag/libid3tag.LFSBuild
+./libs/libidn2/libidn2.LFSBuild
 ./libs/libisoburn/libisoburn.LFSBuild
 ./libs/libisofs/libisofs.LFSBuild
 ./libs/libjpeg-turbo/libjpeg-turbo.LFSBuild
@@ -431,6 +434,7 @@
 ./perl/UI-Dialog/UI-Dialog.LFSBuild
 ./perl/URI/URI.LFSBuild
 ./perl/XML-Simple/XML-Simple.LFSBuild
+./perl/XML-XPath/XML-XPath.LFSBuild
 ./print/colord/colord.LFSBuild
 ./print/cups/cups.LFSBuild
 ./print/cups-filters/cups-filters.LFSBuild
