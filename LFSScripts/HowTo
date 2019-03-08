@@ -77,7 +77,7 @@ cd $LFS/LFSScripts
 #If you are building over ssh you may want to start a screen session that you can come back to later.
 screen
 
-#Chroot into tempory system:
+#Chroot into temporary system:
 [sudo] ./Chroot system
 
 7)
