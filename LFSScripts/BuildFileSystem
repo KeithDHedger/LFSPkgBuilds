@@ -194,15 +194,6 @@ set bell-style none
 # End /etc/inputrc
 EOF
 
-#
-##/media/SkyNet/LFS8.2//LFSSourceArchives/8.2 /media/LFSHex//LFSSourceArchives/8.2 none bind
-#if [ "$EXTFOLDER" != "" ];then
-#	SRCLINE="$EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES} none bind"
-#	BILTLINE="$EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES} none bind"
-#	DEVUUID="$(lsblk -no UUID $(df $EXTFOLDER|tail -n1|awk '{print $1}'))"
-#	DEVMNT="$(df $EXTFOLDER|tail -n1|awk '{print $NF}')"
-#	EXTLINE="UUID=$DEVUUID $DEVMNT"
-#fi
 	cat > etc/fstab << EOF
 # Begin /etc/fstab
 
