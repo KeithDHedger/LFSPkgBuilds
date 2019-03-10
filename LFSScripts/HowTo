@@ -14,6 +14,15 @@ apt-get install bison gawk m4 texinfo
 #either via git clone or downloading the zip file and unpacking it.
 #you should place the LFSPkgBuildScripts and LFSScripts folder in the root of what will be your new LFS eg /mnt/lfs/LFSPkgBuildScripts
 
+#Set some env vars to make it easier to copy and paste these instructions.
+#Folders should be pre created, change paths to suit,
+LFS=/mnt/LFS
+SOURCEARCHIVES=/LFSSourceArchives/8.2
+BUILTPACKAGES=/LFSBuiltPackages/8.2
+EXTFOLDER=
+LFSVERSION=8.2
+KERNELVERSION=4.15.3
+
 ###RECOMMENDED####
 #or cd into the mounted partition wher you intend to build LFS:
 #LFS should point to your mounted LFS partition ( eg LFS=/mnt/LFS ).
@@ -62,7 +71,7 @@ fi
 #Create a link from downloaded linux tarball to /LFSSourceArchives/8.2/KERNEL to prevent re-downloading source tarball.
 mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
-ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz linux-$KERNELVERSION.tar.xz
+ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz .
 
 5.6)
 #get the package manager archive via the host system:
@@ -99,6 +108,11 @@ lfspkg --setup
 8)
 #Build main system:
 cd /LFSPkgBuildScripts/system/system-meta
+
+#LFSSetUp will have created a symlink to your desired init type so use:
+./system-meta.LFSBuild install
+
+#Or if you have changed your mind you can install a different init system like so:
 
 #Use system-sysvinit-meta for standard sysvinit like so:
 ./system-sysvinit-meta.LFSBuild install
