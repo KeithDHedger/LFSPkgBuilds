@@ -52,7 +52,7 @@ export MAKEFLAGS='-j4'
 if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	wget http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list
 	#bzip2 link broken in wget-list
-	sed -i 's@.*bzip2.*@http://anduin.linuxfromscratch.org/LFS/bzip2-1.0.6.tar.gz@' wget-list
+	sed -i 's@.*bzip2-1\.0\.6\.tar\.gz*@http://anduin.linuxfromscratch.org/LFS/bzip2-1.0.6.tar.gz@' wget-list
 	wget http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/md5sums
 	mv md5sums $SYSTEMSOURCE
 	wget -i wget-list -c -P $SYSTEMSOURCE||true
