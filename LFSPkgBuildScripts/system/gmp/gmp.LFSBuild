@@ -21,10 +21,10 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 ARCH=${ARCH:-$(uname -m)}
 case "$ARCH" in
-	"i?86")
+	i?86)
 		ABI=32
 		;;
-	"x86_64")
+	x86_64)
 		ABI=64
 		;;
 esac

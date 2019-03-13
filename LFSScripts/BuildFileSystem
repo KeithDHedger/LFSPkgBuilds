@@ -248,6 +248,15 @@ DISTRIB_CODENAME="$LFSNAME"
 DISTRIB_DESCRIPTION="Linux From Scratch"
 EOF
 
+	cat > etc/shells << EOF
+# Begin /etc/shells
+
+/bin/sh
+/bin/bash
+
+# End /etc/shells
+EOF
+
 	cat > root/.lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
