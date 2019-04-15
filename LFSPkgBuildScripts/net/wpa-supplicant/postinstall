@@ -1,6 +1,6 @@
 #!/bin/bash
 
-update-desktop-database || true
+update-desktop-database 2>/dev/null || true
 
 cat > /etc/sysconfig/ifconfig.wifi0 << "EOF"
 ONBOOT="yes"
