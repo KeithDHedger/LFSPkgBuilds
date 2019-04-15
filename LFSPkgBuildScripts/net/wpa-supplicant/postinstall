@@ -1,7 +1,5 @@
 #!/bin/bash
 
-update-desktop-database
-
 cat > /etc/sysconfig/ifconfig.wifi0 << "EOF"
 ONBOOT="yes"
 IFACE="wlan0"
@@ -17,4 +15,4 @@ PREFIX="24"
 BROADCAST="192.168.1.255"
 EOF
 
-update-desktop-database
+update-desktop-database || true
