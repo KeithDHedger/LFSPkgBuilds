@@ -60,7 +60,7 @@ CONFIG_CTRL_IFACE_DBUS_INTRO=y
 EOF
 		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-upstream_fixes-1.patch
 		cd wpa_supplicant
-		make BINDIR=/sbin LIBDIR=/lib
+		make BINDIR=/sbin LIBDIR=/lib${LIBDIRSUFFIX}
 
 		mkdir -vp $PKG/sbin $PKG/usr/share/man/{man5,man8} $PKG/usr/share/dbus-1.10.14/system-services $PKG/etc/dbus-1.10.14/system.d/wpa_supplicant.conf
 		install -v -m755 wpa_{cli,passphrase,supplicant} $PKG/sbin/
