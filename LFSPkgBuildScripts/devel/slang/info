@@ -1,0 +1,1 @@
+http://www.linuxfromscratch.org/blfs/view/stable/general/slang.html S-Lang (slang) is an interpreted language that may be embedded into an application to make the application extensible. It provides facilities required by interactive applications such as display/screen management, keyboard input and keymaps.

@@ -120,6 +120,7 @@
 ./devel/scons/scons.LFSBuild
 ./devel/serf/serf.LFSBuild
 ./devel/sgml-common/sgml-common.LFSBuild
+./devel/slang/slang.LFSBuild
 ./devel/strace/strace.LFSBuild
 ./devel/subversion/subversion.LFSBuild
 ./devel/swig/swig.LFSBuild
@@ -506,6 +507,7 @@
 ./sys/dosfstools/dosfstools.LFSBuild
 ./sys/dump/dump.LFSBuild
 ./sys/fbset/fbset.LFSBuild
+./sys/fbterm/fbterm.LFSBuild
 ./sys/fribidi/fribidi.LFSBuild
 ./sys/fuse2/fuse2.LFSBuild
 ./sys/fuse/fuse.LFSBuild
@@ -516,6 +518,7 @@
 ./sys/libnotify/libnotify.LFSBuild
 ./sys/lsof/lsof.LFSBuild
 ./sys/mbox/mbox.LFSBuild
+./sys/most/most.LFSBuild
 ./sys/mtools/mtools.LFSBuild
 ./sys/nano/nano.LFSBuild
 ./sys/notification-daemon/notification-daemon.LFSBuild
