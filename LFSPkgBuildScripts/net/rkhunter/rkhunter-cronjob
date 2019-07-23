@@ -9,4 +9,4 @@
 ) | /bin/sendmail -s 'rkhunter Daily Run (PutYourServerNameHere)' your@email.com
 
 #for nullmailer
-#(echo -e "Subject: RKHunter Check From $(hostname)\n";/usr/bin/rkhunter --versioncheck; /usr/bin/rkhunter --update; /usr/bin/rkhunter --cronjob --report-warnings-only)|sendmail your@email.com
+#(echo -e "Subject: RKHunter Check From $(hostname)\n";/usr/bin/rkhunter --versioncheck;/usr/bin/rkhunter --update; /usr/bin/rkhunter --cronjob --report-warnings-only)|sendmail your@email.com
