@@ -409,6 +409,7 @@
 ./net/nullmailer/nullmailer.LFSBuild
 ./net/php/php.LFSBuild
 ./net/procmail/procmail.LFSBuild
+./net/rkhunter/rkhunter.LFSBuild
 ./net/rpcbind/rpcbind.LFSBuild
 ./net/rsync/rsync.LFSBuild
 ./net/samba/samba.LFSBuild
@@ -421,6 +422,7 @@
 ./net/webkitgtk3/webkitgtk3.LFSBuild
 ./net/webkitgtk/webkitgtk.LFSBuild
 ./net/wget/wget.LFSBuild
+./net/whois/whois.LFSBuild
 ./net/wicd/wicd.LFSBuild
 ./net/wireless-tools/wireless-tools.LFSBuild
 ./net/wpa-supplicant/wpa-supplicant.LFSBuild

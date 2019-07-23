@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#©keithhedger Tue 23 Jul 11:29:39 BST 2019 kdhedger68713@gmail.com
+
+(
+/usr/bin/rkhunter --versioncheck
+/usr/bin/rkhunter --update
+/usr/bin/rkhunter --cronjob --report-warnings-only
+) | /bin/sendmail -s 'rkhunter Daily Run (PutYourServerNameHere)' your@email.com
+
+#for nullmailer
+#(echo -e "Subject: RKHunter Check From $(hostname)\n";/usr/bin/rkhunter --versioncheck; /usr/bin/rkhunter --update; /usr/bin/rkhunter --cronjob --report-warnings-only)|sendmail your@email.com

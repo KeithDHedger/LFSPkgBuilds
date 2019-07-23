@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+#©keithhedger Tue 23 Jul 11:27:09 BST 2019 kdhedger68713@gmail.com
+/usr/bin/rkhunter --update
+#/usr/bin/rkhunter --propupd
