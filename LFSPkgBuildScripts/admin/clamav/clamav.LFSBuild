@@ -4,7 +4,7 @@
 
 PKGNAME="clamav"
 TARNAME="$PKGNAME"
-VERSION="0.100.0"
+VERSION="0.101.2"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -24,7 +24,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	$CWD/preinstall
 
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --mandir=/usr/man --with-user=clamav --with-group=clamav --with-dbdir=/var/lib/clamav --disable-milter --enable-id-check --enable-clamdtop --disable-static --disable-experimental
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --mandir=/usr/man --with-user=clamav --with-group=clamav --with-dbdir=/var/lib/clamav --disable-milter --enable-id-check --enable-clamdtop --disable-static --disable-experimental #--enable-llvm
 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -38,14 +38,13 @@ pushd $COMPILEAT 2>/dev/null||true
 			mv etc/freshclam.conf.sample etc/freshclam.conf
 		popd
 
-		mkdir -p $PKG/var/lib/clamav $PKG/var/log/clamav $PKG/var/run/clamav ||true
+		mkdir -p $PKG/var/lib/clamav $PKG/var/log/clamav $PKG/var/run/clamav $PKG//etc/logrotate.d ||true
 
 		# Fixup some ownership and permissions issues
-		chmod 0770 $PKG/var/lib/clamav
 		touch $PKG/var/lib/clamav/main.cvd $PKG/var/lib/clamav/daily.cvd
-		chmod 0660 $PKG/var/lib/clamav/*
-
 		#thanks to slackware <--
+
+		cp $CWD/logrotate.clamav $PKG//etc/logrotate.d
 	popd
 
 	checketc "$PKG"
