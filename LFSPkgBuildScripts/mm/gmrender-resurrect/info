@@ -1,0 +1,5 @@
+https://github.com/hzeller/gmrender-resurrect
+Resource efficient UPnP/DLNA renderer, optimal for Raspberry Pi, CuBox or a general MediaServer. Fork of GMediaRenderer to add some features to make it usable.
+
+Run EG:
+gmediarender -f meme --gstout-videosink fbdevsink --gstout-audiosink alsasink --gstout-initial-volume-db 0.0 --gstout-buffer-duration 1
