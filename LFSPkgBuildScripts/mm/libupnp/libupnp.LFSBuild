@@ -2,7 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-
 PKGNAME="libupnp"
 TARNAME="$PKGNAME"
 VERSION="1.8.3"
@@ -18,6 +17,10 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/pupnp/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+if [ "$PIBUILD" = "1" ];then
+	LFSFLAGS="${LFSFLAGS} -D_LARGE_FILE_SOURCE -D_FILE_OFFSET_BITS=64"
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
