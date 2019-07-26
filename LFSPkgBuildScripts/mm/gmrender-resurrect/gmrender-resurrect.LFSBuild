@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.1.5 gstreamer1.0-1.12.4 libupnp-1.8.3"
+DEPENDS="alsa-lib-1.1.5 gst-plugins-base1.0-1.12.4 libupnp-1.8.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
