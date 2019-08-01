@@ -327,6 +327,7 @@
 ./mm/ffmpeg/ffmpeg.LFSBuild
 ./mm/flac/flac.LFSBuild
 ./mm/glyr/glyr.LFSBuild
+./mm/gmrender-resurrect/gmrender-resurrect.LFSBuild
 ./mm/gst-ffmpeg/gst-ffmpeg.LFSBuild
 ./mm/gst-libav1.0/gst-libav1.0.LFSBuild
 ./mm/gst-plugins-bad1.0/gst-plugins-bad1.0.LFSBuild
@@ -358,10 +359,12 @@
 ./mm/libsamplerate/libsamplerate.LFSBuild
 ./mm/libsndfile/libsndfile.LFSBuild
 ./mm/libtheora/libtheora.LFSBuild
+./mm/libupnp/libupnp.LFSBuild
 ./mm/libvidstab/libvidstab.LFSBuild
 ./mm/libvorbis/libvorbis.LFSBuild
 ./mm/lsdvd/lsdvd.LFSBuild
 ./mm/mm-meta/mm-meta.LFSBuild
+./mm/MPlayer/MPlayer.LFSBuild
 ./mm/ogmtools/ogmtools.LFSBuild
 ./mm/openal/openal.LFSBuild
 ./mm/schroedinger/schroedinger.LFSBuild
