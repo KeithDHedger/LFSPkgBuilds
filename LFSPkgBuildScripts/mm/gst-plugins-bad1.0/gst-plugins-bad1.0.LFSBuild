@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-wayland --disable-opencv --with-package-name="GStreamer Bad Plugins ${VERSION} BLFS" --with-package-origin="http://www.linuxfromscratch.org/blfs/view/stable/" --disable-gtk-doc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-wayland --disable-opencv --with-package-name="GStreamer Bad Plugins ${VERSION} BLFS" --with-package-origin="http://www.linuxfromscratch.org/blfs/view/stable/" --disable-examples --disable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -55,3 +55,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null
+

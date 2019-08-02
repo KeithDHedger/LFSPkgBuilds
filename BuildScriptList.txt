@@ -499,6 +499,7 @@
 ./qt/qtwebkit/qtwebkit.LFSBuild
 ./qt/QupZilla/QupZilla.LFSBuild
 ./rpi3/bluetooth-firmware/bluetooth-firmware.LFSBuild
+./rpi3/omxplayer/omxplayer.LFSBuild
 ./sys/acpid/acpid.LFSBuild
 ./sys/bootfiles/bootfiles.LFSBuild
 ./sys/busybox/busybox.LFSBuild

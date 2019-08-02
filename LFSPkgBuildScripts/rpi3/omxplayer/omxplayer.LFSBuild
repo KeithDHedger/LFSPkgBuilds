@@ -2,42 +2,36 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0"
+DEPENDS="dbus-1.12.4 fbset-2.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="vala"
+PKGNAME="omxplayer"
 TARNAME="$PKGNAME"
-VERSION="0.38.8"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="1.8.19"
+BUILD=1
+SECTION="RPI3"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.zip"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/vala/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://github.com/popcornmix/omxplayer/archive/master.zip" $SECTION ${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		if [ "$(lfspkg --fuzzy 5 graphviz)" = "false" ];then
-			sed -i '102d; 108,124d; 126,127d'  configure.ac
-			sed -i '/valadoc/d' Makefile.am
-			ACLOCAL= autoreconf -fiv
-		fi
-
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+	unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-master"
+		make $MAKEFLAGS ffmpeg||make|| exit 100
+		INCLUDES="-I$CWD " make $MAKEFLAGS||make|| exit 100
+		cp -rvp omxplayer-dist/* $PKG
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -59,6 +53,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -rf "$PKG" "${TARNAME}-master"
 popd 2>/dev/null||true
 

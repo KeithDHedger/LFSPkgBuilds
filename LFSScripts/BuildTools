@@ -62,7 +62,9 @@ if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 #extra pi stuff
 	if [[ $PIBUILD -eq 1 ]];then
 		pushd $SYSTEMSOURCE
+			#headers
 			wget --no-check-certificate -c https://github.com/raspberrypi/linux/archive/rpi-4.9.y.tar.gz -O linux-${KERNELVERSION}.tar.xz
+			#blobs
 			wget --no-check-certificate -c https://github.com/raspberrypi/firmware/archive/1.20171029.tar.gz
 			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi1-cpu-default.patch
 			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi2-cpu-default.patch
