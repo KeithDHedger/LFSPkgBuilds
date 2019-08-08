@@ -26,6 +26,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+#dont re enable splash screen if app is to old
+#see also the authors comments in driver/prefs.c -> decrepit_p and please honer his request to not distribute this app with the warning removed.
+		sed -i '0,/if (whine)/s/if (whine)/if(FALSE)/' driver/splash.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-setuid-hacks --libexecdir=/usr/lib
 		make $MAKEFLAGS||make|| exit 100
 		make install_prefix=$PKG install-strip || exit 100
