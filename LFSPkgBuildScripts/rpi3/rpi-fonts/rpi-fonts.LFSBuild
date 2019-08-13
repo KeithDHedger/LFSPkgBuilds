@@ -54,12 +54,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf data.tar.xz
 	mv usr/share/fonts/truetype/noto .
 	rm -rf usr etc data.tar.xz
-
 	ar x ${SOURCEARCHIVES}/${SECTION}/rpi-fonts/ttf-liberation_1.07.4-1_all.deb data.tar.xz
 	tar -xvf data.tar.xz
 	mv usr/share/fonts/truetype/ttf-liberation ./liberation
 	rm -rf usr etc data.tar.xz
-
 	ar x ${SOURCEARCHIVES}/${SECTION}/rpi-fonts/fonts-liberation2_2.00.5-2_all.deb data.tar.xz
 	tar -xvf data.tar.xz
 	mv usr/share/fonts/truetype/liberation2 ./liberation2
