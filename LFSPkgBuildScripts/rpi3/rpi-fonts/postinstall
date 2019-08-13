@@ -1,0 +1,6 @@
+#!/bin/bash
+#©keithhedger Mon 12 Aug 17:07:47 BST 2019
+
+. /usr/share/LFSPkg/LFSFunctions
+
+fc-cache -f
