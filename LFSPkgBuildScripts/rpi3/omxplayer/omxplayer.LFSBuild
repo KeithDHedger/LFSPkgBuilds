@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.4 fbset-2.1"
+DEPENDS="dbus-1.12.4 fbset-2.1 rpi-fonts-0.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
