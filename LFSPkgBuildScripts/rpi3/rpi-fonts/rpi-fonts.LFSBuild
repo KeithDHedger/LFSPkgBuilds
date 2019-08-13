@@ -44,6 +44,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf ${SOURCEARCHIVES}/${SECTION}/rpi-fonts/freefont-otf-20120503.tar.gz
 	mkdir freefont||true
 	mv freefont-20120503/*.otf freefont
+	rename -v ".otf" ".ttf" freefont/*.otf
 	rm -rf freefont-20120503
 	tar -xvf ${SOURCEARCHIVES}/${SECTION}/rpi-fonts/fonts-lato_2.0.orig.tar.xz
 	mkdir lato||true
