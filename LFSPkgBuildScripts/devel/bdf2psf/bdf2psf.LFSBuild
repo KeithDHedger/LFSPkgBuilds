@@ -1,0 +1,62 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="bdf2psf"
+TARNAME="$PKGNAME"
+VERSION="1.131"
+BUILD=1
+SECTION="DEVEL"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}_${VERSION}_all.deb"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://ponce.cc/slackware/sources/repo/${TARBALL}" $SECTION
+
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	mkdir tmpdir ||true
+	cd tmpdir
+	ar xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	rm control.tar.gz debian-binary
+	mv data.tar.xz $PKG
+	pushd $PKG
+		tar xvvf data.tar.xz
+		rm data.tar.xz
+		mkdir -p ${PKG}/usr/man/man1
+		mv ${PKG}/usr/share/man/man1/* ${PKG}/usr/man/man1
+		rm -r ${PKG}/usr/share/{man,doc} &>/dev/null ||true
+	popd
+	cd ..
+	rmdir tmpdir
+popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG"
+popd 2>/dev/null||true

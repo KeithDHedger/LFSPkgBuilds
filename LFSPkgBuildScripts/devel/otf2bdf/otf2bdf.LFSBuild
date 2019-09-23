@@ -1,0 +1,63 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="otf2bdf"
+TARNAME="$PKGNAME"
+VERSION="3.1"
+BUILD=1
+SECTION="DEVEL"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tbz2"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://urchlay.naptime.net/~urchlay/src/${TARBALL}" $SECTION
+
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 100
+
+#thanks to slackbuilds.org (https://slackbuilds.org/repository/14.2/system/otf2bdf/) for this:
+# 'make install' has hard-coded paths, don't use.
+		mkdir -p $PKG/usr/bin $PKG/usr/man/man1
+		install -s -m0755 $PKGNAME $PKG/usr/bin
+		gzip -9c < $PKGNAME.man > $PKG/usr/man/man1/$PKGNAME.1.gz
+
+# These aren't normally installed by 'make install' but they should be.
+		mkdir -p $PKG/usr/share/$PKGNAME
+		install -m0644 maps/* $PKG/usr/share/$PKGNAME
+
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

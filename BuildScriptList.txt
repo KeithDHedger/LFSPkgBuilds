@@ -70,6 +70,7 @@
 ./devel/autobook/autobook.LFSBuild
 ./devel/autoconf213/autoconf.LFSBuild
 ./devel/bazaar/bazaar.LFSBuild
+./devel/bdf2psf/bdf2psf.LFSBuild
 ./devel/binaryjdk/binaryjdk.LFSBuild
 ./devel/cdk/cdk.LFSBuild
 ./devel/cflow/cflow.LFSBuild
@@ -114,6 +115,7 @@
 ./devel/OpenJDK/openjdk.LFSBuild
 ./devel/OpenSP/OpenSP.LFSBuild
 ./devel/orc/orc.LFSBuild
+./devel/otf2bdf/otf2bdf.LFSBuild
 ./devel/poedit/poedit.LFSBuild
 ./devel/popt/popt.LFSBuild
 ./devel/ruby/ruby.LFSBuild
