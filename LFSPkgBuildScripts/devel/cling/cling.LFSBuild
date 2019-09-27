@@ -1,0 +1,61 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="python-2.7.14 llvm-5.0.1"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="cling"
+TARNAME="$PKGNAME"
+VERSION="0.6"
+BUILD=1
+SECTION="DEVEL"
+SUFFIX="LFSPKG"
+TARBALL=""
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	mkdir -p "${PKGNAME}-${VERSION}"
+	pushd "${PKGNAME}-${VERSION}"
+		${CWD}/cpt.py -y --no-test --last-stable=tar --with-workdir=.
+		mkdir -vp ${PKG}/opt/cling
+		THISFOLD=$(pwd)
+		pushd ${PKG}/opt/cling
+			tar -xvf ${THISFOLD}/${PKGNAME}---${ARCH}-${VERSION}.tar.bz2
+			mv ${PKGNAME}---${ARCH}-${VERSION}/* .
+			rmdir ${PKGNAME}---${ARCH}-${VERSION}
+		popd
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${PKGNAME}-${VERSION}"
+popd 2>/dev/null||true

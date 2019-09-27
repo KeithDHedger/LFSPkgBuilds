@@ -75,6 +75,7 @@
 ./devel/cdk/cdk.LFSBuild
 ./devel/cflow/cflow.LFSBuild
 ./devel/cgdb/cgdb.LFSBuild
+./devel/cling/cling.LFSBuild
 ./devel/cmake/cmake.LFSBuild
 ./devel/codeblocks/codeblocks.LFSBuild
 ./devel/crossguid/crossguid.LFSBuild
