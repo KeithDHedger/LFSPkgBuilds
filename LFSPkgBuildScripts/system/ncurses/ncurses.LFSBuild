@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="ncurses"
 TARNAME="$PKGNAME"
-VERSION="6.1"
+VERSION=$NCURSES_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -39,6 +40,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -sfv libncurses.so $PKG/usr/lib/libcurses.so
 		mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		#//TODO//not needed?
 		ln -sfv ../share/terminfo $PKG/usr/lib||true
 	popd
 

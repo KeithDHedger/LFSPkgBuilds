@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="acl"
 TARNAME="$PKGNAME"
-VERSION="2.2.52"
+VERSION=$ACL_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,8 +22,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/$TARBALL"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
-		sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" libacl/__acl_to_any_text.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static --libexecdir=/usr/lib
 		make $MAKEFLAGS||make|| exit 100
 		make install install-dev install-lib DESTDIR=$PKG || exit 100

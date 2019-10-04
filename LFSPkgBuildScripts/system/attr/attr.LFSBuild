@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="attr"
 TARNAME="$PKGNAME"
-VERSION="2.4.47"
+VERSION=$ATTR_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,9 +22,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
-		sed -i -e "/SUBDIRS/s|man[25]||g" man/Makefile
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static --sysconfdir=/etc
 		make|| exit 100
 		make install install-dev install-lib DESTDIR=$PKG || exit 100
 		mkdir -vp  $PKG/lib||true
