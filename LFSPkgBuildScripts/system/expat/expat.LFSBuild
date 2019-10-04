@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 TARNAME="expat"
-PKGNAME="expat"
-VERSION="2.2.5"
+PKGNAME="$PKGNAME"
+VERSION=$EXPAT_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
