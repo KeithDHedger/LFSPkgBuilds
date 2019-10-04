@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="bison"
 TARNAME="$PKGNAME"
-VERSION="3.0.4"
+VERSION=$BISON_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,8 +22,9 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${PKGNAME}-${VERSION}"
+		sed -i '6855 s/mv/cp/' Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-		make $MAKEFLAGS||make|| exit 100
+		make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
