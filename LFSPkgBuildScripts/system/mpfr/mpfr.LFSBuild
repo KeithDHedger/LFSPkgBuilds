@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="mpfr"
 TARNAME="$PKGNAME"
-VERSION="4.0.1"
+VERSION=$MPFR_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

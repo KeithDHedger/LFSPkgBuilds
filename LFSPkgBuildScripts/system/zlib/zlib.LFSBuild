@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="zlib"
 TARNAME="$PKGNAME"
-VERSION="1.2.11"
+VERSION=$$ZLIB_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

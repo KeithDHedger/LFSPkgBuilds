@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="glibc"
 TARNAME="$PKGNAME"
-VERSION="2.27"
+VERSION=$GLIBC_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -23,7 +24,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fhs-1.patch
-		ln -sfv /tools/lib/gcc /usr/lib||true
+		sed -i '/asm.socket.h/a# include <linux/sockios.h>' sysdeps/unix/sysv/linux/bits/socket.h
+#		ln -sfv /tools/lib/gcc /usr/lib||true
 		mkdir -vp ${PKG}/lib${LIBDIRSUFFIX}||true
 		case $(uname -m) in
 			i?86|armv?l)
@@ -37,15 +39,17 @@ pushd $COMPILEAT 2>/dev/null||true
 				;;
 		esac
 
-		rm -f /usr/include/limits.h
+#		rm -f /usr/include/limits.h
 		mkdir -v build || true
 		cd build
-		CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
-		unset GCC_INCDIR
+		CC="gcc -ffile-prefix-map=/tools=/usr" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
+#		CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
+#		unset GCC_INCDIR
 		make $MAKEFLAGS||make
 
 		touch /etc/ld.so.conf
-
+		#is this needed if not running full tests?
+		sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 		make install DESTDIR="$PKG" || exit 100
 
 		mkdir -p "$PKG/etc/"||true
@@ -94,7 +98,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz}
 		done
 
-		cp -v zone.tab zone1970.tab $ZONEINFO
+		cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
 		zic -d $ZONEINFO -p Europe/London
 		unset ZONEINFO
 		cp -v /usr/share/zoneinfo/Europe/London /etc/localtime

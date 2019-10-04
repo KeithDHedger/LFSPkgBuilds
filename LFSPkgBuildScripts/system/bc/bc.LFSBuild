@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="bc"
 TARNAME="$PKGNAME"
-VERSION="1.07.1"
+VERSION=$BC_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,22 +22,12 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		cat > bc/fix-libmath_h << "EOF"
-#! /bin/bash
-sed -e '1   s/^/{"/' \
--e     's/$/",/' \
--e '2,$ s/^/"/'  \
--e   '$ d'       \
--i libmath.h
 
-sed -e '$ s/$/0}/' \
--i libmath.h
-EOF
 		ln -sv /tools/lib/libncursesw.so.6 /usr/lib/libncursesw.so.6||true
 		ln -sfv libncurses.so.6 /usr/lib/libncurses.so||true
 		sed -i -e '/flex/s/as_fn_error/: ;; # &/' configure
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-readline --infodir=/usr/share/info --mandir=/usr/share/man
+		CFLAGS="$LFSFLAGS -std=c99" PREFIX=/usr CC=gcc ./configure -G -O3 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

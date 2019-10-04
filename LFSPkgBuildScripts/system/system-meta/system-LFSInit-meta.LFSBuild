@@ -2,25 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+if [ -e ../PkgVersions ];then
+	. ../PkgVersions
+else
+	echo "No PkgVersions file found ..."
+	exit 0
+fi
+
 export CHECKETC=0
 export CONFIGOPTIONS="--prefix=/usr --disable-debug"
 
 THISTTY=$(tty)
 export THISTTY
 
-DEPENDS="linuxheaders-5.2.8
-Man-pages-4.15
-Glibc-2.27
-Zlib-1.2.11
-File-5.32
-Readline-7.0
-M4-1.4.18
-Bc-1.07.1
-Binutils-2.30
-GMP-6.1.2
-MPFR-4.0.1
-MPC-1.1.0
-GCC-7.3.0
+DEPENDS="linuxheaders-$LINUX_VERS
+Man-pages-$MANPAGES_VERS
+Glibc-$GLIBC_VERS
+Zlib-$ZLIB_VERS
+File-$FILE_VERS
+Readline-$READLINE_VER
+M4-$M4_VERS
+Bc-$BC_VERS
+Binutils-$BINUTILS_VERS
+GMP-$GMP_VERS
+MPFR-$MPFR_VERS
+MPC-$MPC_VERS
+Shadow-$SHADOW_VERS
+GCC-$GCC_VERS
 Bzip2-1.0.6
 Pkg-config-0.29.2
 Ncurses-6.1
@@ -28,7 +36,6 @@ attr-2.4.47
 acl-2.2.52
 libcap-2.25
 Sed-4.4
-Shadow-4.5
 Psmisc-23.1
 Iana-Etc-2.30
 Bison-3.0.4

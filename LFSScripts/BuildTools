@@ -384,19 +384,6 @@ do
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
-#		11)
-#			NAME=check
-#			VERSION=$CHECK_VERS
-#			tar -xvf ${NAME}-${VERSION}.tar.gz
-#			pushd ${NAME}-${VERSION}
-#				PKG_CONFIG= ./configure --prefix=/tools
-#				make $MAKEFLAGS||make
-#				make install
-#			popd
-#			rm -rf ${NAME}-${VERSION}
-#			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
-#			;;
-
 		12)
 			NAME=ncurses
 			VERSION=$NCURSES_VERS

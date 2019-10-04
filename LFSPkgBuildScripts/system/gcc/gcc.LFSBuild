@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="gcc"
 TARNAME="$PKGNAME"
-VERSION="7.3.0"
+VERSION=$GCC_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,6 +22,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		#//TODO//
 		case $(uname -m) in
 			armv6l)
 				patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-5.3.0-rpi1-cpu-default.patch
@@ -37,14 +39,14 @@ pushd $COMPILEAT 2>/dev/null||true
 				;;
 		esac
 
-		rm -f /usr/lib/gcc||true
+		#rm -f /usr/lib/gcc||true
 		mkdir -v build
 		cd build
 		SED=sed ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR="$PKG" || exit 100
-
+		rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/gcc/$(gcc -dumpmachine)/9.2.0/include-fixed/bits/||true
 		mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib
 		ln -sv ../usr/bin/cpp $PKG/lib
 		ln -sv gcc $PKG/usr/bin/cc

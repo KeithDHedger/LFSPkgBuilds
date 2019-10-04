@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="m4"
 TARNAME="$PKGNAME"
-VERSION="1.4.18"
+VERSION=$M4_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,6 +22,8 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
+		echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
