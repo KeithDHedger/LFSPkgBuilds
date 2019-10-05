@@ -84,10 +84,10 @@ Util-linux-$UTILLINUX_VERS
 E2fsprogs-$E2FSPROGS_VERS
 Sysklogd-$SYSKLOGD_VERS
 eudev-$EUDEV_VERS
-Wget-1.19.4
-unzip-6.0
-Init-For-LFS-0.0.5
-GPM-1.20.7
+Wget-$WGET_VERS
+unzip-$UNZIP_VERS
+Init-For-LFS-$INITFORLFS_VERS
+GPM-$GPM_VERS
 Links-2.14"
 
 if ! lfspkg -B "$DEPENDS";then

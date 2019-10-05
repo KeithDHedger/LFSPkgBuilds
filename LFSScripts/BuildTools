@@ -39,7 +39,7 @@ echo $ADMINPWD|sudo -S chmod -R 777 $LFS/tools/ 2>/dev/null
 
 cp ./SystemData $SYSTEMSOURCE
 
-WGETTAR="https://ftp.gnu.org/gnu/wget/wget-1.19.4.tar.gz"
+WGETTAR="https://ftp.gnu.org/gnu/wget/wget-$WGET_VERS.tar.gz"
 
 set +h
 umask 022
