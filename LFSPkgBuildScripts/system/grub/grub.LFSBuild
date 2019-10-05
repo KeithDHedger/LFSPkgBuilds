@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="grub"
 TARNAME="$PKGNAME"
-VERSION="2.02"
+VERSION=$GRUB_VERS
 MINORVERSION=""
 
 BUILD=${BUILD:-1}

@@ -1,16 +1,17 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="eudev"
 TARNAME="$PKGNAME"
-VERSION="3.2.5"
+VERSION=$EUDEV_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
-UDEVLFS="udev-lfs-20171102"
+UDEVLFS="udev-lfs-$UDEVLFS_VERS"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -23,23 +24,14 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -r -i 's|/usr(/bin/test)|\1|' test/udev-test.pl
-		sed -i '/keyboard_lookup_key/d' src/udev/udev-builtin-keyboard.c
-		cat > config.cache << "EOF"
-HAVE_BLKID=1
-BLKID_LIBS="-lblkid"
-BLKID_CFLAGS="-I/tools/include"
-EOF
-
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/sbin --sbindir=/sbin --libdir=/usr/lib${LIBDIRSUFFIX} --sysconfdir=/etc --libexecdir=/lib${LIBDIRSUFFIX} --with-rootprefix= --with-rootlibdir=/lib${LIBDIRSUFFIX} --enable-manpages --disable-static --config-cache --libdir=/usr/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/sbin --sbindir=/sbin --libdir=/usr/lib${LIBDIRSUFFIX} --sysconfdir=/etc --libexecdir=/lib${LIBDIRSUFFIX} --with-rootprefix= --with-rootlibdir=/lib${LIBDIRSUFFIX} --enable-manpages --disable-static
 		LIBRARY_PATH=/tools/lib make $MAKEFLAGS||LIBRARY_PATH=/tools/lib make||LIBRARY_PATH=/tools/lib make || exit 100
 
-		LIBRARY_PATH=/tools/lib make $MAKEFLAGS||make|| exit
-		mkdir -pv $PKG/lib${LIBDIRSUFFIX}/rules.d $PKG/etc/udev/rules.d||true
-		make LD_LIBRARY_PATH=/tools/lib install DESTDIR=$PKG || exit 100
-		mkdir -pv $PKG/lib${LIBDIRSUFFIX}/{firmware,udev/devices/pts,}||true
-
-		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.tar.bz2
+		make $MAKEFLAGS||make|| exit 100
+		mkdir -pv $PKG/lib/udev/rules.d
+		mkdir -pv $PKG/etc/udev/rules.d
+		make install DESTDIR=$PKG || exit 100
+		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.tar.xz
 		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 100
 	popd
 

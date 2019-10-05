@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="coreutils"
 TARNAME="$PKGNAME"
-VERSION="8.29"
+VERSION=$COREUTILS_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -23,8 +24,9 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-i18n-1.patch
 		sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
+		autoreconf -fiv
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --enable-no-install-program=kill,uptime --libdir=/usr/lib${LIBDIRSUFFIX}
-		FORCE_UNSAFE_CONFIGURE=1 make $MAKEFLAGS||FORCE_UNSAFE_CONFIGURE=1 make|| exit
+		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/bin $PKG/usr/sbin $PKG/usr/share/man/man8
 		mv -v $PKG/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $PKG/bin

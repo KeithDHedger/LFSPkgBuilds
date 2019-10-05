@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="gettext"
 TARNAME="$PKGNAME"
-VERSION="0.19.8.1"
+VERSION=$GETTEXT_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,8 +22,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/^TESTS =/d' gettext-runtime/tests/Makefile.in &&
-			sed -i 's/test-lock..EXEEXT.//' gettext-tools/gnulib-tests/Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

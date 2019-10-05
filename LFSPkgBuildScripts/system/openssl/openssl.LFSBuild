@@ -1,14 +1,15 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="openssl"
 TARNAME="${PKGNAME}"
-VERSION="1.1.0"
+VERSION=$OPENSSL_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-MINORSUFFIX="g"
+MINORSUFFIX="c"
 TARBALL="${TARNAME}-${VERSION}${MINORSUFFIX}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
@@ -21,6 +22,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORSUFFIX}"
+		sed -i '/\} data/s/ =.*$/;\n    memset(\&data, 0, sizeof(data));/' crypto/rand/rand_lib.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./config --prefix=/usr --openssldir=/etc/ssl shared zlib-dynamic --libdir=/lib${LIBDIRSUFFIX} shared zlib-dynamic
 		make depend|| exit 100
 		make $MAKEFLAGS||make|| exit 100

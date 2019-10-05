@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
+. ../PkgVersions
 
 PKGNAME="ninja"
 TARNAME="$PKGNAME"
-VERSION="1.8.2"
+VERSION=$NINJA_VERS
 BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -20,7 +21,8 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-add_NINJAJOBS_var-1.patch
+		export NINJAJOBS=4
+		sed -i '/int Guess/a int   j = 0;char* jobs = getenv( "NINJAJOBS" );if ( jobs != NULL ) j = atoi( jobs );if ( j > 0 ) return j;' src/ninja.cc
 		python3 configure.py --bootstrap
 		mkdir -vp $PKG/usr/bin
 		install -vm755 ninja $PKG/usr/bin/
