@@ -8,8 +8,8 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="links"
-TARNAME="links"
-VERSION="2.14"
+TARNAME="$PKGNAME"
+VERSION="2.19"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"

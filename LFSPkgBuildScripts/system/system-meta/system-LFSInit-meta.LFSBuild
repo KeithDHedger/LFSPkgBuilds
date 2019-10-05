@@ -88,7 +88,7 @@ Wget-$WGET_VERS
 unzip-$UNZIP_VERS
 Init-For-LFS-$INITFORLFS_VERS
 GPM-$GPM_VERS
-Links-2.14"
+Links-$LINKS_VERS"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
