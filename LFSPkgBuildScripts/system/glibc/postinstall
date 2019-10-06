@@ -2,6 +2,11 @@
 
 #©keithhedger Thu 3 Dec 12:26:07 GMT 2015 kdhedger68713@gmail.com
 
+. /usr/share/LFSPkg/LFSFunctions
+. /LFSScripts/PkgVersions
+
+TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata${TZDATA_VERS}.tar.gz
+
 cat > /etc/nsswitch.conf << "EOF"
 # Begin /etc/nsswitch.conf
 
@@ -32,6 +37,28 @@ cat > /etc/ld.so.conf << "EOF"
 include /etc/ld.so.conf.d/*.conf
 /usr/lib
 EOF
+
+pushd $COMPILEAT 2>/dev/null||true
+	mkdir build||true
+	pushd build
+		tar -xf ${TZDATATARBALL}
+		ZONEINFO="/usr/share/zoneinfo"
+		mkdir -pv $ZONEINFO/{posix,right}
+
+		for tz in etcetera southamerica northamerica europe africa antarctica asia australasia backward pacificnew systemv
+		do
+			zic -L /dev/null   -d $ZONEINFO -y "sh yearistype.sh" ${tz}
+			zic -L /dev/null   -d $ZONEINFO/posix -y "sh yearistype.sh" ${tz}
+			zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz}
+		done
+
+		cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
+		zic -d $ZONEINFO -p Europe/London
+		unset ZONEINFO
+		cp -v /usr/share/zoneinfo/Europe/London /etc/localtime
+	popd
+	rm -rf build
+popd
 
 #locales
 localedef -i de_DE -f ISO-8859-1 de_DE

@@ -14,13 +14,14 @@ export CONFIGOPTIONS="--prefix=/usr --disable-debug"
 
 THISTTY=$(tty)
 export THISTTY
+export ANYVERSION=1
 
 DEPENDS="linuxheaders-$LINUX_VERS
 Man-pages-$MANPAGES_VERS
 Glibc-$GLIBC_VERS
 Zlib-$ZLIB_VERS
 File-$FILE_VERS
-Readline-$READLINE_VER
+Readline-$READLINE_VERS
 M4-$M4_VERS
 Bc-$BC_VERS
 Binutils-$BINUTILS_VERS

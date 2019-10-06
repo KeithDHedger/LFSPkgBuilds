@@ -10,7 +10,7 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata2018c.tar.gz
+#TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata${TZDATA_VERS}.tar.gz
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -85,26 +85,26 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	mkdir build
-	pushd build
-		tar -xf ${TZDATATARBALL}
-		ZONEINFO="/usr/share/zoneinfo"
-		mkdir -pv $ZONEINFO/{posix,right}
+#	mkdir build||true
+#	pushd build
+#		tar -xf ${TZDATATARBALL}
+#		ZONEINFO="/usr/share/zoneinfo"
+#		mkdir -pv $ZONEINFO/{posix,right}
+#
+#		for tz in etcetera southamerica northamerica europe africa antarctica asia australasia backward pacificnew systemv
+#		do
+#			zic -L /dev/null   -d $ZONEINFO -y "sh yearistype.sh" ${tz}
+#			zic -L /dev/null   -d $ZONEINFO/posix -y "sh yearistype.sh" ${tz}
+#			zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz}
+#		done
+#
+#		cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
+#		zic -d $ZONEINFO -p Europe/London
+#		unset ZONEINFO
+#		cp -v /usr/share/zoneinfo/Europe/London /etc/localtime
+#	popd
 
-		for tz in etcetera southamerica northamerica europe africa antarctica asia australasia backward pacificnew systemv
-		do
-			zic -L /dev/null   -d $ZONEINFO -y "sh yearistype.sh" ${tz}
-			zic -L /dev/null   -d $ZONEINFO/posix -y "sh yearistype.sh" ${tz}
-			zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz}
-		done
-
-		cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
-		zic -d $ZONEINFO -p Europe/London
-		unset ZONEINFO
-		cp -v /usr/share/zoneinfo/Europe/London /etc/localtime
-	popd
-
-	rm -r "$PKG" "${TARNAME}-${VERSION}" "build"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 
 	mv -v /tools/bin/{ld,ld-old}
 	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old}

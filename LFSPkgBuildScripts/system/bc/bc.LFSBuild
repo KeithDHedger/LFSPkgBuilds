@@ -22,12 +22,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-
-		ln -sv /tools/lib/libncursesw.so.6 /usr/lib/libncursesw.so.6||true
-		ln -sfv libncurses.so.6 /usr/lib/libncurses.so||true
-		sed -i -e '/flex/s/as_fn_error/: ;; # &/' configure
-
-		CFLAGS="$LFSFLAGS -std=c99" PREFIX=/usr CC=gcc ./configure -G -O3 
+		CFLAGS="$LFSFLAGS -std=c99" PREFIX=/usr CC=gcc ./configure.sh -G -O3 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

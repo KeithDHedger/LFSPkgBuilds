@@ -665,7 +665,7 @@ do
 
 			echo $ADMINPWD|sudo -S chown -R root:root $LFS/tools 2>/dev/null
 			cd $LFS/tools
-			echo $ADMINPWD|sudo -S tar -zpcvf ../tools-${LFSVERSION}.tar.gz .
+			echo $ADMINPWD|sudo -S tar -apcvf ../tools-${LFSVERSION}.tar.xz .
 			echo "DONE" > ${SYSTEMSOURCE}/toolnum
 			TOOLNUM="DONE"
 	esac

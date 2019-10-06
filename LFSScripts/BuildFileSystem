@@ -257,7 +257,7 @@ EOF
 # End /etc/shells
 EOF
 
-	cat > root/.lfspkg.rc << EOF
+	cat > /tmp/.lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
 LIBDIRSUFFIX=$LIBDIRSUFFIX
@@ -269,7 +269,7 @@ COMPILEAT=\${COMPILEAT:-"\$SOURCEARCHIVES"}
 CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --disable-debug --disable-nls"
 CHECKETC=1
 EOF
-
+	echo $ADMINPWD|sudo -S mv /tmp/.lfspkg.rc root
 	echo $ADMINPWD|sudo -S chown -R root:root $LFS/* 2>/dev/null
 	echo $ADMINPWD|sudo -S touch var/log/{btmp,lastlog,wtmp}
 	echo $ADMINPWD|sudo -S chmod -v 664 var/log/lastlog

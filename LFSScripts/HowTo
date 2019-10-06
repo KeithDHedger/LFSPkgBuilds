@@ -20,7 +20,7 @@ LFS=/mnt/LFS
 SOURCEARCHIVES=/LFSSourceArchives/8.2
 BUILTPACKAGES=/LFSBuiltPackages/8.2
 EXTFOLDER=
-LFSVERSION=8.2
+LFSVERSION=9.0
 KERNELVERSION=4.15.3
 
 ###RECOMMENDED####
@@ -66,9 +66,10 @@ fi
 5.2)
 #You may/will have to re-own the source folder etc, so:
 [sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds
+[sudo] chown -R $USER:$USER $LFS/LFSSourceArchives
 
 5.5)
-#Create a link from downloaded linux tarball to /LFSSourceArchives/8.2/KERNEL to prevent re-downloading source tarball.
+#Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
 mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz .
