@@ -9,7 +9,7 @@ VERSION=$ATTR_VERS
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.src.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -22,12 +22,12 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static --sysconfdir=/etc
-		make|| exit 100
-		make install install-dev install-lib DESTDIR=$PKG || exit 100
-		mkdir -vp  $PKG/lib||true
-		mv -v $PKG/usr/lib/libattr.so.* $PKG/lib
-		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libattr.so) $PKG/usr/lib/libattr.so
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static --sysconfdir=/etc --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		mkdir -p ${PKG}/lib || true
+		mv -v ${PKG}/usr/lib/libattr.so.* ${PKG}/lib
+		ln -sfv ../../lib/$(readlink ${PKG}/usr/lib/libattr.so) ${PKG}/usr/lib/libattr.so
 	popd
 
 	checketc "$PKG"
