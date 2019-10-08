@@ -3,7 +3,7 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="xorg-meta"
-VERSION="8.2"
+VERSION="9.0"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -14,9 +14,9 @@ export CHECKETC=0
 
 mkdir -vp ${SOURCEARCHIVES}/${SECTION}||true
 
-DEPENDS="util-macros-1.19.1
-proto-8.2
-libXau-1.0.8
+DEPENDS="util-macros-1.19.2
+xorgproto-2019.1
+libXau-1.0.9
 libXdmcp-1.1.2
 xcb-proto-1.12
 Fontconfig-2.12.6

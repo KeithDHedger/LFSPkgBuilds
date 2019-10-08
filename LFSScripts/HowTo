@@ -186,7 +186,7 @@ set timeout=30
 insmod ext2
 set root=(hd0,1)
 
-menuentry "GNU/Linux, Linux 4.9.9" {
+menuentry "GNU/Linux, Linux $LFSVERSION" {
 	linux /boot/vmlinuz-4.9.9 root=/dev/sda1 ro
 }
 EOF

@@ -4,7 +4,7 @@
 
 PKGNAME="util-macros"
 TARNAME="$PKGNAME"
-VERSION="1.19.1"
+VERSION="1.19.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -14,7 +14,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xorg.freedesktop.org/releases/individual/util/${TARBALL}" $SECTION
+gettar "https://www.x.org/pub/individual/util/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
