@@ -2,8 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-TARNAME="linux"
 PKGNAME="kernel"
+TARNAME="linux"
 VERSION="5.2.8"
 BUILD=${BUILD:-1}
 SECTION="KERNEL"
@@ -18,8 +18,8 @@ mkdir -vp ${KERNELSOURCEDIR}||true
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-#You can use this to copy the config for the running kernel
-#gunzip < /proc/config.gz > ${KERNELCONFIG}
+#Copy the config for the running kernel
+gunzip < /proc/config.gz > ${KERNELCONFIG}
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION}
