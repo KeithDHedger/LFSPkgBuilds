@@ -1,95 +1,104 @@
 #!/bin/bash
 
 . /usr/share/LFSPkg/LFSFunctions
+if [ -e ../PkgVersions ];then
+	. ../PkgVersions
+else
+	echo "No PkgVersions file found ..."
+	exit 0
+fi
 
 export CHECKETC=0
 export CONFIGOPTIONS="--prefix=/usr --disable-debug"
 
 THISTTY=$(tty)
 export THISTTY
+export ANYVERSION=1
 
-DEPENDS="linuxheaders-4.15.3
-Man-pages-4.15
-Glibc-2.27
-Zlib-1.2.11
-File-5.32
-Readline-7.0
-M4-1.4.18
-Bc-1.07.1
-Binutils-2.30
-GMP-6.1.2
-MPFR-4.0.1
-MPC-1.1.0
-GCC-7.3.0
-Bzip2-1.0.6
-Pkg-config-0.29.2
-Ncurses-6.1
-attr-2.4.47
-acl-2.2.52
-libcap-2.25
-Sed-4.4
-Shadow-4.5
-Psmisc-23.1
-Iana-Etc-2.30
-Bison-3.0.4
-Flex-2.6.4
-Grep-3.1
-Bash-4.4.18
-Libtool-2.4.6
-GDBM-1.14.1
-gperf-3.1
-Expat-2.2.5
-Inetutils-1.9.4
-Perl-5.26.1
-XML-Parser-2.44
-intltool-0.51.0
-Autoconf-2.69
-Automake-1.15.1
-xz-5.2.3
-Kmod-25
-Gettext-0.19.8.1
-Libelf-0.170
-Libffi-3.2.1
-OpenSSL-1.1.0
-python3-3.6.4
-Ninja-1.8.2
-Meson-0.44.0
-Procps-ng-3.3.12
-E2fsprogs-1.43.9
-Coreutils-8.29
-Check-0.12.0
-Diffutils-3.6
-Gawk-4.2.0
-Findutils-4.6.0
-Groff-1.22.3
-GRUB-2.02
-Less-530
-Gzip-1.9
-IPRoute2-4.15.0
-Kbd-2.0.4
-Libpipeline-1.5.0
-Make-4.2.1
-Patch-2.7.6
-Sysklogd-1.5.1
-Sysvinit-2.88
-eudev-3.2.5
-Util-linux-2.31.1
-Man-DB-2.8.1
-Tar-1.30
-Texinfo-6.5
-lfs-bootscripts-20170626
-Vim-8.0.586
-Wget-1.19.4
-unzip-6.0
-GPM-1.20.7
-Links-2.14"
+DEPENDS="linuxheaders-$LINUX_VERS
+Man-pages-$MANPAGES_VERS
+Glibc-$GLIBC_VERS
+Zlib-$ZLIB_VERS
+File-$FILE_VERS
+Readline-$READLINE_VERS
+M4-$M4_VERS
+Bc-$BC_VERS
+Binutils-$BINUTILS_VERS
+GMP-$GMP_VERS
+MPFR-$MPFR_VERS
+MPC-$MPC_VERS
+Shadow-$SHADOW_VERS
+GCC-$GCC_VERS
+Bzip2-$BZIP2_VERS
+Pkg-config-$PKGCONFIG_VERS
+Ncurses-$NCURSES_VERS
+attr-$ATTR_VERS
+acl-$ACL_VERS
+libcap-$LIBCAP_VERS
+Sed-$SED_VERS
+Psmisc-$PSMISC_VERS
+Iana-Etc-$IANAETC_VERS
+Bison-$BISON_VERS
+Flex-$FLEX_VERS
+Grep-$GREP_VERS
+Bash-$BASH_VERS
+Libtool-$LIBTOOL_VERS
+GDBM-$GDBM_VERS
+gperf-$GPERF_VERS
+Expat-$EXPAT_VERS
+Inetutils-$INETUTILS_VERS
+Perl-$PERL_VERS
+XML-Parser-$XMLPARSER_VERS
+intltool-$INTLTOOL_VERS
+Autoconf-$AUTOCONF_VERS
+Automake-$AUTOMAKE_VERS
+xz-$XZ_VERS
+Kmod-$KMOD_VERS
+Gettext-$GETTEXT_VERS
+Libelf-$ELFUTILS_VERS
+Libffi-$LIBFFI_VERS
+OpenSSL-$OPENSSL_VERS
+python3-$PYTHON_VERS
+Ninja-$NINJA_VERS
+Meson-$MESON_VERS
+Coreutils-$COREUTILS_VERS
+Check-$CHECK_VERS
+Diffutils-$DIFFUTILS_VERS
+Gawk-$GAWK_VERS
+Findutils-$FINDUTILS_VERS
+Groff-$GROFF_VERS
+GRUB-$GRUB_VERS
+Less-$LESS_VERS
+Gzip-$GZIP_VERS
+IPRoute2-$IPROUTE2_VERS
+Kbd-$KBD_VERS
+Libpipeline-$LIBPIPELINE_VERS
+Make-$MAKE_VERS
+Patch-$PATCH_VERS
+Man-DB-$MANDB_VERS
+Tar-$TAR_VERS
+Texinfo-$TEXINFO_VERS
+Vim-$VIM_VERS
+Procps-ng-$PROCPSNG_VERS
+Util-linux-$UTILLINUX_VERS
+E2fsprogs-$E2FSPROGS_VERS
+Sysklogd-$SYSKLOGD_VERS
+Sysvinit-$SYSVINIT_VERS
+Wget-$WGET_VERS
+unzip-$UNZIP_VERS
+lfs-bootscripts-$BOOTSCRIPTS_VERS
+eudev-$EUDEV_VERS
+Wget-$WGET_VERS
+unzip-$UNZIP_VERS
+GPM-$GPM_VERS
+Links-$LINKS_VERS"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="system-meta"
-VERSION="8.2"
+VERSION="9.0"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
