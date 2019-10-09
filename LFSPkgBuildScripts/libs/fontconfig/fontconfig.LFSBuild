@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="FreeType-2.9"
+DEPENDS="FreeType-2.10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="fontconfig"
 TARNAME="$PKGNAME"
-VERSION="2.12.6"
+VERSION="2.13.1"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

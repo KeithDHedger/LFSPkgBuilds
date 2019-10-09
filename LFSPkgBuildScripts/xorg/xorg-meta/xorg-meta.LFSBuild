@@ -17,11 +17,11 @@ mkdir -vp ${SOURCEARCHIVES}/${SECTION}||true
 DEPENDS="util-macros-1.19.2
 xorgproto-2019.1
 libXau-1.0.9
-libXdmcp-1.1.2
-xcb-proto-1.12
-Fontconfig-2.12.6
-libxcb-1.12 
-xorg-libs-8.2
+libXdmcp-1.1.3
+xcb-proto-1.13
+Fontconfig-2.13.1
+libxcb-1.13.1
+xorg-libs-9.0
 xcb-util-0.4.0
 xcb-util-image-0.4.0
 xcb-util-keysyms-0.4.0
