@@ -2,13 +2,13 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libpng-1.6.34 MesaLib-17.3.4, xbitmaps-1.1.1 xcb-util-0.4.0"
+DEPENDS="libpng-1.6.37 MesaLib-19.1.4, xbitmaps-1.1.2 xcb-util-0.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="x-apps"
-VERSION="8.2"
+VERSION="9.0"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -70,7 +70,7 @@ pushd $COMPILEAT 2>/dev/null||true
 EOF
 
 	pushd "${SOURCEARCHIVES}/${SECTION}/x-apps"
-		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B http://xorg.freedesktop.org/releases/individual/app/ || true
+		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B ftp://ftp.x.org/pub/individual/app/ || true
 		if ! md5sum -c ${PKGNAME}-${VERSION}.md5;then
 			echo "Files don't match ..."
 			exit 1
