@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.2 libdrm-2.4.89 Python-2.7.14 Mako-1.0.4 elfutils-0.168 libvdpau-1.1.1 LLVM-5.0.1"
+DEPENDS="xorg-libs-9.0 libdrm-2.4.99 Python-2.7.16 Mako-1.1.1 libvdpau-1.2 LLVM-5.0.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="mesalib"
 TARNAME="mesa"
-VERSION="17.3.4"
+VERSION="19.1.4"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -35,16 +35,20 @@ pushd $COMPILEAT 2>/dev/null||true
 				;;
 			*)
 				DRI_DRV="nouveau,r200,radeon,swrast"
-				GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast"
+				GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast,virgl"
 				;;
 			esac
 
-		./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV --with-dri-drivers=$DRI_DRV --enable-vdpau --enable-llvm --enable-llvm-shared-libs --enable-egl --enable-glx --enable-dri --enable-dri3 --enable-shared-glapi --with-dri-driverdir="/usr/lib/xorg/modules/dri"
+		mkdir build
+		cd build
+
+		meson --prefix=$XORG_PREFIX -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false ..
+		unset GALLIUM_DRV DRI_DRIVERS
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
+	#	./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV --with-dri-drivers=$DRI_DRV --enable-vdpau --enable-llvm --enable-llvm-shared-libs --enable-egl --enable-glx --enable-dri --enable-dri3 --enable-shared-glapi --with-dri-driverdir="/usr/lib/xorg/modules/dri"
 		unset GLL_DRV
-		make $MAKEFLAGS||make || exit 100
-		make $MAKEFLAGS -C xdemos DEMOS_PREFIX=$XORG_PREFIX || make -C xdemos DEMOS_PREFIX=$XORG_PREFIX ||exit 100
-		make install DESTDIR=$PKG || exit 100
-		make -C xdemos DEMOS_PREFIX=$XORG_PREFIX DESTDIR="$PKG" install || exit 100
+#		make -C xdemos DEMOS_PREFIX=$XORG_PREFIX DESTDIR="$PKG" install || exit 100
 		install -v -dm755 $PKG/usr/share/doc/${TARNAME}-${VERSION}
 		cp -rfv docs/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
 	popd

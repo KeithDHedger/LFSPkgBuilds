@@ -4,7 +4,7 @@
 
 PKGNAME="MarkupSafe"
 TARNAME="$PKGNAME"
-VERSION="1.0"
+VERSION="1.1.1"
 BUILD=1
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
@@ -22,8 +22,6 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		python setup.py build
-		python setup.py install --optimize=1 --root=$PKG
 		python3 setup.py build
 		python3 setup.py install --optimize=1 --root=$PKG
 	popd

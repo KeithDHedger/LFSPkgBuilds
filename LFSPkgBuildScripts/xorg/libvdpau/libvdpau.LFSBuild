@@ -2,22 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.2"
+DEPENDS="xorg-libs-9.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libvdpau"
 TARNAME="$PKGNAME"
-VERSION="1.1.1"
+VERSION="1.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://people.freedesktop.org/~aplattner/vdpau/${TARBALL}" $SECTION
-
+gettar "https://gitlab.freedesktop.org/vdpau/${PKGNAME}/uploads/14b620084c027d546fa0b3f083b800c6/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}

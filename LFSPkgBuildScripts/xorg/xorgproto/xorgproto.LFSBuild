@@ -29,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		cd build
 
 		meson --prefix=$XORG_PREFIX ..
-		ninja
+		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 		install -vdm 755 $XORG_PREFIX/share/doc/${PKGNAME}-${VERSION}
 		install -vm 644 ../[^m]*.txt ../PM_spec $XORG_PREFIX/share/doc/${PKGNAME}-${VERSION}

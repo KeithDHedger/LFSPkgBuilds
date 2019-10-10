@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.2"
+DEPENDS="xorg-libs-9.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libdrm"
 TARNAME="$PKGNAME"
-VERSION="2.4.89"
+VERSION="2.4.99"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -28,9 +28,12 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-udev --disable-valgrind
-		make $MAKEFLAGS||make || exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir build
+		cd build
+
+		meson --prefix=$XORG_PREFIX -Dudev=true
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
 	popd
 
 	checketc $PKG
