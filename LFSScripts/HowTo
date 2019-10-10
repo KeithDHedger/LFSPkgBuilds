@@ -36,7 +36,7 @@ Own the files:
 
 3)
 #cd into the lfsscripts folder
-cd /mnt/LFS/LFSScripts
+cd $LFS/LFSScripts
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
