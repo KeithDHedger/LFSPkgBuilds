@@ -158,8 +158,13 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 
 13)
 #No point in compiling your own kernel on pi so prebuilt one is used, so skip this bit on pi.
+
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
+
+#Optional copy the config for the running kernel, don't do this if running from bootcd
+#gunzip < /proc/config.gz > config-${KERNELVERSION}
+
 ./kernel.LFSBuild install
 
 #Again on pi skip this bit as firmware is installed by the pi-system-meta package.
