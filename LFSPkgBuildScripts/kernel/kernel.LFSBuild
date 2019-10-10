@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 #Copy the config for the running kernel
-gunzip < /proc/config.gz > ${KERNELCONFIG}
+#gunzip < /proc/config.gz > ${KERNELCONFIG}
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/linux/kernel/v4.x/${TARBALL}" ${SECTION}
