@@ -33,9 +33,9 @@ glu-9.0.1
 xbitmaps-1.1.2
 x-apps-9.0
 xcursor-themes-1.0.4
-x-fonts-8.2
-xkeyboard-config-2.23.1
-Xorg-Server-1.19.6
+x-fonts-9.0
+xkeyboard-config-2.27
+Xorg-Server-1.20.5
 xorg-drivers-8.2
 twm-1.0.9
 xterm-331
