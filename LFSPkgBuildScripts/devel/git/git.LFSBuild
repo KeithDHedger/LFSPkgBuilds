@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.58.0 OpenSSL-1.1.0 Python-2.7.14 PCRE-8.41 Subversion-1.9.7"
+DEPENDS="curl-7.65.3  OpenSSL-1.1.1 Python-2.7.16 pcre2-10.33 Subversion-1.12.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="git"
 TARNAME="$PKGNAME"
-VERSION="2.16.2"
+VERSION="2.23.0"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -28,7 +28,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-gitconfig=/etc/gitconfig
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-gitconfig=/etc/gitconfig --with-libpcre2
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 

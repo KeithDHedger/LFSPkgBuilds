@@ -4,7 +4,7 @@
 
 PKGNAME="pcre2"
 TARNAME="$PKGNAME"
-VERSION="10.31"
+VERSION="10.33"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -14,14 +14,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/pcre/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-unicode --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-unicode --enable-jit --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
