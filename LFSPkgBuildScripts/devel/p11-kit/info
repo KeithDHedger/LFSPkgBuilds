@@ -1,0 +1,1 @@
+http://www.linuxfromscratch.org/blfs/view/stable/postlfs/p11-kit.html The p11-kit package provides a way to load and enumerate PKCS #11 (a Cryptographic Token Interface Standard) modules.

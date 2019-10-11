@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.19.6"
+DEPENDS="Xorg-Server-1.20.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xf86-video-ati"
 TARNAME="$PKGNAME"
-VERSION="7.10.0"
+VERSION="19.0.1"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xorg.freedesktop.org/archive/individual/driver/${TARBALL}" $SECTION
+gettar "https://www.x.org/pub/individual/driver/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -29,8 +30,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --enable-glamor
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/$XORG_PREFIX/share/X11/xorg.conf.d||true
-		install -v -m644 conf/10-radeon.conf $PKG/$XORG_PREFIX/share/X11/xorg.conf.d
 	popd
 
 	checketc $PKG

@@ -2,18 +2,18 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.0"
+DEPENDS="OpenSSL-1.1.1 p11-kit-0.23.16.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="make-ca"
 TARNAME="$PKGNAME"
-VERSION="0.7"
+VERSION="1.4"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -21,12 +21,14 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/djlucas/make-ca/archive/v${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/djlucas/make-ca/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man||true
+		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local||true
+		ln -sfv /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.crt
+		ln -sfv /etc/pki/tls/certs/ca-bundle.crt $PKG/etc/ssl/ca-bundle.crt
 		make install DESTDIR=$PKG
 	popd
 

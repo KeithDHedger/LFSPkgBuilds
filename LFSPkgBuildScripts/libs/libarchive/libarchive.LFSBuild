@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxml2-2.9.7 LZO-2.10 OpenSSL-1.1.0"
+DEPENDS="libxml2-2.9.9 LZO-2.10 OpenSSL-1.1.1 Nettle-3.5.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libarchive"
 TARNAME="$PKGNAME"
-VERSION="3.3.2"
+VERSION="3.4.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.libarchive.org/downloads/${TARBALL}" $SECTION
+gettar "https://github.com/libarchive/libarchive/releases/download/v${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

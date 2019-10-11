@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="make-ca-0.7"
+DEPENDS="make-ca-1.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="curl"
 TARNAME="$PKGNAME"
-VERSION="7.58.0"
+VERSION="7.65.3"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"

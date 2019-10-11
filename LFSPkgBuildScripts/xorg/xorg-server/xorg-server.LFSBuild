@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.1 Nettle-3.5.1 Pixman-0.38.4 x-fonts-9.0 xkeyboard-config-2.27 libepoxy-1.4.3 acpid-2.0.28 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
+DEPENDS="OpenSSL-1.1.1 Nettle-3.5.1 Pixman-0.38.4 x-fonts-9.0 xkeyboard-config-2.27 libepoxy-1.5.3 acpid-2.0.32 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

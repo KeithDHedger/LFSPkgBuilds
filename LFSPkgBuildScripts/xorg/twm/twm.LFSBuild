@@ -2,28 +2,27 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.19.1"
+DEPENDS="Xorg-Server-1.20.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="twm"
 TARNAME="$PKGNAME"
-VERSION="1.0.9"
+VERSION="1.0.10"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://xorg.freedesktop.org/releases/individual/app/${TARBALL}" $SECTION
+gettar "https://www.x.org/pub/individual/app/${TARBALL}" $SECTION
 
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
