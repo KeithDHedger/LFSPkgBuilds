@@ -30,27 +30,28 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch||true
 		case $(uname -m) in
 			armv?l)
-				DRI_DRV=
-				GLL_DRV="vc4"
+				DRI_DRIVERS=
+				GALLIUM_DRV="vc4"
 				;;
 			*)
-				DRI_DRV="nouveau,r200,radeon,swrast"
-				GLL_DRV="i915,r600,nouveau,radeonsi,svga,swrast,virgl"
+				#DRI_DRIVERS="nouveau,r200,swrast"
+				DRI_DRIVERS="i965,nouveau"
+				#GALLIUM_DRV="i915,r600,nouveau,radeonsi,svga,swrast,virgl"
+				GALLIUM_DRV="i915,nouveau,r600,radeonsi,svga,swrast,virgl"
 				;;
 			esac
 
-		mkdir build
+		mkdir build||true
 		cd build
 
 		meson --prefix=$XORG_PREFIX -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false ..
-		unset GALLIUM_DRV DRI_DRIVERS
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 	#	./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV --with-dri-drivers=$DRI_DRV --enable-vdpau --enable-llvm --enable-llvm-shared-libs --enable-egl --enable-glx --enable-dri --enable-dri3 --enable-shared-glapi --with-dri-driverdir="/usr/lib/xorg/modules/dri"
-		unset GLL_DRV
 #		make -C xdemos DEMOS_PREFIX=$XORG_PREFIX DESTDIR="$PKG" install || exit 100
 		install -v -dm755 $PKG/usr/share/doc/${TARNAME}-${VERSION}
 		cp -rfv docs/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
+		unset GALLIUM_DRV DRI_DRIVERS
 	popd
 	
 	checketc $PKG
