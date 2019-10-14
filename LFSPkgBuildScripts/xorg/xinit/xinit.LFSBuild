@@ -28,11 +28,12 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -e '/$serverargs $vtarg/ s/serverargs/: #&/' -i startx.cpp
+		#sed -e '/$serverargs $vtarg/ s/serverargs/: #&/' -i startx.cpp
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-xinitdir=/etc/X11/app-defaults
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
-		(cd $PKG/usr/bin;patch -i $CWD/startx.patch) #NEEDED?
+		#(cd $PKG/usr/bin;patch -i $CWD/startx.patch) #NEEDED?
+		sed -i '/$serverargs $vtarg/ s/serverargs/: #&/' ${PKG}/${XORG_PREFIX}/bin/startx
 	popd
 
 	checketc $PKG

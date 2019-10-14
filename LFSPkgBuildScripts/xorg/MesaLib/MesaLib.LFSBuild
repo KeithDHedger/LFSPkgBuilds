@@ -24,6 +24,8 @@ gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+PLATFORMS=${PLATFORMS:-"x11,surfaceless,drm"}
+
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
@@ -34,9 +36,7 @@ pushd $COMPILEAT 2>/dev/null||true
 				GALLIUM_DRV="vc4"
 				;;
 			*)
-				#DRI_DRIVERS="nouveau,r200,swrast"
 				DRI_DRIVERS="i965,nouveau"
-				#GALLIUM_DRV="i915,r600,nouveau,radeonsi,svga,swrast,virgl"
 				GALLIUM_DRV="i915,nouveau,r600,radeonsi,svga,swrast,virgl"
 				;;
 			esac
@@ -44,13 +44,11 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir build||true
 		cd build
 
-		meson --prefix=$XORG_PREFIX -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false ..
+		meson --prefix=$XORG_PREFIX -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false -Dplatforms=$PLATFORMS ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
-	#	./configure CFLAGS="-O2 $LFSFLAGS" CXXFLAGS="-O2 $LFSFLAGS" LDFLAGS=-lLLVM --prefix=$XORG_PREFIX --sysconfdir=/etc --enable-texture-float --enable-gles1 --enable-gles2 --enable-osmesa --enable-xa --enable-gbm --enable-glx-tls --with-egl-platforms="drm,x11" --with-gallium-drivers=$GLL_DRV --with-dri-drivers=$DRI_DRV --enable-vdpau --enable-llvm --enable-llvm-shared-libs --enable-egl --enable-glx --enable-dri --enable-dri3 --enable-shared-glapi --with-dri-driverdir="/usr/lib/xorg/modules/dri"
-#		make -C xdemos DEMOS_PREFIX=$XORG_PREFIX DESTDIR="$PKG" install || exit 100
 		install -v -dm755 $PKG/usr/share/doc/${TARNAME}-${VERSION}
-		cp -rfv docs/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
+		cp -rfv ../docs/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
 		unset GALLIUM_DRV DRI_DRIVERS
 	popd
 	
