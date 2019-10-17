@@ -30,10 +30,12 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's:444:644:' Makedefs.in
 		sed -i '/MAN.EXT/s:.gz::g' configure config-scripts/cups-manpages.m4
+		sed -i '/stat.h/a #include <asm-generic/ioctls.h>' test/ipptool.c
+
 		aclocal -I config-scripts
 		autoconf -I config-scripts
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc ./configure --libdir=/usr/lib${LIBDIRSUFFIX} --disable-systemd --with-rcdir=/tmp/cupsinit --with-docdir=/usr/share/cups/doc/${PKGNAME}-${VERSION} --with-system-groups=lpadmin
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc CXX=g++ ./configure --libdir=/usr/lib${LIBDIRSUFFIX} --disable-systemd --with-rcdir=/tmp/cupsinit --with-docdir=/usr/share/cups/doc/${PKGNAME}-${VERSION} --with-system-groups=lpadmin
 		make $MAKEFLAGS||make|| exit 100
 		make install BUILDROOT=$PKG || exit 100
 
