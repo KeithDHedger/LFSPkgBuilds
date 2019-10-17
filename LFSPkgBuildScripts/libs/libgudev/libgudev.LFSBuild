@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0"
+DEPENDS="GLib-2.60.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libgudev"
 TARNAME="$PKGNAME"
-VERSION="232"
+VERSION="233"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"

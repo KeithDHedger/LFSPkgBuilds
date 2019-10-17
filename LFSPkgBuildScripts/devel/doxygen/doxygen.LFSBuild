@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.10.2 Graphviz-2.40.1 Python-2.7.14 Xapian-1.4.3"
+DEPENDS="CMake-3.15.2 Graphviz-2.40.1 Python-2.7.16 Xapian-1.4.12 LLVM-8.0.1 git-2.23.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="doxygen"
 TARNAME="$PKGNAME"
-VERSION="1.8.14"
+VERSION="1.8.16"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.stack.nl/pub/doxygen/${TARBALL}" $SECTION
+gettar "http://doxygen.nl/files/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -30,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -v build
 		cd build
 
-		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -Dbuild_search=ON ..
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -Dbuild_search=ON -Duse_libclang=ON ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/man/man1

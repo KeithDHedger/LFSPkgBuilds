@@ -4,11 +4,12 @@
 
 PKGNAME="Module-Build"
 TARNAME="$PKGNAME"
-VERSION="0.4224"
+VERSION="0.42"
 BUILD=1
 SECTION="PERL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+MINORVERSION="30"
+TARBALL="${TARNAME}-${VERSION}_${MINORVERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -20,7 +21,7 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "${TARNAME}-${VERSION}_${MINORVERSION}"
 		perl Makefile.PL
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR=$PKG || exit
@@ -48,7 +49,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}_${MINORVERSION}"
 popd 2>/dev/null||true
 
 

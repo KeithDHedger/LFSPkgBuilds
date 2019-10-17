@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0"
+DEPENDS="GLib-2.60.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="vala"
 TARNAME="$PKGNAME"
-VERSION="0.38.8"
+VERSION="0.44.7"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -26,13 +26,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		VALADOC=""
 		if [ "$(lfspkg --fuzzy 5 graphviz)" = "false" ];then
-			sed -i '102d; 108,124d; 126,127d'  configure.ac
-			sed -i '/valadoc/d' Makefile.am
-			ACLOCAL= autoreconf -fiv
+			VALADOC="--disable-valadoc"
 		fi
-
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} $VALADOC
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

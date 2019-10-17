@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libunistring-0.9.8 Nettle-3.4"
+DEPENDS="libunistring-0.9.10 Nettle-3.5.1 p11-kit-0.23.16.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gnutls"
 TARNAME="$PKGNAME"
-VERSION="3.6.2"
+VERSION="3.6.9"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-default-trust-store-file=/etc/ssl/ca-bundle.crt --with-included-libtasn1 --without-p11-kit --enable-openssl-compatibility
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-guile --with-default-trust-store-pkcs11="pkcs11:" --enable-openssl-compatibility
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

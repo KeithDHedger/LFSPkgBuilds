@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.4 GLib-2.56.0 lcms2-2.9 SQLite-3.22.0 Vala-0.38.8 libgudev-232 libgusb-0.3.0 gobject-introspection-1.50.0 polkit-0.113"
+DEPENDS="dbus-1.12.16 GLib-2.60.6 lcms2-2.9 SQLite-3.29.0 Vala-0.44.7 libgudev-233 libgusb-0.3.0 gobject-introspection-1.60.2 polkit-0.116"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="colord"
 TARNAME="$PKGNAME"
-VERSION="1.4.1"
+VERSION="1.4.4"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"

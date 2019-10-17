@@ -2,31 +2,34 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0 Intltool-0.51.0 JS-38.2.1"
+DEPENDS="GLib-2.60.6  Intltool-0.51.0 JS-60.8.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="polkit"
 TARNAME="$PKGNAME"
-VERSION="0.113"
+VERSION="0.116"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}+git_2919920+js38.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/BLFS/polkit/${TARBALL}" $SECTION
+gettar "https://www.freedesktop.org/software/polkit/releases/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}+git_2919920+js38"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/lib/${PKGNAME}-${VERSION} --localstatedir=/var --with-authfw=shadow --disable-static --disable-man-pages --enable-libsystemd-login=no --disable-static --enable-gtk-doc
+	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ../polkit-0.116-fix_elogind_detection-1.patch
+		autoreconf -fi
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --enable-libsystemd-login=no --disable-static --enable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libsystemd-login=no
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -53,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}+git_2919920+js38"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

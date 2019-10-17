@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="docbook-xml-4.5 docbook-xsl-1.79.2 libxslt-1.1.32"
+DEPENDS="docbook-xml-4.5 docbook-xsl-1.79.2 libxslt-1.1.33"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

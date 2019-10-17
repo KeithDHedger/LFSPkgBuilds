@@ -15,7 +15,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xmlsoft.org/sources/${TARBALL}" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-python3_hack-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
