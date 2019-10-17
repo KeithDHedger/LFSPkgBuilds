@@ -9,27 +9,29 @@ fi
 
 PKGNAME="js"
 VERSION="60.8.0"
-TARNAME="mozjs-${VERSION}"
+TARNAME="mozjs"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}.rc0.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/teams/releng/tarballs-needing-help/mozjs/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/teams/releng/tarballs-needing-help/${TARNAME}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	export SHELL=/bin/bash
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-		mkdir mozjs-build
+	pushd "${TARNAME}-${VERSION}"
+		export SHELL=/bin/bash
+		mkdir mozjs-build||true
 		cd mozjs-build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure --prefix=/usr --enable-readline --enable-threadsafe --with-system-ffi --with-system-nspr --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure --prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -56,5 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "mozjs-38.0.0"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

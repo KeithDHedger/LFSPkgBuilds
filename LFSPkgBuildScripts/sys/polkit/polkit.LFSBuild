@@ -27,7 +27,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ../polkit-0.116-fix_elogind_detection-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch
 		autoreconf -fi
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --enable-libsystemd-login=no --disable-static --enable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libsystemd-login=no
 		make $MAKEFLAGS||make|| exit 100
