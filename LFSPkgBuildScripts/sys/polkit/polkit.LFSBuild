@@ -29,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch
 		autoreconf -fi
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --enable-libsystemd-login=no --disable-static --enable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libsystemd-login=no
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --enable-libsystemd-login=no --disable-static --disable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libelogind=no
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
