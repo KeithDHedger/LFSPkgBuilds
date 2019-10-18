@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.16 six-1.12.0 docbook-xml-4.5 docbook-xsl-1.79.2 Itstool-2.0.6 libxslt-1.1.33 xmlto-0.0.28"
+DEPENDS="Python-2.7.16 six-1.12.0 docbook-xml-4.5 docbook-xsl-1.79.2 Itstool-2.0.6 libxslt-1.1.33 xmlto-0.0.28 Pygments-2.4.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

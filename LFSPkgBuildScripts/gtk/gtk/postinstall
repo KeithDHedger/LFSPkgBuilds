@@ -12,7 +12,7 @@ mkdir -vp /usr/share/glib-2.0/||true
 
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
-pango-querymodules > /etc/pango/pango.modules||true
+#pango-querymodules > /etc/pango/pango.modules||true
 gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders||true
 
 gtk-query-immodules-2.0 --update-cache

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0 libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10 gobject-introspection-1.60.2 shared-mime-info-1.12 xorg-libs-9.0"
+DEPENDS="GLib-2.60.6 libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10 gobject-introspection-1.60.2 shared-mime-info-1.12 xorg-libs-9.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build
-		meson --prefix=/usr ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd
