@@ -57,13 +57,13 @@ export LFS LC_ALL LFS_TGT PATH
 export MAKEFLAGS='-j4'
 
 if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
-	wget http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list
-	wget http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/md5sums
+	wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list
+	wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/md5sums
 	mv md5sums $SYSTEMSOURCE
-	wget -i wget-list -c -P $SYSTEMSOURCE||true
+	wget --no-check-certificate -i wget-list --no-check-certificate  -c -P $SYSTEMSOURCE||true
 
 #wget from the blfs book I prefer to make this as part of the main system
-	wget -c "$WGETTAR" -P $NETSOURCE
+	wget --no-check-certificate -c "$WGETTAR" -P $NETSOURCE
 #extra pi stuff
 	if [[ $PIBUILD -eq 1 ]];then
 		pushd $SYSTEMSOURCE
@@ -650,9 +650,6 @@ do
 				make install
 			popd
 			rm -rf ${NAME}-${VERSION}
-			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
-			;;
-
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
