@@ -1,0 +1,6 @@
+#!/bin/bash
+#©keithhedger Sun 20 Oct 15:16:43 BST 2019
+
+. /usr/share/LFSPkg/LFSFunctions
+
+gdk-pixbuf-query-loaders --update-cache

@@ -1,0 +1,22 @@
+#!/bin/bash
+#©keithhedger Sun 20 Oct 15:16:43 BST 2019
+
+. /usr/share/LFSPkg/LFSFunctions
+
+cat >> /etc/ld.so.conf << EOF
+# Begin rustc addition
+
+/opt/rustc/lib
+
+# End rustc addition
+EOF
+
+ldconfig
+
+cat > /etc/profile.d/rustc.sh << "EOF"
+# Begin /etc/profile.d/rustc.sh
+
+pathprepend /opt/rustc/bin           PATH
+
+# End /etc/profile.d/rustc.sh
+EOF

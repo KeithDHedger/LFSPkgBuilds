@@ -1,0 +1,86 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="cURL-7.65.3 CMake-3.15.2 libssh2-1.9.0 LLVM-8.0.1"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="rustc"
+TARNAME="$PKGNAME"
+VERSION="1.35.0"
+BUILD=1
+SECTION="DEVEL"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}-src.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://static.rust-lang.org/dist/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		mkdir -vp $PKG/opt/${PKGNAME}-${VERSION}
+		ln -s ${PKGNAME}-${VERSION} $PKG/opt/rustc
+
+		cat << EOF > config.toml
+[llvm]
+targets = "$ARCH"
+link-shared = true
+[build]
+docs = false
+extended = true
+[install]
+prefix = "/opt/${PKGNAME}-${VERSION}"
+docdir = "share/doc/${PKGNAME}-${VERSION}"
+[rust]
+channel = "stable"
+rpath = false
+codegen-tests = false
+
+[target.x86_64-unknown-linux-gnu]
+llvm-config = "/usr/bin/llvm-config"
+[target.i686-unknown-linux-gnu]
+llvm-config = "/usr/bin/llvm-config"
+
+EOF
+		export RUSTFLAGS="$RUSTFLAGS -C link-args=-lffi"
+		python3 ./x.py build --exclude src/tools/miri
+
+		export LIBSSH2_SYS_USE_PKG_CONFIG=1
+		DESTDIR=${PWD}/install python3 ./x.py install
+		unset LIBSSH2_SYS_USE_PKG_CONFIG
+		chown -R root:root install
+		cp -a install/* "$PKG"
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32 PyGObject-2.28.7 PyCairo-1.10.0 libglade-2.6.4 libxslt-1.1.32"
+DEPENDS="GTK-2.24.32 PyGObject-2.28.7 pango-1.42.4 PyCairo-1.18.1 libglade-2.6.4 libxslt-1.1.33 ATK-2.32.0 pango-1.42.4 PyCairo-1.18.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

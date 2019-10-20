@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.4 GLib-2.56.0 Intltool-0.51.0"
+DEPENDS="dbus-1.12.16 GLib-2.60.6 Intltool-0.51.0 libusb-1.0.22 libsecret-0.18.8 libsoup-2.66.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gvfs"
 TARNAME="$PKGNAME"
-VERSION="1.34.2"
+VERSION="1.40.2"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
