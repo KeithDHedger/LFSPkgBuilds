@@ -641,6 +641,18 @@ do
 			;;
 
 		31)
+			NAME=util-linux
+			VERSION=$UTILLINUX_VERS
+			tar -xvf ${NAME}-${VERSION}.tar.xz
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/tools --without-python --disable-makeinstall-chown --without-systemdsystemunitdir --without-ncurses PKG_CONFIG=""
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 

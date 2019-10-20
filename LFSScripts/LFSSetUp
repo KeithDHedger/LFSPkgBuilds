@@ -67,7 +67,7 @@ if [ $PIBUILD -eq 1 ];then
 fi
 
 #LFS Version
-LFSVERSION=${LFSVERSION:-8.2}
+LFSVERSION=${LFSVERSION:-9.0}
 readWithDefault "LFSVERSION"  "Enter Version"
 
 #Computer name

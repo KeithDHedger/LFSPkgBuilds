@@ -17,16 +17,23 @@ apt-get install bison gawk m4 texinfo
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS
-SOURCEARCHIVES=/LFSSourceArchives/8.2
-BUILTPACKAGES=/LFSBuiltPackages/8.2
-EXTFOLDER=
 LFSVERSION=9.0
-KERNELVERSION=4.15.3
+SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
+BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
+EXTFOLDER=
+KERNELVERSION=5.2.8
+
+export LFS
+export LFSVERSION
+export SOURCEARCHIVES
+export BUILTPACKAGES
+export EXTFOLDER
+export KERNELVERSION
 
 ###RECOMMENDED####
 #or cd into the mounted partition wher you intend to build LFS:
 #LFS should point to your mounted LFS partition ( eg LFS=/mnt/LFS ).
-cd /mnt/LFS
+cd $LFS
 [sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
 
 Own the files:
