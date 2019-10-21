@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs922/${TARBALL}" $SECTION
+gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs927/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-upstream_fixes-1.patch" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/gnu-gs-fonts-other-6.0.tar.gz" $SECTION
@@ -30,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		rm -rf freetype lcms2 jpeg libpng zlib||true
-		patch -Np1 -i ../${PKGNAME}-${VERSION}-upstream_fixes-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-upstream_fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-compile-inits --enable-dynamic --with-system-libtiff
 		make $MAKEFLAGS||make|| exit 100
 		make $MAKEFLAGS so||make so|| exit 100
