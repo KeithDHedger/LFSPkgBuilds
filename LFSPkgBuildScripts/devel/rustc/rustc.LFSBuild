@@ -25,7 +25,7 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "${TARNAME}-${VERSION}-src"
 		mkdir -vp $PKG/opt/${PKGNAME}-${VERSION}
 		ln -s ${PKGNAME}-${VERSION} $PKG/opt/rustc
 
@@ -82,5 +82,5 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}-src"
 popd 2>/dev/null||true
