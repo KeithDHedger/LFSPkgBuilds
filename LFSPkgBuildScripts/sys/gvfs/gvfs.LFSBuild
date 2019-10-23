@@ -19,16 +19,19 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/gvfs/1.24/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/gvfs/${VERSION%.?*}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-gphoto2
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir build||true
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dfuse=false -Dgphoto2=false -Dafc=false -Dbluray=false -Dnfs=false -Dmtp=false -Dsmb=false -Dtmpfilesdir=no -Ddnssd=false -Dgoa=false -Dgoogle=false -Dsystemduserunitdir=no -Dgcrypt=false -Dgcr=false -Dudisks2=false -Dlogind=false  -Dcdda=false -Dsftp=false ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc $PKG

@@ -6,17 +6,20 @@
 cat >> /etc/ld.so.conf << EOF
 # Begin rustc addition
 
-/opt/rustc/lib
+/opt/rust/lib
 
 # End rustc addition
 EOF
 
 ldconfig
 
+mkdir -vp /etc/profile.d/||true
 cat > /etc/profile.d/rustc.sh << "EOF"
 # Begin /etc/profile.d/rustc.sh
 
-pathprepend /opt/rustc/bin           PATH
+if ! $(echo "$PATH"|grep "/opt/rust/bin");then
+	PATH="${PATH}:/opt/rust/bin"
+fi
 
 # End /etc/profile.d/rustc.sh
 EOF

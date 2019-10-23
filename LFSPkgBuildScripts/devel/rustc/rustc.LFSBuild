@@ -7,13 +7,13 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="rustc"
+PKGNAME="rust"
 TARNAME="$PKGNAME"
 VERSION="1.35.0"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}-src.tar.gz"
+TARBALL="${TARNAME}-${VERSION}-$ARCH-unknown-linux-gnu.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -25,39 +25,8 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}-src"
-		mkdir -vp $PKG/opt/${PKGNAME}-${VERSION}
-		ln -s ${PKGNAME}-${VERSION} $PKG/opt/rustc
-
-		cat << EOF > config.toml
-[llvm]
-targets = "$ARCH"
-link-shared = true
-[build]
-docs = false
-extended = true
-[install]
-prefix = "/opt/${PKGNAME}-${VERSION}"
-docdir = "share/doc/${PKGNAME}-${VERSION}"
-[rust]
-channel = "stable"
-rpath = false
-codegen-tests = false
-
-[target.x86_64-unknown-linux-gnu]
-llvm-config = "/usr/bin/llvm-config"
-[target.i686-unknown-linux-gnu]
-llvm-config = "/usr/bin/llvm-config"
-
-EOF
-		export RUSTFLAGS="$RUSTFLAGS -C link-args=-lffi"
-		python3 ./x.py build --exclude src/tools/miri
-
-		export LIBSSH2_SYS_USE_PKG_CONFIG=1
-		DESTDIR=${PWD}/install python3 ./x.py install
-		unset LIBSSH2_SYS_USE_PKG_CONFIG
-		chown -R root:root install
-		cp -a install/* "$PKG"
+	pushd "${TARNAME}-${VERSION}-$ARCH-unknown-linux-gnu"
+		./install.sh --destdir=$PKG --prefix=/opt/rust
 	popd
 
 	checketc "$PKG"
@@ -82,5 +51,5 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}-src"
+	rm -r "$PKG" "${TARNAME}-${VERSION}-$ARCH-unknown-linux-gnu"
 popd 2>/dev/null||true
