@@ -1,0 +1,39 @@
+*** Makefile	2019-09-21 11:16:49.000000000 +0100
+--- Makefile.mine	2019-10-26 15:32:48.000000000 +0100
+***************
+*** 85,91 ****
+  CONFIG_RTW_DEBUG = y
+  # default log level is _DRV_INFO_ = 4,
+  # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
+! CONFIG_RTW_LOG_LEVEL = 4
+  ######################## Wake On Lan ##########################
+  CONFIG_WOWLAN = n
+  #bit2: deauth, bit1: unicast, bit0: magic pkt.
+--- 85,91 ----
+  CONFIG_RTW_DEBUG = y
+  # default log level is _DRV_INFO_ = 4,
+  # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
+! CONFIG_RTW_LOG_LEVEL = 2
+  ######################## Wake On Lan ##########################
+  CONFIG_WOWLAN = n
+  #bit2: deauth, bit1: unicast, bit0: magic pkt.
+***************
+*** 2248,2254 ****
+  	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
+  
+  install:
+! 	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
+  	/sbin/depmod -a ${KVER}
+  
+  uninstall:
+--- 2248,2257 ----
+  	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
+  
+  install:
+! 	install -d $(DESTDIR)$(MODDESTDIR)
+! 	install -p -m 644 $(MODULE_NAME).ko $(DESTDIR)$(MODDESTDIR)
+! 
+! postinstall:
+  	/sbin/depmod -a ${KVER}
+  
+  uninstall:

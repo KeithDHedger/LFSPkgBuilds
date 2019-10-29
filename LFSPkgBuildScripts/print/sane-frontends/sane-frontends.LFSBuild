@@ -14,7 +14,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://alioth.debian.org/frs/download.php/file/1140/${TARBALL}" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -2,36 +2,32 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cups-2.2.12 GLib-2.60.6 ghostscript-9.27 lcms2-2.9 MuPDF-1.12.0 Poppler-0.79.0 Qpdf-8.4.2 MuPDF-1.16.1"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="cups-filters"
+PKGNAME="RTL88x2BU-Linux-Driver"
 TARNAME="$PKGNAME"
-VERSION="1.25.2"
-BUILD=${BUILD:-1}
-SECTION="PRINT"
+VERSION="5.2.8"
+BUILD=1
+SECTION="HWARE"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="master.zip"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.openprinting.org/download/cups-filters/${TARBALL}" $SECTION
+gettar "https://github.com/RinCat/${PKGNAME}/archive/${TARBALL}" $SECTION "${PKGNAME}.zip"
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --without-rcdir --with-gs-path=/usr/bin/gs --with-pdftops-path=/usr/bin/gs --disable-static --disable-avahi
+		patch -Np0 -i ${CWD}/pkgdriver.patch
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

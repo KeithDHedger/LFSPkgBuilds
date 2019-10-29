@@ -2,24 +2,25 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cups-2.2.6"
+DEPENDS="Cups-2.2.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gutenprint"
 TARNAME="$PKGNAME"
-VERSION="5.2.13"
+VERSION="5.3.3"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/gimp-print/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/gimp-print/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
