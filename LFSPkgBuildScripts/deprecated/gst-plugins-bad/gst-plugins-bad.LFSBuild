@@ -7,11 +7,11 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gst-plugins-ugly"
+PKGNAME="gst-plugins-bad-dep"
 TARNAME="$PKGNAME"
 VERSION="0.11.3"
 BUILD=${BUILD:-1}
-SECTION="MM"
+SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -20,15 +20,13 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-libcdio_fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-libcdio_fixes-1.patch
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-docbook=no --enable-gtk-doc=no
+		CFLAGS="$LFSFLAGS -Wno-error" CXXFLAGS="$LFSFLAGS -Wno-error" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --disable-debug --disable-nls --disable-static --disable-examples
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

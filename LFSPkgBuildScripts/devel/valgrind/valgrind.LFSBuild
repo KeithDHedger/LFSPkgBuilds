@@ -4,7 +4,7 @@
 
 PKGNAME="valgrind"
 TARNAME="$PKGNAME"
-VERSION="3.13.0"
+VERSION="3.15.0"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -21,7 +21,6 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '1904s/4/5/' coregrind/m_syswrap/syswrap-linux.c
 		sed -i 's|/doc/valgrind||' docs/Makefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --datadir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100

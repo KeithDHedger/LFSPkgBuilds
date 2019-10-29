@@ -2,12 +2,12 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.50.3 libxml2-2.9.4"
+DEPENDS="gst-plugins-base-0.11.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gstreamer"
+PKGNAME="gst-plugins-ugly-dep"
 TARNAME="$PKGNAME"
 VERSION="0.11.3"
 BUILD=${BUILD:-1}
@@ -20,13 +20,14 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-libcdio_fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i  -e '/YYLEX_PARAM/d' -e '/parse-param.*scanner/i %lex-param { void *scanner }' gst/parse/grammar.y
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-libcdio_fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-docbook=no --enable-gtk-doc=no
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -55,4 +56,4 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
-popd 2>/dev/null||true
+popd 2>/dev/null
