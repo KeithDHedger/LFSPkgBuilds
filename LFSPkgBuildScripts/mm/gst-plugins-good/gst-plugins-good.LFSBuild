@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.12.4"
+DEPENDS="gst-plugins-base-1.16.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gst-plugins-good1.0"
-TARNAME="gst-plugins-good"
-VERSION="1.12.4"
+PKGNAME="gst-plugins-good"
+TARNAME="${PKGNAME}"
+VERSION="1.16.0"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -19,16 +19,20 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://gstreamer.freedesktop.org/src/gst-plugins-good/${TARBALL}" $SECTION
+gettar "http://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-v4l2_fix-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-package-name="GStreamer Good Plugins ${VERSION} BLFS" --with-package-origin="http://www.linuxfromscratch.org/blfs/view/stable/" --disable-gtk-doc
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir build||true
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dpackage-origin="http://www.linuxfromscratch.org/blfs/view/svn/" -Dpackage-name="GStreamer ${VERSION} BLFS" ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc $PKG

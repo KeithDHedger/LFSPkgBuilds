@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0 gobject-introspection-1.54.1"
+DEPENDS="GLib-2.60.6 gobject-introspection-1.60.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="gstreamer1.0"
-TARNAME="gstreamer"
-VERSION="1.12.4"
+PKGNAME="gstreamer"
+TARNAME="${PKGNAME}"
+VERSION="1.16.0"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -19,16 +19,20 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://gstreamer.freedesktop.org/src/gstreamer/${TARBALL}" $SECTION
+gettar "https://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-buffer_size_reset_fix-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-package-name="GStreamer ${VERSION} BLFS" --with-package-origin="http://www.linuxfromscratch.org/blfs/view/stable/" --disable-gtk-doc
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-buffer_size_reset_fix-1.patch
+		mkdir build||true
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dgst_debug=false -Dgtk_doc=disabled -Dpackage-origin="http://www.linuxfromscratch.org/blfs/view/svn/" -Dpackage-name="GStreamer ${VERSION} BLFS" ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc $PKG
