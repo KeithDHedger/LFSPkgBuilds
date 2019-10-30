@@ -31,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -v build
 		cd build
 
-		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -Dbuild_search=ON -Duse_libclang=ON ..
+		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -Dbuild_search=ON -Duse_libclang=OFF ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/man/man1

@@ -14,7 +14,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar " https://get.videolan.org/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
+gettar "https://get.videolan.org/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
