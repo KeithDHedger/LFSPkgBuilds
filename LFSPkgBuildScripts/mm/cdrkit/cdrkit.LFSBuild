@@ -26,20 +26,20 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	(cd /usr/lib${LIBDIRSUFFIX}; ln -sv libnettle.so libnettle.so.4)
+	(cd /usr/lib${LIBDIRSUFFIX}; ln -sv libnettle.so libnettle.so.4||true)
 	pushd "${TARNAME}-${VERSION}"
 		cmake -DCMAKE_INSTALL_PREFIX=/usr
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		pushd $PKG/usr/bin
 			#Add cdrecord symlink to wodim (compatibility)
-			ln -s wodim cdrecord
+			ln -fs wodim cdrecord
 			#The author of cdda2wav requested their program be renamed, so...
 			#Add cdda2wav symlink to icedax (compatibility)
-			ln -s icedax cdda2wav
+			ln -fs icedax cdda2wav
 			#More renaming (due to legal concerns)
 			#Add mkisofs symlink to genisoimage (compatibility)
-			ln -s genisoimage mkisofs
+			ln -fs genisoimage mkisofs
 		popd
 		mv $PKG/usr/share/man $PKG/usr/man/
 		pushd 3rd-party/zisofs_tools
