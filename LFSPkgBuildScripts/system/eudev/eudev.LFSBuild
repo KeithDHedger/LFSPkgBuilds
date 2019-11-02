@@ -30,6 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 100
 		mkdir -pv $PKG/lib/udev/rules.d
 		mkdir -pv $PKG/etc/udev/rules.d
+		mkdir -pv $PKG/lib${LIBDIRSUFFIX}/{firmware,udev/devices/pts,}||true
 		make install DESTDIR=$PKG || exit 100
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.tar.xz
 		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 100

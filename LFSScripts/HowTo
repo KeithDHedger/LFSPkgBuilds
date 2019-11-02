@@ -148,7 +148,7 @@ exit
 #Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
 sudo rm /tools
 #Remove the tools folder from your LFS install disk:
-[sudo] rm -rf /mnt/LFS/tools
+[sudo] rm -rf $LFS/tools
 
 11)
 #Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
