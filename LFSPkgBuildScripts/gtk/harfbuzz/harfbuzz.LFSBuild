@@ -56,8 +56,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
 
-export ANYVERSION=1
+lfspkg -r "FreeType"||true
+pushd $(dirname "$(lfspkg -S 3 freetype)")
+	./freetype.LFSBuild install
+popd
 
-lfspkg -r FreeType||true
-lfspkg -B "FreeType"
+
 
