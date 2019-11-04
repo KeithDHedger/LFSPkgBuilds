@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Which-2.22"
+DEPENDS="Which-2.21"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="aspell"
 TARNAME="$PKGNAME"
-VERSION="0.60.6.1"
+VERSION="0.60.7"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -27,7 +27,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/ top.do_check ==/s/top.do_check/*&/' modules/filter/tex.cpp
-		sed -i '/word ==/s/word/*&/' prog/check_funs.cpp
+#		sed -i '/word ==/s/word/*&/' prog/check_funs.cpp
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -65,13 +65,12 @@ pushd $COMPILEAT 2>/dev/null||true
 	#dictionary
 	PKGNAME="aspell6-en"
 	TARNAME="$PKGNAME"
-	VERSION="7.1"
+	VERSION="2019.10.06"
 	BUILD=${BUILD:-1}
 	SECTION="DESKTOP"
 	SUFFIX="LFSPKG"
 	TARBALL="${TARNAME}-${VERSION}-0.tar.bz2"
-
-	gettar "http://ftp.gnu.org/gnu/aspell/dict/en/${TARBALL}" $SECTION
+	gettar "https://ftp.gnu.org/gnu/aspell/dict/en/${TARBALL}" $SECTION
 
 	rm -rf "$PKG" || true
 	mkdir -p "$PKG"

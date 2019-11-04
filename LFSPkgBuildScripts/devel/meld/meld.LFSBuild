@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="PyGTK-2.24.0 pygtksourceview-2.10.1 pygobject-2.28.6 Python-2.7.14"
+DEPENDS="PyGTK-2.24.0 pygtksourceview-2.10.1 pygobject-2.28.7 Python-2.7.16"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

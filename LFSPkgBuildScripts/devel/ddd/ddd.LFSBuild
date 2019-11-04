@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GDB-8.1 lesstif-0.95.2"
+DEPENDS="GDB-8.3 lesstif-0.95.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,14 +20,16 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnu.org/gnu/ddd/${TARBALL}" $SECTION
+gettar "http://savannah.gnu.org/file/complete.patch?file_id=47759" $SECTION "complete.patch"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i $CWD/strclass.patch
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		#patch -Np1 -i $CWD/strclass.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/complete.patch
+		CFLAGS="$LFSFLAGS -fno-permissive" CXXFLAGS="$LFSFLAGS -fno-permissive" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
