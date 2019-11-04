@@ -15,14 +15,16 @@ OpenJDK-12.0.2
 apache-ant-1.10.6
 orc-0.4.23
 astyle-3.1
-webkitgtk-2.24.4
+webkitgtk-2.4.11
 devhelp-2.32.0
-dialog-1.3"
+dialog-1.3
+gtkdialog-0.8.3
+help2man-1.47.11"
 
 #
 #
-#gtkdialog-0.8.3
-#help2man-1.46.4
+#
+#
 #man2html-1.6
 #meld-1.8.6
 #yad-0.38.1
