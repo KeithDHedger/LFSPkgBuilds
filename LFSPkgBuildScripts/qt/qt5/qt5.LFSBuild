@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.1.5 DBus-1.12.4 MesaLib-17.3.4 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-11.1 pciutils-3.5.6 NSS-3.35"
+DEPENDS="alsa-lib-1.1.9 DBus-1.12.16 MesaLib-19.1.4 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-12.2 pciutils-3.6.2 NSS-3.35"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qt5"
 TARNAME="qt-everywhere-src"
-VERSION="5.10.1"
+VERSION="5.13.0"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -20,25 +20,28 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/qt-${VERSION}-upstream_fixes-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	mkdir qt5build ||true
-	pushd qt5build
+	#tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd ${TARNAME}-${VERSION}
+	#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/qt-${VERSION}-upstream_fixes-1.patch
+	#	sed -i 's/python /python3 /' qtdeclarative/qtdeclarative.pro qtdeclarative/src/3rdparty/masm/masm.pri
 		export QT5PREFIX=/usr
+		export QT5BINDIR=$QT5PREFIX/bin
 		export QT5LIBS=${QT5PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
 		export QT5INCLUDES=${QT5PREFIX}/include/${PKGNAME}
 		export QT5DATA=${QT5PREFIX}/share/${PKGNAME}
 		export QT5DOCS=${QT5PREFIX}/share/doc/${PKGNAME}
 		export QT5TRANSLATIONS=${QT5PREFIX}/share/${PKGNAME}/translations
 		export QT5EXAMPLES=${QT5PREFIX}/share/doc/${PKGNAME}/examples
-		export QT5DEMOS=${QT5PREFIX}/share/doc/${PKGNAME}/demos
 		export QT5IMPORTS=${QT5PREFIX}/share/doc/${PKGNAME}/imports
 		export QT5PLUGINS=${QT5PREFIX}/share/doc/${PKGNAME}/plugins
 
-		../${TARNAME}-${VERSION}/configure -prefix ${QT5PREFIX} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -examplesdir ${QT5DEMOS} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS}
+		./configure -prefix ${QT5PREFIX} -sysconfdir /etc/xdg -bindir /usr/bin -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -system-harfbuzz -optimized-qmake -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS} -no-rpath -skip qtwebengine
 
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
@@ -46,7 +49,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		find ${PKG}${QT5LIBS}/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
 		find ${PKG}${QT5PREFIX}/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5PREFIX/lib/:g" {} \;
 		find ${PKG}${QT5PREFIX}/ -name *.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
-
 
 		install -v -dm755 $PKG/usr/share/pixmaps/ $PKG/usr/share/applications $PKG/etc/profile.d
 		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/assistant/assistant/images/assistant-128.png $PKG/usr/share/pixmaps/assistant-qt5.png
@@ -60,13 +62,19 @@ pushd $COMPILEAT 2>/dev/null||true
 			ln -sv ../qt5/pkgconfig/*.pc .
 		popd
 
+		pushd ${PKG}/${QT5BINDIR}
+			for file in moc uic rcc qmake lconvert lrelease lupdate
+				do
+					ln -svf $file $file-qt5
+				done
+		popd
 		# Recreate Makefiles in order to use the just compiled qdoc.
-		for doc in $(find . -name "Makefile*" | xargs grep "/usr/bin/" | cut -d':' -f1)
-		do
-			rm -fv $doc
-		done
-		make docs
-		make install_docs INSTALL_ROOT=$PKG
+#		for doc in $(find . -name "Makefile*" | xargs grep "/usr/bin/" | cut -d':' -f1)
+#			do
+#				rm -fv $doc
+#			done
+#		make docs
+#		make install_docs INSTALL_ROOT=$PKG
 	popd
 
 	mkdir -vp ${PKG}/usr/share/applications ${PKG}/etc/profile.d||true
@@ -153,5 +161,5 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}" qt5build
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

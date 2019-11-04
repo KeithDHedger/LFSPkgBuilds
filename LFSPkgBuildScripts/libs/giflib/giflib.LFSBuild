@@ -4,26 +4,26 @@
 
 PKGNAME="giflib"
 TARNAME="$PKGNAME"
-VERSION="5.1.4"
+VERSION="5.2.1"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/giflib/${TARBALL}" $SECTION
+gettar "https://sourceforge.net/projects/${PKGNAME}/files/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		make PREFIX=/usr $MAKEFLAGS||make PREFIX=/usr|| exit 100
+		make PREFIX=/usr install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

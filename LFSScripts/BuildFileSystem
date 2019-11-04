@@ -147,6 +147,48 @@ EOF
 
 export LANG=$LANGUAGE
 
+pathremove ()
+{
+	local IFS=':'
+	local NEWPATH
+	local DIR
+	local PATHVARIABLE=${2:-PATH}
+	for DIR in ${!PATHVARIABLE}
+		do
+			if [ "$DIR" != "$1" ];then
+				NEWPATH=${NEWPATH:+$NEWPATH:}$DIR
+			fi
+        done
+        export $PATHVARIABLE="$NEWPATH"
+}
+
+pathprepend ()
+{
+	pathremove $1 $2
+	local PATHVARIABLE=${2:-PATH}
+	export $PATHVARIABLE="$1${!PATHVARIABLE:+:${!PATHVARIABLE}}"
+}
+
+pathappend ()
+{
+	pathremove $1 $2
+	local PATHVARIABLE=${2:-PATH}
+	export $PATHVARIABLE="${!PATHVARIABLE:+${!PATHVARIABLE}:}$1"
+}
+
+export -f pathremove pathprepend pathappend
+
+if [ $EUID -eq 0 ];then
+	pathappend /sbin:/usr/sbin
+fi
+
+for script in /etc/profile.d/*.sh
+	do
+		if [ -r $script ];then
+			. $script
+		fi
+	done
+
 # End /etc/profile
 EOF
 

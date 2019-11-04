@@ -25,11 +25,11 @@ x264-2245
 lsdvd-0.17
 cdrkit-1.1.11
 GStreamer-1.16.0
-gst-plugins-base-1.10.3
-gst-plugins-good-1.10.3
-gst-plugins-bad-1.10.3
-gst-plugins-ugly-1.10.3
-gst-libav-1.10.3
+gst-plugins-base-1.16.0
+gst-plugins-good-1.16.0
+gst-plugins-bad-1.16.0
+gst-plugins-ugly-1.16.0
+gst-libav-1.16.0
 dvdauthor-0.7.1
 gtkpod-1.0.0"
 
@@ -38,7 +38,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="mm-meta"
-VERSION="8.2"
+VERSION="9.0"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"

@@ -2,7 +2,7 @@
 
 #©keithhedger Wed 18 Feb 12:28:04 GMT 2015 kdhedger68713@gmail.com
 
-JDKVERSION="jdk-9.0.4+11"
+JDKVERSION="jdk-12.0.2+10"
 
 rm -f /opt/jdk
 (cd /opt;ln -sv ${JDKVERSION} jdk)
@@ -45,7 +45,7 @@ Icon=java9
 Categories=Application;System;
 EOF
 
-/usr/sbin/make-ca --force
-ln -sfv /etc/ssl/java/cacerts.jks /opt/jdk/lib/security/cacerts
+/usr/sbin/make-ca -g
+ln -sfv /etc/pki/tls/java/cacerts /opt/jdk/lib/security/cacerts
 
 exit 0

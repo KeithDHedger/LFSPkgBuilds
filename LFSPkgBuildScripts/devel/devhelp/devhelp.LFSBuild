@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-Doc-1.25 GConf-3.2.6 libunique-1.1.6 libwnck-2.30.7"
+DEPENDS="GTK-Doc-1.32 GConf-3.2.6 libunique-1.1.6 libwnck-2.30.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/GNOME/sources/devhelp/2.32/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/GNOME/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

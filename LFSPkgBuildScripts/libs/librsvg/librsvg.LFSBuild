@@ -24,6 +24,8 @@ gettar "http://ftp.gnome.org/pub/gnome/sources/librsvg/${VERSION%.?*}/${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+export PATH="${PATH}:/opt/rust/bin"
+
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"

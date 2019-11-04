@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.12.4 GTK-2.24.32 icu-60.2 libsoup-2.60.3 MesaLib-17.3.4 Ruby-2.5.0 SQLite-3.22.0 Which-2.22 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.25 libgcrypt-1.8.2"
+DEPENDS="gst-plugins-base-1.16.0 GTK-2.24.32 icu-64.2 libsoup-2.66.2 MesaLib-19.1.4 Ruby-2.6.4 SQLite-3.29.0 Which-2.21 libwebp-1.0.3 libsecret-0.18.8 GTK-Doc-1.32 libgcrypt-1.8.5"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -10,7 +10,7 @@ fi
 
 PKGNAME="webkitgtk"
 TARNAME="$PKGNAME"
-VERSION="2.4.11"
+VERSION="2.24.4"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -28,16 +28,17 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-2.4.9-abs.patch
-		#thanks to gentoo for this patch
-		#https://bugs.gentoo.org/621532
-		patch -Np1 -i ${CWD}/js.patch
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gstreamer=1.0 --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib/WebKitGTK --disable-geolocation --enable-introspection
-		make $MAKEFLAGS||exit 100
-		make install DESTDIR=$PKG || exit 100
-		rm -rf $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
-		mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
+		mkdir build||true
+		cd build
+		CFLAGS="$LFSFLAGS -Wno-expansion-to-defined" CXXFLAGS="$LFSFLAGS -Wno-expansion-to-defined" cmake -DCMAKE_BUILD_TYPE=Release  \
+      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=ON -DPORT=GTK -DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX} -DUSE_LIBHYPHEN=OFF -DENABLE_MINIBROWSER=ON -DUSE_WOFF2=OFF -Wno-dev -G Ninja ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
+
+		install -vdm755 $PKG/usr/share/gtk-doc/html/webkit{2,dom}gtk-4.0
+		install -vm644  ../Documentation/webkit2gtk-4.0/html/* $PKG/usr/share/gtk-doc/html/webkit2gtk-4.0
+		install -vm644  ../Documentation/webkitdomgtk-4.0/html/* $PKG/usr/share/gtk-doc/html/webkitdomgtk-4.0
 	popd
 
 	checketc $PKG

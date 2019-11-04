@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.14"
+DEPENDS="Python-2.7.16"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,6 +20,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://launchpad.net/bzr/${VERSION%.?*}/${VERSION}/+download/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

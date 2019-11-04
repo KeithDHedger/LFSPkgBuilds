@@ -55,3 +55,6 @@ EOF
 
 mkdir -p /var/cache/man||true
 mandb -c /opt/jdk/man||true
+
+ln -sfv /etc/pki/tls/java/cacerts /opt/jdk/lib/security/cacerts
+

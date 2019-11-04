@@ -4,14 +4,14 @@
 
 PKGNAME="BinaryJDK"
 TARNAME="OpenJDK"
-VERSION="9.0.4"
+VERSION="12.0.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
-MINORVERSION="+11"
+MINORVERSION="+9"
 TARSUFFIX=".tar.xz"
 
 rm -rf "$PKG" || true
@@ -20,10 +20,10 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 case $ARCH in
 	x86_64)
-		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}${MINORVERSION}-x86_64-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
+		gettar "https://download.java.net/java/GA/jdk12.0.2/e482c34c86bd4bf8b56c0b35558996b9/10/GPL/openjdk-${VERSION}_linux-x64_bin.tar.gz" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	i?86)
-		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}${MINORVERSION}-i686-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
+		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-11.0.2/${TARNAME}-11.0.2${MINORVERSION}-i686-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	arm*)
 		TARSUFFIX=".tar.gz"
@@ -32,10 +32,14 @@ case $ARCH in
 esac
 
 pushd $COMPILEAT 2>/dev/null||true
-	mkdir -vp  $PKG/opt/${PKGNAME} ||true
-	tar -C "$PKG/opt/${PKGNAME}" --strip-components=1 -xvf ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}${TARSUFFIX}
-	chown -R root:root $PKG/opt
-	ln -sv ${PKGNAME} $PKG/opt/jdk
+	mkdir -vp ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}||true
+	tar  --strip-components=1 -xvf "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}${TARSUFFIX}" -C ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}
+	pushd ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}
+		mkdir -vp  $PKG/opt/${PKGNAME} ||true
+		mv -v * $PKG/opt/${PKGNAME}
+		chown -R root:root $PKG/opt
+		ln -sv ${PKGNAME} $PKG/opt/jdk
+	popd
 
 	checketc $PKG
 	packageclean "$PKG" "$CWD"
@@ -59,5 +63,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG"
+	rm -r "$PKG" "$PKGNAME"
 popd 2>/dev/null||true
