@@ -25,12 +25,12 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i -e 's:<gpm.h>:"headers/gpm.h":' src/prog/{display-buttons,display-coords,get-versions}.c
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-glibc_2.26-1.patch
 		./autogen.sh
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/info $PKG/etc $PKG/usr/share/doc/${PKGNAME}-${VERSION} $PKG/usr/share/doc/${PKGNAME}-${VERSION}/support $PKG/etc/sysconfig
 		install-info --dir-file=/usr/share/info/dir $PKG/usr/share/info/gpm.info
-		ln -v -sfn libgpm.so.2.1.0 $PKG/usr/lib/libgpm.so
+		ln -v -sfn libgpm.so.2.1.0 $PKG/usr/lib${LIBDIRSUFFIX}/libgpm.so
 		install -v -m644 conf/gpm-root.conf $PKG/etc
 		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}/support
 		install -v -m644 doc/support/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}/support

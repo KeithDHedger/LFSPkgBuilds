@@ -26,10 +26,10 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	#tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${TARNAME}-${VERSION}
-	#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/qt-${VERSION}-upstream_fixes-1.patch
-	#	sed -i 's/python /python3 /' qtdeclarative/qtdeclarative.pro qtdeclarative/src/3rdparty/masm/masm.pri
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/qt-${VERSION}-upstream_fixes-1.patch
+		sed -i 's/python /python3 /' qtdeclarative/qtdeclarative.pro qtdeclarative/src/3rdparty/masm/masm.pri
 		export QT5PREFIX=/usr
 		export QT5BINDIR=$QT5PREFIX/bin
 		export QT5LIBS=${QT5PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
@@ -68,13 +68,6 @@ pushd $COMPILEAT 2>/dev/null||true
 					ln -svf $file $file-qt5
 				done
 		popd
-		# Recreate Makefiles in order to use the just compiled qdoc.
-#		for doc in $(find . -name "Makefile*" | xargs grep "/usr/bin/" | cut -d':' -f1)
-#			do
-#				rm -fv $doc
-#			done
-#		make docs
-#		make install_docs INSTALL_ROOT=$PKG
 	popd
 
 	mkdir -vp ${PKG}/usr/share/applications ${PKG}/etc/profile.d||true
