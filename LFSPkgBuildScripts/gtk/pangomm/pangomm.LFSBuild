@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cairomm-1.12.2 GLibmm-2.56.0 Pango-1.40.14"
+DEPENDS="Cairomm-1.12.2 GLibmm-2.60.0 Pango-1.42.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 TARNAME="pangomm"
 PKGNAME="pangomm"
-VERSION="2.40.1"
+VERSION="2.42.0"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
