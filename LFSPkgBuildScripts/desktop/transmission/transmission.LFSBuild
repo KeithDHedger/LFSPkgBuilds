@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.58.0 Intltool-0.51.0 libevent-2.1.8 OpenSSL-1.1.0 qt5-5.10.1"
+DEPENDS="curl-7.65.3 Intltool-0.51.0 libevent-2.1.11 OpenSSL-1.1.1 qt5-5.13.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="transmission"
 TARNAME="$PKGNAME"
-VERSION="2.93"
+VERSION="2.94"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"

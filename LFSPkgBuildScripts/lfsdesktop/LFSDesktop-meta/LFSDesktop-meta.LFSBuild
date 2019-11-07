@@ -23,12 +23,17 @@ NSPR-4.21
 zip-3.0
 JS-60.8.0
 Polkit-0.116
-UDisks-2.1.8"
+UDisks-2.1.8
+transmission-2.94
+ConsoleKit2-1.0.2
+gnome-icon-theme-3.12.0
+Sudo-1.8.27
+KKTerminal-0.1.1"
 
 #
-#ConsoleKit2-1.0.2
-#gnome-icon-theme-3.12.0
-#Sudo-1.8.22
+#
+#
+#
 #xfce4-terminal-0.6.3
 #xfce4-screenshooter-1.7.9
 #Xfce-Theme-Manager-0.3.7

@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+#©keithhedger Thu Nov  7 13:55:21 GMT 2015 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+mkdir -vp /etc/sudoers.d || true
+
+cat > /etc/sudoers.d/sudo << "EOF"
+Defaults secure_path="/usr/bin:/bin:/usr/sbin:/sbin"
+%wheel ALL=(ALL) ALL
+EOF
+
