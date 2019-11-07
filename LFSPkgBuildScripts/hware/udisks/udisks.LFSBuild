@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="acl-2.2.52 libatasmart-0.19 libxslt-1.1.29 Polkit-0.113 libgudev-231 gobject-introspection-1.50.0 GTK-Doc-1.25"
+DEPENDS="acl-2.2.53 libatasmart-0.19 libxslt-1.1.33 Polkit-0.116 libgudev-233 gobject-introspection-1.60.2 GTK-Doc-1.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="udisks"
 TARNAME="$PKGNAME"
-VERSION="2.1.6"
+VERSION="2.1.8"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -20,6 +20,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://udisks.freedesktop.org/releases/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

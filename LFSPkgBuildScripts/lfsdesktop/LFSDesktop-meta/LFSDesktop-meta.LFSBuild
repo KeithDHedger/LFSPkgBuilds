@@ -22,9 +22,10 @@ startup-notification-0.12
 NSPR-4.21
 zip-3.0
 JS-60.8.0
-Polkit-0.116"
+Polkit-0.116
+UDisks-2.1.6"
 
-#UDisks-2.1.6
+#
 #ConsoleKit2-1.0.2
 #gnome-icon-theme-3.12.0
 #Sudo-1.8.22
