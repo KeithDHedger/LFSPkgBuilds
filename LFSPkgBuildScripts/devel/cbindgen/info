@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/general/cbindgen.html
+Cbindgen can be used to generate C bindings for Rust code.
+
