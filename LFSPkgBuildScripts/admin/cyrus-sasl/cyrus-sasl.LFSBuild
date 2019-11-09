@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.0"
+DEPENDS="OpenSSL-1.1.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cyrus-sasl"
 TARNAME="$PKGNAME"
-VERSION="2.1.26"
+VERSION="2.1.27"
 BUILD=1
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -19,24 +19,19 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.cyrusimap.org/cyrus-sasl/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${TARNAME}-${VERSION}-fixes-3.patch" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${TARNAME}-${VERSION}-openssl-1.1.0-1.patch" $SECTION
+gettar "https://github.com/cyrusimap/cyrus-sasl/releases/download/${PKGNAME}-${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fixes-3.patch
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-openssl-1.1.0-1.patch
-
-		autoreconf -fi
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-auth-sasldb --with-dbpath=/var/lib/sasl/sasldb2 --with-saslauthd=/var/run/saslauthd --with-ldap
 		make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		install -v -m644  doc/{*.{html,txt,fig},ONEWS,TODO} saslauthd/LDAP_SASLAUTHD $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}/html||true
+		install -v -m644  saslauthd/LDAP_SASLAUTHD $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		install -v -m644  doc/legacy/*.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}/html
 		install -v -dm700 $PKG/var/lib/sasl
 	popd
 

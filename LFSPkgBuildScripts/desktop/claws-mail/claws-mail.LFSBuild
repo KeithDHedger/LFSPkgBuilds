@@ -2,36 +2,37 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xdg-utils-1.1.3 gtksourceview-2.11.1 GTK-2.24.32 webkitgtk-2.4.11 aspell-0.60.7 ctags-9.0 vte1-0.28.2"
+DEPENDS="gtk-2.24.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="KKEdit"
+PKGNAME="claws-mail"
 TARNAME="$PKGNAME"
-VERSION="0.4.3"
-BUILD=${BUILD:-1}
+VERSION="3.17.3"
+BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/KKEdit/archive/master.zip" $SECTION ${TARBALL}
+gettar "https://www.claws-mail.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-master"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell --enable-docviewer
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-libetpan
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/claws-mail/themes/
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -53,5 +54,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-master"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

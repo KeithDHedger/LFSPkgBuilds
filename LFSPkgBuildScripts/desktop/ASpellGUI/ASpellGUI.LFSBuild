@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="aspell-0.60.6.1"
+DEPENDS="aspell-0.60.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

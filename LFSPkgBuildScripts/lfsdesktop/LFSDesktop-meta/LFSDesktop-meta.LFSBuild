@@ -42,10 +42,20 @@ desktop-file-utils-0.24
 Gimp-2.10.12
 gtkmm-2.24.5
 ImageMagick-7.0.9
-Thunderbird-52.6.0"
+claws-mail-3.17.3
+spacefm-1.0.6
+ManPageEditor-0.1.4
+AspellGUI-0.0.9
+KKEdit-0.4.3
+xarchiver-0.5.4
+ClipboardViewer-2.2.2
+GtkSu-0.1.6
+xscreensaver-5.38
+LibreOffice-6.3.0"
 
 #"
 
+#Thunderbird-52.6.0
 #
 #
 #
@@ -53,26 +63,7 @@ Thunderbird-52.6.0"
 #
 #
 #
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#spacefm-1.0.6
-#ManPageEditor-0.1.2
-#AspellGUI-0.0.9
-#KKEdit-0.4.2
-#xarchiver-0.5.4
-#ClipboardViewer-2.2.2
-#GtkSu-0.1.6
-#xscreensaver-5.38
-#LibreOffice-6.0.1.1"
+#"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
