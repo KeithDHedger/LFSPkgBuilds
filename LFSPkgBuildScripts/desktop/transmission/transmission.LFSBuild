@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.65.3 Intltool-0.51.0 libevent-2.1.11 OpenSSL-1.1.1 qt5-5.13.0"
+DEPENDS="curl-7.65.3 Intltool-0.51.0 libevent-2.1.11 OpenSSL-1.1.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="transmission"
 TARNAME="$PKGNAME"
-VERSION="2.94"
+VERSION="2.93"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -23,17 +23,23 @@ gettar "https://raw.githubusercontent.com/${PKGNAME}/${PKGNAME}-releases/master/
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+BUILDGUI=${BUILDGUI:-1}
+
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-nls --without-gtk --enable-cli
 		make $MAKEFLAGS||make|| exit 100
-		pushd qt
-			qmake qtr.pro
-			make
-		popd
 		make install DESTDIR=$PKG || exit 100
-		make INSTALL_ROOT=$PKG/usr -C qt install
+
+		if [ $BUILDGUI -eq 1 ];then
+			pushd qt
+				qmake qtr.pro
+				make $MAKEFLAGS||make|| exit 100
+			popd
+			make INSTALL_ROOT=$PKG/usr -C qt install
+		fi
+	
 		mkdir -vp $PKG/usr/share/applications $PKG/usr/share/pixmaps||true
 		install -m644 qt/transmission-qt.desktop $PKG/usr/share/applications/transmission-qt.desktop
 		install -m644 qt/icons/transmission.png $PKG/usr/share/pixmaps/transmission-qt.png
