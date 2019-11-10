@@ -19,6 +19,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+#save downloaded tarballs
+EXTERNALTARBALLS="${EXTERNALTARBALLS:-${SOURCEARCHIVES}/${SECTION}/libreoffice-tarballs}"
+mkdir -vp "$EXTERNALTARBALLS"||true
+
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.documentfoundation.org/libreoffice/src/${FOLDERVERSION}/${TARBALL}" $SECTION
 gettar "http://download.documentfoundation.org/libreoffice/src/${FOLDERVERSION}/libreoffice-dictionaries-${VERSION}.tar.xz" $SECTION
@@ -28,17 +32,13 @@ gettar "http://download.documentfoundation.org/libreoffice/src/${FOLDERVERSION}/
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-#save downloaded tarballs
-EXTERNALTARBALLS="${EXTERNALTARBALLS:-${SOURCEARCHIVES}/${SECTION}/libreoffice-tarballs}"
-
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --no-overwrite-dir
 	pushd "${TARNAME}-${VERSION}"
-		mkdir -vp "$EXTERNALTARBALLS"||true
-		ln -svf "$EXTERNALTARBALLS" external/tarballs||true
-		ln -sfv ${SOURCEARCHIVES}/${SECTION}/libreoffice-dictionaries-${VERSION}.tar.xz external/tarballs/ ||true
-		ln -sfv ${SOURCEARCHIVES}/${SECTION}/libreoffice-help-${VERSION}.tar.xz external/tarballs/ ||true
-		ln -sfv ${SOURCEARCHIVES}/${SECTION}/libreoffice-translations-${VERSION}.tar.xz external/tarballs/
+		ln -svf "$EXTERNALTARBALLS" external/tarballs
+		ln -sfv ${SOURCEARCHIVES}/${SECTION}/libreoffice-dictionaries-${VERSION}.tar.xz external/tarballs
+		ln -sfv ${SOURCEARCHIVES}/${SECTION}/libreoffice-help-${VERSION}.tar.xz external/tarballs
+		ln -sfv ${SOURCEARCHIVES}/${SECTION}/libreoffice-translations-${VERSION}.tar.xz external/tarballs
 
 		export LO_PREFIX=/usr
 		sed -e "/gzip -f/d" -e "s|.1.gz|.1|g" -i bin/distro-install-desktop-integration ||true
@@ -47,6 +47,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		./autogen.sh	--prefix=$LO_PREFIX				\
 						--sysconfdir=/etc				\
+						--libdir=/usr/lib$LIBDIRSUFFIX	\
 						--with-vendor="BLFS"			\
 						--with-lang="en-GB"				\
 						--with-help						\
@@ -82,6 +83,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 #						--with-system-boost				\
 		sed -i 's/.check-if-root./ /g;' Makefile
+		sed -i 's/\(--progress=dot:mega\)/\1 -c/' Makefile.fetch
 		make build-nocheck
 		make DESTDIR=$PKG distro-pack-install
 		rm -v $PKG/gid_Module*
@@ -135,4 +137,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm "${EXTERNALTARBALLS}/fetch.log"
+	find "$EXTERNALTARBALLS" -maxdepth 1 -mindepth 1 -type d -delete
 popd 2>/dev/null||true
