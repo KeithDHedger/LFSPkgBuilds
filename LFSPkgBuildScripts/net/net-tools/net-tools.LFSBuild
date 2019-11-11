@@ -14,15 +14,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/sources/BLFS/svn/n/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch" $SECTION
+gettar "ftp://anduin.linuxfromscratch.org/BLFS/net-tools/net-tools-CVS_20101030.tar.gz" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/net-tools-CVS_20101030-remove_dups-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-CVS_${VERSION}"
-		patch -Np1 -i ../${TARNAME}-CVS_${VERSION}-remove_dups-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch
+		sed -i '/#include <netinet\/ip.h>/d'  iptunnel.c
 		yes "" | make config
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
