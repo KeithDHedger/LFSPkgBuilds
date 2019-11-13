@@ -262,6 +262,9 @@ cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
 #Chromium
 cd /LFSPkgBuildScripts/desktop/chromium
 ./chromium.LFSBuild install
+#falkon
+cd /LFSPkgBuildScripts/qt/falkon/
+./falkon.LFSBuild install
 
 #Cairo-dock-plugins pulls in cairo-dock as a dependency
 cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins

@@ -2,28 +2,46 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="opus"
+DEPENDS="net-tools-20101030"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="openvpn"
 TARNAME="$PKGNAME"
-VERSION="1.3.1"
+VERSION="2.4.8"
 BUILD=1
-SECTION="LIBS"
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="v${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://archive.mozilla.org/pub/opus/${TARBALL}" $SECTION
+gettar "https://github.com/OpenVPN/openvpn/archive/$TARBALL" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		autoreconf -i
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-lzo --enable-iproute2 --disable-plugin-auth-pam
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/etc/openvpn/{certs,keys}||true
+		mkdir -vp $PKG/usr/share/doc/$PKGNAME-$VERSION/sample-config-files||true
+
+		chown root:nogroup $PKG/etc/openvpn/{certs,keys}
+		chmod 750 $PKG/etc/openvpn/{certs,keys}
+		cp $CWD/README.TXT $PKG/etc/openvpn
+		ln -svf /usr/share/doc/$PKGNAME-$VERSION/sample-config-files $PKG/etc/openvpn
+
+		cp -a $CWD/slackware.conf $PKG/usr/share/doc/$PKGNAME-$VERSION/sample-config-files
+		chown root:root $PKG/usr/share/doc/$PKGNAME-$VERSION/sample-config-files/slackware.conf
+		chmod 644 $PKG/usr/share/doc/$PKGNAME-$VERSION/sample-config-files/slackware.conf
 	popd
 
 	checketc "$PKG"

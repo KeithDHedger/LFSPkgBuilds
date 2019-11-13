@@ -2,11 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="opus"
+PKGNAME="gocr"
 TARNAME="$PKGNAME"
-VERSION="1.3.1"
+VERSION="0.50"
 BUILD=1
-SECTION="LIBS"
+SECTION="CLI"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -14,14 +14,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://archive.mozilla.org/pub/opus/${TARBALL}" $SECTION
+gettar "http://www-e.uni-magdeburg.de/jschulen/ocr/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
