@@ -20,8 +20,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/submodules/${TARBALL}" $SECTION
-#gettar "https://git.archlinux.org/svntogit/packages.git/plain/trunk/icu65.patch?h=packages/qt5-webengine" $SECTION "icu65.patch"
-#gettar "https://code.qt.io/cgit/qt/qtwebengine-chromium.git/patch/?id=d6e5fc10" "$SECTION" "cve.patch"
 gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch" $SECTION
 
 rm -rf "$PKG" || true
@@ -35,10 +33,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		if [ -e ${QT5DIR}/lib$LIBDIRSUFFIX}/libQt5WebEngineCore.so ]; then
 				rm -f ${QT5DIR}/lib${LIBDIRSUFFIX}/libQt5WebEngineCore.so*||true
 		fi
-#		pushd src/3rdparty
-#			patch -p1 -d chromium -i ${SOURCEARCHIVES}/${SECTION}/icu65.patch
-#			patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/cve.patch
-#		popd
 		mkdir build||true
 		cd  build
 		export NINJAJOBS="-j2"

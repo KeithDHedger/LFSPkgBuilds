@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="qtwebengine-5.13.0 ki18n-5.64.0"
+DEPENDS="qtwebengine-5.13.0 ki18n-5.61.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
