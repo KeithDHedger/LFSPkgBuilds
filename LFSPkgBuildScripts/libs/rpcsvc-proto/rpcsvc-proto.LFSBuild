@@ -2,24 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="popt-1.16 fcron-3.2.1"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="logrotate"
+PKGNAME="rpcsvc-proto"
 TARNAME="$PKGNAME"
-VERSION="3.15.0"
+VERSION="1.4"
 BUILD=1
-SECTION="ADMIN"
+SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/logrotate/logrotate/releases/download/${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/thkukuk/rpcsvc-proto/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -29,8 +24,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-
-		. ${CWD}/setup
 	popd
 
 	checketc "$PKG"

@@ -9,7 +9,7 @@ fi
 
 PKGNAME="fcron"
 TARNAME="$PKGNAME"
-VERSION="3.2.0"
+VERSION="3.2.1"
 BUILD=1
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -33,6 +33,15 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-boot-install=no --with-systemdsystemunitdir=no
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		cp -vp ${CWD}/run-parts $PKG/usr/bin
+		install -vdm754 $PKG/etc/cron.{hourly,daily,weekly,monthly}
+		mkdir -vp $PKG/var/spool/fcron||true
+		cat > $PKG/var/spool/fcron/systab.orig << "EOF"
+&bootrun 01 * * * * root run-parts /etc/cron.hourly
+&bootrun 02 4 * * * root run-parts /etc/cron.daily
+&bootrun 22 4 * * 0 root run-parts /etc/cron.weekly
+&bootrun 42 4 1 * * root run-parts /etc/cron.monthly
+EOF
 	popd
 
 	checketc "$PKG"

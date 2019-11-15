@@ -1,39 +1,40 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-
-DEPENDS="popt-1.16 fcron-3.2.1"
+echo "Broken ..."
+exit 100
+DEPENDS="NPAPI-SDK-0.27.2 OpenJDK-12.0.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="logrotate"
+PKGNAME="icedtea-web"
 TARNAME="$PKGNAME"
-VERSION="3.15.0"
-BUILD=1
-SECTION="ADMIN"
+VERSION="1.7.1"
+BUILD=${BUILD:-1}
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/logrotate/logrotate/releases/download/${VERSION}/${TARBALL}" $SECTION
+gettar "http://icedtea.classpath.org/download/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=${JAVA_HOME}/jre --with-jdk-home=${JAVA_HOME} --disable-docs --mandir=${JAVA_HOME}/man
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-
-		. ${CWD}/setup
+		install -v -Dm0644 itweb-settings.desktop $PKG/usr/share/applications/itweb-settings.desktop
+		install -v -Dm0644 javaws.png $PKG/usr/share/pixmaps/javaws.png
 	popd
 
-	checketc "$PKG"
+	checketc $PKG
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

@@ -4,7 +4,7 @@
 
 PKGNAME="iptables"
 TARNAME="$PKGNAME"
-VERSION="1.6.2"
+VERSION="1.8.3"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i -e '/libebt_/s/^/#/' -e '/libarpt_/s/^/#/' extensions/GNUmakefile.in
+#		sed -i -e '/libebt_/s/^/#/' -e '/libarpt_/s/^/#/' extensions/GNUmakefile.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --sbindir=/sbin --disable-nftables --enable-libipq --with-xtlibdir=/lib${LIBDIRSUFFIX}/xtables
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

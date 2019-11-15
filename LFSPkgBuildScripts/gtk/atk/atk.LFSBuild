@@ -30,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		cd build
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
-		DESTDIR=$PKG ninja install
+		DESTDIR=$PKG ninja install||exit 100
 	popd
 
 	checketc $PKG

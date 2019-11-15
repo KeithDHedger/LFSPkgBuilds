@@ -278,12 +278,12 @@ cd /LFSPkgBuildScripts/hware/qemu
 cd /LFSPkgBuildScripts/net/seamonkey
 ./seamonkey.LFSBuild install
 
-#Icedtea-web
-cd /LFSPkgBuildScripts/net/icedtea-web
-./icedtea-web.LFSBuild install
+#Icedtea-web BROKEN
+#cd /LFSPkgBuildScripts/net/icedtea-web
+#./icedtea-web.LFSBuild install
 #For pulse audio
-cd /LFSPkgBuildScripts/net/icedtea-sound
-./icedtea-sound.LFSBuild install
+#cd /LFSPkgBuildScripts/net/icedtea-sound
+#./icedtea-sound.LFSBuild install
 
 #Samba
 cd /LFSPkgBuildScripts/net/samba
@@ -332,10 +332,10 @@ cd /LFSPkgBuildScripts/admin/logrotate
 cd /LFSPkgBuildScripts/admin/fcron
 ./fcron.LFSBuild install
 
-cd /LFSPkgBuildScripts/admin/iptables
+cd /LFSPkgBuildScripts/net/iptables
 ./iptables.LFSBuild install
 
-cd /LFSPkgBuildScripts/admin/fail2ban
+cd /LFSPkgBuildScripts/net/fail2ban
 ./fail2ban.LFSBuild install
 
 

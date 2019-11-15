@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://rpm5.org/files/popt/${TARBALL}" $SECTION
+gettar "ftp://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

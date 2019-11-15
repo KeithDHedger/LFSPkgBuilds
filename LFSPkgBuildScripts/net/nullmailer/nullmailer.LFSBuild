@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gnutls-3.6.2"
+DEPENDS="gnutls-3.6.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

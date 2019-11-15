@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+echo "Broken ..."
+exit 100
 DEPENDS="OpenJDK-9.0.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

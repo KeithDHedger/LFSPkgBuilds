@@ -4,7 +4,7 @@
 
 PKGNAME="krb5"
 TARNAME="$PKGNAME"
-VERSION="1.16.1"
+VERSION="1.17"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -15,7 +15,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 #gettar "http://web.mit.edu/kerberos/dist/${TARNAME}/${VERSION}/${TARBALL}" $SECTION
-gettar "https://kerberos.org/dist/krb5/1.16/${TARBALL}" $SECTION
+gettar "https://kerberos.org/dist/krb5/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

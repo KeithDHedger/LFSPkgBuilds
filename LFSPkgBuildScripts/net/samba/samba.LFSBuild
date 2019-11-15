@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.14 libtirpc-1.0.2"
+DEPENDS="Python-2.7.16 libtirpc-1.1.4 Jansson-2.12 lmdb-0.9.24 rpcsvc-proto-1.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="samba"
 TARNAME="$PKGNAME"
-VERSION="4.7.6"
+VERSION="4.10.7"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
