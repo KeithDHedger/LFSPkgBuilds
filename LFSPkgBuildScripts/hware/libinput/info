@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/x/x7driver.html#libinput
+libinput is a library that handles input devices for display servers and other applications that need to directly deal with input devices.
