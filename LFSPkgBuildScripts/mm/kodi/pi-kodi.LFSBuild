@@ -2,11 +2,6 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-#if ! lfspkg -B "$DEPENDS";then
-#	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
-#	exit 100
-#fi
-
 PKGNAME="pi-kodi"
 TARNAME="Leia"
 VERSION="18.4"
@@ -20,8 +15,18 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 
-gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION
-gettar "http://mirrors.kodi.tv/build-deps/sources/flatbuffers-1.9.0.tar.gz" $SECTION
+_codename=Leia
+_flatbuffers_version="1.9.0"
+_fstrcmp_version="0.7.D001"
+_ffmpeg_version="4.0.4-$_codename-18.4"
+
+
+gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" ${SECTION}
+
+KODIDEPS="${SOURCEARCHIVES}/${SECTION}/kodideps"
+gettar "http://mirrors.kodi.tv/build-deps/sources/flatbuffers-$_flatbuffers_version.tar.gz" ${SECTION}/kodideps
+gettar "http://mirrors.kodi.tv/build-deps/sources/fstrcmp-$_fstrcmp_version.tar.gz" ${SECTION}/kodideps
+gettar "https://github.com/xbmc/FFmpeg/archive/$_ffmpeg_version.tar.gz" ${SECTION}/kodideps "ffmpeg-$_ffmpeg_version.tar.gz"
 
 #https://github.com/xbmc/xbmc/archive/18.4-Leia.tar.gz
 rm -rf "$PKG" || true
@@ -42,16 +47,11 @@ pushd $COMPILEAT 2>/dev/null||true
 		export PATH="$PATH:/opt/jdk/bin"
 		export JAVA_HOME=/opt/jdk
 
-#		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_PREFIX_PATH=/opt/vc -DCORE_PLATFORM_NAME=rbpi -DWITH_CPU="$CPU" -DENABLE_EVENTCLIENTS=ON -DENABLE_OPENGL=OFF -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_INTERNAL_FSTRCMP=ON -DENABLE_INTERNAL_FLATBUFFERS=ON -DENABLE_MARIADBCLIENT=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_INTERNAL_RapidJSON=ON -DFLATBUFFERS_URL="${SOURCEARCHIVES}/${SECTION}/flatbuffers-1.9.0.tar.gz" ..
-		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_PREFIX_PATH=/opt/vc -DCORE_PLATFORM_NAME=rbpi -DWITH_CPU="$CPU" -DENABLE_EVENTCLIENTS=ON -DENABLE_OPENGL=OFF -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_INTERNAL_FSTRCMP=ON -DENABLE_INTERNAL_FLATBUFFERS=ON -DENABLE_MARIADBCLIENT=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_INTERNAL_RapidJSON=ON ..
-		
-#		
-#		
-#		cmake -DVERBOSE=1 -DCORE_SYSTEM_NAME=rbpi -DENABLE_MMAL=ON -DENABLE_OPENGL=OFF -DWITH_CPU=${CPU} -DCMAKE_PREFIX_PATH=/opt/vc -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_AIRTUNES=OFF -DENABLE_ALSA=ON -DENABLE_AVAHI=OFF -DENABLE_BLURAY=OFF -DENABLE_CEC=OFF -DENABLE_DBUS=OFF -DENABLE_DVDCSS=ON -DENABLE_EGL=ON -DENABLE_EVENTCLIENTS=ON -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_CROSSGUID=ON -DENABLE_MYSQLCLIENT=ON -DENABLE_NFS=OFF -DENABLE_NONFREE=ON -DENABLE_OPENSSL=ON -DENABLE_OPTICAL=ON -DENABLE_PULSEAUDIO=OFF -DENABLE_SMBCLIENT=ON -DENABLE_UDEV=ON -DENABLE_UPNP=ON -DENABLE_VAAPI=OFF -DENABLE_VDPAU=OFF -DENABLE_X11=OFF -DENABLE_XSLT=ON -DENABLE_LIRC=OFF .. || exit 100
+		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_PREFIX_PATH=/opt/vc -DCORE_PLATFORM_NAME=rbpi -DWITH_CPU="$CPU" -DENABLE_EVENTCLIENTS=ON -DENABLE_OPENGL=OFF -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_INTERNAL_FSTRCMP=ON -DENABLE_INTERNAL_FLATBUFFERS=ON -DENABLE_INTERNAL_CROSSGUID=OFF -DENABLE_MARIADBCLIENT=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_INTERNAL_RapidJSON=OFF -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_EGL=ON -DFLATBUFFERS_URL="${KODIDEPS}/flatbuffers-$_flatbuffers_version.tar.gz" -DFSTRCMP_URL="${KODIDEPS}/fstrcmp-$_fstrcmp_version.tar.gz" -DFFMPEG_URL="${KODIDEPS}/ffmpeg-$_ffmpeg_version.tar.gz"  ..
 
-#		cmake --build . -- VERBOSE=1 -j$(nproc)
 		make $MAKEFLAGS || make || exit 100
 		make install DESTDIR=$PKG || exit 100
+
 #fix kodi exit bugs
 		cp $CWD/kodi $PKG/usr/bin
 	popd
