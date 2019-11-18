@@ -248,17 +248,24 @@ if [ "$(lfspkg -S 5 xkeyboard-config)" = "false" ];then
 	./xkeyboard-config.LFSBuild install
 fi
 
-
-
-
-
-
-
-
-
-
-
-if [ "$(lfspkg -S 5 pi-kodi)" = "false" ];then
-	cd /LFSPkgBuildScripts/mm/kodi/
-	./pi-kodi.LFSBuild install
+if [ "$(lfspkg -S 5 rapidjson)" = "false" ];then
+	cd /LFSPkgBuildScripts/libs/rapidjson/
+	./rapidjson.LFSBuild install
 fi
+
+if [ "$(lfspkg -S 5 libdvdread)" = "false" ];then
+	cd /LFSPkgBuildScripts/mm/libdvdread/
+	./libdvdread.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 libdvdcss)" = "false" ];then
+	cd /LFSPkgBuildScripts/mm/libdvdcss/
+	./libdvdcss.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 libdvdnav)" = "false" ];then
+	cd /LFSPkgBuildScripts/mm/libdvdnav/
+	./libdvdnav.LFSBuild install
+fi
+
+
