@@ -1,255 +1,174 @@
-#!/bin/bash
+#!/bin/bash -e
 
-#
-#Add User
-#
+#©keithhedger Mon 18 Nov 12:41:23 GMT 2019 kdhedger68713@gmail.com
 
-DREPLY=/tmp/dialogreply$$
-export DIALOGOPTS="--backtitle \"LFSSetup\""
+. /usr/share/LFSPkg/LFSFunctions
 
-leave ()
+getShell ()
 {
-	exit 0
+	local upreply
+
+	read -p "Select shell ( /bin/bash ) "
+
+	if [ "$REPLY" = "" ];then
+		USERSHELL="/bin/bash"
+	else
+		USERSHELL="$REPLY"
+	fi
 }
 
-setvariable ()
+getUIDS ()
 {
-THEVAR=$1
-eval $THEVAR=\"$(<$DREPLY)\"
-if [ "X${!THEVAR}" = X ];then
-	echo -e "\n\nAborted!"
-	leave
+	local upreply
+	local uids
+
+	read -p "Is this a system user ? (y/N) "
+	upreply=${REPLY^^}
+
+	if [ "$upreply" = "Y" ];then
+		uids=$(findnextpair "system")
+		USERHOME="/dev/null"
+		USERSHELL=/bin/false
+		ISSYSTEM="Y"
+	else
+		uids=$(findnextpair)
+		USERHOME="/home/$LOGINNAME"
+		getShell
+		addGroups
+	fi
+	read -p "Enter User uid ( ${uids} ) "
+	if [ "$REPLY" = "" ];then
+		USEUIDS=$uids
+	else
+		USEUIDS=$REPLY
+	fi
+}
+
+getGids ()
+{
+	local upreply
+	local uids
+
+	read -p "Is this a system group ? (y/N) "
+	upreply=${REPLY^^}
+
+	if [ "$upreply" = "Y" ];then
+		uids=$(findnextgid "system")
+		ISSYSTEM="-r"
+	else
+		ISSYSTEM=""
+		uids=$(findnextgid)
+	fi
+
+	read -p "Enter Group gid ( ${uids} ) "
+	if [ "$REPLY" = "" ];then
+		USEUIDS=$uids
+	else
+		USEUIDS=$REPLY
+	fi
+}
+
+addGroups ()
+{
+	local upreply
+
+	read -p "Add new user to all groups? (y/N) "
+	upreply=${REPLY^^}
+
+	if [ "$upreply" = "Y" ];then
+		XTRAGROUPS="$(sed -n '4,999p' /etc/group| awk -F: '{print $1}'|tr "\n" ",")"
+		XTRAGROUPS=${XTRAGROUPS%*,}
+	else
+		XTRAGROUPS="audio,cdrom,floppy,plugdev,video,usb,tty,users"
+	fi
+}
+
+if [ "$1" = "" ];then
+	echo "Must supply login name ..."
+	exit 1
 fi
-:>$DREPLY
-}
 
-addtodialog ()
-{
-	DIALOGSTRING="${DIALOGSTRING} $1"
-	((DIALOGHEIGHT++))
-	((DIALOGHEIGHT++))
-	((NEXTITEM++))
-	((NEXTITEM++))
-}
+LOGINNAME="${1,,}"
+DRYRUN=$2
+ISSYSTEM="N"
+TYPE=""
+DELETEFILES="N"
 
-init ()
-{
-	DIALOGSTRING=""
-	DIALOGHEIGHT=1
-	NEXTITEM=1
-
-	DATA=""
-	NEXTUID=0
-	XTRAGROUPS="audio,cdrom,floppy,plugdev,video,usb,tty,users"
-	XTRAGROUPS=$(sed -n '4,999p' /etc/group| awk -F: '{print $1}'|tr "\n" ",")
-	XTRAGROUPS=${XTRAGROUPS%,}
-	INPUTWIDTH=40
-	SECONDFIELD=18
-
-	LOGINNAME=""
-#	USERID=0
-	USERSHELL="/bin/bash"
-	INITGROUP=""
-	USERHOME="/home/"
-
-	AUTOGROUP="X"
-
-	LOOPFLAG=true
-	ISSYSTEM=""
-
-	addtodialog "\"Login Name:\" $NEXTITEM 0 \"$LOGINNAME\" $NEXTITEM $SECONDFIELD $INPUTWIDTH 1000"
-	addtodialog "\"UID:\" $NEXTITEM 0 \"$USERID\" $NEXTITEM $SECONDFIELD $INPUTWIDTH 4"
-	addtodialog "\"GID:\" $NEXTITEM 0 \"$GRPID\" $NEXTITEM $SECONDFIELD $INPUTWIDTH 4"
-	addtodialog "\"Initial Group:\"  $NEXTITEM 0 \"$INITGROUP\"  $NEXTITEM $SECONDFIELD $INPUTWIDTH 1000"
-	addtodialog "\"Extra Groups:\" $NEXTITEM 0 \"$XTRAGROUPS\" $NEXTITEM $SECONDFIELD $INPUTWIDTH 1000"
-	addtodialog "\"Shell:\" $NEXTITEM 0 \"$USERSHELL\" $NEXTITEM $SECONDFIELD $INPUTWIDTH 1000"
-	addtodialog "\"Home:\" $NEXTITEM 0 \"$USERHOME\" $NEXTITEM $SECONDFIELD $INPUTWIDTH 1000"
-	addtodialog "\"System Account:\" $NEXTITEM 0 \"$ISSYSTEM\" $NEXTITEM $SECONDFIELD 2 1"
-	addtodialog "\"Auto Create Group:\" $NEXTITEM 0 \"$AUTOGROUP\" $NEXTITEM $SECONDFIELD 2 1"
-	DIALOGSTRING="--separator \":\" --form \"Add User\" 0 0 $DIALOGHEIGHT ${DIALOGSTRING} 2>$DREPLY"
-
-}
-
-makegroups ()
-{
-	while read ANS
-		do
-			XTRAGROUPS="${XTRAGROUPS},${ANS}"
-		done < <(cat /etc/group|awk -F: '{print $1}')
-}
-
-findnextgid ()
-{
-	local nextgid=1
-	local gidtype=$1
-	local sysmax=$(cat /etc/login.defs|grep "^SYS_GID_MAX"|awk '{print $2}')
-	local usermin=$(cat /etc/login.defs|grep "^GID_MIN"|awk '{print $2}')
-
-	if [ "X$gidtype" = "Xsystem" ];then
-		nextgid=0
-	else
-		nextgid=$usermin
-	fi
-
-	while read ANS
-		do
-			if [ X$ANS != "X" ];then
-				if [ $ANS -lt $sysmax -a X$gidtype = "Xsystem" -o $ANS -ge $usermin -a X$gidtype = "X" ];then
-					if [ $nextgid -lt $ANS ];then
-						echo $nextgid
-						return
-					else
-						((nextgid=nextgid+1))
-					fi
-				fi
-			fi
-		done < <(cat /etc/group | sed -e 's/:/ /g' | awk '{print $3}' | sort -n)
-
-		echo $nextgid
-}
-
-findnextuid ()
-{
-	local nextuid=0
-	local usertype=$1
-	local sysmax=$(cat /etc/login.defs|grep "^SYS_UID_MAX"|awk '{print $2}')
-	local usermin=$(cat /etc/login.defs|grep "^UID_MIN"|awk '{print $2}')
-
-	if [ "X$usertype" = "Xsystem" ];then
-		nextuid=0
-	else
-		nextuid=$usermin
-	fi
-
-	while read ANS
-		do
-			if [ X$ANS != "X" ];then
-				if [ $ANS -lt $sysmax -a X$usertype = "Xsystem" -o $ANS -ge $usermin -a X$usertype = "X" ];then
-					if [ $nextuid -lt $ANS ];then
-						echo $nextuid
-						return
-					else
-						((nextuid=nextuid+1))
-					fi
-				fi
-			fi
-		done < <(cat /etc/passwd | sed -e 's/:/ /g' | awk '{print $3}' | sort -n)
-
-		echo $nextuid
-}
-
-findnextpair ()
-{
-	local type=$1
-	local gid=0
-	local uid=0
-
-	gid=$(findnextgid $1)
-	uid=$(findnextuid $1)
-
-	if [ $gid -gt $uid ];then
-		echo $gid
-	else
-		echo $uid
-	fi
-}
-
-main ()
-{
-	local yesnotext="" sysaccount=""
-
-	eval "dialog $DIALOGSTRING"
-#	echo $DIALOGSTRING
-#	echo $NEXTITEM
-#	exit 0
-#	dialog --separator ":" --form "Add User" 0 0 16  "Login Name:" 0 0 "$LOGINNAME" 0 $SECONDFIELD $INPUTWIDTH 1000 \
-#	"UID:" 3 0 "$USERID" 3 $SECONDFIELD $INPUTWIDTH 4 "GID:" 4 0 "$GRPID" 4 $SECONDFIELD $INPUTWIDTH 4 "Initial Group:" 6 0 "$INITGROUP" 6 $SECONDFIELD $INPUTWIDTH 1000  
-#"Extra Groups:" 8 0 "$XTRAGROUPS" 8 $SECONDFIELD $INPUTWIDTH 1000
-# "Shell:" 10 0 "$USERSHELL" 10 $SECONDFIELD $INPUTWIDTH 1000 
-#"Home:" 12 0 "$USERHOME" 12 $SECONDFIELD $INPUTWIDTH 1000
-# "System Account:" 14 0 "$ISSYSTEM" 14 $SECONDFIELD 2 1
-# "Auto Create Group:" 16 0 "$AUTOGROUP" 16 $SECONDFIELD 2 1 2>$DREPLY
-	setvariable DATA
-
-	if [ X"$DATA" = "X" ];then
-		exit 0
-	fi
-
-#echo $DATA|awk -F: '{print "1 logname " $1}'
-#echo $DATA|awk -F: '{print "2 uid " $2}'
-#echo $DATA|awk -F: '{print "3 gid " $3}'
-#echo $DATA|awk -F: '{print "4 init group " $4}'
-#echo $DATA|awk -F: '{print "5 xtra grps " $5}'
-#echo $DATA|awk -F: '{print "6 shell " $6}'
-#echo $DATA|awk -F: '{print "7 home " $7}'
-#echo $DATA|awk -F: '{print "8 sys " $8}'
-#echo $DATA|awk -F: '{print "9 auto grp " $9}'
-
-
-
-	LOGINNAME=$(echo $DATA|awk -F: '{print $1}')
-	LOGINNAME=${LOGINNAME// /}
-	if [ "X$LOGINNAME" != "X" ];then
-		USERID=$(echo $DATA|awk -F: '{print $2}')
-		GRPID=$(echo $DATA|awk -F: '{print $3}')
-		INITGROUP=$(echo $DATA|awk -F: '{print $4}')
-		XTRAGROUPS=$(echo $DATA|awk -F: '{print $5}')
-		USERSHELL=$(echo $DATA|awk -F: '{print $6}')
-		if [ "X$USERHOME" = "X/home/LOGINNAME" ] || [ "X$USERHOME" = "X" ];then
-			USERHOME="/home/$LOGINNAME"
-		else
-			USERHOME=$(echo $DATA|awk -F: '{print $7}')
-		fi
-		if [ X"$AUTOGROUP" != "X" ];then
-			GRPID=$USERID
-		fi
-
-		if [ X"$INITGROUP" = "X" ];then
-			INITGROUP=$LOGINNAME
-		fi
-
-		if [ X"$USERHOME" = "X/home/" ];then
-			USERHOME="/home/$LOGINNAME"
-		fi
-
-		ISSYSTEM=$(echo $DATA|awk -F: '{print $8}')
-		if [ X"$ISSYSTEM" != "X" ];then
-			if [ $USERID -gt 500 ];then
-				USERID=$(findnextpair)
-				GRPID=$USERID
-			fi
-			yesnotext="Create System Account:\nLogin Name:$LOGINNAME\nUID:$USERID\n\nIs This Correct"
-		else
-			yesnotext="Login Name:$LOGINNAME\nUID:$USERID\nGID:$GRPID\nInitial Group:$INITGROUP\nExtra Groups:$XTRAGROUPS\nShell:$USERSHELL\nHome:$USERHOME\n\nIs This Correct"
-		fi
-		if dialog --yesno "$yesnotext" 0 0;then
-			LOOPFLAG=false
-		fi
-	fi
-}
-
-USERID=$(findnextuid)
-GRPID=$USERID
-init
-
-while $LOOPFLAG
+select arg in "Add User" "Delete User" "Add Group" "Delete Group" "Quit"
 	do
-		main
+		case $arg in
+			"Add User")
+				getUIDS
+				TYPE="ADDUSER"
+				break
+				;;
+			"Delete User")
+				TYPE="DELUSER"
+				read -p "Remove Files? (y/N) "
+				if [ "${REPLY^^}" = "Y" ];then
+					DELETEFILES="r"
+				else
+					DELETEFILES=""
+				fi
+				break
+				;;
+			"Add Group")
+				TYPE="ADDGROUP"
+				break
+				;;
+			"Delete Group")
+				TYPE="DELGROUP"
+				break
+				;;
+			"Quit")
+				exit 0
+				;;
+		esac
 	done
 
-if [ X"$AUTOGROUP" != "X" ];then
-	if [ X$ISSYSTEM != X"" ];then
-		SYSTEMGROUP="-r"
-	fi
-	groupadd -g $GRPID $SYSTEMGROUP $LOGINNAME||true
+if [ ! "$DRYRUN" = "" ];then
+	case $TYPE in
+		"ADDUSER")
+			if [ "$ISSYSTEM" = "Y" ];then
+				echo useradd -r -d /dev/null -U -s /bin/false -u \"$USEUIDS\" -g \"$USEUIDS\" \"$LOGINNAME\"||true
+			else
+				echo useradd -d \"$USERHOME\" -m -U -u \"$USEUIDS\" -G \"$XTRAGROUPS\" -s \"$USERSHELL\" \"$LOGINNAME\"
+				echo passwd $LOGINNAME
+			fi			
+			;;
+		"DELUSER")
+			echo userdel -f$DELETEFILES \"$LOGINNAME\"
+			;;
+		"ADDGROUP")
+			getGids
+			echo groupadd -g \"$USEUIDS\" $ISSYSTEM \"$LOGINNAME\"
+			;;
+		"DELGROUP")
+			echo groupdel \"$LOGINNAME\"
+			;;
+	esac
+else
+	case $TYPE in
+		"ADDUSER")
+			if [ "$ISSYSTEM" = "Y" ];then
+				sudo useradd -r -d /dev/null -U -s /bin/false -u "$USEUIDS" -g "$USEUIDS" "$LOGINNAME"||true
+			else
+				sudo useradd -d "$USERHOME" -m -U -u "$USEUIDS" -G "$XTRAGROUPS" -s "$USERSHELL" "$LOGINNAME"
+				sudo passwd $LOGINNAME
+			fi			
+			;;
+		"DELUSER")
+			sudo userdel -f$DELETEFILES "$LOGINNAME"
+			;;
+		"ADDGROUP")
+			getGids
+			sudo groupadd -g "$USEUIDS" $ISSYSTEM "$LOGINNAME"
+			;;
+		"DELGROUP")
+			sudo groupdel "$LOGINNAME"
+			;;
+	esac
 fi
 
-if [ X$ISSYSTEM != X"" ];then
-	useradd -r -d /dev/null -U -s /bin/false -u "$USERID" "$LOGINNAME"||true
-else
-	useradd -d "$USERHOME" -m -u "$USERID" -g "$INITGROUP" -G "$XTRAGROUPS" -s "$USERSHELL" "$LOGINNAME"||true
-	passwd $LOGINNAME
-fi 
 
-rm $DREPLY &>/dev/null
 
