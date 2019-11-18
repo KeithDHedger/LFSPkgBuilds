@@ -223,7 +223,42 @@ if [ "$(lfspkg -S 5 libmicrohttpd)" = "false" ];then
 	./libmicrohttpd.LFSBuild install
 fi
 
-if [ "$(lfspkg -S 5 pi-kodi-krypton)" = "false" ];then
+if [ "$(lfspkg -S 5 libinput)" = "false" ];then
+	cd /LFSPkgBuildScripts/hware/libinput/
+	./libinput.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 libxkbcommon)" = "false" ];then
+	cd /LFSPkgBuildScripts/libs/libxkbcommon/
+	./libxkbcommon.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 fmt)" = "false" ];then
+	cd /LFSPkgBuildScripts/devel/fmt/
+	./fmt.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 crossguid)" = "false" ];then
+	cd /LFSPkgBuildScripts/devel/crossguid/
+	./crossguid.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 xkeyboard-config)" = "false" ];then
+	cd /LFSPkgBuildScripts/xorg/xkeyboard-config/
+	./xkeyboard-config.LFSBuild install
+fi
+
+
+
+
+
+
+
+
+
+
+
+if [ "$(lfspkg -S 5 pi-kodi)" = "false" ];then
 	cd /LFSPkgBuildScripts/mm/kodi/
-	./pi-kodi-krypton.LFSBuild install
+	./pi-kodi.LFSBuild install
 fi

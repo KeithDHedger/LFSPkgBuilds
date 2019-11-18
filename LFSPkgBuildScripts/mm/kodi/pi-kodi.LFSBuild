@@ -1,0 +1,87 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+#if ! lfspkg -B "$DEPENDS";then
+#	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
+#	exit 100
+#fi
+
+PKGNAME="pi-kodi"
+TARNAME="Leia"
+VERSION="18.4"
+BUILD=1
+SECTION="MM"
+SUFFIX="LFSPKG"
+TARBALL="${VERSION}-${TARNAME}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+
+gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" $SECTION
+gettar "http://mirrors.kodi.tv/build-deps/sources/flatbuffers-1.9.0.tar.gz" $SECTION
+
+#https://github.com/xbmc/xbmc/archive/18.4-Leia.tar.gz
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+#This for pi2 & pi3 change to arm1176jzf-s for pi 0 or pi 1
+CPU=${CPU:-"cortex-a7"}
+
+#create input gtroup
+groupadd -g $(findnextgid system) -r input || true
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf ${SOURCEARCHIVES}/${SECTION}/${TARBALL}
+	pushd "xbmc-${VERSION}-${TARNAME}"
+		rm -rf build||true
+		mkdir build||true
+		cd build
+		export PATH="$PATH:/opt/jdk/bin"
+		export JAVA_HOME=/opt/jdk
+
+#		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_PREFIX_PATH=/opt/vc -DCORE_PLATFORM_NAME=rbpi -DWITH_CPU="$CPU" -DENABLE_EVENTCLIENTS=ON -DENABLE_OPENGL=OFF -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_INTERNAL_FSTRCMP=ON -DENABLE_INTERNAL_FLATBUFFERS=ON -DENABLE_MARIADBCLIENT=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_INTERNAL_RapidJSON=ON -DFLATBUFFERS_URL="${SOURCEARCHIVES}/${SECTION}/flatbuffers-1.9.0.tar.gz" ..
+		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_PREFIX_PATH=/opt/vc -DCORE_PLATFORM_NAME=rbpi -DWITH_CPU="$CPU" -DENABLE_EVENTCLIENTS=ON -DENABLE_OPENGL=OFF -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_INTERNAL_FSTRCMP=ON -DENABLE_INTERNAL_FLATBUFFERS=ON -DENABLE_MARIADBCLIENT=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_INTERNAL_RapidJSON=ON ..
+		
+#		
+#		
+#		cmake -DVERBOSE=1 -DCORE_SYSTEM_NAME=rbpi -DENABLE_MMAL=ON -DENABLE_OPENGL=OFF -DWITH_CPU=${CPU} -DCMAKE_PREFIX_PATH=/opt/vc -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_AIRTUNES=OFF -DENABLE_ALSA=ON -DENABLE_AVAHI=OFF -DENABLE_BLURAY=OFF -DENABLE_CEC=OFF -DENABLE_DBUS=OFF -DENABLE_DVDCSS=ON -DENABLE_EGL=ON -DENABLE_EVENTCLIENTS=ON -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_CROSSGUID=ON -DENABLE_MYSQLCLIENT=ON -DENABLE_NFS=OFF -DENABLE_NONFREE=ON -DENABLE_OPENSSL=ON -DENABLE_OPTICAL=ON -DENABLE_PULSEAUDIO=OFF -DENABLE_SMBCLIENT=ON -DENABLE_UDEV=ON -DENABLE_UPNP=ON -DENABLE_VAAPI=OFF -DENABLE_VDPAU=OFF -DENABLE_X11=OFF -DENABLE_XSLT=ON -DENABLE_LIRC=OFF .. || exit 100
+
+#		cmake --build . -- VERBOSE=1 -j$(nproc)
+		make $MAKEFLAGS || make || exit 100
+		make install DESTDIR=$PKG || exit 100
+#fix kodi exit bugs
+		cp $CWD/kodi $PKG/usr/bin
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "xbmc-${VERSION}-${TARNAME}"
+popd 2>/dev/null||true
+
+
+
+
+
