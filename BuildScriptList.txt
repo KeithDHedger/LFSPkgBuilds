@@ -18,6 +18,7 @@
 ./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/qterminal/qterminal.LFSBuild
 ./BROKEN/qtermwidget/qtermwidget.LFSBuild
+./CLI/gocr/gocr.LFSBuild
 ./desktop/aspell/aspell.LFSBuild
 ./desktop/ASpellGUI/ASpellGUI.LFSBuild
 ./desktop/babl/babl.LFSBuild
@@ -46,6 +47,7 @@
 ./desktop/icon-naming-utils/icon-naming-utils.LFSBuild
 ./desktop/ImageMagick/ImageMagick.LFSBuild
 ./desktop/KKEdit/KKEdit.LFSBuild
+./desktop/kkterminal/kkterminal.LFSBuild
 ./desktop/leafpad/leafpad.LFSBuild
 ./desktop/libreoffice/libreoffice.LFSBuild
 ./desktop/lxmenu-data/lxmenu-data.LFSBuild
@@ -191,6 +193,7 @@
 ./hware/libevdev/libevdev.LFSBuild
 ./hware/libgusb/libgusb.LFSBuild
 ./hware/libical/libical.LFSBuild
+./hware/libinput/libinput.LFSBuild
 ./hware/libusb-compat/libusb-compat.LFSBuild
 ./hware/libusb/libusb.LFSBuild
 ./hware/lm-sensors/lm-sensors.LFSBuild
@@ -347,6 +350,7 @@
 ./mm/id3lib/id3lib.LFSBuild
 ./mm/kodi/kodi-krypton.LFSBuild
 ./mm/kodi/pi-kodi-krypton.LFSBuild
+./mm/kodi/pi-kodi.LFSBuild
 ./mm/lame/lame.LFSBuild
 ./mm/libass/libass.LFSBuild
 ./mm/libcdio/libcdio.LFSBuild
@@ -413,6 +417,7 @@
 ./net/npapi-sdk/npapi-sdk.LFSBuild
 ./net/nss/nss.LFSBuild
 ./net/nullmailer/nullmailer.LFSBuild
+./net/openvpn/openvpn.LFSBuild
 ./net/php/php.LFSBuild
 ./net/procmail/procmail.LFSBuild
 ./net/rkhunter/rkhunter.LFSBuild
