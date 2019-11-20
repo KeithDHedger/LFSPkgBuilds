@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #©keithhedger Thu 3 Dec 12:26:07 GMT 2015 kdhedger68713@gmail.com
 
@@ -64,8 +64,8 @@ popd
 localedef -i de_DE -f ISO-8859-1 de_DE
 localedef -i de_DE@euro -f ISO-8859-15 de_DE@euro
 localedef -i de_DE -f UTF-8 de_DE.UTF-8
-localedef -i en_GB -f UTF-8 en_GB.UTF-8
 localedef -i en_GB -f ISO-8859-1 en_GB
+localedef -i en_GB -f UTF-8 en_GB.UTF-8
 localedef -i en_HK -f ISO-8859-1 en_HK
 localedef -i en_PH -f ISO-8859-1 en_PH
 localedef -i en_US -f ISO-8859-1 en_US
