@@ -21,7 +21,7 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "${TARNAME}-master"
 		patch -Np0 -i ${CWD}/pkgdriver.patch
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -49,5 +49,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-master"
 popd 2>/dev/null||true
