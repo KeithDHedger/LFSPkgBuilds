@@ -24,7 +24,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make || exit 100
 		make -C libelf install DESTDIR=$PKG || exit 100
-		mkdir -vp ${PKG}/usr/lib/${LIBDIRSUFFIX}/pkgconfig
+		mkdir -vp ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig ||true
 		install -vm644 config/libelf.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	popd
 

@@ -23,9 +23,11 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dorc-test=disabled -Dgtk_doc=disabled ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dgtk_doc=disabled --buildtype=release ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
+		rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.a
+
 	popd
 
 	checketc $PKG

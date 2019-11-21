@@ -25,9 +25,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		#needed for static linking of qemu
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/lib || true
-		mv -v $PKG/usr/lib/libpcre.so.* $PKG/lib
-		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libpcre.so) $PKG/usr/lib/libpcre.so
+		mkdir -vp $PKG/lib${LIBDIRSUFFIX} || true
+		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libpcre.so.* $PKG/lib${LIBDIRSUFFIX}
+		ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libpcre.so) $PKG/usr/lib${LIBDIRSUFFIX}/libpcre.so
 	popd
 
 	checketc $PKG

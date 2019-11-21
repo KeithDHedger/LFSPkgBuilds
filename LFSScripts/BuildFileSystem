@@ -331,8 +331,8 @@ OUTPUT=$BUILTPACKAGES
 SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
 COMPILEAT=\${COMPILEAT:-"\$SOURCEARCHIVES"}
-CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --disable-debug --disable-nls --disable-static"
-MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --buildtype=release --default-library=shared"
+CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib\$LIBDIRSUFFIX --disable-debug --disable-nls --disable-static"
+MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib\$LIBDIRSUFFIX --buildtype=release --default-library=shared"
 MAKEFLAGS=" -j4 "
 CHECKETC=0
 
