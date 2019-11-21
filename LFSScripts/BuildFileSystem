@@ -19,7 +19,7 @@ pushd $LFS
 	echo $ADMINPWD|sudo -S mknod -m 600 dev/console c 5 1
 	echo $ADMINPWD|sudo -S mknod -m 666 dev/null c 1 3
 
-	mkdir -pv {bin,boot,etc/{opt,sysconfig},home,lib${LIBDIRSUFFIX},mnt,opt,run}
+	mkdir -pv {bin,boot,etc/{sysconfig,profile.d},home,lib${LIBDIRSUFFIX},mnt,opt,run}
 	mkdir -pv {media/{floppy,cdrom},sbin,srv,var}
 	install -dv -m 0750 root
 	install -dv -m 777 tmp var/tmp
@@ -152,42 +152,65 @@ pathremove ()
 	local IFS=':'
 	local NEWPATH
 	local DIR
-	local PATHVARIABLE=${2:-PATH}
-	for DIR in ${!PATHVARIABLE}
+	local PATHVARIABLE=\${2:-PATH}
+	for DIR in \${!PATHVARIABLE}
 		do
-			if [ "$DIR" != "$1" ];then
-				NEWPATH=${NEWPATH:+$NEWPATH:}$DIR
+			if [ "\$DIR" != "\$1" ];then
+				NEWPATH=\${NEWPATH:+\$NEWPATH:}\$DIR
 			fi
         done
-        export $PATHVARIABLE="$NEWPATH"
+        export \$PATHVARIABLE="\$NEWPATH"
 }
 
 pathprepend ()
 {
-	pathremove $1 $2
-	local PATHVARIABLE=${2:-PATH}
-	export $PATHVARIABLE="$1${!PATHVARIABLE:+:${!PATHVARIABLE}}"
+	pathremove \$1 \$2
+	local PATHVARIABLE=\${2:-PATH}
+	export \$PATHVARIABLE="\$1\${!PATHVARIABLE:+:\${!PATHVARIABLE}}"
 }
 
 pathappend ()
 {
-	pathremove $1 $2
-	local PATHVARIABLE=${2:-PATH}
-	export $PATHVARIABLE="${!PATHVARIABLE:+${!PATHVARIABLE}:}$1"
+	pathremove \$1 \$2
+	local PATHVARIABLE=\${2:-PATH}
+	export \$PATHVARIABLE="\${!PATHVARIABLE:+\${!PATHVARIABLE}:}\$1"
 }
 
 export -f pathremove pathprepend pathappend
 
-if [ $EUID -eq 0 ];then
+# Set the initial path
+
+export PATH=/bin:/usr/bin
+export HISTSIZE=1000
+export HISTIGNORE="&:[bf]g:exit"
+
+if [ \$EUID -eq 0 ];then
 	pathappend /sbin:/usr/sbin
+	#unset HISTFILE
+fi
+
+export XDG_DATA_DIRS=\${XDG_DATA_DIRS:-/usr/share/}
+export XDG_CONFIG_DIRS=\${XDG_CONFIG_DIRS:-/etc/xdg/}
+export XDG_RUNTIME_DIR=\${XDG_RUNTIME_DIR:-/tmp/xdg-\$USER}
+
+# Setup a red prompt for root and a green one for users.
+NORMAL="\[\e[0m\]"
+RED="\[\e[1;31m\]"
+GREEN="\[\e[1;32m\]"
+if [[ \$EUID == 0 ]] ; then
+	PS1="\$RED\u [ \$NORMAL\w\$RED ]# \$NORMAL"
+else
+	PS1="\$GREEN\u [ \$NORMAL\w\$GREEN ]\\\$ \$NORMAL"
 fi
 
 for script in /etc/profile.d/*.sh
 	do
-		if [ -r $script ];then
-			. $script
+		if [ -r \$script ];then
+			. \$script
 		fi
 	done
+
+unset script RED GREEN NORMAL
 
 # End /etc/profile
 EOF
@@ -308,8 +331,11 @@ OUTPUT=$BUILTPACKAGES
 SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
 COMPILEAT=\${COMPILEAT:-"\$SOURCEARCHIVES"}
-CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --disable-debug --disable-nls"
-CHECKETC=1
+CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --disable-debug --disable-nls --disable-static"
+MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --buildtype=release --default-library=shared"
+MAKEFLAGS=" -j4 "
+CHECKETC=0
+
 EOF
 	echo $ADMINPWD|sudo -S mv /tmp/.lfspkg.rc root
 	echo $ADMINPWD|sudo -S chown -R root:root $LFS/* 2>/dev/null

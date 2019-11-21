@@ -103,8 +103,8 @@ screen
 cd /LFSPkgBuildScripts/admin/LFSPkg
 BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 
-#As part of the LFSSetUp script /mnt/LFS/root/.lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
-#Set /mnt/LFS/etc/lfspkg.rc or /mnt/LFS/root/.lfspkg.rc (preferred) variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
+#As part of the LFSSetUp script $LFS/root/.lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
+#Set $LFS/etc/lfspkg.rc or $LFS/root/.lfspkg.rc (preferred) variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
 #At this point wget/openssl is not installed so you will get a load of complaints from lfspkg, ignore them as lfspkg will be reinstalled later with the main system.
 
 #You should run lfspkg --setup to create the lfspkg.rc file ( in ~ (/root) )
@@ -187,7 +187,7 @@ cd /LFSPkgBuildScripts/kernel
 #The LFSSetup script will install a basic grub.cfg file in ${LFS}/${BUILDSCRIPTS}/system/grub/ based on the details given to the script.
 #Check that the grub.cfg file is OK, make any changes and just copy it to /boot/grub, or manually do this:
 
-#assuming root device is /dev/sda and LFS system is on /dev/sda1 mounted at /mnt/LFS:
+#assuming root device is /dev/sda and LFS system is on /dev/sda1:
 grub-install /dev/sda
 
 cat > /boot/grub/grub.cfg << "EOF"
@@ -199,7 +199,7 @@ insmod ext2
 set root=(hd0,1)
 
 menuentry "GNU/Linux, Linux $LFSVERSION" {
-	linux /boot/vmlinuz-4.9.9 root=/dev/sda1 ro
+	linux /boot/vmlinuz-$KERNELVERSION root=/dev/sda1 ro
 }
 EOF
 
