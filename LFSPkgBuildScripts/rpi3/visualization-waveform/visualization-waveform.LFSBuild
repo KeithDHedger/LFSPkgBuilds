@@ -19,6 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 CODENAME="Leia"
 FOLDER="visualization.waveform"
+
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/xbmc/visualization.waveform/archive/${TARBALL}" $SECTION "${PKGNAME}-${VERSION}"
 
