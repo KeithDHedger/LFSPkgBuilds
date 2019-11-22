@@ -1,0 +1,67 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="glm-0.9.9.5"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="visualization-waveform"
+TARNAME="$PKGNAME"
+VERSION="3.1.1"
+BUILD=1
+SECTION="RPI3"
+SUFFIX="LFSPKG"
+TARBALL="Leia.zip"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+CODENAME="Leia"
+FOLDER="visualization.waveform"
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/xbmc/visualization.waveform/archive/${TARBALL}" $SECTION "${PKGNAME}-${VERSION}"
+
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	unzip ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}
+	pushd "${FOLDER}-${CODENAME}"
+		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/kodi -DCMAKE_PREFIX_PATH=/opt/vc -DCMAKE_BUILD_TYPE=Release -Wno-dev .
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${FOLDER}-${CODENAME}"
+popd 2>/dev/null||true
+
+
+
+
+
+
+
