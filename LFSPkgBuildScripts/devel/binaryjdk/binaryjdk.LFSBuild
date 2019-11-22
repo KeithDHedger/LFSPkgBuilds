@@ -63,5 +63,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "$PKGNAME"
+	rm -r "$PKG" "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}"
 popd 2>/dev/null||true
