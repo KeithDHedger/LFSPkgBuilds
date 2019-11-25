@@ -4,11 +4,11 @@
 
 PKGNAME="qt-creator"
 TARNAME="${PKGNAME}-opensource-src"
-VERSION="4.6.2"
+VERSION="4.10.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)

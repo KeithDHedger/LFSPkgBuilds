@@ -21,4 +21,4 @@ umount ${LFS}/dev/pts ||true
 umount -lf ${LFS}/dev ||true  
 umount ${LFS}/proc ||true
 umount ${LFS}/sys ||true
-umount ${LFS}/run ||true
+#umount ${LFS}/run ||true

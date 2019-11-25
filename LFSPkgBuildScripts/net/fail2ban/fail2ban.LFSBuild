@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/fail2ban/fail2ban/archive/0.10.4/${TARBALL}" $SECTION
+gettar "https://github.com/fail2ban/fail2ban/archive${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

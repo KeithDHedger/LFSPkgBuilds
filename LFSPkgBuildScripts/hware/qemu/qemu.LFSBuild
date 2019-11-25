@@ -29,9 +29,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -vp build
 		cd	build
 
-#		TARGETLIST="aarch64-linux-user,alpha-linux-user,armeb-linux-user,arm-linux-user,cris-linux-user,i386-linux-user,m68k-linux-user,microblazeel-linux-user,microblaze-linux-user,mips64el-linux-user,mips64-linux-user,mipsel-linux-user,mips-linux-user,mipsn32el-linux-user,mipsn32-linux-user,ppc64abi32-linux-user,ppc64le-linux-user,ppc64-linux-user,ppc-linux-user,s390x-linux-user,sh4eb-linux-user,sh4-linux-user,sparc32plus-linux-user,sparc64-linux-user,sparc-linux-user,x86_64-linux-user"
-		#--target-list="aarch64-linux-user alpha-linux-user armeb-linux-user arm-linux-user cris-linux-user i386-linux-user m68k-linux-user microblazeel-linux-user microblaze-linux-user mips64el-linux-user mips64-linux-user mipsel-linux-user mips-linux-user mipsn32el-linux-user mipsn32-linux-user or32-linux-user ppc64abi32-linux-user ppc64le-linux-user ppc64-linux-user ppc-linux-user s390x-linux-user sh4eb-linux-user sh4-linux-user sparc32plus-linux-user sparc64-linux-user sparc-linux-user x86_64-linux-user"
-
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/libexec --disable-guest-agent --disable-strip --disable-werror --disable-gcrypt --disable-debug-info --disable-debug-tcg --disable-docs --disable-tcg-interpreter --enable-attr --disable-brlapi --disable-linux-aio --disable-bzip2 --disable-bluez --disable-cap-ng --disable-curl --disable-fdt --disable-glusterfs --disable-gnutls --disable-nettle --disable-gtk --disable-rdma --disable-libiscsi --disable-vnc-jpeg --disable-lzo --disable-libnfs --disable-numa --disable-opengl --disable-vnc-png --disable-rbd --disable-vnc-sasl --disable-sdl --disable-seccomp --disable-smartcard --disable-snappy --disable-spice --disable-libusb --disable-usb-redir --disable-vde --disable-vhost-net --disable-virglrenderer --disable-virtfs --disable-vnc --disable-vte --disable-xen --disable-xen-pci-passthrough --disable-xfsctl --disable-system --disable-blobs --disable-tools --static --python=python3
 
 		make $MAKEFLAGS||make|| exit 100
@@ -42,8 +39,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		popd
 
 		make clean
-
-		#--target-list="aarch64-softmmu alpha-softmmu arm-softmmu cris-softmmu i386-softmmu lm32-softmmu m68k-softmmu microblazeel-softmmu microblaze-softmmu mips64el-softmmu mips64-softmmu mipsel-softmmu mips-softmmu moxie-softmmu or32-softmmu ppc64-softmmu ppcemb-softmmu ppc-softmmu s390x-softmmu sh4eb-softmmu sh4-softmmu sparc64-softmmu sparc-softmmu unicore32-softmmu x86_64-softmmu xtensaeb-softmmu xtensa-softmmu"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/libexec --sysconfdir=/etc --docdir=/usr/share/doc/${TARNAME}-${VERSION} --audio-drv-list="alsa,oss" --python=python3
 
 		make $MAKEFLAGS||make|| exit 100

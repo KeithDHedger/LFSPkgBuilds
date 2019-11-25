@@ -299,6 +299,20 @@ cd /LFSPkgBuildScripts/net/davfs2
 cd /LFSPkgBuildScripts/net/curlftpfs
 ./curlftpfs.LFSBuild install
 
+#System admin/security stuff
+cd /LFSPkgBuildScripts/admin/logrotate
+./logrotate.LFSBuild install
+
+cd /LFSPkgBuildScripts/admin/fcron
+./fcron.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/iptables
+./iptables.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/fail2ban
+./fail2ban.LFSBuild install
+
+
 #TODO
 cd /LFSPkgBuildScripts/qt/qt-creator
 ./qt-creator.LFSBuild install
@@ -324,19 +338,6 @@ cd /LFSPkgBuildScripts/desktop/epdfview
 #Try an alternative!
 cd /LFSPkgBuildScripts/desktop/gkrellm
 ./gkrellm.LFSBuild install
-
-#System admin/security stuff
-cd /LFSPkgBuildScripts/admin/logrotate
-./logrotate.LFSBuild install
-
-cd /LFSPkgBuildScripts/admin/fcron
-./fcron.LFSBuild install
-
-cd /LFSPkgBuildScripts/net/iptables
-./iptables.LFSBuild install
-
-cd /LFSPkgBuildScripts/net/fail2ban
-./fail2ban.LFSBuild install
 
 
 

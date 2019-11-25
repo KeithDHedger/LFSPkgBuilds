@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.10.2 OpenSSL-1.1.0 libevent-2.1.8"
+DEPENDS="CMake-3.15.2 OpenSSL-1.1.1 libevent-2.1.11"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="mariadb"
 TARNAME="$PKGNAME"
-VERSION="10.3.9"
+VERSION="10.4.8"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -19,21 +19,21 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://mirrors.fe.up.pt/pub/${PKGNAME}/${TARNAME}-${VERSION}/source/${TARBALL}" $SECTION
+gettar "https://downloads.mariadb.org/interstitial/${TARNAME}-${VERSION}/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i "s@data/test@\${INSTALL_MYSQLTESTDIR}@g" sql/CMakeLists.txt &&
-			mkdir build||true
+		sed -i "s@data/test@\${INSTALL_MYSQLTESTDIR}@g" sql/CMakeLists.txt
+		mkdir build||true
 		pushd build
 			cmake -DCMAKE_BUILD_TYPE=Release \
 				-DCMAKE_INSTALL_PREFIX=/usr \
 				-DINSTALL_LIBDIR="lib${LIBDIRSUFFIX}" \
-				-DINSTALL_DOCDIR=share/doc/mysql \
-				-DINSTALL_DOCREADMEDIR=share/doc/mysql \
+				-DINSTALL_DOCDIR=share/doc/${TARNAME}-${VERSION} \
+				-DINSTALL_DOCREADMEDIR=share/doc/${TARNAME}-${VERSION} \
 				-DINSTALL_MANDIR=share/man \
 				-DINSTALL_MYSQLSHAREDIR=share/mysql \
 				-DINSTALL_MYSQLTESTDIR=share/mysql/test \
@@ -47,6 +47,7 @@ pushd $COMPILEAT 2>/dev/null||true
 				-DWITH_EXTRA_CHARSETS=complex \
 				-DWITH_EMBEDDED_SERVER=ON \
 				-DWITH_UNIT_TESTS=OFF \
+				-DSKIP_TESTS=ON \
 				-DTOKUDB_OK=0 ..
 
 			make $MAKEFLAGS||make|| exit 100
