@@ -340,7 +340,9 @@ cd /LFSPkgBuildScripts/desktop/gkrellm
 ./gkrellm.LFSBuild install
 
 
-
+#Add users
+cd /LFSPkgBuildScripts/HelperScripts/
+./UsersAndGroups YOURUSERNAME
 
 
 
