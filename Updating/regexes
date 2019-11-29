@@ -1,0 +1,40 @@
+
+
+^scriptLog
+
+^mkdir .* "\$PKG"$ -> mkdir -p "$PKG"\nCWD=$(pwd)\n
+
+
+^tar .* "\${SOURCEARCHIVES}/\${SECTION}/\${TARBALL}"$ -> pushd $COMPILEAT 2>/dev/null||true\ntar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"\n
+
+
+^rm .* "\$PKG".*\${TARNAME}-\${VERSION}"$ -> rm -r "$PKG" "${TARNAME}-${VERSION}"\npopd 2>/dev/null||true
+
+
+^packageclean\s"\$PKG"$ --> packageclean "$PKG" "$CWD"
+
+
+popd 2>/dev/null||true
+
+${LFSVERSION}
+${VERSION%.?*}
+scriptLog "${PKGNAME}-${VERSION}"
+
+patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-upstream_fixes-1.patch
+find -iname "*.LFSBuild"|sort > ../BuildScriptList.txt
+
+SBU
+no j
+real	3m18.202s
+user	2m44.964s
+sys	0m25.731s
+
+-j4
+real	1m38.310s
+user	4m1.804s
+sys	0m36.247s
+
+	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
+
+sudo modprobe configs
+zcat /proc/config.gz
