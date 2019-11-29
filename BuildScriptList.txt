@@ -27,6 +27,7 @@
 ./desktop/cairo-dock-plugins/cairo-dock-plugins-gtk3.LFSBuild
 ./desktop/cairo-dock-plugins/cairo-dock-plugins.LFSBuild
 ./desktop/chromium/chromium.LFSBuild
+./desktop/claws-mail/claws-mail.LFSBuild
 ./desktop/ClipboardViewer/ClipboardViewer.LFSBuild
 ./desktop/comix/comix.LFSBuild
 ./desktop/desktop-file-utils/desktop-file-utils.LFSBuild
@@ -507,8 +508,10 @@
 ./qt/qtwebkit/qtwebkit.LFSBuild
 ./qt/QupZilla/QupZilla.LFSBuild
 ./rpi3/bluetooth-firmware/bluetooth-firmware.LFSBuild
+./rpi3/glm/glm.LFSBuild
 ./rpi3/omxplayer/omxplayer.LFSBuild
 ./rpi3/rpi-fonts/rpi-fonts.LFSBuild
+./rpi3/visualization-waveform/visualization-waveform.LFSBuild
 ./sys/acpid/acpid.LFSBuild
 ./sys/bootfiles/bootfiles.LFSBuild
 ./sys/busybox/busybox.LFSBuild
