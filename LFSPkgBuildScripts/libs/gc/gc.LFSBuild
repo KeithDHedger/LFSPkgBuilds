@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libatomic_ops-7.4.4"
+DEPENDS="libatomic_ops-7.6.10"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gc"
 TARNAME="$PKGNAME"
-VERSION="7.6.4"
+VERSION="8.0.4"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

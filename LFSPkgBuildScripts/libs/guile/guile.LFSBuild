@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GC-7.6.4 libffi-3.2.1 libunistring-0.9.8"
+DEPENDS="GC-8.0.4 libffi-3.2.1 libunistring-0.9.10"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="guile"
 TARNAME="$PKGNAME"
-VERSION="2.2.3"
+VERSION="2.2.6"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -29,6 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/gdb/auto-load/usr/lib||true
+		mv $PKG/usr/lib${LIBDIRSUFFIX}/libguile-*-gdb.scm $PKG/usr/share/gdb/auto-load/usr/lib
 	popd
 
 	checketc $PKG

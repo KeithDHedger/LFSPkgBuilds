@@ -2,9 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="aspell-0.60.7"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="enchant"
 TARNAME="$PKGNAME"
-VERSION="2.2.3"
+VERSION="2.2.5"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

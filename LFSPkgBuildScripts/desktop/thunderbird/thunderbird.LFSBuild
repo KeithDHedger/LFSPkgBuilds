@@ -5,14 +5,14 @@
 echo "Package broken ..."
 exit 100
 
-DEPENDS="alsa-lib-1.1.9 GTK-2.24.32 Zip-3.0 UnZip-6.0 libevent-2.1.11 NSPR-4.21 NSS-3.45 SQLite-3.29.0 yasm-1.3.0"
+DEPENDS="python-2.7.16 alsa-lib-1.1.9 gtk3-3.24.10 GTK-2.24.32 Zip-3.0 UnZip-6.0 libevent-2.1.11 NSPR-4.21 NSS-3.45 SQLite-3.29.0 yasm-1.3.0 Autoconf213-2.13 LLVM-8.0.1 rust-1.35.0 cbindgen-0.9.0 node-9.5.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="thunderbird"
 TARNAME="$PKGNAME"
-VERSION="52.6.0"
+VERSION="68.0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -27,14 +27,22 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-#	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${PKGNAME}-${VERSION}
-#		cp $CWD/mozconfig.thunderbird mozconfig
+		cp $CWD/mozconfig.thunderbird mozconfig
 		#set the lib suffix in the config file
-#		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
-		export SHELL=/bin/sh
-		make -f client.mk|| exit 100
-		make -f client.mk install INSTALL_SDK= DESTDIR=$PKG|| exit 100
+		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
+		sed -i -e '/#!\[deny(missing_docs)\]/d' servo/components/style/lib.rs
+		sed -i -e 's/#!\[deny(unsafe_code, missing_docs)\]/#!\[deny(unsafe_code)\]/g' servo/components/style_traits/lib.rs
+		sed -i -e '/pid_t gettid/s@^@//@' tools/profiler/core/platform.h
+
+		#export SHELL=/bin/sh
+		SHELL=/bin/sh ./mach build
+		 #|| exit 100
+echo "COMPLETED --------------------------------------------"
+exit 100
+
+		SHELL=/bin/sh make -f client.mk install INSTALL_SDK= DESTDIR=$PKG|| exit 100
 		chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}
 
 		mkdir -pv $PKG/usr/share/applications $PKG/usr/share/pixmaps

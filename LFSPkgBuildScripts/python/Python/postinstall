@@ -1,0 +1,7 @@
+#!/bin/bash
+#©keithhedger Sun 22 Feb 16:50:36 GMT 2015
+
+. /usr/share/LFSPkg/LFSFunctions
+
+python3 -m pip install --force pip
+
