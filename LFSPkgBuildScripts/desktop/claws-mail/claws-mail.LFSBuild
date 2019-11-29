@@ -2,38 +2,34 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="aspell-0.60.6"
+DEPENDS="gtk-2.24.32 enchant-2.2.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="enchant"
+PKGNAME="claws-mail"
 TARNAME="$PKGNAME"
-VERSION="2.2.5"
-BUILD=${BUILD:-1}
-SECTION="LIBS"
+VERSION="3.17.3"
+BUILD=1
+SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/AbiWord/${PKGNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
+gettar "https://www.claws-mail.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-libetpan --enable-enchant
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		rm -rf $PKG/usr/include/enchant
-		ln -sfv enchant-2 $PKG/usr/include/enchant
-		ln -sfv enchant-2 $PKG/usr/bin/enchant
-		ln -sfv libenchant-2.so $PKG/usr/lib${LIBDIRSUFFIX}/libenchant.so
-		ln -sfv enchant-2.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/enchant.pc
+		mkdir -vp $PKG/usr/share/claws-mail/themes/
 	popd
 
 	checketc "$PKG"
@@ -60,4 +56,3 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
-
