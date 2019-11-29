@@ -519,8 +519,10 @@
 ./qt/qtwebkit/qtwebkit.LFSBuild
 ./qt/QupZilla/QupZilla.LFSBuild
 ./rpi3/bluetooth-firmware/bluetooth-firmware.LFSBuild
+./rpi3/glm/glm.LFSBuild
 ./rpi3/omxplayer/omxplayer.LFSBuild
 ./rpi3/rpi-fonts/rpi-fonts.LFSBuild
+./rpi3/visualization-waveform/visualization-waveform.LFSBuild
 ./sys/acpid/acpid.LFSBuild
 ./sys/bootfiles/bootfiles.LFSBuild
 ./sys/busybox/busybox.LFSBuild
@@ -647,8 +649,6 @@
 ./sys/which/which.LFSBuild
 ./sys/wmctrl/wmctrl.LFSBuild
 ./sys/zip/zip.LFSBuild
-./TBD/libreoffice/libreoffice.LFSBuild
-./TBD/thunderbird/thunderbird.LFSBuild
 ./UNMAINTAINED/lxqt/libdbusmenu-qt5/libdbusmenu-qt5.LFSBuild
 ./UNMAINTAINED/lxqt/liblxqt/liblxqt.LFSBuild
 ./UNMAINTAINED/lxqt/liblxqt-mount/liblxqt-mount.LFSBuild
