@@ -2,34 +2,29 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk-2.24.32 enchant-2.2.5 libetpan-1.9.3"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="claws-mail"
+PKGNAME="libetpan"
 TARNAME="$PKGNAME"
-VERSION="3.17.3"
+VERSION="1.9.3"
 BUILD=1
-SECTION="DESKTOP"
+SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.claws-mail.org/releases/${TARBALL}" $SECTION
+gettar "https://github.com/dinhviethoa/${TARNAME}/archive/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-enchant
+		NOCONFIGURE=yes ./autogen.sh
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/usr/share/claws-mail/themes/
 	popd
 
 	checketc "$PKG"
