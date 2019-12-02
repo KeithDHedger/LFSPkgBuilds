@@ -258,6 +258,7 @@
 ./libs/libdiscid/libdiscid.LFSBuild
 ./libs/libedit/libedit.LFSBuild
 ./libs/libepoxy/libepoxy.LFSBuild
+./libs/libetpan/libetpan.LFSBuild
 ./libs/libevent/libevent.LFSBuild
 ./libs/libexif/libexif.LFSBuild
 ./libs/libfm-extras/libfm-extras.LFSBuild
