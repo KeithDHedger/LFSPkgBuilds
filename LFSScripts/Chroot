@@ -11,14 +11,14 @@ fi
 
 pushd $LFS
 	mount -v --bind /dev $LFS/dev
-	mount -vt devpts devpts $LFS/dev/pts -o gid=5,mode=620
+#	mount -vt devpts devpts $LFS/dev/pts -o gid=5,mode=620
 	mount -vt proc proc $LFS/proc
 	mount -vt sysfs sysfs $LFS/sys
-	mount -vt tmpfs tmpfs $LFS/run
+#	mount -vt tmpfs tmpfs $LFS/run
 
-	if [ -h $LFS/dev/shm ];then
-		mkdir -pv $LFS/$(readlink $LFS/dev/shm)
-	fi
+#	if [ -h $LFS/dev/shm ];then
+#		mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+#	fi
 
 #extra folders from the host can be mounted either from here or from the chroot environment
 #dont forget to add the unmount commands to the AfterExitChroot script or unmount them before leaving the chroot.
