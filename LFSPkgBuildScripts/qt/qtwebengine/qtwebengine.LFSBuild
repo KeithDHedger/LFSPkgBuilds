@@ -30,13 +30,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		find -type f -name "*.pr[io]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch
-		if [ -e ${QT5DIR}/lib$LIBDIRSUFFIX}/libQt5WebEngineCore.so ]; then
-				rm -f ${QT5DIR}/lib${LIBDIRSUFFIX}/libQt5WebEngineCore.so*||true
-		fi
 		mkdir build||true
 		cd  build
 		export NINJAJOBS="-j2"
-		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker -webengine-icu
+		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker -system-icu
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
 		find ${PKG}${QT5PREFIX}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;

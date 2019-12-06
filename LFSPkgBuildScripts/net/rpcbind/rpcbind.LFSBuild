@@ -20,7 +20,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://downloads.sourceforge.net/${PKGNAME}/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch" $SECTION
+#gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch
+#		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/sbin --with-rpcuser=root --enable-warmstarts --without-systemdsystemunitdir
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

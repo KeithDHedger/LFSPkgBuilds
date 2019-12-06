@@ -2,15 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="qtwebengine-5.13.0 ki18n-5.61.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
+#DEPENDS="qtwebengine-5.13.0 ki18n-5.61.0"
+#if ! lfspkg -B "$DEPENDS";then
+#	exit 100
+#fi
+#
 PKGNAME="falkon"
 TARNAME="$PKGNAME"
 VERSION="3.1.0"
-BUILD=1
+BUILD=2
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
