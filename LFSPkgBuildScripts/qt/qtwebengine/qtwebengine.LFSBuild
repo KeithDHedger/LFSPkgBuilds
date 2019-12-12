@@ -33,7 +33,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir build||true
 		cd  build
 		export NINJAJOBS="-j2"
-		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker -system-icu
+		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
 		find ${PKG}${QT5PREFIX}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;

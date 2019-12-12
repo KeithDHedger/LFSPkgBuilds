@@ -17,7 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-schema-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -29,7 +28,6 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-schema-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${XORG_CONFIG}
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100

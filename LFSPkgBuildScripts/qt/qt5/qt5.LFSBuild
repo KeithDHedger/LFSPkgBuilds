@@ -9,7 +9,7 @@ fi
 
 PKGNAME="qt5"
 TARNAME="qt-everywhere-src"
-VERSION="5.13.2"
+VERSION="5.13.0"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -20,7 +20,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/qt-${VERSION}-upstream_fixes-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/qt-${VERSION}-upstream_fixes-1.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -28,7 +28,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${TARNAME}-${VERSION}
-	#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/qt-${VERSION}-upstream_fixes-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/qt-${VERSION}-upstream_fixes-1.patch
 		sed -i 's/python /python3 /' qtdeclarative/qtdeclarative.pro qtdeclarative/src/3rdparty/masm/masm.pri
 		export QT5PREFIX=/usr
 		export QT5BINDIR=$QT5PREFIX/bin
