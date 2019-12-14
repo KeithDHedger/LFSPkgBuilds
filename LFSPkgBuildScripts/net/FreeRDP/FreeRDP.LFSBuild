@@ -1,0 +1,62 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="ffmpeg-3.3.0 openjpeg-2.3.0 lame-3.100 faad2-2.8.8 faac-1.29.9.2"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="FreeRDP"
+TARNAME="$PKGNAME"
+VERSION="2.0.0"
+RELEASE="rc4"
+BUILD=1
+SECTION="NET"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}-${RELEASE}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/FreeRDP/FreeRDP/archive/${VERSION}-${RELEASE}/${TARBALL}" $SECTION
+
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}-${RELEASE}"
+		mkdir build || true
+		cd  build
+		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DWITH_LIBSYSTEMD=OFF -DWITH_WAYLAND=OFF -DCMAKE_BUILD_TYPE=Release -DWITH_JPEG=ON -DWITH_LAME=ON -DWITH_FAAD2=ON -DWITH_FAAC=ON -Wno-dev ..
+
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}-${RELEASE}"
+popd 2>/dev/null||true

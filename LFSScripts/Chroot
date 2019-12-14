@@ -8,7 +8,7 @@ else
 	echo "No SystemData file found ..."
 	exit 0
 fi
-
+LFS=/media/LFSBomb20
 pushd $LFS
 	mount -v --bind /dev $LFS/dev
 	mount -vt devpts devpts $LFS/dev/pts -o gid=5,mode=620
