@@ -39,7 +39,6 @@ pushd $COMPILEAT 2>/dev/null||true
 				;;
 		esac
 
-		#rm -f /usr/lib/gcc||true
 		mkdir -v build
 		cd build
 		SED=sed ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
