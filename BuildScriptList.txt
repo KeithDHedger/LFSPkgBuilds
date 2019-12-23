@@ -412,6 +412,7 @@
 ./net/dovecot/dovecot.LFSBuild
 ./net/fail2ban/fail2ban.LFSBuild
 ./net/fetchmail/fetchmail.LFSBuild
+./net/FreeRDP/FreeRDP.LFSBuild
 ./net/httrack/httrack.LFSBuild
 ./net/iptables/iptables.LFSBuild
 ./net/js/js.LFSBuild
@@ -631,7 +632,6 @@
 ./system/sysklogd/sysklogd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
-./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
 ./system/sysvinit/sysvinit.LFSBuild
