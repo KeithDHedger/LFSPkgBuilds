@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+#©keithhedger Tue 3 Feb 19:40:19 GMT 2015 kdhedger68713@gmail.com
+
+cat > /etc/vimrc << "EOF"
+" Begin /etc/vimrc
+" Ensure defaults are set before customizing settings, not after
+source $VIMRUNTIME/defaults.vim
+let skip_defaults_vim=1 
+
+set nocompatible
+set backspace=2
+set mouse=
+syntax on
+if (&term == "iterm") || (&term == "putty")
+  set background=dark
+endif
+
+" End /etc/vimrc
+EOF

@@ -1,0 +1,319 @@
+#!/bin/bash -e
+
+#©keithhedger Sun 22 Dec 19:34:30 GMT 2019 kdhedger68713@gmail.com
+
+sed -e "s/\$BINUTILS_VERS/$BINUTILS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/binutils/binutils.LFSBuild'
+sed -e "s/\$BINUTILS_VERS/$BINUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$BINUTILS_VERS/$BINUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GCC_VERS/$GCC_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/gcc/gcc.LFSBuild'
+sed -e "s/\$GCC_VERS/$GCC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GCC_VERS/$GCC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GMP_VERS/$GMP_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/gmp/gmp.LFSBuild'
+sed -e "s/\$GMP_VERS/$GMP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GMP_VERS/$GMP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$MPC_VERS/$MPC_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/mpc/mpc.LFSBuild'
+sed -e "s/\$MPC_VERS/$MPC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$MPC_VERS/$MPC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$MPFR_VERS/$MPFR_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/mpfr/mpfr.LFSBuild'
+sed -e "s/\$MPFR_VERS/$MPFR_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$MPFR_VERS/$MPFR_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$LINUX_VERS/$LINUX_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/linuxheaders/linuxheaders.LFSBuild'
+sed -e "s/\$LINUX_VERS/$LINUX_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$LINUX_VERS/$LINUX_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GLIBC_VERS/$GLIBC_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/glibc/glibc.LFSBuild'
+sed -e "s/\$TZDATA_VERS/$TZDATA_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/glibc/postinstall'
+sed -e "s/\$GLIBC_VERS/$GLIBC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GLIBC_VERS/$GLIBC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$M4_VERS/$M4_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/m4/m4.LFSBuild'
+sed -e "s/\$M4_VERS/$M4_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$M4_VERS/$M4_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$BC_VERS/$BC_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/bc/bc.LFSBuild'
+sed -e "s/\$BC_VERS/$BC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$BC_VERS/$BC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$CHECK_VERS/$CHECK_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/check/check.LFSBuild'
+sed -e "s/\$CHECK_VERS/$CHECK_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$CHECK_VERS/$CHECK_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$NCURSES_VERS/$NCURSES_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/ncurses/ncurses.LFSBuild'
+sed -e "s/\$NCURSES_VERS/$NCURSES_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$NCURSES_VERS/$NCURSES_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$NCURSES_VERS/$NCURSES_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/ncurses/ncurses-static.LFSBuild'
+sed -e "s/\$NCURSES_VERS/$NCURSES_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$NCURSES_VERS/$NCURSES_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$BASH_VERS/$BASH_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/bash/bash.LFSBuild'
+sed -e "s/\$BASH_VERS/$BASH_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$BASH_VERS/$BASH_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$BISON_VERS/$BISON_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/bison/bison.LFSBuild'
+sed -e "s/\$BISON_VERS/$BISON_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$BISON_VERS/$BISON_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$BZIP2_VERS/$BZIP2_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/bzip2/bzip2.LFSBuild'
+sed -e "s/\$BZIP2_VERS/$BZIP2_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$BZIP2_VERS/$BZIP2_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$COREUTILS_VERS/$COREUTILS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/coreutils/coreutils.LFSBuild'
+sed -e "s/\$COREUTILS_VERS/$COREUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$COREUTILS_VERS/$COREUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$DIFFUTILS_VERS/$DIFFUTILS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/diffutils/diffutils.LFSBuild'
+sed -e "s/\$DIFFUTILS_VERS/$DIFFUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$DIFFUTILS_VERS/$DIFFUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$FILE_VERS/$FILE_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/file/file.LFSBuild'
+sed -e "s/\$FILE_VERS/$FILE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$FILE_VERS/$FILE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$FINDUTILS_VERS/$FINDUTILS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/findutils/findutils.LFSBuild'
+sed -e "s/\$FINDUTILS_VERS/$FINDUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$FINDUTILS_VERS/$FINDUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$READLINE_VERS/$READLINE_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/readline/readline.LFSBuild'
+sed -e "s/\$READLINE_VERS/$READLINE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$READLINE_VERS/$READLINE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GAWK_VERS/$GAWK_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/gawk/gawk.LFSBuild'
+sed -e "s/\$GAWK_VERS/$GAWK_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GAWK_VERS/$GAWK_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GETTEXT_VERS/$GETTEXT_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/gettext/gettext.LFSBuild'
+sed -e "s/\$GETTEXT_VERS/$GETTEXT_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GETTEXT_VERS/$GETTEXT_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GREP_VERS/$GREP_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/grep/grep.LFSBuild'
+sed -e "s/\$GREP_VERS/$GREP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GREP_VERS/$GREP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GZIP_VERS/$GZIP_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/gzip/gzip.LFSBuild'
+sed -e "s/\$GZIP_VERS/$GZIP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GZIP_VERS/$GZIP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$MAKE_VERS/$MAKE_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/make/make.LFSBuild'
+sed -e "s/\$MAKE_VERS/$MAKE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$MAKE_VERS/$MAKE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$PATCH_VERS/$PATCH_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/patch/patch.LFSBuild'
+sed -e "s/\$PATCH_VERS/$PATCH_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$PATCH_VERS/$PATCH_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$PERL_VERS/$PERL_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/perl/perl.LFSBuild'
+sed -e "s/\$PERL_VERS/$PERL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$PERL_VERS/$PERL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$PYTHON_VERS/$PYTHON_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/Python3/Python3.LFSBuild'
+sed -e "s/\$PYTHON_VERS/$PYTHON_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$PYTHON_VERS/$PYTHON_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$SED_VERS/$SED_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/sed/sed.LFSBuild'
+sed -e "s/\$SED_VERS/$SED_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$SED_VERS/$SED_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$TAR_VERS/$TAR_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/tar/tar.LFSBuild'
+sed -e "s/\$TAR_VERS/$TAR_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$TAR_VERS/$TAR_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$TEXINFO_VERS/$TEXINFO_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/texinfo/texinfo.LFSBuild'
+sed -e "s/\$TEXINFO_VERS/$TEXINFO_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$TEXINFO_VERS/$TEXINFO_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$XZ_VERS/$XZ_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/xz/xz.LFSBuild'
+sed -e "s/\$XZ_VERS/$XZ_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$XZ_VERS/$XZ_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$MANPAGES_VERS/$MANPAGES_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/man-pages/man-pages.LFSBuild'
+sed -e "s/\$MANPAGES_VERS/$MANPAGES_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$MANPAGES_VERS/$MANPAGES_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$ZLIB_VERS/$ZLIB_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/zlib/zlib.LFSBuild'
+sed -e "s/\$ZLIB_VERS/$ZLIB_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$ZLIB_VERS/$ZLIB_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$SHADOW_VERS/$SHADOW_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/shadow/shadow.LFSBuild'
+sed -e "s/\$SHADOW_VERS/$SHADOW_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$SHADOW_VERS/$SHADOW_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$PKGCONFIG_VERS/$PKGCONFIG_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/pkg-config/pkg-config.LFSBuild'
+sed -e "s/\$PKGCONFIG_VERS/$PKGCONFIG_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$PKGCONFIG_VERS/$PKGCONFIG_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$ATTR_VERS/$ATTR_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/attr/attr.LFSBuild'
+sed -e "s/\$ATTR_VERS/$ATTR_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$ATTR_VERS/$ATTR_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$ACL_VERS/$ACL_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/acl/acl.LFSBuild'
+sed -e "s/\$ACL_VERS/$ACL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$ACL_VERS/$ACL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$LIBCAP_VERS/$LIBCAP_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/libcap/libcap.LFSBuild'
+sed -e "s/\$LIBCAP_VERS/$LIBCAP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$LIBCAP_VERS/$LIBCAP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$PSMISC_VERS/$PSMISC_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/psmisc/psmisc.LFSBuild'
+sed -e "s/\$PSMISC_VERS/$PSMISC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$PSMISC_VERS/$PSMISC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$IANAETC_VERS/$IANAETC_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/iana-etc/iana-etc.LFSBuild'
+sed -e "s/\$IANAETC_VERS/$IANAETC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$IANAETC_VERS/$IANAETC_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$FLEX_VERS/$FLEX_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/flex/flex.LFSBuild'
+sed -e "s/\$FLEX_VERS/$FLEX_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$FLEX_VERS/$FLEX_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$LIBTOOL_VERS/$LIBTOOL_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/libtool/libtool.LFSBuild'
+sed -e "s/\$LIBTOOL_VERS/$LIBTOOL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$LIBTOOL_VERS/$LIBTOOL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GDBM_VERS/$GDBM_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/gdbm/gdbm.LFSBuild'
+sed -e "s/\$GDBM_VERS/$GDBM_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GDBM_VERS/$GDBM_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GPERF_VERS/$GPERF_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/GPERF/GPERF.LFSBuild'
+sed -e "s/\$GPERF_VERS/$GPERF_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GPERF_VERS/$GPERF_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$EXPAT_VERS/$EXPAT_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/expat/expat.LFSBuild'
+sed -e "s/\$EXPAT_VERS/$EXPAT_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$EXPAT_VERS/$EXPAT_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$INETUTILS_VERS/$INETUTILS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/inetutils/inetutils.LFSBuild'
+sed -e "s/\$INETUTILS_VERS/$INETUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$INETUTILS_VERS/$INETUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$XMLPARSER_VERS/$XMLPARSER_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/xml-parser/xml-parser.LFSBuild'
+sed -e "s/\$XMLPARSER_VERS/$XMLPARSER_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$XMLPARSER_VERS/$XMLPARSER_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$INTLTOOL_VERS/$INTLTOOL_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/intltool/intltool.LFSBuild'
+sed -e "s/\$INTLTOOL_VERS/$INTLTOOL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$INTLTOOL_VERS/$INTLTOOL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$AUTOCONF_VERS/$AUTOCONF_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/autoconf/autoconf.LFSBuild'
+sed -e "s/\$AUTOCONF_VERS/$AUTOCONF_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$AUTOCONF_VERS/$AUTOCONF_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$AUTOMAKE_VERS/$AUTOMAKE_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/automake/automake.LFSBuild'
+sed -e "s/\$AUTOMAKE_VERS/$AUTOMAKE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$AUTOMAKE_VERS/$AUTOMAKE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$KMOD_VERS/$KMOD_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/kmod/kmod.LFSBuild'
+sed -e "s/\$KMOD_VERS/$KMOD_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$KMOD_VERS/$KMOD_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$ELFUTILS_VERS/$ELFUTILS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/elfutils/elfutils.LFSBuild'
+sed -e "s/\$ELFUTILS_VERS/$ELFUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$ELFUTILS_VERS/$ELFUTILS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$LIBFFI_VERS/$LIBFFI_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/libffi/libffi.LFSBuild'
+sed -e "s/\$LIBFFI_VERS/$LIBFFI_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$LIBFFI_VERS/$LIBFFI_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$OPENSSL_VERS/$OPENSSL_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/openssl/openssl.LFSBuild'
+sed -e "s/\$OPENSSL_VERS/$OPENSSL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$OPENSSL_VERS/$OPENSSL_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$NINJA_VERS/$NINJA_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/ninja/ninja.LFSBuild'
+sed -e "s/\$NINJA_VERS/$NINJA_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$NINJA_VERS/$NINJA_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$MESON_VERS/$MESON_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/meson/meson.LFSBuild'
+sed -e "s/\$MESON_VERS/$MESON_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$MESON_VERS/$MESON_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GROFF_VERS/$GROFF_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/groff/groff.LFSBuild'
+sed -e "s/\$GROFF_VERS/$GROFF_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GROFF_VERS/$GROFF_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GRUB_VERS/$GRUB_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/grub/grub.LFSBuild'
+sed -e "s/\$GRUB_VERS/$GRUB_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GRUB_VERS/$GRUB_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$LESS_VERS/$LESS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/less/less.LFSBuild'
+sed -e "s/\$LESS_VERS/$LESS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$LESS_VERS/$LESS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$IPROUTE2_VERS/$IPROUTE2_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/iproute2/iproute2.LFSBuild'
+sed -e "s/\$IPROUTE2_VERS/$IPROUTE2_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$IPROUTE2_VERS/$IPROUTE2_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$KBD_VERS/$KBD_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/kbd/kbd.LFSBuild'
+sed -e "s/\$KBD_VERS/$KBD_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$KBD_VERS/$KBD_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$LIBPIPELINE_VERS/$LIBPIPELINE_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/libpipeline/libpipeline.LFSBuild'
+sed -e "s/\$LIBPIPELINE_VERS/$LIBPIPELINE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$LIBPIPELINE_VERS/$LIBPIPELINE_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$MANDB_VERS/$MANDB_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/man-db/man-db.LFSBuild'
+sed -e "s/\$MANDB_VERS/$MANDB_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$MANDB_VERS/$MANDB_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$VIM_VERS/$VIM_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/vim/vim.LFSBuild'
+sed -e "s/\$VIM_VERS/$VIM_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$VIM_VERS/$VIM_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$PROCPSNG_VERS/$PROCPSNG_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/procps-ng/procps-ng.LFSBuild'
+sed -e "s/\$PROCPSNG_VERS/$PROCPSNG_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$PROCPSNG_VERS/$PROCPSNG_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$UTILLINUX_VERS/$UTILLINUX_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/util-linux/util-linux.LFSBuild'
+sed -e "s/\$UTILLINUX_VERS/$UTILLINUX_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$UTILLINUX_VERS/$UTILLINUX_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$E2FSPROGS_VERS/$E2FSPROGS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/e2fsprogs/e2fsprogs.LFSBuild'
+sed -e "s/\$E2FSPROGS_VERS/$E2FSPROGS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$E2FSPROGS_VERS/$E2FSPROGS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$SYSKLOGD_VERS/$SYSKLOGD_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/sysklogd/sysklogd.LFSBuild'
+sed -e "s/\$SYSKLOGD_VERS/$SYSKLOGD_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$SYSKLOGD_VERS/$SYSKLOGD_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$SYSVINIT_VERS/$SYSVINIT_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/sysvinit/sysvinit.LFSBuild'
+sed -e "s/\$SYSVINIT_VERS/$SYSVINIT_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$SYSVINIT_VERS/$SYSVINIT_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$BOOTSCRIPTS_VERS/$BOOTSCRIPTS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/lfs-bootscripts/lfs-bootscripts.LFSBuild'
+sed -e "s/\$BOOTSCRIPTS_VERS/$BOOTSCRIPTS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$BOOTSCRIPTS_VERS/$BOOTSCRIPTS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$EUDEV_VERS/$EUDEV_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/eudev/eudev.LFSBuild'
+sed -e "s/\$UDEVLFS_VERS/$UDEVLFS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/eudev/eudev.LFSBuild'
+sed -e "s/\$EUDEV_VERS/$EUDEV_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$EUDEV_VERS/$EUDEV_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$WGET_VERS/$WGET_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/net/wget/wget.LFSBuild'
+sed -e "s/\$WGET_VERS/$WGET_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$WGET_VERS/$WGET_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$UNZIP_VERS/$UNZIP_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/sys/unzip/unzip.LFSBuild'
+sed -e "s/\$UNZIP_VERS/$UNZIP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$UNZIP_VERS/$UNZIP_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$INITFORLFS_VERS/$INITFORLFS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/system/Init-For-LFS/Init-For-LFS.LFSBuild'
+sed -e "s/\$INITFORLFS_VERS/$INITFORLFS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$INITFORLFS_VERS/$INITFORLFS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$GPM_VERS/$GPM_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/sys/gpm/gpm.LFSBuild'
+sed -e "s/\$GPM_VERS/$GPM_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$GPM_VERS/$GPM_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$LINKS_VERS/$LINKS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/xorg/links/links.LFSBuild'
+sed -e "s/\$LINKS_VERS/$LINKS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$LINKS_VERS/$LINKS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+sed -e "s/\$DBUS_VERS/$DBUS_VERS/g" -e '/^\. \.\.\/PkgVersions$/d' '/LFSPkgBuildScripts/sys/dbus/dbus.LFSBuild'
+sed -e "s/\$DBUS_VERS/$DBUS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+sed -e "s/\$DBUS_VERS/$DBUS_VERS/g" '/LFSPkgBuilds/Updating/system/system-meta/system-LFSInit-meta.LFSBuild'
+
+
