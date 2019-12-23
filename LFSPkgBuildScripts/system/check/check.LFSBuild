@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="check"
 TARNAME="$PKGNAME"
-VERSION=$CHECK_VERS
+VERSION="0.12.0"
 BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

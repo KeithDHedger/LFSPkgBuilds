@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="util-linux"
 TARNAME="$PKGNAME"
-VERSION=$UTILLINUX_VERS
+VERSION="2.34"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

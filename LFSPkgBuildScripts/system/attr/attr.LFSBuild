@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="attr"
 TARNAME="$PKGNAME"
-VERSION=$ATTR_VERS
+VERSION="2.4.48"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

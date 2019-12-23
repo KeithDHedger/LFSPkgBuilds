@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="patch"
 TARNAME="$PKGNAME"
-VERSION=$PATCH_VERS
+VERSION="2.7.6"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

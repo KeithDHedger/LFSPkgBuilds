@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="diffutils"
 TARNAME="$PKGNAME"
-VERSION=$DIFFUTILS_VERS
+VERSION="3.7"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

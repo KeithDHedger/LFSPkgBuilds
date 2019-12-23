@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="lfs-bootscripts"
 TARNAME="$PKGNAME"
-VERSION=$BOOTSCRIPTS_VERS
+VERSION="20190524"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

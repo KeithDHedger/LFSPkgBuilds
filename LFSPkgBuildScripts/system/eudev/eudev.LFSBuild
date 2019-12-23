@@ -1,17 +1,16 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="eudev"
 TARNAME="$PKGNAME"
-VERSION=$EUDEV_VERS
+VERSION="3.2.8"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
-UDEVLFS="udev-lfs-$UDEVLFS_VERS"
+UDEVLFS="udev-lfs-20171102"
 
 PKG="${OUTPUT}/${PKGNAME}"
 

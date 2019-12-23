@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="meson"
 TARNAME="$PKGNAME"
-VERSION=$MESON_VERS
+VERSION="0.51.1"
 BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

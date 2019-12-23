@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="procps-ng"
 TARNAME="$PKGNAME"
-VERSION=$PROCPSNG_VERS
+VERSION="3.3.15"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

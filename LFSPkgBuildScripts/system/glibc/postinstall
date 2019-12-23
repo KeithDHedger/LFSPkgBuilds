@@ -6,7 +6,7 @@
 . /LFSScripts/PkgVersions
 
 SECTION="SYSTEM"
-TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata${TZDATA_VERS}.tar.gz
+TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata2019b.tar.gz
 
 if [ ! -e "/etc/nsswitch.conf" ];then
 	cat > /etc/nsswitch.conf << "EOF"

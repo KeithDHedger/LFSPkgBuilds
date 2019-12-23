@@ -2,11 +2,10 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-. ../PkgVersions
 
 PKGNAME="Linuxheaders"
 TARNAME="linux"
-VERSION=$LINUX_VERS
+VERSION="5.2.8"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

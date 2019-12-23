@@ -1,11 +1,10 @@
 #!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
-. ../PkgVersions
 
 PKGNAME="e2fsprogs"
 TARNAME="$PKGNAME"
-VERSION=$E2FSPROGS_VERS
+VERSION="1.45.3"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"

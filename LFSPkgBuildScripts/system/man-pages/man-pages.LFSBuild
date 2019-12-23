@@ -2,11 +2,10 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-. ../PkgVersions
 
 PKGNAME="man-pages"
 TARNAME="$PKGNAME"
-VERSION=$MANPAGES_VERS
+VERSION="5.02"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
