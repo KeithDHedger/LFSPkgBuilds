@@ -3,35 +3,44 @@
 #©keithhedger Sun 22 Dec 19:34:30 GMT 2019 kdhedger68713@gmail.com
 
 cd /LFSPkgBuildScripts/system/linuxheaders
-linuxheaders.LFSBuild up
+./linuxheaders.LFSBuild up
 	
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/glibc
-glibc.LFSBuild up
+./glibc.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/binutils
-binutils.LFSBuild up
+./binutils.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/coreutils
-coreutils.LFSBuild up
+./coreutils.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/util-linux
-util-linux.LFSBuild up
+./util-linux.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/gmp
-gmp.LFSBuild up
+./gmp.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/mpfr
-mpfr.LFSBuild up
+./mpfr.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/mpc
-mpc.LFSBuild up
+./mpc.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/system/gcc
-gcc.LFSBuild up
+./gcc.LFSBuild up
 
 cd /LFSPkgBuilds/LFSPkgBuildScripts/kernel
-kernel.LFSBuild up
-firmware.LFSBuild up
+./kernel.LFSBuild up
+./firmware.LFSBuild up
+
+cd /LFSPkgBuildScripts/system/Python3
+./Python3.LFSBuild up
+
+cd /LFSPkgBuildScripts/system/ninja
+./ninja.LFSBuild up
+
+cd /LFSPkgBuildScripts/system/meson
+./meson.LFSBuild up
 
 
 
