@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorgproto-2019.1"
+DEPENDS="proto-2019.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

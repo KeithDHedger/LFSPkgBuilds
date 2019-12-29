@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk-2.24.32 enchant-2.2.5 libetpan-1.9.3"
+DEPENDS="gtk-2.24.32 enchant-2.2.5 libetpan-1.9.3 gnutls-3.6.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
