@@ -10,7 +10,7 @@ fi
 
 PKGNAME="webkitgtk"
 TARNAME="$PKGNAME"
-VERSION="2.4.11"
+VERSION="2.24.4"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -24,20 +24,38 @@ gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk/${TARNAME}-2.4.9-abs.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+MAKEFLAGS=" -j2 "
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-2.4.9-abs.patch
+		mkdir -vp build
+		cd        build
+
+		CFLAGS=-Wno-expansion-to-defined  \
+		CXXFLAGS=-Wno-expansion-to-defined \
+		cmake -DCMAKE_BUILD_TYPE=Release  \
+       -DCMAKE_INSTALL_PREFIX=/usr \
+       -DCMAKE_SKIP_RPATH=ON       \
+       -DPORT=GTK                  \
+       -DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX}  \
+       -DUSE_LIBHYPHEN=OFF         \
+       -DENABLE_MINIBROWSER=ON     \
+       -DUSE_WOFF2=OFF             \
+       -DENABLE_GEOLOCATION=OFF \
+       -Wno-dev -G Ninja ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
+		#patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-2.4.9-abs.patch
 		#thanks to gentoo for this patch
 		#https://bugs.gentoo.org/621532
-		patch -Np1 -i ${CWD}/js.patch
-
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gstreamer=1.0 --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib/WebKitGTK --disable-geolocation --enable-introspection
-		make $MAKEFLAGS||exit 100
-		make install DESTDIR=$PKG || exit 100
-		rm -rf $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
-		mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
+		#patch -Np1 -i ${CWD}/js.patch
+#
+#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gstreamer=1.0 --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib/WebKitGTK --disable-geolocation --disable-introspection
+#		make $MAKEFLAGS||exit 100
+#		make install DESTDIR=$PKG || exit 100
+#		rm -rf $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
+#		mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
 	popd
 
 	checketc $PKG

@@ -9,8 +9,8 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="webkitgtk3"
-TARNAME="$PKGNAME"
-VERSION="2.24.4"
+TARNAME="webkitgtk"
+VERSION="2.26.2"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -21,18 +21,19 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
-gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk/${TARNAME}-2.4.9-abs.patch" $SECTION
+#gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk/${TARNAME}-2.4.9-abs.patch" $SECTION
+gettar "https://git.archlinux.org/svntogit/packages.git/tree/trunk/icu65.patch?h=packages/webkit2gtk" $SECTION icu65.patch
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/icu65.patch||true
 		mkdir build||true
 		cd build
 		CFLAGS="$LFSFLAGS -Wno-expansion-to-defined" CXXFLAGS="$LFSFLAGS -Wno-expansion-to-defined" cmake -DCMAKE_BUILD_TYPE=Release  \
-      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=ON -DPORT=GTK -DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX} -DUSE_LIBHYPHEN=OFF -DENABLE_MINIBROWSER=ON -DUSE_WOFF2=OFF -Wno-dev -G Ninja ..
+      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=ON -DPORT=GTK -DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX} -DUSE_LIBHYPHEN=OFF -DENABLE_BUBBLEWRAP_SANDBOX=OFF -DENABLE_MINIBROWSER=ON -DUSE_WOFF2=OFF -Wno-dev -G Ninja ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 
