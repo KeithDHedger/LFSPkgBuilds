@@ -47,7 +47,7 @@ cd LFSScripts
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
-[sudo] ./LFSSetUp
+[sudo] -E ./LFSSetUp
 
 #To check config:
 ./ShowSystemData

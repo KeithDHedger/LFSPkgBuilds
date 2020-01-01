@@ -39,6 +39,7 @@ pushd $LFS
 			;;
 	esac
 
+	mkdir -vp run/shm
 	mkdir -v var/{log,mail,spool}
 	ln -sv /run var/run
 	ln -sv /run/lock var/lock
