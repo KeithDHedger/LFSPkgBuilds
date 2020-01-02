@@ -16,6 +16,7 @@ if [ "X$EXTFOLDER" != "X" ];then
 fi
 
 umount ${LFS}/run||true
+umount ${LFS}/dev/pts||true
 umount -lf ${LFS}/dev ||true  
 umount ${LFS}/proc ||true
 umount ${LFS}/sys ||true

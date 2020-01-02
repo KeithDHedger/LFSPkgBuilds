@@ -18,6 +18,7 @@ pushd $LFS
 	if [ -e dev/shm ];then
 		mkdir -pv "${LFS}$(readlink dev/shm)"||true
 	fi
+	mount -vt devpts devpts dev/pts -o gid=5,mode=620
 
 #extra folders from the host can be mounted either from here or from the chroot environment
 #dont forget to add the unmount commands to the AfterExitChroot script or unmount them before leaving the chroot.
