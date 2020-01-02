@@ -15,6 +15,7 @@ if [ "X$EXTFOLDER" != "X" ];then
 	umount ${LFS}/${BUILTPACKAGES} ||true
 fi
 
+umount ${LFS}/run||true
 umount -lf ${LFS}/dev ||true  
 umount ${LFS}/proc ||true
 umount ${LFS}/sys ||true

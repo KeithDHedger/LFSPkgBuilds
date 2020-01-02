@@ -13,9 +13,10 @@ pushd $LFS
 	mount -v --bind /dev dev
 	mount -vt proc proc proc
 	mount -vt sysfs sysfs sys
+	mount -t tmpfs tmpfs run
 
 	if [ -e dev/shm ];then
-		mkdir -pv $(readlink dev/shm)
+		mkdir -pv "${LFS}$(readlink dev/shm)"||true
 	fi
 
 #extra folders from the host can be mounted either from here or from the chroot environment

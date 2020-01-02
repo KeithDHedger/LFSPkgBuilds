@@ -179,6 +179,11 @@ cd /LFSPkgBuildScripts/kernel
 #Or use the firmware build script to install all the latest firmware from https://git.kernel.org/ eg Whilst still in the kernel build folder:
 ./firmware.LFSBuild install
 
+#Install any extra hardware/firmware packages you need ( you may have to boot into the 'real' system for this ).
+#eg usb wireless package:
+cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
+./RTL88x2BU-Linux-Driver.LFSBuild install
+
 13.5)
 #No grub on pi
 #Optional install of grub, see here:
