@@ -30,7 +30,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-constexpr-1.patch" $SECTION
 
-#rm -rf "$PKG" || true
+rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 case "$ARCH" in
@@ -192,5 +192,5 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	echo "Removing source folder, please wait ..."
-#	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
