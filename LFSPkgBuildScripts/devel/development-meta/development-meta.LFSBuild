@@ -16,8 +16,8 @@ OpenJDK-12.0.2
 apache-ant-1.10.6
 orc-0.4.23
 astyle-3.1
+gtk3-3.24.10
 webkitgtk-2.4.11
-devhelp-2.32.0
 dialog-1.3
 gtkdialog-0.8.3
 help2man-1.47.11
@@ -29,7 +29,8 @@ ddd-3.3.12
 ManPageEditor-0.1.4
 autobook-1.5"
 
-#poedit-2.0.6
+#devhelp-2.32.0"
+#2.0.6
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

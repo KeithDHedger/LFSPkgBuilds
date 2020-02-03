@@ -28,13 +28,13 @@ rpc: files
 EOF
 fi
 
+mkdir -vp "/etc/ld.so.conf.d" ||true
 if [ ! -e "/etc/ld.so.conf" ];then
 	cat > /etc/ld.so.conf << "EOF"
 # Begin /etc/ld.so.conf
 
-/usr/lib64/qt5
-/usr/lib/qt5
-
+/lib64
+/usr/lib64
 /usr/local/lib
 /opt/lib
 

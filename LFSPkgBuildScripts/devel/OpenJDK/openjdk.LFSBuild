@@ -27,10 +27,10 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2"
+	#tar -xvf "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2"
 	pushd "${TARROOTPKGNAME}-jdk-${VERSION}${TARROOTPKGSUBVERSION}"
-
 		. /etc/profile.d/openjdk.sh
+		PATH="${PATH}:/opt/jdk/bin"
 		unset JAVA_HOME
 		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="10" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/pki/tls/java/cacerts
 		make images

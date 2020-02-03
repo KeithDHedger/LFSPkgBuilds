@@ -681,6 +681,7 @@ do
 done
 
 if [ "X$EXTFOLDER" != "X" ];then
+	cd
 	echo $ADMINPWD|sudo -S umount ${LFS}/${SOURCEARCHIVES} ||true
 	echo $ADMINPWD|sudo -S umount ${LFS}/${BUILTPACKAGES} ||true
 fi

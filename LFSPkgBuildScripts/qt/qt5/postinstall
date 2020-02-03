@@ -2,10 +2,10 @@
 
 #©keithhedger Thu 19 Feb 13:05:33 GMT 2015 kdhedger68713@gmail.com
 
-export QT5LINK=/usr
+. /usr/share/LFSPkg/LFSFunctions
 
-if [ X"${QT5LINK}/lib" != "X$(grep -i "${QT5LINK}/lib" /etc/ld.so.conf)" ];then
-	echo "${QT5LINK}/lib" >> /etc/ld.so.conf
+if [ ! "$(grep -i "${QT5DIR}" /etc/ld.so.conf)" ];then
+	echo "${QT5DIR}" >> /etc/ld.so.conf
 	ldconfig||true
 fi
 
@@ -14,7 +14,7 @@ mkdir -vp /etc/pango ||true
 fc-cache -f||true
 gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/hicolor||true
 gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/gnome||true
-/usr/bin/pango-querymodules > /etc/pango/pango.modules||true
+#/usr/bin/pango-querymodules > /etc/pango/pango.modules||true
 update-mime-database /usr/share/mime||true
 mkdir -vp /var/cache/man/fsstnd||true
 mandb -c||true
