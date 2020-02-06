@@ -20,7 +20,9 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/submodules/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch" $SECTION
+
+#possible fix for SOME setups use with discrection
+#gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -29,7 +31,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		find -type f -name "*.pr[io]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch
+#possible fix for SOME setups use with discrection
+#		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch
 		mkdir build||true
 		cd  build
 		export NINJAJOBS="-j2"
