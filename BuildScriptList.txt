@@ -545,6 +545,7 @@
 ./sys/gparted/gparted.LFSBuild
 ./sys/gpm/gpm.LFSBuild
 ./sys/gvfs/gvfs.LFSBuild
+./sys/htop/htop.LFSBuild
 ./sys/icu/icu.LFSBuild
 ./sys/itstool/itstool.LFSBuild
 ./sys/libnotify/libnotify.LFSBuild
@@ -632,6 +633,7 @@
 ./system/sysklogd/sysklogd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
+./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
 ./system/sysvinit/sysvinit.LFSBuild
@@ -727,6 +729,7 @@
 ./xorg/makedepend/makedepend.LFSBuild
 ./xorg/MesaLib/MesaLib.LFSBuild
 ./xorg/printproto/printproto.LFSBuild
+./xorg/proto/proto.LFSBuild
 ./xorg/twm/twm.LFSBuild
 ./xorg/util-macros/util-macros.LFSBuild
 ./xorg/x-apps/x-apps.LFSBuild
@@ -748,7 +751,6 @@
 ./xorg/xorg-drivers/xorg-drivers.LFSBuild
 ./xorg/xorg-libs/xorg-libs.LFSBuild
 ./xorg/xorg-meta/xorg-meta.LFSBuild
-./xorg/xorgproto/xorgproto.LFSBuild
 ./xorg/xorg-server/xorg-server.LFSBuild
 ./xorg/xscreensaver/xscreensaver.LFSBuild
 ./xorg/xsm/xsm.LFSBuild

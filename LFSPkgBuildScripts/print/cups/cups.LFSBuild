@@ -26,7 +26,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's:444:644:' Makedefs.in
 		sed -i '/MAN.EXT/s:.gz::g' configure config-scripts/cups-manpages.m4

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Poppler-0.62.0 GTK-2.24.32 Cups-2.2.6"
+DEPENDS="Poppler-0.79.0 GTK-2.24.32 Cups-2.2.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -25,7 +25,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
