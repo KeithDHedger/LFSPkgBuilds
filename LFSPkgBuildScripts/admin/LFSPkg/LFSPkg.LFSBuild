@@ -15,6 +15,10 @@ MANPAGE=${PROGRAM}.1
 RCFILE=lfspkg.rc
 DOWHAT=${1:-"build"}
 
+UIDGIDPAIR=$(findnextpair "system")
+groupadd -g $UIDGIDPAIR lfspkguser ||true
+useradd -c "Unprivileged lfspkg user" -d /dev/null -g lfspkguser -s /bin/false -u $UIDGIDPAIR lfspkguser ||true
+
 if [ "X$BOOTSTRAP" != "X" ];then
 	pushd "${TARNAME}-master"
 		make install

@@ -28,7 +28,7 @@ sudo groupadd -g $UIDGIDPAIR nullmail||true
 sudo useradd -c "Nullmailer user" -d /usr/var/spool/nullmailer -g nullmail -s /bin/false -u $UIDGIDPAIR nullmail||true
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --enable-tls --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var
 		make $MAKEFLAGS||make|| exit 100
