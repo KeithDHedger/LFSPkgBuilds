@@ -8,24 +8,25 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="qtwebkit"
-TARNAME="${PKGNAME}-opensource-src"
-VERSION="5.9.0"
+TARNAME="${PKGNAME}"
+VERSION="5.212.0"
 BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.qt.io/community_releases/${VERSION%.?*}/${VERSION}-final/${TARBALL}" $SECTION
+
+gettar "https://github.com/qt/qtwebkit/archive/v${VERSION}-alpha3.tar.gz" $SECTION ${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "${TARNAME}-${VERSION}-alpha3"
 		SAVEPATH=$PATH
 		export PATH=$PWD/bin:$PATH
 
@@ -63,5 +64,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}-alpha3"
 popd 2>/dev/null||true
