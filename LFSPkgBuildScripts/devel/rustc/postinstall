@@ -17,7 +17,7 @@ mkdir -vp /etc/profile.d/||true
 cat > /etc/profile.d/rustc.sh << "EOF"
 # Begin /etc/profile.d/rustc.sh
 
-pathprepend /opt/rust/bin	PATH
+pathappend /opt/rust/bin	PATH
 
 # End /etc/profile.d/rustc.sh
 EOF
