@@ -9,7 +9,7 @@ fi
 
 PKGNAME="qtwebengine"
 TARNAME="qtwebengine-everywhere-src"
-VERSION="5.13.0"
+VERSION="5.14.1"
 BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -33,14 +33,19 @@ pushd $COMPILEAT 2>/dev/null||true
 		find -type f -name "*.pr[io]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
 #possible fix for SOME setups use with discrection
 #		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch
+		sed -e '/link_pulseaudio/s/false/true/' -i src/3rdparty/chromium/media/media_options.gni
+		sed -i 's/NINJAJOBS/NINJA_JOBS/' src/core/gn_run.pro
+		if [ -e ${QT5DIR}/libQt5WebEngineCore.so ];then
+			mv -v ${QT5DIR}/libQt5WebEngineCore.so{,.old}
+		fi
 		mkdir build||true
 		cd  build
-		export NINJAJOBS="-j2"
-		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker
+		export NINJA_JOBS="-j3"
+		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker -webengine-icu
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
 		find ${PKG}${QT5PREFIX}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
-		mkdir -vp ${PKG}${QT5PREFIX}/share/qt5/qtwebengine_dictionaries ${PKG}${QT5PREFIX}/share/qt5/resources||true
+		mkdir -vp ${PKG}/${QT5PREFIX}/share/qt5/qtwebengine_dictionaries ${PKG}/${QT5PREFIX}/share/qt5/resources||true
 	popd
 
 	checketc "$PKG"

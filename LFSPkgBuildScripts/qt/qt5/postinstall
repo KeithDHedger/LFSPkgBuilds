@@ -14,7 +14,6 @@ mkdir -vp /etc/pango ||true
 fc-cache -f||true
 gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/hicolor||true
 gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/gnome||true
-#/usr/bin/pango-querymodules > /etc/pango/pango.modules||true
 update-mime-database /usr/share/mime||true
 mkdir -vp /var/cache/man/fsstnd||true
 mandb -c||true

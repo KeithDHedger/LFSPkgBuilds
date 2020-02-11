@@ -74,8 +74,7 @@ fi
 #lfspkg now creates an unprivileged user for certain actions eg actracting tarballs.
 #$LFS/LFSPkgBuilds should now have the group set to lfspkguser, and perms set to 775, if you want your normal user to have access just add yourself to the lfspkguser group.
 #You will have to re-own the source folder etc, so:
-[sudo] chown -R lfspkguser:lfspkguser $LFS/LFSPkgBuilds
-#You should add your user to the lfspkguser group.
+[sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds
 
 5.5)
 #Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.

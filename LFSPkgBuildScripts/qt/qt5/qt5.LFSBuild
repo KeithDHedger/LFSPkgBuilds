@@ -9,7 +9,7 @@ fi
 
 PKGNAME="qt5"
 TARNAME="qt-everywhere-src"
-VERSION="5.13.0"
+VERSION="5.14.1"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -20,15 +20,13 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/qt-${VERSION}-upstream_fixes-1.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${TARNAME}-${VERSION}
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/qt-${VERSION}-upstream_fixes-1.patch
 		sed -i 's/python /python3 /' qtdeclarative/qtdeclarative.pro qtdeclarative/src/3rdparty/masm/masm.pri
 		export QT5PREFIX=/usr
 		export QT5BINDIR=$QT5PREFIX/bin
@@ -40,7 +38,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		export QT5EXAMPLES=${QT5PREFIX}/share/doc/${PKGNAME}/examples
 		export QT5IMPORTS=${QT5LIBS}/imports
 		export QT5PLUGINS=${QT5LIBS}/plugins
-
 
 		./configure -prefix ${QT5PREFIX} -sysconfdir /etc/xdg -bindir $QT5BINDIR -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -system-harfbuzz -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS} -no-rpath -skip qtwebengine
 
@@ -69,7 +66,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		popd
 	popd
 
-	mkdir -vp ${PKG}/usr/share/applications ${PKG}/etc/profile.d||true
+	mkdir -vp ${PKG}/usr/share/applications ${PKG}/etc/profile.d/||true
 	cat > ${PKG}/usr/share/applications/assistant-qt5.desktop << EOF
 [Desktop Entry]
 Name=Qt5 Assistant 
@@ -121,16 +118,6 @@ Encoding=UTF-8
 Type=Application
 Categories=Qt;Development;Debugger;
 EOF
-
-#	cat > ${PKG}/etc/profile.d/qt5.sh << EOF
-## Begin /etc/profile.d/qt5.sh
-#
-#QT5DIR=/usr
-#export QT5DIR
-#pathappend $$QT5DIR/bin
-#
-## End /etc/profile.d/qt5.sh
-#EOF
 
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
