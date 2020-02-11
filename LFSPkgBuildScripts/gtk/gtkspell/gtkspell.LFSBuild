@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}3-${VERSION}"
 #thanks to arch for this patch
 #https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/gtkspell3

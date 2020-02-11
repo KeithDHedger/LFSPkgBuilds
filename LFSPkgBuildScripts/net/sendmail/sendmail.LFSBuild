@@ -30,7 +30,7 @@ groupadd -g $UIDGIDPAIR smmsp||true
 useradd -c "Sendmail Daemon" -g smmsp -d /dev/null -s /bin/false -u $UIDGIDPAIR smmsp||true
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/usr/{bin,sbin}||true
 		mkdir -vp $PKG/usr/share/man/man{1,5,8}

@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${TARBALL}"
 	pushd "${PKGNAME}-${TARNAME}-${VERSION}"
 		python setup.py build --with-unicode-strings
 		python setup.py install --skip-build --root=$PKG

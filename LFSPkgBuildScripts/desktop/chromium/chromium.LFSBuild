@@ -46,7 +46,7 @@ case "$ARCH" in
 esac
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		line='#define WIDEVINE_CDM_VERSION_STRING "Pinkie Pie"' 
 		sed "/WIDEVINE_CDM_AVAILABLE/a$line" -i third_party/widevine/cdm/stub/widevine_cdm_version.h

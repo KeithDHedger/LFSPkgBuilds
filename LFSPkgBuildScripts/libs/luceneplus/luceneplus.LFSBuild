@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "LucenePlusPlus-${TARNAME}_${VERSION}"
 		# Disable building internal gtest
 		sed -i "s/include(CMakeExternal.txt)/#include(CMakeExternal.txt)/" CMakeLists.txt

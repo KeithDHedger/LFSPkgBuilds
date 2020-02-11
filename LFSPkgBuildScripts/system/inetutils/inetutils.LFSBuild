@@ -19,7 +19,7 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		./configure --prefix=/usr --localstatedir=/var --disable-logger --disable-whois --disable-servers --disable-rcp --disable-rexec --disable-rlogin --disable-rsh
 		make $MAKEFLAGS||make|| exit

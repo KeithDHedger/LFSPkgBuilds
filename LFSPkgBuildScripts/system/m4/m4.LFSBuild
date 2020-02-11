@@ -19,7 +19,7 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
 		echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h

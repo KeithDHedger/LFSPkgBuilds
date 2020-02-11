@@ -27,7 +27,7 @@ mkdir -p "$PKG"
 export PATH="${PATH}:/opt/rust/bin"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-vala --disable-static
 		make $MAKEFLAGS||make||make|| exit 100

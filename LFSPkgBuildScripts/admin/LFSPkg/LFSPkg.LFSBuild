@@ -35,7 +35,7 @@ else
 	fi
 
 	rm -r "${TARNAME}-master"
-	unzip "$TARBALL"
+	extractarchive "$TARBALL"
 	pushd "${TARNAME}-master"
 		if [ ! -e /etc/$RCFILE ];then
 			. ./$RCFILE

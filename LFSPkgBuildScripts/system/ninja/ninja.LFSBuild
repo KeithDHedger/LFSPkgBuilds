@@ -18,7 +18,7 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		export NINJAJOBS=4
 		sed -i '/int Guess/a int   j = 0;char* jobs = getenv( "NINJAJOBS" );if ( jobs != NULL ) j = atoi( jobs );if ( j > 0 ) return j;' src/ninja.cc

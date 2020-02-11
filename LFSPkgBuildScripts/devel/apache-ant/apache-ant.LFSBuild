@@ -30,7 +30,7 @@ mkdir -p "$PKG"
 
 #make sure JAVA_HOME is set and exported ( best to do this in ~/.lfspkg.rc
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		. /etc/profile.d/openjdk.sh
 		sed -i 's/--add-modules java.activation/-html4/' build.xml

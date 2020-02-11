@@ -21,7 +21,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	unzip "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
 	pushd "udevil-master"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-systemd --with-setfacl-prog="/bin/setfacl"
 		make $MAKEFLAGS||make|| exit 100

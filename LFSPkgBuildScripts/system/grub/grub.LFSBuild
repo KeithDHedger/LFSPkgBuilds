@@ -21,7 +21,7 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORVERSION}"
 		./configure --sbindir=/sbin --prefix=/usr --sysconfdir=/etc --disable-efiemu  --disable-werror
 		make $MAKEFLAGS||make|| exit 100

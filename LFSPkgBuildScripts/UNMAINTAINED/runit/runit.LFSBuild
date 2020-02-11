@@ -18,7 +18,7 @@ mkdir -p "$PKG"
 mkdir -pv ${TARNAME}-${VERSION}
 
 pushd "${TARNAME}-${VERSION}"
-	tar -xvf "../${TARNAME}-${VERSION}.tar.gz"
+	extractarchive "../${TARNAME}-${VERSION}.tar.gz"
 	cd admin/${TARNAME}-${VERSION}
 	package/compile
 	cd command

@@ -19,7 +19,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/${TARBALL}" $SECTION
 
 pushd "${PKG}"
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	mv linux-firmware-master lib${LIBDIRSUFFIX}/firmware
 	rm -rf lib${LIBDIRSUFFIX}/firmware/carl9170fw||true
 	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

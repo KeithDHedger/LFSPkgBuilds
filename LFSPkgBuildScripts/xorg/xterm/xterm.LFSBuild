@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/v0/,+1s/new:/new:kb=^?:/' termcap
 		echo -e '\tkbs=\\177,' >>terminfo

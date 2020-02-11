@@ -20,7 +20,7 @@ mkdir -p "$PKG"
 CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
-	unzip "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-master"
 		make install DESTDIR=$PKG || exit 100
 	popd

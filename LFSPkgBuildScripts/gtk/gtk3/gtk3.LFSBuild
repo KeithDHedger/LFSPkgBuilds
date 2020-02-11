@@ -25,7 +25,7 @@ mkdir -p "$PKG"
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-wayland-backend --enable-broadway-backend --enable-x11-backend --enable-gtk2-dependency  --disable-cups --disable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100

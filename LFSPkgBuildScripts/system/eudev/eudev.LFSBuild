@@ -21,7 +21,7 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/sbin --sbindir=/sbin --libdir=/usr/lib${LIBDIRSUFFIX} --sysconfdir=/etc --libexecdir=/lib${LIBDIRSUFFIX} --with-rootprefix= --with-rootlibdir=/lib${LIBDIRSUFFIX} --enable-manpages --disable-static
 		LIBRARY_PATH=/tools/lib make $MAKEFLAGS||LIBRARY_PATH=/tools/lib make||LIBRARY_PATH=/tools/lib make || exit 100

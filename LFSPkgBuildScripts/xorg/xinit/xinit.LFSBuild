@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		#sed -e '/$serverargs $vtarg/ s/serverargs/: #&/' -i startx.cpp
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-xinitdir=/etc/X11/app-defaults

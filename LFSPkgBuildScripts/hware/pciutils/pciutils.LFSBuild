@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		make PREFIX=/usr SHAREDIR=/usr/share/hwdata SHARED=yes|| exit 100
 		make PREFIX=/usr SHAREDIR=/usr/share/hwdata SHARED=yes install install-lib DESTDIR=$PKG || exit 100

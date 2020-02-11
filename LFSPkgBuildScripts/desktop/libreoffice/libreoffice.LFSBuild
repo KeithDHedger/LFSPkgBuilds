@@ -33,7 +33,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --no-overwrite-dir
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --no-overwrite-dir
 	pushd "${TARNAME}-${VERSION}"
 		ln -svf "$EXTERNALTARBALLS" external/tarballs
 		ln -sfv ${SOURCEARCHIVES}/${SECTION}/libreoffice-dictionaries-${VERSION}.tar.xz external/tarballs

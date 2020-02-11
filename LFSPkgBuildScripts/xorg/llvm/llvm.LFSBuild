@@ -36,7 +36,7 @@ else
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}.src"
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/$CFETARBALL -C tools
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL -C projects

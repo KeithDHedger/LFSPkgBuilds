@@ -17,7 +17,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/SYSTEM/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/SYSTEM/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-introspection --enable-gudev --enable-gtk-doc-html --enable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100

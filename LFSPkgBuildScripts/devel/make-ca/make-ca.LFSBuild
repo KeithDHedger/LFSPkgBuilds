@@ -24,7 +24,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/djlucas/make-ca/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local||true
 		ln -sfv /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.crt

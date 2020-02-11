@@ -20,7 +20,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORREVISION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libexecdir=/usr/lib${LIBDIRSUFFX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}${MINORREVISION} --with-all-insults --with-env-editor --with-passprompt="[sudo] password for %p" --with-secure-path --with-env-editor --without-pam
 		make $MAKEFLAGS||make|| exit 100

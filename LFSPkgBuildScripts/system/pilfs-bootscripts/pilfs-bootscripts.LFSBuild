@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp /tmp/xxx/{etc,sbin,usr/share/man/man8,etc/rc.d/init.d,etc/rc.d/rc{0,1,6,S}.d}
 		#the other init scripts in the archive dont apply to pi3 add if you want

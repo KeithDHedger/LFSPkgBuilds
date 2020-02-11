@@ -19,7 +19,7 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i "/math.h/a #include <malloc.h>" src/flexdef.h
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" HELP2MAN=/tools/bin/true  ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION}

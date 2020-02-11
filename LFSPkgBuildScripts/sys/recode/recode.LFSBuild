@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CPPFLAGS="-D__GNU_LIBRARY__=1 -D_IO_ftrylockfile " ./configure ${CONFIGOPTIONS} --without-included-gettext
 		make $MAKEFLAGS||make|| exit 100

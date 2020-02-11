@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.tar.gz"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.tar.gz"
 	pushd "googletest-release-${VERSION}"
 		mkdir -p build||true
 		cd build

@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}${VERSION}"
 		cd unix
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS"  ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --mandir=/usr/share/man $([ $(uname -m) = x86_64 ] && echo --enable-64bit)

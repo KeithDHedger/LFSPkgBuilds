@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${TARNAME}-${VERSION}/${TARNAME}"
 		make REGEXDEFS='-DHAVE_REGEX_H -DPOSIX_REGEX -DHAVE_STDBOOL' COOKIEDIR=/usr/share/fortune LOCALDIR=/usr/local/share/fortune all fortune/fortune.man
 		make FORTDIR="$PKG"/usr/bin COOKIEDIR="$PKG"/usr/share/fortune BINDIR="$PKG"/usr/bin BINMANDIR="$PKG"/usr/share/man/man1 FORTMANDIR="$PKG"/usr/share/man/man6 install

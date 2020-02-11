@@ -25,7 +25,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://xorg.freedesktop.org/archive/individual/proto/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build

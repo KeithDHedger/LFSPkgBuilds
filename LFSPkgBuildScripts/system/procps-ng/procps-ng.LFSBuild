@@ -19,7 +19,7 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		./configure --prefix=/usr --exec-prefix= --libdir=/usr/lib${LIBDIRSUFFIX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static --disable-kill
 		make $MAKEFLAGS||make|| exit

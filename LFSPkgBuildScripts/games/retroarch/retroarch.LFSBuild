@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${PKGNAME}-${VERSION}"
 		if [ "$(echo $ARCH|grep -i "arm*")" != "" ];then
 			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-ffmpeg --disable-systemd --disable-cg --disable-jack --disable-oss --disable-sdl2 --enable-opengles --enable-neon --enable-mmap --disable-langextra --enable-videoprocessor --enable-videocore --enable-dbus --enable-udev --enable-threads --enable-dylib --disable-pulse --enable-freetype --enable-python --enable-floathard --enable-libusb --enable-opengles --disable-wayland --enable-networking --enable-xmb --disable-lua

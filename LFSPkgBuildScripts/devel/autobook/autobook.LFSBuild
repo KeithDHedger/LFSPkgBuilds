@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -vp "${PKG}/usr/doc"
 
 pushd "${PKG}/usr/doc"
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 popd
 
 pushd "$PKG"

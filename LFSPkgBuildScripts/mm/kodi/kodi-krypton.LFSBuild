@@ -29,7 +29,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}.tar.gz"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}.tar.gz"
 	pushd "xbmc-${VERSION}-${TARNAME}"
 		export PATH="$PATH:/opt/jdk/bin"
 		export JAVA_HOME=/opt/jdk

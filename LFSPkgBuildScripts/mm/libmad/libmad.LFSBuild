@@ -21,7 +21,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}b"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/libmad-0.15.1b-fixes-1.patch
 		sed "s@AM_CONFIG_HEADER@AC_CONFIG_HEADERS@g" -i configure.ac

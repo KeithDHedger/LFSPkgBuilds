@@ -27,7 +27,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	unzip ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}
+	extractarchive ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}
 	pushd "${FOLDER}-${CODENAME}"
 		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/kodi -DCMAKE_PREFIX_PATH=/opt/vc -DCMAKE_BUILD_TYPE=Release -Wno-dev .
 		make $MAKEFLAGS||make|| exit 100

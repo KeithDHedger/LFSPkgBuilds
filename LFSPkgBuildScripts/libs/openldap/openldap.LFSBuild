@@ -29,7 +29,7 @@ groupadd -g $UIDGIDPAIR ldap||true
 useradd -c "OpenLDAP Daemon Owner" -d /var/lib/openldap -g ldap -s /bin/false -u $UIDGIDPAIR ldap||true
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-consolidated-1.patch
 		autoconf

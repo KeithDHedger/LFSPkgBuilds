@@ -26,7 +26,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/docbook-dsssl-doc-1.79.tar.bz2 --strip-components=1
 		mkdir -vp $PKG/usr/bin $PKG/usr/share/man/man1
