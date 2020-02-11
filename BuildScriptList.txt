@@ -50,6 +50,7 @@
 ./desktop/gkrellm/gkrellm.LFSBuild
 ./desktop/gmic/gmic.LFSBuild
 ./desktop/gnome-icon-theme/gnome-icon-theme.LFSBuild
+./desktop/gpm/gpm.LFSBuild
 ./desktop/grsync/grsync.LFSBuild
 ./desktop/gsmartcontrol/gsmartcontrol.LFSBuild
 ./desktop/icon-naming-utils/icon-naming-utils.LFSBuild
@@ -353,11 +354,18 @@
 ./mm/flac/flac.LFSBuild
 ./mm/glyr/glyr.LFSBuild
 ./mm/gmrender-resurrect/gmrender-resurrect.LFSBuild
+./mm/gst-ffmpeg/gst-ffmpeg.LFSBuild
+./mm/gst-libav1.0/gst-libav1.0.LFSBuild
 ./mm/gst-libav/gst-libav.LFSBuild
+./mm/gst-plugins-bad1.0/gst-plugins-bad1.0.LFSBuild
 ./mm/gst-plugins-bad/gst-plugins-bad.LFSBuild
+./mm/gst-plugins-base1.0/gst-plugins-base1.0.LFSBuild
 ./mm/gst-plugins-base/gst-plugins-base.LFSBuild
+./mm/gst-plugins-good1.0/gst-plugins-good1.0.LFSBuild
 ./mm/gst-plugins-good/gst-plugins-good.LFSBuild
+./mm/gst-plugins-ugly1.0/gst-plugins-ugly1.0.LFSBuild
 ./mm/gst-plugins-ugly/gst-plugins-ugly.LFSBuild
+./mm/gstreamer1.0/gstreamer1.0.LFSBuild
 ./mm/gstreamer/gstreamer.LFSBuild
 ./mm/gtkpod/gtkpod.LFSBuild
 ./mm/id3lib/id3lib.LFSBuild
@@ -414,6 +422,8 @@
 ./net/fetchmail/fetchmail.LFSBuild
 ./net/FreeRDP/FreeRDP.LFSBuild
 ./net/httrack/httrack.LFSBuild
+./net/icedtea-sound/icedtea-sound.LFSBuild
+./net/icedtea-web/icedtea-web.LFSBuild
 ./net/iptables/iptables.LFSBuild
 ./net/js/js.LFSBuild
 ./net/libcddb/libcddb.LFSBuild
