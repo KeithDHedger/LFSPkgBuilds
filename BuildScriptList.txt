@@ -50,7 +50,6 @@
 ./desktop/gkrellm/gkrellm.LFSBuild
 ./desktop/gmic/gmic.LFSBuild
 ./desktop/gnome-icon-theme/gnome-icon-theme.LFSBuild
-./desktop/gpm/gpm.LFSBuild
 ./desktop/grsync/grsync.LFSBuild
 ./desktop/gsmartcontrol/gsmartcontrol.LFSBuild
 ./desktop/icon-naming-utils/icon-naming-utils.LFSBuild
