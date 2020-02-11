@@ -4,7 +4,7 @@
 
 PKGNAME="hplip"
 TARNAME="$PKGNAME"
-VERSION="3.16.11"
+VERSION="3.19.8"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -14,7 +14,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://netcologne.dl.sourceforge.net/project/hplip/hplip/${VERSION}/${TARBALL}" $SECTION
+gettar "https://netcologne.dl.sourceforge.net/project/hplip/hplip/${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

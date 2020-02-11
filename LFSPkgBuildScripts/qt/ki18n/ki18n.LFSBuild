@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="extra-cmake-modules-5.49.0"
+DEPENDS="extra-cmake-modules-5.61.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ki18n"
 TARNAME="$PKGNAME"
-VERSION="5.49.0"
+VERSION="5.61.0"
 BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libXau-1.0.8 xcb-proto-1.12"
+DEPENDS="libXau-1.0.9 xcb-proto-1.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libxcb"
 TARNAME="$PKGNAME"
-VERSION="1.12"
+VERSION="1.13.1"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -20,14 +20,13 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-python3-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-python3-1.patch
 		sed -e "s/pthread-stubs//" -i configure
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --enable-xinput --without-doxygen
 		make $MAKEFLAGS||make || exit 100

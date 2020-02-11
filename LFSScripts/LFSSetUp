@@ -67,7 +67,7 @@ if [ $PIBUILD -eq 1 ];then
 fi
 
 #LFS Version
-LFSVERSION=${LFSVERSION:-8.2}
+LFSVERSION=${LFSVERSION:-9.0}
 readWithDefault "LFSVERSION"  "Enter Version"
 
 #Computer name
@@ -188,8 +188,8 @@ fi
 
 #set kernel version in build scripts
 #build scripts should be at $LFS/LFSPkgBuildScripts
-sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/${BUILDSCRIPTS}/system/linuxheaders/linuxheaders.LFSBuild
-sed -ri "s/linuxheaders-[0-9]+.[0-9]+.[0-9]+/linuxheaders-${KERNELVERSION}/i" ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
+#sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/${BUILDSCRIPTS}/system/linuxheaders/linuxheaders.LFSBuild
+#sed -ri "s/linuxheaders-[0-9]+.[0-9]+.[0-9]+/linuxheaders-${KERNELVERSION}/i" ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
 ln -svf system-${INITTYPE}-meta.LFSBuild ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-meta.LFSBuild
 if [ $PIBUILD -eq 1 ];then
 	sed -ri 's#BOOTPART=.*#BOOTPART="'$PIBOOT'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild

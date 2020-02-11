@@ -1,0 +1,6 @@
+#!/bin/bash
+#©keithhedger Sat 26 Oct 11:36:40 BST 2019
+
+. /usr/share/LFSPkg/LFSFunctions
+
+/sbin/depmod -a $(uname -r)

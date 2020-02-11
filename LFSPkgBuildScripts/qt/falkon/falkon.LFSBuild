@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ki18n-5.49.0"
+DEPENDS="qtwebengine-5.13.0 ki18n-5.61.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -10,14 +10,13 @@ fi
 PKGNAME="falkon"
 TARNAME="$PKGNAME"
 VERSION="3.1.0"
-BUILD=1
+BUILD=2
 SECTION="QT"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
-
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.kde.org/stable/falkon/${VERSION%.?*}/${TARBALL}" $SECTION
 
@@ -28,9 +27,10 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		rm -rf po/
 		mkdir build||true
 		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -Wno-dev ..
+		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DBUILD_TESTING=OFF -Wno-dev ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

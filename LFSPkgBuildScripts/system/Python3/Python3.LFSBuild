@@ -4,7 +4,7 @@
 
 PKGNAME="python3"
 TARNAME="Python"
-VERSION="3.6.4"
+VERSION="3.7.4"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -23,8 +23,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes --libdir=/usr/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libpython3.6m.so $PKG/usr/lib${LIBDIRSUFFIX}/libpython3.so||true
-
+		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libpython${VERSION%.?*}m.so $PKG/usr/lib${LIBDIRSUFFIX}/libpython3.so
+		mkdir -vp $PKG/usr/bin||true
+		ln -sfv pip3.7 $PKG/usr/bin/pip3
 		install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}/html
 		tar --strip-components=1 --no-same-owner --no-same-permissions -C $PKG/usr/share/doc/${PKGNAME}-${VERSION}/html -xvf ${SOURCEARCHIVES}/${SECTION}/python-${VERSION}-docs-html.tar.bz2
 	popd

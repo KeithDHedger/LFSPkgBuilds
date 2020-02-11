@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.14"
+DEPENDS="Python-2.7.16"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="node"
 TARNAME="$PKGNAME"
-VERSION="9.5.0"
+VERSION="10.16.3"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-v${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --shared-openssl --shared-zlib --with-intl=system-icu  
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --shared-libuv --shared-openssl --shared-zlib --with-intl=system-icu  
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		ln -sf node $PKG/usr/share/doc/${PKGNAME}-${VERSION}

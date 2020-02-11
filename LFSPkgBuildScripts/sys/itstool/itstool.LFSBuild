@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="docbook-xml-4.5 Python-2.7.13"
+DEPENDS="docbook-xml-4.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="itstool"
 TARNAME="$PKGNAME"
-VERSION="2.0.4"
+VERSION="2.0.6"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -17,7 +17,6 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://files.itstool.org/itstool/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-segfault-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -29,7 +28,6 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-segfault-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=/usr/bin/python3 ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

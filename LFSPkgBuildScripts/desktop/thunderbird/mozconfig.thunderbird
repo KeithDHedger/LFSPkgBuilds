@@ -2,17 +2,16 @@
 # jobs. The build system automatically adds -jN to the "make" flags, where N
 # is the number of CPU cores. The option below is therefore useless, unless
 # you want to use a smaller number of jobs:
-mk_add_options MOZ_MAKE_FLAGS="-j3"
+mk_add_options MOZ_MAKE_FLAGS="-j1"
 
 # If you have installed dbus-glib, comment out this line:
-#ac_add_options --disable-dbus
+ac_add_options --disable-dbus
 
 # If you have installed wireless-tools comment out this line:
 ac_add_options --disable-necko-wifi
 
 # Uncomment these lines if you have installed optional dependencies:
-#ac_add_options --enable-system-hunspell
-ac_add_options --enable-startup-notification
+#ac_add_options --enable-startup-notification
 
 # Comment out following option if you have PulseAudio installed
 ac_add_options --disable-pulseaudio
@@ -25,18 +24,15 @@ ac_add_options --disable-gconf
 
 # Comment out following options if you have not installed
 # recommended dependencies:
-ac_add_options --enable-default-toolkit=cairo-gtk2
 ac_add_options --enable-system-sqlite
 ac_add_options --with-system-libevent
-ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-icu
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
-ac_add_options --libdir=/usr/libLIBDIRSUFFIX
-ac_add_options --enable-application=mail
+ac_add_options --enable-application=comm/mail
 
 ac_add_options --disable-crashreporter
 ac_add_options --disable-updater
@@ -47,20 +43,14 @@ ac_add_options --enable-optimize=-O2
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
 
-ac_add_options --enable-gio
 ac_add_options --enable-official-branding
-ac_add_options --enable-safe-browsing
-ac_add_options --enable-url-classifier
 
-# Using system cairo has been reported to make thunderbird execution unstable.
-# This appears to again work in thunderbird-52
-ac_add_options --enable-system-cairo
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
-
-ac_add_options --with-pthreads
 
 ac_add_options --with-system-bz2
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
+
+ac_add_options --libdir=/usr/libLIBDIRSUFFIX

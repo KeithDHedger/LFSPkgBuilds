@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="expat-2.2.0 libffi-3.2.1 pkg-config-0.29.1 sqlite-3.22.0"
+DEPENDS="expat-2.2.7 libffi-3.2.1 pkg-config-0.29.2 sqlite-3.22.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="python"
 TARNAME="Python"
-VERSION="2.7.14"
+VERSION="2.7.16"
 BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
@@ -20,23 +20,17 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.python.org/ftp/python/${VERSION}/${TARBALL}" $SECTION
-gettar "http://docs.python.org/ftp/python/doc/${VERSION}/${PKGNAME}-${VERSION}-docs-html.tar.bz2" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/#SSL/,+3 s/^#//' Modules/Setup.dist
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes --enable-unicode=ucs4 --libdir=/usr/lib${LIBDIRSUFFIX}
+		#sed -i '/#SSL/,+3 s/^#//' Modules/Setup.dist
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes --enable-unicode=ucs4
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libpython2.7.so.1.0||true
-
-		install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		tar --strip-components=1 -C $PKG/usr/share/doc/${PKGNAME}-${VERSION} --no-same-owner -xvf ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-docs-html.tar.bz2
-		find $PKG/usr/share/doc/${PKGNAME}-${VERSION} -type d -exec chmod 0755 {} \;
-		find $PKG/usr/share/doc/${PKGNAME}-${VERSION} -type f -exec chmod 0644 {} \;
 	popd
 
 	checketc $PKG

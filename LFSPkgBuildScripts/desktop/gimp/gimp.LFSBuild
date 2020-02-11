@@ -2,15 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gegl-0.3.28 GTK-2.24.32 PyGTK-2.24.0 librsvg-2.40.16 dbus-glib-0.110 ghostscript-9.22 Poppler-0.62.0 GTK-Doc-1.25 libgudev-232 webkitgtk-2.4.11 pylibxml2-2.9.7"
+DEPENDS="gegl-0.4.16 gexiv2-0.12.0 glib-networking-2.60.3 GTK-2.24.32 PyGTK-2.24.0 HarfBuzz-2.6.0. libjpeg-turbo-2.0.2 libmypaint-1.3.0 librsvg-2.44.2 LibTIFF-4.0.10, libxml2-2.9.9 lcms2-2.9 mypaint-brushes-1.3.0 Poppler-0.62.0 dbus-glib-0.110 ghostscript-9.27 Gvfs-1.40.2 GTK-Doc-1.32 libgudev-233 pylibxml2-2.9.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gimp"
 TARNAME="$PKGNAME"
-VERSION="2.8.22"
-HELPVERSION="2.8.2"
+VERSION="2.10.12"
+HELPVERSION="2019-04-08"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -19,23 +19,26 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+ALL_LINGUAS=${ALL_LINGUAS:-"en_GB"}
+export ALL_LINGUAS
+
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.gimp.org/pub/gimp/v2.8/${TARBALL}" $SECTION
-gettar "http://ftp.gimp.org/pub/gimp/help/gimp-help-${HELPVERSION}.tar.bz2" $SECTION
+gettar "http://download.gimp.org/pub/gimp/v${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/gimp-help-${HELPVERSION}.tar.xz" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/gegl/s/2/3/' configure
-		sed -i '70,75 d' app/core/gimpparamspecs-duplicate.c
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib$LIBDIRSUFFIX --disable-debug --disable-nls --disable-static --without-gvfs
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		tar -xvf ${SOURCEARCHIVES}/${SECTION}/gimp-help-${HELPVERSION}.tar.bz2
+		tar -xvf ${SOURCEARCHIVES}/${SECTION}/gimp-help-${HELPVERSION}.tar.xz
 		cd gimp-help-${HELPVERSION}
-		ALL_LINGUAS="en_GB" ./configure --prefix=/usr --without-gimp
+#		ALL_LINGUAS="en_GB" ./configure --prefix=/usr --without-gimp
+		./autogen.sh --prefix=/usr --without-gimp
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		chown -R root:root $PKG/usr/share/gimp/2.0/help

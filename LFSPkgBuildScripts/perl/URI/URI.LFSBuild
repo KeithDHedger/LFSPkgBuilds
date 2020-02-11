@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="perl-5.24.1"
+DEPENDS="perl-5.30.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="URI"
 TARNAME="$PKGNAME"
-VERSION="1.73"
+VERSION="1.76"
 BUILD=${BUILD:-1}
 SECTION="PERL"
 SUFFIX="LFSPKG"
@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.cpan.org/authors/id/E/ET/ETHER/${TARBALL}" $SECTION
+gettar "https://www.cpan.org/authors/id/O/OA/OALDERS/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

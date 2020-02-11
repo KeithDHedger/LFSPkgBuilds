@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="perl-5.26.1"
+DEPENDS="perl-5.30.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="XML-Simple"
 TARNAME="$PKGNAME"
-VERSION="2.24"
+VERSION="2.25"
 BUILD=${BUILD:-1}
 SECTION="PERL"
 SUFFIX="LFSPKG"

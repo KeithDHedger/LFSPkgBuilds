@@ -4,12 +4,11 @@
 
 PKGNAME="glibc"
 TARNAME="$PKGNAME"
-VERSION="2.27"
+VERSION="2.30"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata2018c.tar.gz
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -23,29 +22,36 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fhs-1.patch
-		ln -sfv /tools/lib/gcc /usr/lib||true
+		sed -i '/asm.socket.h/a# include <linux/sockios.h>' sysdeps/unix/sysv/linux/bits/socket.h
 		mkdir -vp ${PKG}/lib${LIBDIRSUFFIX}||true
-		case $(uname -m) in
-			i?86|armv?l)
-				GCC_INCDIR=/usr/lib/gcc/$(uname -m)-pc-linux-gnu/${VERSION}/include
-				ln -sfv ld-linux.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb.so.3
-				;;
-			x86_64)
-				GCC_INCDIR=/usr/lib/gcc/x86_64-pc-linux-gnu/${VERSION}/include
-				ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}
-				ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
-				;;
-		esac
 
-		rm -f /usr/include/limits.h
+		if [ "${DOWHAT:0:2}" != "up" ];then
+			case $(uname -m) in
+				i?86|armv?l)
+					GCC_INCDIR=/usr/lib/gcc/$(uname -m)-pc-linux-gnu/${VERSION}/include
+					ln -sfv ld-linux.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb.so.3
+					;;
+				x86_64)
+					GCC_INCDIR=/usr/lib/gcc/x86_64-pc-linux-gnu/${VERSION}/include
+					ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}
+					ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
+					;;
+			esac
+		fi
+
 		mkdir -v build || true
 		cd build
-		CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
-		unset GCC_INCDIR
+		if [ "${DOWHAT:0:2}" != "up" ];then
+			CC="gcc -ffile-prefix-map=/tools=/usr" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
+		else
+			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
+		fi
+
 		make $MAKEFLAGS||make
 
 		touch /etc/ld.so.conf
-
+		#is this needed if not running full tests?
+		sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 		make install DESTDIR="$PKG" || exit 100
 
 		mkdir -p "$PKG/etc/"||true
@@ -70,7 +76,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		up*)
 			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
 			;;
-		"install")
+		 "install")
 			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
 			;;
 		"build")
@@ -81,33 +87,16 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	mkdir build
-	pushd build
-		tar -xf ${TZDATATARBALL}
-		ZONEINFO="/usr/share/zoneinfo"
-		mkdir -pv $ZONEINFO/{posix,right}
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 
-		for tz in etcetera southamerica northamerica europe africa antarctica asia australasia backward pacificnew systemv
-		do
-			zic -L /dev/null   -d $ZONEINFO -y "sh yearistype.sh" ${tz}
-			zic -L /dev/null   -d $ZONEINFO/posix -y "sh yearistype.sh" ${tz}
-			zic -L leapseconds -d $ZONEINFO/right -y "sh yearistype.sh" ${tz}
-		done
+	if [ "${DOWHAT:0:2}" != "up" ];then
+		mv -v /tools/bin/{ld,ld-old}
+		mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old}
+		mv -v /tools/bin/{ld-new,ld}
+		ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld
 
-		cp -v zone.tab zone1970.tab $ZONEINFO
-		zic -d $ZONEINFO -p Europe/London
-		unset ZONEINFO
-		cp -v /usr/share/zoneinfo/Europe/London /etc/localtime
-	popd
-
-	rm -r "$PKG" "${TARNAME}-${VERSION}" "build"
-
-	mv -v /tools/bin/{ld,ld-old}
-	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old}
-	mv -v /tools/bin/{ld-new,ld}
-	ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld
-
-	gcc -dumpspecs | sed -e 's@/tools@@g' -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' -e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > $(dirname $(gcc --print-libgcc-file-name))/specs
+		gcc -dumpspecs | sed -e 's@/tools@@g' -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' -e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > $(dirname $(gcc --print-libgcc-file-name))/specs
+	fi
 
 	echo 'main(){}' > dummy.c
 	cc dummy.c -v -Wl,--verbose &> dummy.log

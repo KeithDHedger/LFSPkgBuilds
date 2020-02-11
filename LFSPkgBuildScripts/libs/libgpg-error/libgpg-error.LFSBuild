@@ -4,7 +4,7 @@
 
 PKGNAME="libgpg-error"
 TARNAME="$PKGNAME"
-VERSION="1.27"
+VERSION="1.36"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -21,6 +21,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed -i 's/namespace/pkg_&/' src/Makefile.{am,in} src/mkstrtable.awk
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

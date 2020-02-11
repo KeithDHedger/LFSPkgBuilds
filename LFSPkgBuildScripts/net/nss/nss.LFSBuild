@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NSPR-4.18 SQLite-3.22.0"
+DEPENDS="NSPR-4.21 SQLite-3.29.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="nss"
 TARNAME="$PKGNAME"
-VERSION="3.35"
+VERSION="3.45"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_35_RTM/src/${TARBALL}" $SECTION
+gettar "https://archive.mozilla.org/pub/security/${PKGNAME}/releases/NSS_3_45_RTM/src/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${TARNAME}-${VERSION}-standalone-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

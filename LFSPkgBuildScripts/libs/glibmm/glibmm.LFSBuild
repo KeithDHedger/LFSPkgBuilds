@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0 GnuTLS-3.6.2 libsigc-2.10.0"
+DEPENDS="GLib-2.60.6 GnuTLS-3.6.9 libsigc-2.10.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="glibmm"
 TARNAME="$PKGNAME"
-VERSION="2.56.0"
+VERSION="2.60.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

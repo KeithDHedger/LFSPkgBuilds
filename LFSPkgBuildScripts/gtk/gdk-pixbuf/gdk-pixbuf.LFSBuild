@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.56.0 libjpeg-turbo-1.5.3 libpng-1.6.34 LibTIFF-4.0.9 gobject-introspection-1.54.1 shared-mime-info-1.9 xorg-libs-8.2"
+DEPENDS="GLib-2.60.6 libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10 gobject-introspection-1.60.2 shared-mime-info-1.12 xorg-libs-9.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 TARNAME="gdk-pixbuf"
 PKGNAME="gdk-pixbuf"
-VERSION="2.36.11"
+VERSION="2.38.1"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -26,9 +26,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-x11
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir build
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc $PKG

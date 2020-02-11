@@ -17,16 +17,23 @@ apt-get install bison gawk m4 texinfo
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS
-SOURCEARCHIVES=/LFSSourceArchives/8.2
-BUILTPACKAGES=/LFSBuiltPackages/8.2
+LFSVERSION=9.0
+SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
+BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
-LFSVERSION=8.2
-KERNELVERSION=4.15.3
+KERNELVERSION=5.2.8
+
+export LFS
+export LFSVERSION
+export SOURCEARCHIVES
+export BUILTPACKAGES
+export EXTFOLDER
+export KERNELVERSION
 
 ###RECOMMENDED####
 #or cd into the mounted partition wher you intend to build LFS:
 #LFS should point to your mounted LFS partition ( eg LFS=/mnt/LFS ).
-cd /mnt/LFS
+cd $LFS
 [sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
 
 Own the files:
@@ -36,11 +43,11 @@ Own the files:
 
 3)
 #cd into the lfsscripts folder
-cd $LFS/LFSScripts
+cd LFSScripts
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
-[sudo] ./LFSSetUp
+[sudo] -E ./LFSSetUp
 
 #To check config:
 ./ShowSystemData
@@ -64,11 +71,13 @@ fi
 ./BuildFileSystem
 
 5.2)
-#You may/will have to re-own the source folder etc, so:
+#lfspkg now creates an unprivileged user for certain actions eg actracting tarballs.
+#$LFS/LFSPkgBuilds should now have the group set to lfspkguser, and perms set to 775, if you want your normal user to have access just add yourself to the lfspkguser group.
+#You will have to re-own the source folder etc, so:
 [sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds
 
 5.5)
-#Create a link from downloaded linux tarball to /LFSSourceArchives/8.2/KERNEL to prevent re-downloading source tarball.
+#Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
 mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz .
@@ -95,8 +104,8 @@ screen
 cd /LFSPkgBuildScripts/admin/LFSPkg
 BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 
-#As part of the LFSSetUp script /mnt/LFS/root/.lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
-#Set /mnt/LFS/etc/lfspkg.rc or /mnt/LFS/root/.lfspkg.rc (preferred) variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
+#As part of the LFSSetUp script $LFS/root/.lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
+#Set $LFS/etc/lfspkg.rc or $LFS/root/.lfspkg.rc (preferred) variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
 #At this point wget/openssl is not installed so you will get a load of complaints from lfspkg, ignore them as lfspkg will be reinstalled later with the main system.
 
 #You should run lfspkg --setup to create the lfspkg.rc file ( in ~ (/root) )
@@ -140,7 +149,7 @@ exit
 #Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
 sudo rm /tools
 #Remove the tools folder from your LFS install disk:
-[sudo] rm -rf /mnt/LFS/tools
+[sudo] rm -rf $LFS/tools
 
 11)
 #Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
@@ -157,14 +166,24 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 
 13)
 #No point in compiling your own kernel on pi so prebuilt one is used, so skip this bit on pi.
+
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
+
+#Optional copy the config for the running kernel, don't do this if running from bootcd
+#gunzip < /proc/config.gz > config-${KERNELVERSION}
+
 ./kernel.LFSBuild install
 
 #Again on pi skip this bit as firmware is installed by the pi-system-meta package.
 #You may prefer to manually copy all firmware modules from the host sytem from /lib/firmware to your new LFS system.
 #Or use the firmware build script to install all the latest firmware from https://git.kernel.org/ eg Whilst still in the kernel build folder:
 ./firmware.LFSBuild install
+
+#Install any extra hardware/firmware packages you need ( you may have to boot into the 'real' system for this ).
+#eg usb wireless package:
+cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
+./RTL88x2BU-Linux-Driver.LFSBuild install
 
 13.5)
 #No grub on pi
@@ -174,7 +193,7 @@ cd /LFSPkgBuildScripts/kernel
 #The LFSSetup script will install a basic grub.cfg file in ${LFS}/${BUILDSCRIPTS}/system/grub/ based on the details given to the script.
 #Check that the grub.cfg file is OK, make any changes and just copy it to /boot/grub, or manually do this:
 
-#assuming root device is /dev/sda and LFS system is on /dev/sda1 mounted at /mnt/LFS:
+#assuming root device is /dev/sda and LFS system is on /dev/sda1:
 grub-install /dev/sda
 
 cat > /boot/grub/grub.cfg << "EOF"
@@ -185,8 +204,8 @@ set timeout=30
 insmod ext2
 set root=(hd0,1)
 
-menuentry "GNU/Linux, Linux 4.9.9" {
-	linux /boot/vmlinuz-4.9.9 root=/dev/sda1 ro
+menuentry "GNU/Linux, Linux $LFSVERSION" {
+	linux /boot/vmlinuz-$KERNELVERSION root=/dev/sda1 ro
 }
 EOF
 
@@ -238,8 +257,9 @@ cd /LFSPkgBuildScripts/devel/development-meta
 #this meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!
 #this is for an xfce4 desktop.
 cd /LFSPkgBuildScripts/desktop/desktop-meta
-./desktop-meta.LFSBuild  install
-#Or fo r an LFSDesktop
+./desktop-meta.LFSBuild install
+
+#Or for an LFSDesktop
 cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
 ./LFSDesktop-meta.LFSBuild install
 
@@ -248,6 +268,9 @@ cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
 #Chromium
 cd /LFSPkgBuildScripts/desktop/chromium
 ./chromium.LFSBuild install
+#falkon
+cd /LFSPkgBuildScripts/qt/falkon/
+./falkon.LFSBuild install
 
 #Cairo-dock-plugins pulls in cairo-dock as a dependency
 cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins
@@ -261,12 +284,12 @@ cd /LFSPkgBuildScripts/hware/qemu
 cd /LFSPkgBuildScripts/net/seamonkey
 ./seamonkey.LFSBuild install
 
-#Icedtea-web
-cd /LFSPkgBuildScripts/net/icedtea-web
-./icedtea-web.LFSBuild install
+#Icedtea-web BROKEN
+#cd /LFSPkgBuildScripts/net/icedtea-web
+#./icedtea-web.LFSBuild install
 #For pulse audio
-cd /LFSPkgBuildScripts/net/icedtea-sound
-./icedtea-sound.LFSBuild install
+#cd /LFSPkgBuildScripts/net/icedtea-sound
+#./icedtea-sound.LFSBuild install
 
 #Samba
 cd /LFSPkgBuildScripts/net/samba
@@ -281,6 +304,20 @@ cd /LFSPkgBuildScripts/net/davfs2
 
 cd /LFSPkgBuildScripts/net/curlftpfs
 ./curlftpfs.LFSBuild install
+
+#System admin/security stuff
+cd /LFSPkgBuildScripts/admin/logrotate
+./logrotate.LFSBuild install
+
+cd /LFSPkgBuildScripts/admin/fcron
+./fcron.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/iptables
+./iptables.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/fail2ban
+./fail2ban.LFSBuild install
+
 
 #TODO
 cd /LFSPkgBuildScripts/qt/qt-creator
@@ -308,21 +345,10 @@ cd /LFSPkgBuildScripts/desktop/epdfview
 cd /LFSPkgBuildScripts/desktop/gkrellm
 ./gkrellm.LFSBuild install
 
-#System admin/security stuff
-cd /LFSPkgBuildScripts/admin/logrotate
-./logrotate.LFSBuild install
 
-cd /LFSPkgBuildScripts/admin/fcron
-./fcron.LFSBuild install
-
-cd /LFSPkgBuildScripts/admin/iptables
-./iptables.LFSBuild install
-
-cd /LFSPkgBuildScripts/admin/fail2ban
-./fail2ban.LFSBuild install
-
-
-
+#Add users
+cd /LFSPkgBuildScripts/HelperScripts/
+./UsersAndGroups YOURUSERNAME
 
 
 

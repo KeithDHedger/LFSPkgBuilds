@@ -1,0 +1,2 @@
+Simple BASH based init system for LFS.
+Can also be used by normal user to run local services for the user ( wm, panels etc ).

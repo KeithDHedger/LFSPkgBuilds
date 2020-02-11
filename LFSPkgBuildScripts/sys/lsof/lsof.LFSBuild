@@ -2,24 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libtirpc-1.0.2"
+DEPENDS="libtirpc-1.1.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="lsof"
 TARNAME="$PKGNAME"
-VERSION="4.89"
+VERSION="4.91"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}_${VERSION}.tar.bz2"
+TARBALL="${TARNAME}_${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://sunsite.ualberta.ca/pub/Mirror/$PKGNAME/${TARBALL}" $SECTION
+gettar "https://www.mirrorservice.org/sites/lsof.itap.purdue.edu/pub/tools/unix/$PKGNAME/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

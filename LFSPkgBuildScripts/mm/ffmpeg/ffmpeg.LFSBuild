@@ -4,7 +4,7 @@
 
 PKGNAME="ffmpeg"
 TARNAME="$PKGNAME"
-VERSION="4.1"
+VERSION="4.2"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -21,11 +21,12 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --disable-debug --disable-static --disable-logging --enable-pthreads --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --disable-doc --disable-libaom
+		sed -i 's/-lflite"/-lflite -lasound"/' configure
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --disable-static --disable-debug --enable-gpl --enable-version3 --enable-nonfree
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
-
+#--enable-avresample --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 

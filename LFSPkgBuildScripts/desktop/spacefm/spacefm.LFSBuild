@@ -32,6 +32,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	fi
 
 	pushd "${TARNAME}-${VERSION}"
+		sed -i 's@#include <sys/un.h>@#include <sys/un.h>\n#include <sys/sysmacros.h>\n@' src/main.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} $VIDEO_THUMBNAIL_FLAG 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

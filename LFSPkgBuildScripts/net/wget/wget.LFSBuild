@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.0"
+DEPENDS="OpenSSL-1.1.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="wget"
 TARNAME="${PKGNAME}"
-VERSION="1.19.4"
+VERSION="1.20.3"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"

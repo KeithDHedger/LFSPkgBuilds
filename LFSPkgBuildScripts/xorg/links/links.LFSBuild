@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GPM-1.20.7 OpenSSL-1.1.0"
+DEPENDS="GPM-1.20.7 OpenSSL-1.1.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="links"
-TARNAME="links"
-VERSION="2.14"
+TARNAME="$PKGNAME"
+VERSION="2.19"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"

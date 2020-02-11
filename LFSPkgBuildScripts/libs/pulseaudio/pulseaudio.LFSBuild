@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="json-c-0.13 libsndfile-1.0.28"
+DEPENDS="json-c-0.13.1 libsndfile-1.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="pulseaudio"
 TARNAME="$PKGNAME"
-VERSION="11.1"
+VERSION="12.2"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -19,17 +19,20 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://freedesktop.org/software/pulseaudio/releases/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-glibc_2.27_fix-1.patch" $SECTION
+gettar "https://www.freedesktop.org/software/${PKGNAME}/releases/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-glibc_2.27_fix-1.patch
-		AUTOPOINT='intltoolize --automake --copy' autoreconf -fiv
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath --disable-systemd-daemon --disable-systemd-login --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules --enable-nls
+		sed -i "s:asoundlib.h:alsa/asoundlib.h:" src/modules/alsa/*.{c,h}
+		sed -i "s:use-case.h:alsa/use-case.h:" configure.ac
+		sed -i "s:use-case.h:alsa/use-case.h:" src/modules/alsa/alsa-ucm.h
+		
+		NOCONFIGURE=1 ./bootstrap.sh
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath --with-systemduserunitdir=no --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules --enable-nls
 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gdk-pixbuf-2.36.5 libcroco-0.6.12 Pango-1.40.14 gobject-introspection-1.54.1 GTK-Doc-1.25"
+DEPENDS="gdk-pixbuf-2.38.1 libcroco-0.6.13 Pango-1.42.4 cairo-1.16.0 gobject-introspection-1.60.2 GTK-Doc-1.32 Rust-1.35.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="librsvg"
 TARNAME="$PKGNAME"
-VERSION="2.42.2"
+VERSION="2.44.14"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -19,9 +19,12 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/librsvg/${VERSION}/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/librsvg/${VERSION%.?*}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+export PATH="${PATH}:/opt/rust/bin"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

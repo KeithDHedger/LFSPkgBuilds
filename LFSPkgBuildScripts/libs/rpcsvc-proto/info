@@ -1,0 +1,1 @@
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/rpcsvc-proto.html The rpcsvc-proto package contains the rcpsvc protocol.x files and headers, formerly included with glibc, that are not included in replacement libtirpc-1.1.4, along with the rpcgen program.

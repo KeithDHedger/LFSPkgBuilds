@@ -4,7 +4,7 @@
 
 PKGNAME="diffutils"
 TARNAME="$PKGNAME"
-VERSION="3.6"
+VERSION="3.7"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,7 +21,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i 's:= @mkdir_p@:= /bin/mkdir -p:' po/Makefile.in.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

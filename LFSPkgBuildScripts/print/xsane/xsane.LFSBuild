@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.xsane.org/download/${TARBALL}" $SECTION
+gettar "ftp://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -34,7 +35,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -v -s ../../doc/${TARNAME}-${VERSION} $PKG/usr/share/sane/xsane/doc
 		ln -v -s /usr/bin/xsane $PKG/usr/lib/gimp/2.0/plug-ins/
 		mkdir -p $PKG/usr/bin/||true
-		ln -v -s firefox $PKG/usr/bin/netscape
 	popd
 
 	checketc $PKG

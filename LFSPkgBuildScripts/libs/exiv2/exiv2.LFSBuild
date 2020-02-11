@@ -2,29 +2,36 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="cmake-3.15.2"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="exiv2"
 TARNAME="$PKGNAME"
-VERSION="0.26"
+VERSION="0.27.2"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}-Source.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.exiv2.org/${TARBALL}" $SECTION
+gettar "http://www.exiv2.org/builds/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-video --enable-webready --without-ssh
+	pushd "${TARNAME}-${VERSION}-Source"
+		mkdir build||true
+		cd build
+		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DEXIV2_ENABLE_VIDEO=yes -DEXIV2_ENABLE_WEBREADY=yes -DEXIV2_ENABLE_CURL=yes -DEXIV2_BUILD_SAMPLES=no -G "Unix Makefiles" .. #//TODO//
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libexiv2.so
 	popd
 
 	checketc "$PKG"
@@ -49,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}-Source"
 popd 2>/dev/null||true

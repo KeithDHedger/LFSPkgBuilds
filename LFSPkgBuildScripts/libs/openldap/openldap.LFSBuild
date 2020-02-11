@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cyrus-SASL-2.1.26 openssl-1.1.0"
+DEPENDS="Cyrus-SASL-2.1.27 openssl-1.1.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="openldap"
 TARNAME="$PKGNAME"
-VERSION="2.4.45"
+VERSION="2.4.48"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -21,14 +21,13 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-consolidated-1.patch" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/8.0/openldap-2.4.44-consolidated-2.patch" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 UIDGIDPAIR=$(findnextpair "system")
 groupadd -g $UIDGIDPAIR ldap||true
 useradd -c "OpenLDAP Daemon Owner" -d /var/lib/openldap -g ldap -s /bin/false -u $UIDGIDPAIR ldap||true
+
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"

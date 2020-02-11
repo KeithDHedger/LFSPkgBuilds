@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="popt-1.16"
+DEPENDS="popt-1.16 fcron-3.2.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="logrotate"
 TARNAME="$PKGNAME"
-VERSION="3.11.0"
+VERSION="3.15.0"
 BUILD=1
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -19,14 +19,13 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/logrotate/logrotate/releases/download/3.11.0/${TARBALL}" $SECTION
+gettar "https://github.com/logrotate/logrotate/releases/download/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/exit 5/s/^/echo uncompress failed -- skipping #/' test/test
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

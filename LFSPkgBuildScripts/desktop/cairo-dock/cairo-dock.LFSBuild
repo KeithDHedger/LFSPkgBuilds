@@ -2,12 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.10.2"
+DEPENDS="CMake-3.15.2"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
-###DEPENDS="CMake-3.10.2 gtkglext-1.2.0"
 
 PKGNAME="cairo-dock"
 TARNAME="$PKGNAME"
@@ -21,7 +20,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://launchpad.net/cairo-dock-core/3.3/3.3.2/+download/${TARBALL}" $SECTION
+gettar "https://launchpad.net/cairo-dock-core/${VERSION%.?*}/${VERSION}/+download/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

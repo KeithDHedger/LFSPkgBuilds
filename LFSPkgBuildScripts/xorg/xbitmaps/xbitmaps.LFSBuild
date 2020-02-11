@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="util-macros-1.19.1"
+DEPENDS="util-macros-1.19.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xbitmaps"
 TARNAME="$PKGNAME"
-VERSION="1.1.1"
+VERSION="1.1.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"

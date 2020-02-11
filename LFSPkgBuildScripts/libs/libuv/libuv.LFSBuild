@@ -4,7 +4,7 @@
 
 PKGNAME="libuv"
 TARNAME="$PKGNAME"
-VERSION="1.19.1"
+VERSION="1.31.0"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/libuv/libuv/archive/v1.19.1/${TARBALL}" $SECTION
+gettar "https://github.com/libuv/libuv/archive/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

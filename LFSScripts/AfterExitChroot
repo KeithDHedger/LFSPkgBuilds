@@ -13,12 +13,10 @@ fi
 if [ "X$EXTFOLDER" != "X" ];then
 	umount ${LFS}/${SOURCEARCHIVES} ||true
 	umount ${LFS}/${BUILTPACKAGES} ||true
-#	rm $LFS/${BUILTPACKAGES} ||true
-#	rm $LFS/${SOURCEARCHIVES} ||true
 fi
 
-umount ${LFS}/dev/pts ||true
+umount ${LFS}/run||true
+umount ${LFS}/dev/pts||true
 umount -lf ${LFS}/dev ||true  
 umount ${LFS}/proc ||true
 umount ${LFS}/sys ||true
-umount ${LFS}/run ||true

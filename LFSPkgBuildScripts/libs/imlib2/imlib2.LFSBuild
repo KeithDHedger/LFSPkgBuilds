@@ -4,14 +4,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-8.2 giflib-5.1.4"
+DEPENDS="xorg-libs-9.0 giflib-5.2.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="imlib2"
 TARNAME="${PKGNAME}"
-VERSION="1.4.10"
+VERSION="1.5.1"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

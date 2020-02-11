@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libarchive-3.2.2"
+DEPENDS="libarchive-3.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,7 +20,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/project/xarchiver/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-fixes-1.patch"  $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-fixes-1.patch"  $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

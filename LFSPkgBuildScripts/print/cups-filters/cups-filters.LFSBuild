@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cups-2.2.6 GLib-2.56.0 ghostscript-9.22 IJS-0.35 lcms2-2.9 MuPDF-1.12.0 Poppler-0.62.0 Qpdf-7.1.1"
+DEPENDS="Cups-2.2.12 GLib-2.60.6 ghostscript-9.27 lcms2-2.9 MuPDF-1.12.0 Poppler-0.79.0 Qpdf-8.4.2 MuPDF-1.16.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cups-filters"
 TARNAME="$PKGNAME"
-VERSION="1.20.0"
+VERSION="1.25.2"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"

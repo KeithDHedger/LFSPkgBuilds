@@ -4,7 +4,7 @@
 
 PKGNAME="gkrellm"
 TARNAME="$PKGNAME"
-VERSION="2.3.10"
+VERSION="2.3.11"
 BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		make $MAKEFLAGS PREFIX=/usr||make PREFIX=/usr|| exit 100
 		make install DESTDIR=$PKG PREFIX=/usr || exit 100

@@ -4,11 +4,11 @@
 
 PKGNAME="acl"
 TARNAME="$PKGNAME"
-VERSION="2.2.52"
+VERSION="2.2.53"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.src.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,12 +21,9 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/$TARBALL"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
-		sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" libacl/__acl_to_any_text.c
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static --libexecdir=/usr/lib
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --disable-static --libexecdir=/usr/lib --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
-		make install install-dev install-lib DESTDIR=$PKG || exit 100
-		chmod -v 755 $PKG/usr/lib/libacl.so
+		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/lib||true
 		mv -v $PKG/usr/lib/libacl.so.* $PKG/lib
 		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libacl.so) $PKG/usr/lib/libacl.so

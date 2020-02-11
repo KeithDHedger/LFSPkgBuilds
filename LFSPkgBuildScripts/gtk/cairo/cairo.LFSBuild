@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libpng-1.6.34 GLib-2.56.0 Pixman-0.34.0 GTK-Doc-1.25"
+DEPENDS="libpng-1.6.37 GLib-2.60.6 Pixman-0.38.4 GTK-Doc-1.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cairo"
 TARNAME="$PKGNAME"
-VERSION="1.14.12"
+VERSION="1.16.0"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS -ffat-lto-objects" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-xlib-xcb --enable-tee --enable-gtk-doc
+		CFLAGS="$LFSFLAGS -ffat-lto-objects" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-xlib-xcb --enable-tee
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

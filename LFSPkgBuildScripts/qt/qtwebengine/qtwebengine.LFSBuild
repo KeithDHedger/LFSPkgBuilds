@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NSS-3.35 PulseAudio-11.1 qt5-5.10.1 x264-2245 libwebp-0.6.0"
+DEPENDS="NSS-3.45 PulseAudio-12.2 qt5-5.13.0 x264-2245 libwebp-1.0.3 ffmpeg-4.2 Opus-1.3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qtwebengine"
 TARNAME="qtwebengine-everywhere-src"
-VERSION="5.10.1"
+VERSION="5.14.1"
 BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -20,23 +20,32 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/submodules/${TARBALL}" $SECTION
+
+#possible fix for SOME setups use with discrection
+#gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
-export NINJAJOBS=2
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		find -type f -name "*.pr[io]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
+#possible fix for SOME setups use with discrection
+#		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch
+		sed -e '/link_pulseaudio/s/false/true/' -i src/3rdparty/chromium/media/media_options.gni
+		sed -i 's/NINJAJOBS/NINJA_JOBS/' src/core/gn_run.pro
+		if [ -e ${QT5DIR}/libQt5WebEngineCore.so ];then
+			mv -v ${QT5DIR}/libQt5WebEngineCore.so{,.old}
+		fi
 		mkdir build||true
 		cd  build
-		qmake  .. -- -webengine-opus -webengine-webp -webengine-proprietary-codecs
+		export NINJA_JOBS="-j3"
+		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker -webengine-icu
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
 		find ${PKG}${QT5PREFIX}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
-		mkdir -vp ${PKG}${QT5PREFIX}/share/qt5/qtwebengine_dictionaries||true
-		${PKG}${QT5PREFIX}/bin/qwebengine_convert_dict /usr/lib/libreoffice/share/extensions/dict-en/en_GB.dic ${PKG}${QT5PREFIX}/qt5/qtwebengine_dictionaries/en-GB.bdic
-		chmod 644 ${PKG}${QT5PREFIX}/share/qt5/qtwebengine_dictionaries/en-GB.bdic
+		mkdir -vp ${PKG}/${QT5PREFIX}/share/qt5/qtwebengine_dictionaries ${PKG}/${QT5PREFIX}/share/qt5/resources||true
 	popd
 
 	checketc "$PKG"

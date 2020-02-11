@@ -4,7 +4,7 @@
 
 PKGNAME="nettle"
 TARNAME="$PKGNAME"
-VERSION="3.4"
+VERSION="3.5.1"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 		chmod   -v   755 $PKG/usr/lib${LIBDIRSUFFIX}/lib{hogweed,nettle}.so

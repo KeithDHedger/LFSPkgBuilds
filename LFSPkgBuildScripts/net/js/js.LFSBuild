@@ -2,49 +2,38 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libffi-3.2.1 NSPR-4.18 Python-2.7.14 Zip-3.0 autoconf213-2.13 icu-60.2"
+DEPENDS="NSPR-4.21 Python-2.7.16 Zip-3.0 autoconf213-2.13 icu-64.2 xorg-libs-9.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="js"
-VERSION="38.2.1"
-TARNAME="mozjs-${VERSION}"
+VERSION="60.8.0"
+TARNAME="mozjs"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}.rc0.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/BLFS/mozjs/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}38-${VERSION}-upstream_fixes-2.patch" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/teams/releng/tarballs-needing-help/${TARNAME}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	export SHELL=/bin/bash
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "mozjs-38.0.0"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}38-${VERSION}-upstream_fixes-2.patch
-		cd js/src
-		autoconf2.13
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-readline --enable-threadsafe --with-system-ffi --with-system-nspr --with-intl-api --with-system-zlib --with-system-icu
+	pushd "${TARNAME}-${VERSION}"
+		export SHELL=/bin/bash
+		mkdir mozjs-build||true
+		cd mozjs-build
+
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure --prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-
-		pushd $PKG/usr/include/mozjs-38
-			for link in $(find . -type l)
-			do
-				header=$(readlink $link)
-				rm -f $link
-				cp -pv $header $link
-				chmod 644 $link
-			done
-		popd
-		chown -Rv root.root $PKG/usr/include/mozjs-38
 	popd
 
 	checketc $PKG
@@ -69,5 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "mozjs-38.0.0"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

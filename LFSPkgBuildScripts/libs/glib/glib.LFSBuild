@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="PCRE-8.41 libffi-3.2.1 Python-2.7.14 GTK-Doc-1.25"
+DEPENDS="PCRE-8.43 Python-2.7.16 GTK-Doc-1.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="glib"
 TARNAME="$PKGNAME"
-VERSION="2.56.0"
+VERSION="2.60.6"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -20,18 +20,21 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/glib/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/9.0/${TARNAME}-${VERSION}-skip_warnings-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-#meson buid is fucked when trying to build docs so use configure instead!!!
-		patch -Np1 -i $CWD/${PKGNAME}-${VERSION}-skip_warnings-1.patch
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-pcre=system --libdir=/usr/lib${LIBDIRSUFFIX} --with-python=/usr/bin/python3  --enable-static
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
-		chmod -v 755 $PKG/usr/bin/{gdbus-codegen,glib-gettextize}
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-skip_warnings-1.patch
+		mkdir build||true
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dman=true -Dselinux=disabled --default-library=both ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
+		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		cp -r ../docs/reference/{NEWS,gio,glib,gobject} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
 
 	checketc $PKG

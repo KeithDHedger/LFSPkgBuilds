@@ -4,7 +4,7 @@
 
 PKGNAME="sudo"
 TARNAME="$PKGNAME"
-VERSION="1.8.22"
+VERSION="1.8.27"
 MINORREVISION=""
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
@@ -22,11 +22,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORREVISION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libexecdir=/usr/lib${LIBDIRSUFFX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}${MINORREVISION} --with-all-insults --with-env-editor --with-passprompt="[sudo] password for %p" --with-secure-path --with-env-editor
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libexecdir=/usr/lib${LIBDIRSUFFX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}${MINORREVISION} --with-all-insults --with-env-editor --with-passprompt="[sudo] password for %p" --with-secure-path --with-env-editor --without-pam
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -p $PKG/usr/lib/sudo ||true
-		ln -sfv libsudo_util.so.0.0.0 $PKG/usr/lib/sudo/libsudo_util.so.0
+		mkdir -p $PKG/usr/lib${LIBDIRSUFFX}/sudo ||true
+		ln -sfv libsudo_util.so.0.0.0 $PKG/usr/lib${LIBDIRSUFFX}/sudo/libsudo_util.so.0
 	popd
 
 	checketc $PKG

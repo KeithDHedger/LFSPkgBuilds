@@ -4,7 +4,7 @@
 
 PKGNAME="libxml2"
 TARNAME="$PKGNAME"
-VERSION="2.9.7"
+VERSION="2.9.9"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -15,15 +15,13 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xmlsoft.org/sources/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-python3_hack-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/libxml2-2.9.7-python3_hack-1.patch
-		sed -i '/_PyVerify_fd/,+1d' python/types.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-history --with-python=/usr/bin/python3
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

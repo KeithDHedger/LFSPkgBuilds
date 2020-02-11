@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/libpsl.html
+The libpsl package provides a library for accessing and resolving information from the Public Suffix List (PSL). The PSL is a set of domain names beyond the standard suffixes, such as .com.

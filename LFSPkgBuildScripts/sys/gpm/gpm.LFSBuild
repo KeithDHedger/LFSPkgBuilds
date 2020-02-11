@@ -1,0 +1,63 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="gpm"
+TARNAME="$PKGNAME"
+VERSION="1.20.7"
+BUILD=${BUILD:-1}
+SECTION="SYS"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://www.nico.schottelius.org/software/gpm/archives/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-glibc_2.26-1.patch" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		sed -i -e 's:<gpm.h>:"headers/gpm.h":' src/prog/{display-buttons,display-coords,get-versions}.c
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-glibc_2.26-1.patch
+		./autogen.sh
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/info $PKG/etc $PKG/usr/share/doc/${PKGNAME}-${VERSION} $PKG/usr/share/doc/${PKGNAME}-${VERSION}/support $PKG/etc/sysconfig
+		install-info --dir-file=/usr/share/info/dir $PKG/usr/share/info/gpm.info
+		ln -v -sfn libgpm.so.2.1.0 $PKG/usr/lib${LIBDIRSUFFIX}/libgpm.so
+		install -v -m644 conf/gpm-root.conf $PKG/etc
+		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}/support
+		install -v -m644 doc/support/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}/support
+		install -v -m644 doc/{FAQ,HACK_GPM,README*} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	popd
+
+	checketc $PKG
+	packageclean "$PKG" "$CWD" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

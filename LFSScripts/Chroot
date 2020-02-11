@@ -8,18 +8,17 @@ else
 	echo "No SystemData file found ..."
 	exit 0
 fi
-LFS=/media/LFSBomb20
 
 pushd $LFS
-	mount -v --bind /dev $LFS/dev
-	mount -vt devpts devpts $LFS/dev/pts -o gid=5,mode=620
-	mount -vt proc proc $LFS/proc
-	mount -vt sysfs sysfs $LFS/sys
-	mount -vt tmpfs tmpfs $LFS/run
+	mount -v --bind /dev dev
+	mount -vt proc proc proc
+	mount -vt sysfs sysfs sys
+	mount -t tmpfs tmpfs run
 
-	if [ -h $LFS/dev/shm ];then
-		mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+	if [ -e dev/shm ];then
+		mkdir -pv "${LFS}$(readlink dev/shm)"||true
 	fi
+	mount -vt devpts devpts dev/pts -o gid=5,mode=620
 
 #extra folders from the host can be mounted either from here or from the chroot environment
 #dont forget to add the unmount commands to the AfterExitChroot script or unmount them before leaving the chroot.
@@ -33,13 +32,10 @@ pushd $LFS
 		mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
 	fi
 
-#	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
-#	mount --bind ${SOURCEARCHIVES} ${LFS}/${SOURCEARCHIVES}
-
 #This seems to be needed now as TERM=xterm screws up ncurses
 #Set TERM as dialog needs it
 	export TERM="xterm-color"
-	if [ X$1 = "Xsystem" ];then
+	if [ "X$1" = "Xsystem" ];then
 		mv ${LFS}/etc/profile ${LFS}/etc/profile.BAK
 		chroot "$LFS" /tools/bin/env -i HOME=/root TERM="$TERM" PS1='\u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /tools/bin/bash --login +h
 		mv ${LFS}/etc/profile.BAK ${LFS}/etc/profile

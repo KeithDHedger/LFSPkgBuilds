@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base1.0-1.12.4 GTK-2.24.32 icu-60.2 libsoup-2.60.3 MesaLib-17.3.4 Ruby-2.5.0 SQLite-3.22.0 Which-2.22 libwebp-0.6.0 libsecret-0.18.5 GTK-Doc-1.25 libgcrypt-1.8.2"
+DEPENDS="gst-plugins-base-1.16.0 GTK-2.24.32 icu-64.2 libsoup-2.66.2 MesaLib-19.1.4 Ruby-2.6.4 SQLite-3.29.0 Which-2.21 libwebp-1.0.3 libsecret-0.18.8 GTK-Doc-1.32 libgcrypt-1.8.5"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -21,23 +21,39 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
-gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk/${TARNAME}-2.4.9-abs.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+MAKEFLAGS=" -j2 "
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-2.4.9-abs.patch
-		#thanks to gentoo for this patch
-		#https://bugs.gentoo.org/621532
 		patch -Np1 -i ${CWD}/js.patch
+		patch -Np1 -i ${CWD}/webkitgtk-2.4.9-abs.patch
+		patch -Np1 -i ${CWD}/enchant-2.x.patch
+		patch -Np1 -i ${CWD}/pkgconfig-enchant-2.patch
+		autoreconf -ifv
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gstreamer=1.0 --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib/WebKitGTK --disable-geolocation --enable-introspection
+		mkdir -p "build-gtk" "path" ||true
+		PATH="$(pwd)/path:${PATH}"
+		ln -rTsf "$(which python2)" "$(pwd)/path/python"
+		cd "build-gtk"
+
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS"
+		CXXFLAGS+=" -fno-delete-null-pointer-checks"
+		CFLAGS+=" -fno-delete-null-pointer-checks"
+
+		CFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess"
+		CXXFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess -DUPRV_BLOCK_MACRO_BEGIN=\"\" -DUPRV_BLOCK_MACRO_END=\"\""
+		export CFLAGS
+		export CXXFLAGS
+
+		../configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib${LIBDIRSUFFIX}/WebKitGTK --disable-geolocation --enable-introspection --enable-gtk-doc
+		sed -i "s/ -shared / -Wl,-O1,--as-needed\0/g" "libtool"
 		make $MAKEFLAGS||exit 100
 		make install DESTDIR=$PKG || exit 100
-		rm -rf $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
-		mv -vi $PKG/usr/share/gtk-doc/html/webkitgtk{,-1.0}
+		mkdir -p $PKG/usr/share/gtk-doc/html/
+		cp -rv ../Documentation/webkitgtk/html $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
 	popd
 
 	checketc $PKG

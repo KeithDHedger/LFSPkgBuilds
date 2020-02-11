@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Which-2.21 icu-60.2 Python-2.7.14"
+DEPENDS="Which-2.21 icu-64.2 Python-2.7.16"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="boost"
 TARNAME="$PKGNAME"
-VERSION="1.66.0"
+VERSION="1.70.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -29,7 +29,9 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}_${TARVERSION}"
 		./bootstrap.sh --prefix=$PKG/usr || exit 
 		./b2 -j3 stage threading=multi link=shared || true 
-		./b2 -j3 install threading=multi link=shared || true 
+		./b2 -j3 install threading=multi link=shared || true
+		mkdir -vp $PKG/usr/include/boost/uuid || true
+		ln -svf detail/sha1.hpp $PKG/usr/include/boost/uuid/sha1.hpp
 	popd
 
 	checketc $PKG

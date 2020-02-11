@@ -4,12 +4,11 @@
 
 PKGNAME="vim"
 TARNAME="$PKGNAME"
-VERSION="8.0.586"
+VERSION="8.1.1846"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-VIMVERS=80
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,7 +20,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${PKGNAME}${VIMVERS}"
+	pushd "${TARNAME}-${VERSION}"
 		echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 		./configure --prefix=/usr
 		make $MAKEFLAGS||make|| exit
@@ -57,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "vim${VIMVERS}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

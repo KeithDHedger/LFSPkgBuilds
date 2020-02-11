@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xmlto-0.0.28 Links-2.14 File-MimeInfo-0.27"
+DEPENDS="xmlto-0.0.28 Links-2.19 File-MimeInfo-0.29"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xdg-utils"
 TARNAME="$PKGNAME"
-VERSION="1.1.2"
+VERSION="1.1.3"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"

@@ -8,7 +8,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="x-fonts"
-VERSION="8.2"
+VERSION="9.0"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	cat > ${SOURCEARCHIVES}/${SECTION}/x-fonts/${PKGNAME}-${VERSION}.md5 << "EOF"
 	23756dab809f9ec5011bb27fb2c3c7d6  font-util-1.3.1.tar.bz2
-	0f2d6546d514c5cc4ecf78a60657a5c1  encodings-1.0.4.tar.bz2
+	bbae4f247b88ccde0e85ed6a403da22a  encodings-1.0.5.tar.bz2
 	1347c3031b74c9e91dc4dfa53b12f143  font-adobe-100dpi-1.0.3.tar.bz2
 	6c9f26c92393c0756f3e8d614713495b  font-adobe-75dpi-1.0.3.tar.bz2
 	66fb6de561648a6dce2755621d6aea17  font-adobe-utopia-100dpi-1.0.4.tar.bz2
@@ -65,7 +65,7 @@ pushd $COMPILEAT 2>/dev/null||true
 EOF
 
 	pushd "${SOURCEARCHIVES}/${SECTION}/x-fonts"
-		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B http://xorg.freedesktop.org/releases/individual/font/
+		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B https://www.x.org/pub/individual/font/
 		if ! md5sum -c ${PKGNAME}-${VERSION}.md5;then
 			echo "Files don't match ..."
 			exit 1

@@ -4,11 +4,11 @@
 
 PKGNAME="sysvinit"
 TARNAME="$PKGNAME"
-VERSION="2.88"
+VERSION="2.95"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}dsf.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -20,10 +20,10 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}dsf"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}dsf-consolidated-1.patch
-		make $MAKEFLAGS -C src||make -C src|| exit 100
-		make -C src install ROOT=$PKG || exit 100
+	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-consolidated-1.patch
+		make $MAKEFLAGS||make|| exit 100
+		make install ROOT=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
@@ -48,6 +48,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}dsf"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
 

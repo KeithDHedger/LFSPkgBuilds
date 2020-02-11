@@ -4,7 +4,7 @@
 
 PKGNAME="tar"
 TARNAME="$PKGNAME"
-VERSION="1.30"
+VERSION="1.32"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -21,13 +21,11 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		export FORCE_UNSAFE_CONFIGURE=1
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --libexecdir=/usr/sbin
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --bindir=/bin
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		make -C doc install-html docdir=/usr/share/doc/${PKGNAME}-${VERSION} DESTDIR="$PKG"
 		mkdir -vp $PKG/usr/share/man/man1||true
-		unset FORCE_UNSAFE_CONFIGURE
 	popd
 
 	checketc "$PKG"

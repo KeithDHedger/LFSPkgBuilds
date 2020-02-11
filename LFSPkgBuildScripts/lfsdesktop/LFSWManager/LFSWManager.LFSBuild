@@ -2,13 +2,13 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.3.0"
+DEPENDS="LFSToolKit-0.4.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="LFSWManager"
-VERSION="0.1.2"
+VERSION="0.1.3"
 BUILD=1
 SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"

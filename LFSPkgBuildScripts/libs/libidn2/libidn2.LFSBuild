@@ -2,9 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="libunistring-0.9.10"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="libidn2"
 TARNAME="$PKGNAME"
-VERSION="2.0.5"
+VERSION="2.2.0"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"

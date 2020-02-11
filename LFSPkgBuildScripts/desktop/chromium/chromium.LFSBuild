@@ -132,7 +132,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			done
 
 		mkdir -vp $PKG/usr/share/applications||true
-
 		mkdir temp||true
 		cd temp
 		case $ARCH in
@@ -147,7 +146,14 @@ pushd $COMPILEAT 2>/dev/null||true
 		tar -xf data.tar.xz
 		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/chromium
 		install -vm755 ../out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
-		install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
+		case "$ARCH" in
+			x86_64)
+				install -vm755 opt/google/chrome/WidevineCdm/_platform_specific/linux_x64/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
+				;;
+			*)
+				install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
+				;;
+		esac
 
 		case "$ARCH" in
 			x86_64)

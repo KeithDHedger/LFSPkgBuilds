@@ -2,6 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="xorg-libs-9.0 xkeyboard-config-2.27"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="libxkbcommon"
 TARNAME="$PKGNAME"
 VERSION="0.8.4"

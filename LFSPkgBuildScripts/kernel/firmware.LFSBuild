@@ -3,7 +3,7 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="linux-firmware"
-VERSION="4.15.3"
+VERSION="5.2.8"
 
 BUILD=${BUILD:-1}
 SECTION="KERNEL"

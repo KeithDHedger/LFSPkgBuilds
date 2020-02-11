@@ -10,7 +10,7 @@ NORMAL='\e[0;0m'
 
 DREPLY=/tmp/dialogreply$$
 export DIALOGOPTS="--backtitle \"Enable/Disbale services at boot\""
-BLFSBOOTSCRIPTS="blfs-bootscripts-20180105"
+BLFSBOOTSCRIPTS="blfs-bootscripts-20190609"
 if [ ! -d "$BLFSBOOTSCRIPTS" ];then
 	wget -c --no-check-certificate "http://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/$BLFSBOOTSCRIPTS.tar.xz"
 	tar -xvf $BLFSBOOTSCRIPTS.tar.xz
@@ -47,6 +47,11 @@ if [ "$1" != "" ];then
 			installScript $arg
 		done
 	exit 0
+fi
+
+if [ ! -e /usr/bin/dialog ];then
+	echo "No dialog program  found, please install services manually ..."
+	exit 1
 fi
 
 pushd $BOOTSCRIPTS

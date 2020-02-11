@@ -4,7 +4,7 @@
 
 PKGNAME="libpng"
 TARNAME="$PKGNAME"
-VERSION="1.6.34"
+VERSION="1.6.37"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -15,15 +15,15 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/libpng/${TARBALL}" $SECTION
-gettar "http://downloads.sourceforge.net/project/apng/libpng/libpng16/${TARNAME}-${VERSION}-apng.patch.gz" $SECTION
+gettar "https://downloads.sourceforge.net/sourceforge/libpng-apng/${TARNAME}-${VERSION}-apng.patch.gz" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		gzip -cd ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-apng.patch.gz | patch -p0
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" LIBS=-lpthread ./configure --prefix=/usr --disable-static
+		gzip -cd ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-apng.patch.gz | patch -p1
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-static
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}

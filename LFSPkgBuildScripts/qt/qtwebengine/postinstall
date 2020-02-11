@@ -1,0 +1,10 @@
+#!/bin/bash
+#©keithhedger Sun 22 Feb 16:50:36 GMT 2015
+
+. /usr/share/LFSPkg/LFSFunctions
+
+#add better gb dictionary from libreoffice
+${QT5PREFIX}/bin/qwebengine_convert_dict /usr/lib${LIBDIRSUFFIX}/libreoffice/share/extensions/dict-en/en_GB.dic ${QT5PREFIX}/share/qt5/qtwebengine_dictionaries/en-GB.bdic||true
+chmod 644 ${QT5PREFIX}/share/qt5/qtwebengine_dictionaries/en-GB.bdic||true
+
+exit 0

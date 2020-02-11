@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.0 Nettle-3.4 Pixman-0.34.0 x-fonts-8.2 xkeyboard-config-2.23.1 libepoxy-1.4.3 acpid-2.0.28 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
+DEPENDS="OpenSSL-1.1.1 Nettle-3.5.1 Pixman-0.38.4 x-fonts-9.0 xkeyboard-config-2.27 libepoxy-1.5.3 acpid-2.0.32 xcb-util-image-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xorg-server"
 TARNAME="$PKGNAME"
-VERSION="1.19.6"
+VERSION="1.20.5"
 BUILD=${BUILD:-2}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -31,6 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --enable-glamor --enable-install-setuid --enable-suid-wrapper --disable-systemd-logind --with-xkb-output=/var/lib/xkb --enable-dmx --enable-kdrive
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
+		chmod u+s ${PKG}/$XORG_PREFIX/libexec/Xorg
 	popd
 
 	checketc $PKG

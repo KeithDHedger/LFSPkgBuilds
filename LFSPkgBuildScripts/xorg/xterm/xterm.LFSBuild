@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="x-apps-8.2"
+DEPENDS="x-apps-9.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xterm"
 TARNAME="$PKGNAME"
-VERSION="331"
+VERSION="348"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -34,6 +34,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 		make install-ti DESTDIR=$PKG || exit 100
+		mkdir -pv $PKG/usr/share/applications
+		cp -v *.desktop $PKG/usr/share/applications/
+
 		mkdir -vp $PKG/etc/X11/app-defaults/ || true
 		cat >> $PKG/etc/X11/app-defaults/XTerm << "EOF"
 		*VT100*locale: true

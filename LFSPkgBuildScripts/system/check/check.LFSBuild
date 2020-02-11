@@ -26,6 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		sed -i '1 s/tools/usr/' $PKG/usr/bin/checkmk
 	popd
 
 	checketc "$PKG"

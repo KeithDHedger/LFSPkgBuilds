@@ -39,6 +39,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -sfv libncurses.so $PKG/usr/lib/libcurses.so
 		mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		#//TODO//not needed?
 		ln -sfv ../share/terminfo $PKG/usr/lib||true
 	popd
 

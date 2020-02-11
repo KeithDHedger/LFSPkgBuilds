@@ -5,6 +5,15 @@
 
 if ! grep "cron.*" /etc/syslog.conf &>/dev/null;then
 	sed -i  '0,/^$/s||cron.* -/var/log/cron.log|' /etc/syslog.conf
+else
+	cat >> /etc/syslog.conf << "EOF"
+# Begin fcron addition to /etc/syslog.conf
+
+cron.* -/var/log/cron.log
+
+# End fcron addition
+EOF
 fi
 
+fcrontab -z -u systab
 /etc/rc.d/init.d/sysklogd reload

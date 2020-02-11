@@ -14,14 +14,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/rrthomas/recode/releases/download/v3.7/${TARBALL}" $SECTION
+gettar "https://github.com/rrthomas/recode/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-included-gettext
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CPPFLAGS="-D__GNU_LIBRARY__=1 -D_IO_ftrylockfile " ./configure ${CONFIGOPTIONS} --without-included-gettext
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

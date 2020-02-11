@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.10.2"
+DEPENDS="CMake-3.15.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="extra-cmake-modules"
 TARNAME="$PKGNAME"
-VERSION="5.49.0"
+VERSION="5.61.0"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -20,7 +20,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.kde.org/stable/frameworks/${VERSION%.?*}/${TARBALL}" $SECTION
-		#http://download.kde.org/stable/frameworks/5.43/extra-cmake-modules-5.43.0.tar.xz
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

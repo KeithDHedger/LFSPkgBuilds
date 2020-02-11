@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Libdvdread-6.0.0"
+DEPENDS="Libdvdread-6.0.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

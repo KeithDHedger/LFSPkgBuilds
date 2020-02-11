@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="babl-0.1.42 Cairo-1.14.12 gdk-pixbuf-2.36.11 Graphviz-2.40.1 libjpeg-turbo-1.5.3 libpng-1.6.34 Pango-1.40.3 Python-2.7.14 gobject-introspection-1.54.1 Vala-0.38.8 json-glib-1.4.2"
+DEPENDS="babl-0.1.42 Cairo-1.16.0 gdk-pixbuf-2.38.1 Graphviz-2.40.1 libjpeg-turbo-2.0.2 libpng-1.6.37 Pango-1.42.4 Python-2.7.16 gobject-introspection-1.60.2 Vala-0.44.7 json-glib-1.4.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gegl"
 TARNAME="$PKGNAME"
-VERSION="0.3.28"
+VERSION="0.4.16"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"

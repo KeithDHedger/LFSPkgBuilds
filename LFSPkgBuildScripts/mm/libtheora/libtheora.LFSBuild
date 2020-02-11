@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libogg-1.3.3 libvorbis-1.3.5 SDL-1.2.15 libpng-1.6.34"
+DEPENDS="libogg-1.3.3 libvorbis-1.3.6 SDL-1.2.15 libpng-1.6.37"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -27,7 +27,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's/png_\(sizeof\)/\1/g' examples/png2theora.c
-		CFLAGS="$LFSFLAGS -lm" CXXFLAGS="$LFSFLAGS -lm" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

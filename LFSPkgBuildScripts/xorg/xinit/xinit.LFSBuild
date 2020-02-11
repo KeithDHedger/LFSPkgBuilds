@@ -2,26 +2,25 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="twm-1.0.9 xclock-1.0.7 xterm-327"
+DEPENDS="twm-1.0.10 xclock-1.0.9 xterm-348"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xinit"
 TARNAME="$PKGNAME"
-VERSION="1.3.4"
+VERSION="1.4.1"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://xorg.freedesktop.org/releases/individual/app/${TARBALL}" $SECTION
-
 PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-DOWHAT=${1:-"build"}
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://www.x.org/pub/individual/app/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
@@ -29,11 +28,12 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -e '/$serverargs $vtarg/ s/serverargs/: #&/' -i startx.cpp
+		#sed -e '/$serverargs $vtarg/ s/serverargs/: #&/' -i startx.cpp
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-xinitdir=/etc/X11/app-defaults
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
-		(cd $PKG/usr/bin;patch -i $CWD/startx.patch)
+		#(cd $PKG/usr/bin;patch -i $CWD/startx.patch) #NEEDED?
+		sed -i '/$serverargs $vtarg/ s/serverargs/: #&/' ${PKG}/${XORG_PREFIX}/bin/startx
 	popd
 
 	checketc $PKG
