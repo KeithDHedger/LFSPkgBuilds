@@ -2,29 +2,34 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="net-tools"
+DEPENDS="qtermwidget-0.14.1"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="qterminal"
 TARNAME="$PKGNAME"
-VERSION="20101030"
-BUILD=${BUILD:-1}
-SECTION="NET"
+VERSION="0.14.1"
+BUILD=1
+SECTION="QT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-CVS_${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/sources/BLFS/svn/n/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch" $SECTION
+gettar "https://github.com/lxqt/${PKGNAME}/releases/download/${VERSION}/${TARBALL}" $SECTION ${TARBALL}
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-CVS_${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch
-		sed -i '/#include <netinet\/ip.h>/d' iptunnel.c
-		yes "" | make config
+	pushd ${TARNAME}-${VERSION}
+		mkdir build||true
+		cd  build
+		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -33,7 +38,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 
 	case $DOWHAT in
@@ -51,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-CVS_${VERSION}"
-popd 2>/dev/null||true
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd

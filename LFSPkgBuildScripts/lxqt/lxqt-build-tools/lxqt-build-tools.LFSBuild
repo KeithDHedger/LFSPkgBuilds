@@ -2,29 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="net-tools"
+DEPENDS="CMake-3.15.2 qt5-5.14.1"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="lxqt-build-tools"
 TARNAME="$PKGNAME"
-VERSION="20101030"
-BUILD=${BUILD:-1}
-SECTION="NET"
+VERSION="0.6.0"
+BUILD=1
+SECTION="LXQT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-CVS_${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/sources/BLFS/svn/n/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch" $SECTION
+gettar "https://github.com/lxde/lxqt-build-tools/releases/download/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-CVS_${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch
-		sed -i '/#include <netinet\/ip.h>/d' iptunnel.c
-		yes "" | make config
+	pushd "${TARNAME}-${VERSION}"
+		mkdir build||true
+		cd  build
+		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -Wno-dev ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -51,5 +55,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-CVS_${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
