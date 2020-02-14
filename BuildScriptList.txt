@@ -18,8 +18,6 @@
 ./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/icedtea-sound/icedtea-sound.LFSBuild
 ./BROKEN/icedtea-web/icedtea-web.LFSBuild
-./BROKEN/qterminal/qterminal.LFSBuild
-./BROKEN/qtermwidget/qtermwidget.LFSBuild
 ./CLI/gocr/gocr.LFSBuild
 ./deprecated/gst-ffmpeg/gst-ffmpeg.LFSBuild
 ./deprecated/gst-plugins-bad/gst-plugins-bad.LFSBuild
@@ -335,6 +333,7 @@
 ./libs/tinyxml/tinyxml.LFSBuild
 ./libs/xapian/xapian.LFSBuild
 ./libs/yajl/yajl.LFSBuild
+./lxqt/lxqt-build-tools/lxqt-build-tools.LFSBuild
 ./mm/a52dec/a52dec.LFSBuild
 ./mm/alsa-lib/alsa-lib.LFSBuild
 ./mm/alsa-oss/alsa-oss.LFSBuild
@@ -526,6 +525,8 @@
 ./qt/qt5ct/qt5ct.LFSBuild
 ./qt/qt5/qt5.LFSBuild
 ./qt/qt-creator/qt-creator.LFSBuild
+./qt/qterminal/qterminal.LFSBuild
+./qt/qtermwidget/qtermwidget.LFSBuild
 ./qt/qtwebengine/qtwebengine.LFSBuild
 ./qt/qtwebkit/qtwebkit.LFSBuild
 ./qt/QupZilla/QupZilla.LFSBuild
@@ -684,8 +685,6 @@
 ./UNMAINTAINED/lxqt/lxqt-session/lxqt-session.LFSBuild
 ./UNMAINTAINED/lxqt/obconf-qt/obconf-qt.LFSBuild
 ./UNMAINTAINED/lxqt/pcmanfm-qt/pcmanfm-qt.LFSBuild
-./UNMAINTAINED/lxqt/qterminal/qterminal.LFSBuild
-./UNMAINTAINED/lxqt/qtermwidget/qtermwidget.LFSBuild
 ./UNMAINTAINED/lxqt/solid/solid.LFSBuild
 ./UNMAINTAINED/runit/runit.LFSBuild
 ./wms/blackbox/blackbox.LFSBuild
