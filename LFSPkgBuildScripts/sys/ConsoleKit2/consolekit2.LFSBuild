@@ -20,7 +20,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/ConsoleKit2/${PKGNAME}/archive/master.zip" $SECTION/ "${PKGNAME}.zip"
+gettar "https://github.com/ConsoleKit2/${PKGNAME}/archive/master.zip" $SECTION/ "${PKGNAME}.zip" "zip"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

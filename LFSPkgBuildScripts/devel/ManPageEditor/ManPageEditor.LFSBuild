@@ -23,7 +23,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.zip"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.zip" "zip"
 	pushd "${PKGNAME}-master"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-aspell
 		mkdir -vp $PKG/usr/share/icons/hicolor/256x256/apps
