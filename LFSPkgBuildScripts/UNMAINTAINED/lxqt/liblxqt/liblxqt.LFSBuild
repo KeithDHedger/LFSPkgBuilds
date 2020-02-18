@@ -14,7 +14,7 @@ VERSION="0.9.0"
 BUILD=${BUILD:-1}
 SECTION="LXQT"
 SUFFIX="LFSPKG"
-
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/lxde/${BASEPKGNAME}/archive/master.zip" $SECTION

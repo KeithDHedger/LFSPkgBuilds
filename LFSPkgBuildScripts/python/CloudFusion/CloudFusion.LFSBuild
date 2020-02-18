@@ -19,7 +19,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/$TARBALL"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/$TARBALL" "zip"
 	pushd "${PKGNAME}-${TARNAME}"
 		python setup.py install --root=$PKG || exit 100
 	popd

@@ -30,7 +30,7 @@ CPU=${CPU:-"cortex-a7"}
 groupadd -g $(findnextgid system) -r input || true
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive ${SOURCEARCHIVES}/${SECTION}/${TARBALL}
+	extractarchive ${SOURCEARCHIVES}/${SECTION}/${TARBALL} "zip"
 	pushd "xbmc-Krypton"
 		rm -rf build||true
 		mkdir build||true
