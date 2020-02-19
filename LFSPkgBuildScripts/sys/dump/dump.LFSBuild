@@ -2,18 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="e2fsprogs-1.43.9"
+DEPENDS="e2fsprogs-1.45.3 ncurses-static-6.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="dump"
 TARNAME="$PKGNAME"
-VERSION="0.4.44"
+VERSION="0.4.46"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-0.4b44.tar.gz"
+NONSTDVERSIONSTR="${VERSION%.?*}b${VERSION##?*.}"
+TARBALL="${TARNAME}-${NONSTDVERSIONSTR}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -26,14 +27,14 @@ if [ "X$ENABLESTATIC" != "X" ];then
 fi
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://kent.dl.sourceforge.net/project/dump/dump/0.4b44/${TARBALL}" $SECTION
+gettar "http://kent.dl.sourceforge.net/project/dump/dump/${NONSTDVERSIONSTR}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-0.4b44"
-		EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --enable-transselinux=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root $BUILDSTATIC
+	pushd "${TARNAME}-${NONSTDVERSIONSTR}"
+		EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root --enable-selinux=no --disable-ssl $BUILDSTATIC
 
 		make $MAKEFLAGS||make|| exit 100
 		make install  prefix=$PKG|| exit 100
@@ -72,6 +73,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-0.4b44"
+	rm -r "$PKG" "${TARNAME}-${NONSTDVERSIONSTR}"
 popd 2>/dev/null||true
 
