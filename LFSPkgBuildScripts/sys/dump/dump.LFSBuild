@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="e2fsprogs-1.45.3 ncurses-static-6.1"
+DEPENDS="e2fsprogs-1.45.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,13 +19,6 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-BUILDSTATIC=""
-if [ "X$ENABLESTATIC" != "X" ];then
-	BUILDSTATIC="--enable-static"
-	PKGNAME="dump-static"
-	PKG="${OUTPUT}/${PKGNAME}"
-fi
-
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://kent.dl.sourceforge.net/project/dump/dump/${NONSTDVERSIONSTR}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
@@ -34,21 +27,10 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${NONSTDVERSIONSTR}"
-		EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root --enable-selinux=no --disable-ssl $BUILDSTATIC
+		EXT2FS_LIBS="-lext2fs -lcom_err" ./configure ${CONFIGOPTIONS} --enable-rmt=no --localstatedir=/var --mandir=$PKG/usr/man --with-binowner=root --with-bingrp=root --with-manowner=root --with-mangrp=root --enable-selinux=no --disable-ssl
 
 		make $MAKEFLAGS||make|| exit 100
 		make install  prefix=$PKG|| exit 100
-		if [ "X$ENABLESTATIC" != "X" ];then
-			mv $PKG/sbin/dump $PKG/sbin/dump-static
-			mv $PKG/sbin/restore $PKG/sbin/restore-static
-			rm $PKG/sbin/rdump
-			rm $PKG/sbin/rrestore
-			pushd $PKG/sbin
-				ln -sv dump-static rdump-static
-				ln -sv restore-static rrestore-static
-			popd
-			rm -rf $PKG/usr
-		fi
 	popd
 
 	checketc "$PKG"
