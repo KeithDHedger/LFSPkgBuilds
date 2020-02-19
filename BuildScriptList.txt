@@ -627,7 +627,6 @@
 ./system/mpc/mpc.LFSBuild
 ./system/mpfr/mpfr.LFSBuild
 ./system/ncurses/ncurses.LFSBuild
-./system/ncurses/ncurses-static.LFSBuild
 ./system/ninja/ninja.LFSBuild
 ./system/openssl/openssl.LFSBuild
 ./system/patch/patch.LFSBuild
