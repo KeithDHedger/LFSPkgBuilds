@@ -2,6 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+export NOCHANGEUSER=1
 export CHECKETC=0
 export CONFIGOPTIONS="--prefix=/usr --disable-debug"
 THISTTY=$(tty)
