@@ -26,7 +26,10 @@ if [ "X$BOOTSTRAP" != "X" ];then
 	pushd "${TARNAME}-master"
 		make install
 		SIMPLEUPDATE=1 lfspkg -U
-		setlfsuser
+		if [ "$(getent passwd lfspkguser)" = "" ] || [ "$(getent group lfspkguser)" = "" ];then
+			echo "No lfspkguser ... please create this user and group manually and try again."
+			exit 100
+		fi
 	popd
 else
 
@@ -47,7 +50,9 @@ else
 		mkdir -p "$PKG"
 
 		make install DESTDIR=$PKG
-		setlfsuser
+		if [ "$(getent passwd lfspkguser)" = "" ] || [ "$(getent group lfspkguser)" = "" ];then
+			setlfsuser
+		fi
 	popd
 
 	mkdir -vp "${SOURCEARCHIVES}/${SECTION}" "${OUTPUT}/${SECTION}" 2>/dev/null
