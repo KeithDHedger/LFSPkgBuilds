@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Apache-2.4.29 libxml2-2.9.7"
+DEPENDS="Apache-2.4.41 libxml2-2.9.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="php"
 TARNAME="$PKGNAME"
-VERSION="7.2.2"
+VERSION="7.3.8"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr                \
-            --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man --enable-fpm --with-fpm-user=$APACHEUSER --with-fpm-group=$APACHEUSER --with-config-file-path=/etc --with-zlib --enable-bcmath --with-bz2 --enable-calendar --enable-dba=shared --with-gdbm --with-gmp --enable-ftp --with-gettext --enable-mbstring --with-readline --with-apxs2  --with-tsrm-pthreads
+            --sysconfdir=/etc --localstatedir=/var --datadir=/usr/share/php --mandir=/usr/share/man --enable-fpm --with-fpm-user=$APACHEUSER --with-fpm-group=$APACHEUSER --with-config-file-path=/etc --with-zlib --enable-bcmath --with-bz2 --enable-calendar --enable-dba=shared --with-gdbm --with-gmp --enable-ftp --with-gettext --enable-mbstring --with-readline --with-apxs2  --with-tsrm-pthreads  --enable-soap
 
 		make $MAKEFLAGS||make|| exit 100
 		mkdir -vp $PKG/etc/httpd

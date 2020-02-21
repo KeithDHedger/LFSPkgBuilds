@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Apr-Util-1.6.1 PCRE-8.41 OpenSSL-1.0.2"
+DEPENDS="Apr-Util-1.6.1 PCRE-8.43 OpenSSL-1.1.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="apache"
 TARNAME="httpd"
-VERSION="2.4.29"
+VERSION="2.4.41"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
