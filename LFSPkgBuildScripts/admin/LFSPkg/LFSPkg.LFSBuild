@@ -25,11 +25,21 @@ setlfsuser ()
 if [ "X$BOOTSTRAP" != "X" ];then
 	pushd "${TARNAME}-master"
 		make install
-		SIMPLEUPDATE=1 lfspkg -U
 		if [ "$(getent passwd lfspkguser)" = "" ] || [ "$(getent group lfspkguser)" = "" ];then
 			echo "No lfspkguser ... please create this user and group manually and try again."
 			exit 100
 		fi
+		. /usr/share/LFSPkg/LFSFunctions
+		PKG="${OUTPUT}/${PKGNAME}"
+		rm -rf "$PKG" || true
+		mkdir -p "$PKG"
+		make install DESTDIR=$PKG
+		pushd "$PKG"
+			lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		popd
+		lfspkg "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		hash -r
+		SIMPLEUPDATE=1 lfspkg -U
 	popd
 else
 
@@ -64,8 +74,9 @@ else
 	popd
 
 	lfspkg "^${PKGNAME}-[0-9][0-9]*" "${OUTPUT}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+	hash -r
 	SIMPLEUPDATE=0 lfspkg -U
 
-	rm -r "$PKG" "${TARNAME}-master"
+	rm -r "${TARNAME}-master"
 fi
-
+rm -r "$PKG"
