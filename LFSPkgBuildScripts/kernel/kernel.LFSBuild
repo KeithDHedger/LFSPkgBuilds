@@ -28,7 +28,7 @@ pushd "${KERNELSOURCEDIR}"
 	(mkdir "${TARNAME}-${VERSION}"||true;tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/boot $PKG/usr/src||true
-		make $MAKEFLAGS mrproper
+		make mrproper
 		cp $KERNELCONFIG .config
 		make menuconfig|| exit 100
 		make $MAKEFLAGS bzImage||make bzImage||exit 100
@@ -63,7 +63,7 @@ checketc "$PKG"
 packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
 
 case $DOWHAT in
