@@ -23,12 +23,16 @@ gettar "https://github.com/eqrion/cbindgen/archive/v0.9.0/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+export CARGO_HOME=/opt/cargo
+export CARGO_TARGET_DIR=${CARGO_HOME}/builds
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		cargo build --release
 		mkdir -vp $PKG/usr/bin/
-		install -Dm755 target/release/cbindgen $PKG/usr/bin
+		install -Dm755 ${CARGO_TARGET_DIR}/release/cbindgen $PKG/usr/bin
+		find ${CARGO_TARGET_DIR}/release/ -maxdepth 1 -type f -iname "*cbindgen*" -exec rm '{}' \;
 	popd
 
 	checketc "$PKG"

@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"||true
 	pushd ${PKGNAME}-${VERSION}
 		cp $CWD/mozconfig.thunderbird mozconfig
 		#set the lib suffix in the config file
@@ -35,11 +35,11 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		SHELL=/bin/sh ./mach build|| exit 100
 		SHELL=/bin/sh DESTDIR=$PKG ./mach install || exit 100
-		chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}
+		chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}
 
 		mkdir -pv $PKG/usr/share/applications $PKG/usr/share/pixmaps
-		ln -sfv ../lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}/thunderbird $PKG/usr/bin
-		ln -sfv /usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}/chrome/icons/default/default256.png $PKG/usr/share/pixmaps/thunderbird.png
+		ln -sfv ../lib${LIBDIRSUFFIX}/${PKGNAME}/${PKGNAME} $PKG/usr/bin
+		ln -sfv /usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chrome/icons/default/default256.png $PKG/usr/share/pixmaps/thunderbird.png
 	popd
 
 	checketc $PKG
