@@ -20,12 +20,13 @@ rpc: files
 # End /etc/nsswitch.conf
 EOF
 
+mkdir -vp /etc/ld.so.conf.d/
 cat > /etc/ld.so.conf << "EOF"
 # Begin /etc/ld.so.conf
 
-/usr/lib64/qt5
-/usr/lib/qt5
-
+/lib64
+/usr/lib64
+/usr/lib
 /usr/local/lib
 /opt/lib
 

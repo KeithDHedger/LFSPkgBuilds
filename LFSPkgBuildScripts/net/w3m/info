@@ -1,0 +1,15 @@
+http://slackbuilds.org/repository/14.2/network/w3m/
+w3m is a World Wide Web (WWW) text based client.
+
+Help is avaliable in English, German and Japanese.  There is
+an option menu which can be configured for the chosen
+lanugage.
+
+It will display hypertext markup language (HTML) documents
+containing links to files residing on the local system, as
+well as files residing on remote systems. It can display
+HTML tables, frames, and images, and supports tabbed
+browsing. In addition, it can be used as a "pager" in much
+the same manner as "more" or "less".  w3m can display images
+in both the framebuffer, in supported terminals, and the X
+server.
