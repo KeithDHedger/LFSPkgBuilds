@@ -53,7 +53,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		#is this needed if not running full tests?
 		sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 		make install DESTDIR="$PKG" || exit 100
-
 		mkdir -p "$PKG/etc/"||true
 		cp -v ../nscd/nscd.conf $PKG/etc/nscd.conf
 		mkdir -pv $PKG/var/cache/nscd||true
@@ -67,9 +66,12 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
+#Save an unstripped version of glibc for debugging ( valgrind for instance needs this )
+#To use the debug version just change the symlink  '/lib64/ld-linux-x86-64.so.2' to point to the debug version
+	cp ${PKG}/lib${LIBDIRSUFFIX}/ld-2.30.so ${PKG}/lib${LIBDIRSUFFIX}/ld-2.30.so.DEBUG
 
 	pushd "$PKG"
-		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 
 	case $DOWHAT in

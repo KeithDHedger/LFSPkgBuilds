@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+#©K. D. Hedger. Tue 24 Mar 11:45:32 GMT 2020 keithdhedger@gmail.com
+#
+#setvtcolours is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#at your option) any later version.
+#
+#setvtcolours is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with setvtcolours.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+. /etc/init.d/init-functions
+
+case "${1}" in
+	start)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Setting VT Colours ..."
+		if ! setcolors /etc/sysconfig/vt-colours.rc; then
+			prettyMsgResult "FAIL"
+			exit 2
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	restore)
+		setcolors /usr/share/linux-vt-setcolors/default.cols
+		;;
+
+
+	*)
+		echo "Usage: ${0} {start|restore}"
+		exit 1
+		;;
+esac
+
+exit 0
