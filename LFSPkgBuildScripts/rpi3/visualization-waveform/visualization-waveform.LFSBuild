@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="glm-0.9.9.5"
+DEPENDS="glm-0.9.9.5 pi-kodi-18.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

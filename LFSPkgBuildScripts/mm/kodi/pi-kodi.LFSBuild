@@ -4,7 +4,7 @@
 
 PKGNAME="pi-kodi"
 TARNAME="Leia"
-VERSION="18.4"
+VERSION="18.6"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -28,7 +28,6 @@ gettar "http://mirrors.kodi.tv/build-deps/sources/flatbuffers-$_flatbuffers_vers
 gettar "http://mirrors.kodi.tv/build-deps/sources/fstrcmp-$_fstrcmp_version.tar.gz" ${SECTION}/kodideps
 gettar "https://github.com/xbmc/FFmpeg/archive/$_ffmpeg_version.tar.gz" ${SECTION}/kodideps "ffmpeg-$_ffmpeg_version.tar.gz"
 
-#https://github.com/xbmc/xbmc/archive/18.4-Leia.tar.gz
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -80,6 +79,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "xbmc-${VERSION}-${TARNAME}"
 popd 2>/dev/null||true
+
 
 
 
