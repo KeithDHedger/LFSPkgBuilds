@@ -71,11 +71,9 @@ fi
 ./BuildFileSystem
 
 5.2)
-#lfspkg now creates an unprivileged user for certain actions eg extracting tarballs.
-#$LFS/LFSPkgBuilds should now have the group set to lfspkguser, and perms set to 775, if you want your normal user to have access just add yourself to the lfspkguser group.
-#You will have to re-own/set perms the various folders etc, so:
-[sudo] chown -R $USER:lfspkguser $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-chmod -R 775 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+#You may/will have to re-own/set perms the various folders etc, so:
+[sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 
 5.5)
 #Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
@@ -145,6 +143,13 @@ Walk the dog
 9)
 #logout from temporary system:
 exit
+
+9.2)
+#lfspkg now creates an unprivileged user for certain actions eg extracting tarballs.
+#$LFS/LFSPkgBuilds should now have the group set to lfspkguser, and perms set to 775, if you want your normal user to have access just add yourself to the lfspkguser group.
+#You will have to re-own/set perms the various folders etc, so:
+[sudo] chown -R $USER:lfspkguser $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+chmod -R 775 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 
 10)
 #Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:

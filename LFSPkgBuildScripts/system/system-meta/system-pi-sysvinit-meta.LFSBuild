@@ -12,6 +12,7 @@ export BUILDSCRIPTS
 export OUTPUT
 export SOURCEARCHIVES
 export COMPILEAT
+export SCRIPTLOG
 export MAKEFLAGS
 export NOLOADCONFIG=1
 export ANYVERSION=1
@@ -95,7 +96,7 @@ GPM-1.20.7
 ntp-4.2.8
 openssh-7.6
 Links-2.19
-pilfs-bootscripts-20170225"
+pilfs-bootscripts-20190902"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -107,8 +108,8 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 #Set this to your blank boot partition, if NOT set boot files are not copied.
-BOOTPART="/dev/mmcblk0p15"
-PARTUUID="000288e7-10"
+BOOTPART="/dev/mmcblk0p12"
+PARTUUID="0000d611-0d"
 ROOTFSTYPE="ext2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
@@ -127,7 +128,7 @@ if [ "X$BOOTPART" != "X" ];then
 	mkdir /boot||true
 	mount $BOOTPART /boot
 	cp -rv firmware-1.20171029/boot/ /
-	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="$PARTUUID" rootfstype="$ROOTFSTYPE" elevator=deadline fsck.repair=yes  rootwait" > /boot/cmdline.txt
+	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="0000d611-0d"
 	umount /boot
 fi
 

@@ -59,6 +59,8 @@ export MAKEFLAGS='-j4'
 if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list
 	wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/md5sums
+	sed -i 's/openssl-1.1.1..tar.gz/openssl-1.1.1f.tar.gz/' wget-list
+	sed -i '/openssl-1.1.1..tar.gz/d' md5sums
 	mv md5sums $SYSTEMSOURCE
 	wget --no-check-certificate -i wget-list --no-check-certificate  -c -P $SYSTEMSOURCE||true
 
@@ -71,9 +73,9 @@ if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 			wget --no-check-certificate -c https://github.com/raspberrypi/linux/archive/rpi-4.9.y.tar.gz -O linux-${KERNELVERSION}.tar.xz
 			#blobs
 			wget --no-check-certificate -c https://github.com/raspberrypi/firmware/archive/1.20171029.tar.gz
-			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi1-cpu-default.patch
-			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi2-cpu-default.patch
-			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-5.3.0-rpi3-cpu-default.patch
+			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-9.1.0-rpi1-cpu-default.patch
+			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-9.1.0-rpi2-cpu-default.patch
+			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-9.1.0-rpi3-cpu-default.patch
 		popd
 	fi
 fi
@@ -123,15 +125,15 @@ do
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
 					armv6l)
-						patch -Np1 -i ../gcc-5.3.0-rpi1-cpu-default.patch
+						patch -Np1 -i ../gcc-9.1.0-rpi1-cpu-default.patch
 						;;
 					armv7l)
 						case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
 							a02082|a22082|a32082)
-								patch -Np1 -i ../gcc-5.3.0-rpi3-cpu-default.patch
+								patch -Np1 -i ../gcc-9.1.0-rpi3-cpu-default.patch
 								;;
 							*)
-								patch -Np1 -i ../gcc-5.3.0-rpi2-cpu-default.patch
+								patch -Np1 -i ../gcc-9.1.0-rpi2-cpu-default.patch
 								;;
 						esac
 						;;
@@ -267,15 +269,15 @@ do
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
 					armv6l)
-						patch -Np1 -i ../gcc-5.3.0-rpi1-cpu-default.patch
+						patch -Np1 -i ../gcc-9.1.0-rpi1-cpu-default.patch
 						;;
 					armv7l)
 						case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
 							a02082|a22082|a32082)
-								patch -Np1 -i ../gcc-5.3.0-rpi3-cpu-default.patch
+								patch -Np1 -i ../gcc-9.1.0-rpi3-cpu-default.patch
 								;;
 							*)
-								patch -Np1 -i ../gcc-5.3.0-rpi2-cpu-default.patch
+								patch -Np1 -i ../gcc-9.1.0-rpi2-cpu-default.patch
 								;;
 						esac
 						;;
@@ -419,7 +421,9 @@ do
 			tar -xvf ${NAME}-${VERSION}.tar.xz
 			pushd ${NAME}-${VERSION}
 				./configure --prefix=/tools
-				make $MAKEFLAGS||make
+				#//patch -Np1 -i /tmp/bison.patch||true
+				#patch -Np1 -i /tmp/bisondeb.patch||true
+				make -j1||true
 				make install
 			popd
 			rm -rf ${NAME}-${VERSION}

@@ -24,15 +24,15 @@ pushd $COMPILEAT 2>/dev/null||true
 		#//TODO//
 		case $(uname -m) in
 			armv6l)
-				patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-5.3.0-rpi1-cpu-default.patch
+				patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi1-cpu-default.patch
 				;;
 			armv7l)
 				case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
 					a02082|a22082|a32082)
-						patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-5.3.0-rpi3-cpu-default.patch
+						patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi3-cpu-default.patch
 						;;
 					*)
-						patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-5.3.0-rpi2-cpu-default.patch
+						patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi2-cpu-default.patch
 						;;
 				esac
 				;;
