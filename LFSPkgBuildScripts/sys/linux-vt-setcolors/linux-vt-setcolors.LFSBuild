@@ -24,9 +24,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		make -j4 PREFIX=/usr||make PREFIX=/usr||exit 100
 		make PREFIX=usr
 		make install PREFIX=/usr DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/usr/share/$PKGNAME $PKG/etc/sysconfig/||true
+		mkdir -vp $PKG/usr/share/$PKGNAME $PKG/etc/sysconfig/  $PKG/etc/init.d ||true
 		cp -rv example-colors $PKG/usr/share/$PKGNAME
 		cp $CWD/blackonwhite.cols $CWD/default.cols $PKG/usr/share/$PKGNAME
+		cp $CWD/setvtcolours $PKG/etc/init.d
 		ln -sv /usr/share/$PKGNAME/blackonwhite.cols $PKG/etc/sysconfig/vt-colours.rc
 	popd
 
