@@ -2,40 +2,35 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtkmm-2.24.5 Intltool-0.51.0 parted-3.3 dosfstools-4.1 mtools-4.0.18"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="gparted"
-TARNAME="$PKGNAME"
-VERSION="0.31.0"
-BUILD=${BUILD:-1}
-SECTION="SYS"
+PKGNAME="libaio"
+TARNAME="${PKGNAME}"
+VERSION="0.3.112"
+BUILD=1
+SECTION="HWARE"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}_${VERSION}.orig.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://sourceforge.net/projects/gparted/files/$PKGNAME/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
+gettar "http://ftp.de.debian.org/debian/pool/main/liba/libaio/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-doc
+		sed -i '/install.*libaio.a/s/^/#/' src/Makefile
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 
 	case $DOWHAT in
