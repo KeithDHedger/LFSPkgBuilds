@@ -199,6 +199,7 @@
 ./hware/glamor-egl/glamor-egl.LFSBuild
 ./hware/hardinfo/hardinfo.LFSBuild
 ./hware/hwinfo/hwinfo.LFSBuild
+./hware/libaio/libaio.LFSBuild
 ./hware/libatasmart/libatasmart.LFSBuild
 ./hware/libevdev/libevdev.LFSBuild
 ./hware/libgusb/libgusb.LFSBuild
@@ -451,6 +452,7 @@
 ./net/surfraw/surfraw.LFSBuild
 ./net/tor/tor.LFSBuild
 ./net/vidalia/vidalia.LFSBuild
+./net/w3m/w3m.LFSBuild
 ./net/webkitgtk3/webkitgtk3.LFSBuild
 ./net/webkitgtk/webkitgtk.LFSBuild
 ./net/wget/wget.LFSBuild
@@ -559,6 +561,7 @@
 ./sys/icu/icu.LFSBuild
 ./sys/itstool/itstool.LFSBuild
 ./sys/libnotify/libnotify.LFSBuild
+./sys/linux-vt-setcolors/linux-vt-setcolors.LFSBuild
 ./sys/lsof/lsof.LFSBuild
 ./sys/mbox/mbox.LFSBuild
 ./sys/most/most.LFSBuild
@@ -619,6 +622,7 @@
 ./system/libpipeline/libpipeline.LFSBuild
 ./system/libtool/libtool.LFSBuild
 ./system/linuxheaders/linuxheaders.LFSBuild
+./system/linuxheaders/pi-linuxheaders.LFSBuild
 ./system/m4/m4.LFSBuild
 ./system/make/make.LFSBuild
 ./system/man-db/man-db.LFSBuild
@@ -642,7 +646,6 @@
 ./system/sysklogd/sysklogd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
-./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
 ./system/sysvinit/sysvinit.LFSBuild
