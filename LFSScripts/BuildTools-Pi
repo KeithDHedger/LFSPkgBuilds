@@ -1,0 +1,687 @@
+#!/bin/bash -e
+
+#©keithhedger Sun  1 Feb 14:56:11 GMT 2015
+#kdhedger68713@gmail.com
+#Version 9.0
+
+if [ -e ./SystemData ];then
+	. ./SystemData
+else
+	echo "No SystemData file found ..."
+	exit 0
+fi
+
+if [ -e ./PkgVersions ];then
+	. ./PkgVersions
+else
+	echo "No PkgVersions file found ..."
+	exit 0
+fi
+
+read -sp "Enter admin password :" ADMINPWD
+echo
+
+
+echo $ADMINPWD|sudo -S mkdir -vp "${LFS}${SOURCEARCHIVES}" "$LFS/${BUILTPACKAGES}"|| true
+
+if [ "X$EXTFOLDER" != "X" ];then
+	echo $ADMINPWD|sudo -S mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
+	echo $ADMINPWD|sudo -S mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+fi
+
+SYSTEMSOURCE="${LFS}${SOURCEARCHIVES}/SYSTEM"
+NETSOURCE="${LFS}${SOURCEARCHIVES}/NET"
+echo $ADMINPWD|sudo -S mkdir -vp "$SYSTEMSOURCE" "$NETSOURCE"|| true
+echo $ADMINPWD|sudo -S mkdir -vp "$LFS/tools" "${COMPILEAT}"|| true
+echo $ADMINPWD|sudo -S rm /tools  2>/dev/null||true
+echo $ADMINPWD|sudo -S ln -sv $LFS/tools /  2>/dev/null|| true
+echo $ADMINPWD|sudo -S chown -R $USER:$USER $LFS/tools/
+#  "${SYSTEMSOURCE}" "$NETSOURCE" 2>/dev/null||true
+echo $ADMINPWD|sudo -S chmod -R 777 $LFS/tools/ $COMPILEAT||true
+
+cp ./SystemData ./SystemData.local $SYSTEMSOURCE
+
+WGETTAR="https://ftp.gnu.org/gnu/wget/wget-$WGET_VERS.tar.gz"
+
+set +h
+umask 022
+LC_ALL=POSIX
+LFS_TGT=$(uname -m)-lfs-linux-gnueabihf
+PATH=/tools/bin:/bin:/usr/bin
+export LFS LC_ALL LFS_TGT PATH
+export MAKEFLAGS='-j4'
+
+if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
+	wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list
+	wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/md5sums
+	sed -i 's/openssl-1.1.1..tar.gz/openssl-1.1.1f.tar.gz/' wget-list
+	sed -i '/openssl-1.1.1..tar.gz/d' md5sums
+	mv md5sums $SYSTEMSOURCE
+	wget --no-check-certificate -i wget-list --no-check-certificate  -c -P $SYSTEMSOURCE||true
+
+#wget from the blfs book I prefer to make this as part of the main system
+	wget --no-check-certificate -c "$WGETTAR" -P $NETSOURCE
+#extra pi stuff
+	if [[ $PIBUILD -eq 1 ]];then
+		pushd $SYSTEMSOURCE
+			#headers
+			wget --no-check-certificate -c https://github.com/raspberrypi/linux/archive/rpi-${KERNELVERSION}.tar.gz -O linux-${KERNELVERSION}.tar.xz
+			#blobs
+			wget --no-check-certificate -c https://github.com/raspberrypi/firmware/archive/master.tar.gz -O firmware-${KERNELVERSION}.tar.xz
+			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-9.1.0-rpi${PIVERS}-cpu-default.patch
+		popd
+	fi
+fi
+
+cd "$SYSTEMSOURCE"
+if [ ! -e "gotsystem" ];then
+	if ! md5sum -c md5sums;then
+		echo "Files don't match ..."
+		exit 1
+	else
+		echo "All files check ..."
+		touch "gotsystem"
+	fi
+fi
+
+TOOLNUM=$(cat ${SYSTEMSOURCE}/toolnum 2>/dev/null||true)
+
+if [ "X$TOOLNUM" = "X" ];then
+	TOOLNUM=1
+	echo $TOOLNUM > ${SYSTEMSOURCE}/toolnum
+fi
+
+while [ $TOOLNUM != "DONE" ]
+do
+	cd "$SYSTEMSOURCE"
+	case $TOOLNUM in
+
+		1)
+			NAME=binutils
+			VERSION=$BINUTILS_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					mkdir -v build
+					cd build
+					../configure --prefix=/tools --with-sysroot=$LFS --with-lib-path=/tools/lib --target=$LFS_TGT --disable-nls --disable-werror
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		2)
+			#pass 1
+			NAME=gcc
+			VERSION=$GCC_VERS
+			pushd $COMPILEAT
+			tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					patch -Np1 -i ${SYSTEMSOURCE}/gcc-9.1.0-rpi${PIVERS}-cpu-default.patch
+					tar -Jxf ${SYSTEMSOURCE}/mpfr-${MPFR_VERS}.tar.xz
+					mv -v mpfr-$MPFR_VERS mpfr
+					tar -Jxf ${SYSTEMSOURCE}/gmp-${GMP_VERS}.tar.xz
+					mv -v gmp-$GMP_VERS gmp
+					tar -zxf ${SYSTEMSOURCE}/mpc-${MPC_VERS}.tar.gz
+					mv -v mpc-$MPC_VERS mpc
+
+					for file in gcc/config/arm/linux-eabi.h
+						do
+							cp -uv $file{,.orig}
+							sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
+							echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+							touch $file.orig
+						done
+
+					mkdir -v build
+					cd build
+				../configure --target=$LFS_TGT --prefix=/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --disable-nls --disable-shared --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libmpx --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		3)
+			NAME=linux
+			VERSION=$KERNELVERSION
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-rpi-${VERSION}
+					make mrproper
+					make INSTALL_HDR_PATH=dest headers_install
+					cp -rv dest/include/* /tools/include
+				popd
+				rm -rf ${NAME}-rpi-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		4)
+			NAME=glibc
+			VERSION=$GLIBC_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					mkdir -v build
+					cd build
+					../configure --prefix=/tools --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=3.2 --with-headers=/tools/include
+					make $MAKEFLAGS||make
+					make install
+					ln -sv ld-2.31.so $LFS/tools/lib/ld-linux.so.3
+				popd
+				rm -rf ${NAME}-${VERSION} glibc-build
+				echo 'int main(){}' > dummy.c
+				$LFS_TGT-gcc dummy.c
+				readelf -l a.out | grep ': /tools'
+				read -t 30 -p "check out " ||true
+				rm -v dummy.c a.out
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		5)
+			#libstdc++
+			NAME=gcc
+			VERSION=$GCC_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					mkdir -pv build
+					cd build
+					../libstdc++-v3/configure --host=$LFS_TGT --prefix=/tools --disable-multilib --disable-nls --disable-libstdcxx-threads --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/${VERSION}
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		6)
+			#pass 2
+			NAME=binutils
+			VERSION=$BINUTILS_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					mkdir -v build
+					cd build
+					CC=$LFS_TGT-gcc AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --disable-nls --disable-werror --with-lib-path=/tools/lib --with-sysroot
+					make $MAKEFLAGS||make
+					make install
+					make -C ld clean
+					make -C ld LIB_PATH=/usr/lib:/lib
+					cp -v ld/ld-new /tools/bin
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		7)
+			#pass2
+			NAME=gcc
+			VERSION=$GCC_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					patch -Np1 -i ${SYSTEMSOURCE}/gcc-9.1.0-rpi${PIVERS}-cpu-default.patch
+					cat gcc/limitx.h gcc/glimits.h gcc/limity.h > $(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/include-fixed/limits.h
+					for file in gcc/config/{linux,i386/linux{,64}}.h gcc/config/arm/linux-eabi.h
+					do
+						cp -uv $file{,.orig}
+						sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' -e 's@/usr@/tools@g' $file.orig > $file
+						echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+						touch $file.orig
+					done
+
+					tar -Jxf ${SYSTEMSOURCE}/mpfr-${MPFR_VERS}.tar.xz
+					mv -v mpfr-$MPFR_VERS mpfr
+					tar -Jxf ${SYSTEMSOURCE}/gmp-${GMP_VERS}.tar.xz
+					mv -v gmp-$GMP_VERS gmp
+					tar -zxf ${SYSTEMSOURCE}/mpc-${MPC_VERS}.tar.gz
+					mv -v mpc-$MPC_VERS mpc
+					sed -e '1161 s|^|//|' -i libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc
+					mkdir -v build
+					cd build
+					CC=$LFS_TGT-gcc CXX=$LFS_TGT-g++ AR=$LFS_TGT-ar RANLIB=$LFS_TGT-ranlib ../configure --prefix=/tools --with-local-prefix=/tools --with-native-system-header-dir=/tools/include --enable-languages=c,c++ --disable-libstdcxx-pch --disable-multilib --disable-bootstrap --disable-libgomp
+					make $MAKEFLAGS||make
+					make install
+					ln -sv gcc /tools/bin/cc
+				popd
+				rm -rf ${NAME}-${VERSION}
+
+				echo 'int main(){}' > dummy.c
+				cc dummy.c
+				readelf -l a.out | grep ': /tools'
+				read -t 30 -p "check out "||true
+				rm -v dummy.c a.out
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+#I dont run the test suits if you do re-enable this lot
+		8)
+#			NAME=tcl-core
+#			VERSION=$TCL_VER
+#			tar -xvf ${NAME}${VERSION}-src.tar.gz
+#			pushd tcl${VERSION}
+#				cd unix
+#				./configure --prefix=/tools
+#				make $MAKEFLAGS||make
+#				make install
+#				chmod -v u+w /tools/lib/libtcl8.6.so
+#				make install-private-headers
+#				ln -sv tclsh8.6 /tools/bin/tclsh
+#			popd
+#			rm -rf tcl${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		9)
+#			NAME=expect
+#			VERSION=$EXPECT_VERS
+#			tar -xvf ${NAME}${VERSION}.tar.gz
+#			pushd ${NAME}${VERSION}
+#				cp -v configure{,.orig}
+#				sed 's:/usr/local/bin:/bin:' configure.orig > configure
+#				./configure --prefix=/tools --with-tcl=/tools/lib --with-tclinclude=/tools/include
+#				make $MAKEFLAGS||make
+#				make SCRIPTS="" install
+#			popd
+#			rm -rf ${NAME}${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		10)
+#			NAME=dejagnu
+#			VERSION=$DEJAGNU_VERS
+#			tar -xvf ${NAME}-${VERSION}.tar.gz
+#			pushd ${NAME}-${VERSION}
+#				./configure --prefix=/tools
+#				make install
+#			popd
+#			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		11)
+			NAME=m4
+			VERSION=$M4_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
+					echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		12)
+			NAME=ncurses
+			VERSION=$NCURSES_VERS
+			pushd $COMPILEAT
+				tar -xvf  ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.gz
+				pushd  ${NAME}-${VERSION}
+					sed -i s/mawk// configure
+					./configure --prefix=/tools --with-shared --without-debug --without-ada --enable-widec --enable-overwrite
+					make $MAKEFLAGS||make
+					make install
+					ln -s libncursesw.so /tools/lib/libncurses.so
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		13)
+			NAME=bash
+			VERSION=$BASH_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.gz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools --without-bash-malloc
+					make $MAKEFLAGS||make
+					make install
+					ln -sv bash /tools/bin/sh
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		14)
+			NAME=bison
+			VERSION=$BISON_VERS
+			pushd $COMPILEAT
+			tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make clean
+					make -j1||true
+					make -j1 install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		15)
+			NAME=bzip2
+			VERSION=$BZIP2_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.gz
+				pushd ${NAME}-${VERSION}
+					make $MAKEFLAGS||make
+					make PREFIX=/tools install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		16)
+			NAME=coreutils
+			VERSION=$COREUTILS_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools --enable-install-program=hostname
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		17)
+			NAME=diffutils
+			VERSION=$DIFFUTILS_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		18)
+			NAME=file
+			VERSION=$FILE_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.gz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		19)
+			NAME=findutils
+			VERSION=$FINDUTILS_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.gz
+				pushd ${NAME}-${VERSION}
+					sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' gl/lib/*.c
+					sed -i '/unistd/a #include <sys/sysmacros.h>' gl/lib/mountlist.c
+					echo "#define _IO_IN_BACKUP 0x100" >> gl/lib/stdio-impl.h
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		20)
+			NAME=gawk
+			VERSION=$GAWK_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		21)
+			NAME=gettext
+			VERSION=$GETTEXT_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools --disable-shared
+					make $MAKEFLAGS||make
+					cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /tools/bin
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		22)
+			NAME=grep
+			VERSION=$GREP_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		23)
+			NAME=gzip
+			VERSION=$GZIP_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		24)
+			NAME=make
+			VERSION=$MAKE_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.gz
+				pushd ${NAME}-${VERSION}
+					sed -i '211,217 d; 219,229 d; 232 d' glob/glob.c
+					./configure --prefix=/tools --without-guile
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		25)
+			NAME=patch
+			VERSION=$PATCH_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		26)
+			NAME=perl
+			VERSION=$PERL_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					sh Configure -des -Dprefix=/tools -Dlibs=-lm -Uloclibpth -Ulocincpth
+					make $MAKEFLAGS||make
+					cp -v perl cpan/podlators/scripts/pod2man /tools/bin
+					mkdir -pv /tools/lib/perl5/${VERSION}
+					cp -Rv lib/* /tools/lib/perl5/${VERSION}
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		27)
+			NAME=Python
+			VERSION=$PYTHON_VERS
+			pushd $COMPILEAT
+			tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					sed -i '/def add_multiarch_paths/a \        return' setup.py
+					./configure --prefix=/tools --without-ensurepip
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		28)
+			NAME=sed
+			VERSION=$SED_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		29)
+			NAME=tar
+			VERSION=$TAR_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+		30)
+			NAME=texinfo
+			VERSION=$TEXINFO_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		31)
+			NAME=util-linux
+			VERSION=$UTILLINUX_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools --without-python --disable-makeinstall-chown --without-systemdsystemunitdir --without-ncurses PKG_CONFIG=""
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		32)
+			NAME=xz
+			VERSION=$XZ_VERS
+			pushd $COMPILEAT
+				tar -xvf ${SYSTEMSOURCE}/${NAME}-${VERSION}.tar.xz
+				pushd ${NAME}-${VERSION}
+					./configure --prefix=/tools
+					make $MAKEFLAGS||make
+					make install
+				popd
+				rm -rf ${NAME}-${VERSION}
+			popd
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
+			;;
+
+		33)
+			strip --strip-debug /tools/lib/*|| true
+			/usr/bin/strip --strip-unneeded /tools/{,s}bin/* || true
+			rm -rf /tools/{,share}/{info,man,doc}
+			find /tools/{lib,libexec} -name \*.la -delete
+
+			echo $ADMINPWD|sudo -S chown -R root:root $LFS/tools 2>/dev/null
+			cd $LFS/tools
+			echo $ADMINPWD|sudo -S tar -apcvf ../tools-${LFSVERSION}.tar.bz2 .
+			echo "DONE" > ${SYSTEMSOURCE}/toolnum
+			TOOLNUM="DONE"
+			;;
+	esac
+done
+
+if [ "X$EXTFOLDER" != "X" ];then
+	cd
+	echo $ADMINPWD|sudo -S umount ${LFS}/${SOURCEARCHIVES} ||true
+	echo $ADMINPWD|sudo -S umount ${LFS}/${BUILTPACKAGES} ||true
+fi
+
+
+
+
+

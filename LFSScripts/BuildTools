@@ -681,6 +681,7 @@ do
 			echo $ADMINPWD|sudo -S tar -apcvf ../tools-${LFSVERSION}.tar.bz2 .
 			echo "DONE" > ${SYSTEMSOURCE}/toolnum
 			TOOLNUM="DONE"
+			;;
 	esac
 done
 

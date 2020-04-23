@@ -21,22 +21,9 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#//TODO//
-		case $(uname -m) in
-			armv6l)
-				patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi1-cpu-default.patch
-				;;
-			armv7l)
-				case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
-					a02082|a22082|a32082)
-						patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi3-cpu-default.patch
-						;;
-					*)
-						patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi2-cpu-default.patch
-						;;
-				esac
-				;;
-		esac
+		if [ $PIBUILD -eq 1 ];then
+			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi$PIVERS-cpu-default.patch
+		fi
 
 		mkdir -v build
 		cd build
@@ -44,13 +31,13 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR="$PKG" || exit 100
-		rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/gcc/$(gcc -dumpmachine)/9.2.0/include-fixed/bits/||true
+		rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/gcc/$(gcc -dumpmachine)/${VERSION}/include-fixed/bits/||true
 		mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib
 		ln -sv ../usr/bin/cpp $PKG/lib
 		ln -sv gcc $PKG/usr/bin/cc
 		install -v -dm755 $PKG/usr/lib/bfd-plugins
 		ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/${VERSION}/liblto_plugin.so $PKG/usr/lib/bfd-plugins/
-		mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib
+		mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib||true
 		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib
 	popd
 
@@ -58,7 +45,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 
 	case $DOWHAT in

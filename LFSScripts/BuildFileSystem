@@ -2,6 +2,11 @@
 
 #©keithhedger Mon 2 Feb 12:38:29 GMT 2015 kdhedger68713@gmail.com
 
+if [ $UID -ne 0 ];then
+	echo "You MUST run this script as root ..."
+	exit 100
+fi
+	 
 if [ -e ./SystemData ];then
 	. ./SystemData
 else
@@ -9,15 +14,10 @@ else
 	exit 0
 fi
 
-read -sp "Enter admin password :" ADMINPWD
-echo
-
-echo $ADMINPWD|sudo -S chown $USER:$USER $LFS
-
 pushd $LFS
 	mkdir -v {dev,proc,sys}||true
-	echo $ADMINPWD|sudo -S mknod -m 600 dev/console c 5 1
-	echo $ADMINPWD|sudo -S mknod -m 666 dev/null c 1 3
+	mknod -m 600 dev/console c 5 1
+	mknod -m 666 dev/null c 1 3
 
 	mkdir -pv {bin,boot,etc/{sysconfig,profile.d},home,lib${LIBDIRSUFFIX},mnt,opt,run}
 	mkdir -pv {media/{floppy,cdrom},sbin,srv,var}
@@ -340,12 +340,12 @@ MAKEFLAGS=" -j4 "
 CHECKETC=0
 
 EOF
-	echo $ADMINPWD|sudo -S mv /tmp/.lfspkg.rc root
-	echo $ADMINPWD|sudo -S chown -R root:root $LFS/* 2>/dev/null
-	echo $ADMINPWD|sudo -S touch var/log/{btmp,lastlog,wtmp}
-	echo $ADMINPWD|sudo -S chmod -v 664 var/log/lastlog
-	echo $ADMINPWD|sudo -S chmod -v 600  var/log/btmp
-	echo $ADMINPWD|sudo -S chgrp -v utmp var/log/lastlog
-	echo $ADMINPWD|sudo -S chmod 777 tmp
+	mv /tmp/.lfspkg.rc root
+	chown -R root:root $LFS/*
+	touch var/log/{btmp,lastlog,wtmp}
+	chmod -v 664 var/log/lastlog
+	chmod -v 600  var/log/btmp
+	chgrp -v utmp var/log/lastlog
+	chmod 777 tmp
 popd
 

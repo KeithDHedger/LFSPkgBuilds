@@ -32,21 +32,22 @@ readWithDefault ()
 	fi
 }
 
-PIBUILD=0
-case $(uname -m) in
-	armv6l|armv7l)
-		PIBUILD=1
+case $PIBUILD in
+	1)
 		LIBDIRSUFFIX=""
-		PIKERNELVERSION=4.9.51
-		;;
-	"x86_64")
-		LIBDIRSUFFIX="64"
+		PIKERNELVERSION=4.19.y
+		PIVERS=${PIVERS:-4}
 		;;
 	*)
-		LIBDIRSUFFIX=""
-		;;
+		case $(uname -m) in
+			"x86_64")
+				LIBDIRSUFFIX="64"
+				;;
+			*)
+				LIBDIRSUFFIX=""
+				;;
+		esac
 esac
-
 
 #set variables if possible
 if [ -f ./SystemData.local ];then
@@ -62,13 +63,14 @@ readWithDefault "LFS"  "Enter Mountpoint For LFS"
 
 #partion for boot files on pi
 if [ $PIBUILD -eq 1 ];then
-	PIBOOT=${PIBOOT:-"/dev/mmcblk0p12"}
-	readWithDefault "PIBOOT"  "Enter Boot Partition For Pi"
+	readWithDefault "PIBOOTDEV"  "Enter BOOT Partition For Pi"
+	readWithDefault "PIROOTDEV"  "Enter ROOT Partition For Pi"
+	readWithDefault "PIVERS"  "Enter Pi Model"
 fi
 
 #LFS Version
 LFSVERSION=${LFSVERSION:-9.0}
-readWithDefault "LFSVERSION"  "Enter Version"
+readWithDefault "LFSVERSION"  "Enter LFS Version"
 
 #Computer name
 LFSNAME=${LFSNAME:-"LFS"}
@@ -102,11 +104,15 @@ readWithDefault "SOURCEARCHIVES"  "Enter Folder For Source Archives"
 EXTFOLDER="${EXTFOLDER:-""}"
 readWithDefault "EXTFOLDER"  "Bind Built Packages And Source Folders To Folder"
 
+#compile here
+COMPILEAT="${COMPILEAT:-"$SOURCEARCHIVES"}"
+readWithDefault "COMPILEAT"  "Compile In This Folder"
+
 #kernal version
 #if the kernel version you want to use is not the same as the book you will have to manually download the source to $SOURCEARCHIVES
 #pi or normal
 if [[ $PIBUILD -eq 1 ]];then
-	KERNELVERSION=4.9.51
+	KERNELVERSION=$PIKERNELVERSION
 else
 	KV=$(curl -q http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/longindex.html 2>/dev/null|sed -n 's|<strong class="item">lfskernel-\(.*\):</strong> <span class=|\1|p'|sed -n 's|[[:space:]]||pg')
 	KERNELVERSION=${KERNELVERSION:-$KV}
@@ -130,7 +136,7 @@ ROOTDEV=$(findmnt -no SOURCE $LFS)
 readWithDefault "ROOTDEV"  "Enter Root Device"
 
 SWAP=$(blkid|grep swap|tail -n1|awk -F: '{print $1}')
-readWithDefault "SWAP"  "Enter Swap Device"
+readWithDefault "SWAP"  "Enter Swap Device Or Path To Swapfile"
 
 LANGUAGE=${LANGUAGE:-$LANG}
 readWithDefault "LANGUAGE"  "Enter Language"
@@ -154,7 +160,9 @@ echo
 echo "LFS=$LFS"
 echo "PIBUILD=$PIBUILD"
 if [ $PIBUILD -eq 1 ];then
-	echo "PIBOOT=$PIBOOT"
+	echo "PIVERS=$PIVERS"
+	echo "PIBOOTDEV=$PIBOOTDEV"
+	echo "PIROOTDEV=$PIROOTDEV"
 fi
 echo "LFSVERSION=$LFSVERSION"
 echo "LFSNAME=$LFSNAME"
@@ -165,6 +173,7 @@ echo "BUILDSCRIPTS=$BUILDSCRIPTS"
 echo "BUILTPACKAGES=$BUILTPACKAGES"
 echo "SOURCEARCHIVES=$SOURCEARCHIVES"
 echo "EXTFOLDER=$EXTFOLDER"
+echo "COMPILEAT=$COMPILEAT"
 echo "KERNELVERSION=$KERNELVERSION"
 echo "KEYBOARD=$KEYBOARD"
 echo "ROOTFSTYPE=$ROOTFSTYPE"
@@ -192,8 +201,8 @@ fi
 #sed -ri "s/linuxheaders-[0-9]+.[0-9]+.[0-9]+/linuxheaders-${KERNELVERSION}/i" ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
 ln -svf system-${INITTYPE}-meta.LFSBuild ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-meta.LFSBuild
 if [ $PIBUILD -eq 1 ];then
-	sed -ri 's#BOOTPART=.*#BOOTPART="'$PIBOOT'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
-	sed -ri 's#PARTUUID=.*#PARTUUID="'$(lsblk -no PARTUUID $(findmnt -no SOURCE $LFS))'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
+	sed -ri 's#PIBOOTDEV=.*#PIBOOTDEV="'$PIBOOTDEV'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
+	sed -ri 's#PIROOTDEV=.*#PIROOTDEV="'$PIROOTDEV'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
 	sed -ri 's#ROOTFSTYPE=.*#ROOTFSTYPE="'$ROOTFSTYPE'"#' ${LFS}/${BUILDSCRIPTS}/system/system-meta/system-${INITTYPE}-meta.LFSBuild
 else
 	sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/${BUILDSCRIPTS}/kernel/kernel.LFSBuild
@@ -204,7 +213,9 @@ cat > $LFS/LFSScripts/SystemData.local << EOF
 
 LFS=$LFS
 PIBUILD=$PIBUILD
-PIBOOT=$PIBOOT
+PIVERS=$PIVERS
+PIBOOTDEV=$PIBOOTDEV
+PIROOTDEV=$PIROOTDEV
 LFSNAME=$LFSNAME
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
@@ -214,6 +225,7 @@ LIBDIRSUFFIX=$LIBDIRSUFFIX
 BUILTPACKAGES=$BUILTPACKAGES
 SOURCEARCHIVES=$SOURCEARCHIVES
 EXTFOLDER=$EXTFOLDER
+COMPILEAT=\${COMPILEAT:-$COMPILEAT}
 BUILDSCRIPTS=$BUILDSCRIPTS
 
 KEYBOARD=$KEYBOARD
@@ -229,12 +241,13 @@ SUBNET=$SUBNET
 NAMESERVERS="$NAMESERVERS"
 EOF
 
-sudo mkdir -vp $LFS/root||true
+sudo mkdir -vp $LFS/etc||true
 cat > /tmp/lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
 OUTPUT=$BUILTPACKAGES
 SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
+COMPILEAT=\${COMPILEAT:-$COMPILEAT}
 EOF
-sudo mv /tmp/lfspkg.rc $LFS/root/.lfspkg.rc
-sudo chmod 700 $LFS/root
+sudo mv /tmp/lfspkg.rc $LFS/etc/
+

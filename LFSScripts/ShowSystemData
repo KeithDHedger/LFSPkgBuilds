@@ -9,19 +9,12 @@ else
 	exit 1
 fi
 
-case $(uname -m) in
-	armv6l|armv7l)
-		PIBUILD=1
-		;;
-	*)
-		PIBUILD=0
-		;;
-esac
-
 echo "LFS location:" $LFS
 echo "PIBUILD=$PIBUILD"
 if [ $PIBUILD -eq 1 ];then
-	echo "PIBOOT=$PIBOOT"
+	echo "PIVERS=$PIVERS"
+	echo "PIBOOTDEV=$PIBOOTDEV"
+	echo "PIROOTDEV=$PIROOTDEV"
 fi
 echo "LFS version:" $LFSVERSION
 echo "LFS Hostname:" $LFSNAME

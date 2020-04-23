@@ -4,7 +4,7 @@
 
 export NOCHANGEUSER=1
 export CHECKETC=0
-export CONFIGOPTIONS="--prefix=/usr --disable-debug"
+export CONFIGOPTIONS="--prefix=/usr --disable-debug --disable-nls"
 THISTTY=$(tty)
 export THISTTY
 export LFSVERSION
@@ -17,7 +17,7 @@ export MAKEFLAGS
 export NOLOADCONFIG=1
 export ANYVERSION=1
 
-DEPENDS="linuxheaders-5.2.8
+DEPENDS="pi-linuxheaders-4.19
 Man-pages-5.02
 Glibc-2.30
 Zlib-1.2.11
@@ -108,9 +108,11 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 #Set this to your blank boot partition, if NOT set boot files are not copied.
-BOOTPART="/dev/mmcblk0p12"
-PARTUUID="0000d611-0d"
+PIBOOTDEV="/dev/mmcblk0p10"
+PIROOTDEV="/dev/mmcblk0p11"
 ROOTFSTYPE="ext2"
+KERNELVERSION="4.19.y"
+
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -119,16 +121,16 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 mkdir -vp ${PKG}/opt ${PKG}/etc/ld.so.conf.d ${PKG}/lib
-tar -xvf ${SOURCEARCHIVES}/${SECTION}/1.20171029.tar.gz
-cp -rv firmware-1.20171029/hardfp/opt/vc ${PKG}/opt
+tar -xvf ${SOURCEARCHIVES}/${SECTION}/firmware-$KERNELVERSION.tar.xz
+cp -rv firmware-master/hardfp/opt/vc ${PKG}/opt
 echo "/opt/vc/lib" >> ${PKG}/etc/ld.so.conf.d/broadcom.conf
-cp -rv firmware-1.20171029/modules ${PKG}/lib
+cp -rv firmware-master/modules ${PKG}/lib
 
 if [ "X$BOOTPART" != "X" ];then
 	mkdir /boot||true
 	mount $BOOTPART /boot
-	cp -rv firmware-1.20171029/boot/ /
-	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID="0000d611-0d"
+	cp -rv firmware-master/boot/ /
+	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=$PIROOTDEV rootfstype=$ROOTFSTYPE elevator=deadline fsck.repair=yes rootwait" >/boot/cmdline.txt 
 	umount /boot
 fi
 
@@ -143,7 +145,7 @@ checketc "$PKG"
 packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
 
 case $DOWHAT in
@@ -161,6 +163,6 @@ case $DOWHAT in
 		exit 1
 esac
 
-rm -rf "$PKG" firmware-1.20171029
+rm -rf "$PKG" firmware-master
 
 exit
