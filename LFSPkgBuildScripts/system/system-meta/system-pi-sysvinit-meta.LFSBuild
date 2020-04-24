@@ -120,15 +120,21 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-mkdir -vp ${PKG}/opt ${PKG}/etc/ld.so.conf.d ${PKG}/lib
+mkdir -vp ${PKG}/opt ${PKG}/etc/ld.so.conf.d ${PKG}/lib/firmware/brcm
 tar -xvf ${SOURCEARCHIVES}/${SECTION}/firmware-$KERNELVERSION.tar.xz
 cp -rv firmware-master/hardfp/opt/vc ${PKG}/opt
 echo "/opt/vc/lib" >> ${PKG}/etc/ld.so.conf.d/broadcom.conf
 cp -rv firmware-master/modules ${PKG}/lib
 
-if [ "X$BOOTPART" != "X" ];then
+pushd ${PKG}/lib/firmware/brcm
+	wget https://github.com/RPi-Distro/firmware-nonfree/raw/master/brcm/brcmfmac43455-sdio.bin
+	wget https://github.com/RPi-Distro/firmware-nonfree/raw/master/brcm/brcmfmac43455-sdio.clm_blob
+	wget https://github.com/RPi-Distro/firmware-nonfree/raw/master/brcm/brcmfmac43455-sdio.txt 
+popd
+
+if [ "X$PIBOOTDEV" != "X" ];then
 	mkdir /boot||true
-	mount $BOOTPART /boot
+	mount $PIBOOTDEV /boot
 	cp -rv firmware-master/boot/ /
 	echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=$PIROOTDEV rootfstype=$ROOTFSTYPE elevator=deadline fsck.repair=yes rootwait" >/boot/cmdline.txt 
 	umount /boot
