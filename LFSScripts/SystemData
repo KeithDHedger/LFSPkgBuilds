@@ -64,3 +64,32 @@ else
 	#network
 	IP="192.168.1.1"$(echo $ROOTDEV|sed 's/^[a-zA-Z\/]*//')
 fi
+
+#export LFS
+#export PIBUILD
+#export PIVERS
+#export PIBOOTDEV
+#export PIROOTDEV
+#export LFSNAME
+#export LFSVERSION
+#export KERNELVERSION
+#export INITTYPE
+#
+#export LIBDIRSUFFIX
+#export BUILTPACKAGES
+#export SOURCEARCHIVES
+#export EXTFOLDER
+#export COMPILEAT
+#export BUILDSCRIPTS
+#
+#export KEYBOARD
+#export ROOTFSTYPE
+#export ROOTDEV
+#export SWAP
+#
+#export LANGUAGE
+#
+#export IP
+#export GATEWAY
+#export SUBNET
+#export NAMESERVERS

@@ -262,13 +262,15 @@ set bell-style none
 # End /etc/inputrc
 EOF
 
+swapline="$(lsblk -no UUID $SWAP 2>/dev/null)"  && swapline="UID=$(lsblk -no UUID $SWAP 2>/dev/null)" || [ -n $SWAP ] && [ -e "$SWAP" ] && swapline="$SWAP" || swapline="#"
+
 	cat > etc/fstab << EOF
 # Begin /etc/fstab
 
 #file system					mount-point	type		options			dump	fsck order
 
 UUID=$(findmnt -no UUID $LFS)	/		$ROOTFSTYPE		defaults		1		1
-UUID=$(lsblk -no UUID $SWAP)	swap		swap		pri=1			0		0
+$swapline	swap		swap		pri=1			0		0
 
 proc						/proc		proc		nosuid,noexec,nodev	0		0
 sysfs						/sys		sysfs		nosuid,noexec,nodev	0		0
