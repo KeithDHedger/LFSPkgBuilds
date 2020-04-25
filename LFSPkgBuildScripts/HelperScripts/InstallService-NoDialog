@@ -16,22 +16,24 @@ BOOTSCRIPTS="$BLFSBOOTSCRIPTS"
 installScript ()
 {
 	echo -e "${GREEN}Installing $1 ...${NORMAL}"
-	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
-		make -C "$BOOTSCRIPTS" "install-$1"
+	if ! make "install-service-$1" 2>/dev/null;then
+		make "install-$1"
 	fi
 }
 
 uninstallScript ()
 {
 	echo -e "${RED}Un-Installing $1 ...${NORMAL}"
-	make -C "$BOOTSCRIPTS" "uninstall-$1"
+	make "uninstall-$1"
 }
 
 if [ "${#}" -gt 0 ];then
-	for arg in $@
-		do
-			installScript $arg
-		done
+	pushd $BOOTSCRIPTS &>/dev/null
+		for arg in $@
+			do
+				installScript $arg
+			done
+	popd
 	exit 0
 fi
 
@@ -50,25 +52,28 @@ for (( j=0;j<${#SERVICEARRAY[@]};j++ ))
 			fi
 		fi
 	done
+	
+pushd $BOOTSCRIPTS &>/dev/null
 
-select arg in ${SERVICEARRAY[@]}
-do
-	if [ "$arg" = "Cancel" ];then
-		break
-	fi
+	select arg in ${SERVICEARRAY[@]}
+	do
+		if [ "$arg" = "Cancel" ];then
+			break
+		fi
 
-	if [ "${arg:0:1}" = "*" ];then
-		read -p "Do You want to uninstall ${arg:1:1000}? [y/N] "
-		if [ "${REPLY^^}" = "Y" ];then
-			uninstallScript ${arg:1:1000}
+		if [ "${arg:0:1}" = "*" ];then
+			read -p "Do You want to uninstall ${arg:1:1000}? [y/N] "
+			if [ "${REPLY^^}" = "Y" ];then
+				uninstallScript ${arg:1:1000}
+			fi
+		else
+			read -p "Do You want to install ${arg}? [y/N] "
+			if [ "${REPLY^^}" = "Y" ];then
+				installScript $arg
+			fi
 		fi
-	else
-		read -p "Do You want to install ${arg}? [y/N] "
-		if [ "${REPLY^^}" = "Y" ];then
-			installScript $arg
-		fi
-	fi
-done
+	done
+popd
 
 
 
