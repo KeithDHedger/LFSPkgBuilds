@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libtirpc-1.0.3"
+DEPENDS="libtirpc-1.1.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="rpcbind"
 TARNAME="$PKGNAME"
-VERSION="0.2.4"
+VERSION="1.2.5"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -20,7 +20,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://downloads.sourceforge.net/${PKGNAME}/${TARBALL}" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -28,12 +28,12 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c
-#		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/sbin --with-rpcuser=root --enable-warmstarts --without-systemdsystemunitdir
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -p $PKG/etc || true
-		cp "${CWD}/netconfig" $PKG/etc
+		#cp "${CWD}/netconfig" $PKG/etc
 	popd
 
 	checketc "$PKG"
