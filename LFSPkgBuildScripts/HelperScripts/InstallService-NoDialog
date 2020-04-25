@@ -1,0 +1,79 @@
+#!/bin/bash -e
+
+#©keithhedger Sat 25 Apr 17:00:40 BST 2020 kdhedger68713@gmail.com
+
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+NORMAL='\e[0;0m'
+
+BLFSBOOTSCRIPTS="blfs-bootscripts-20190609"
+if [ ! -d "$BLFSBOOTSCRIPTS" ];then
+	wget -c --no-check-certificate "http://anduin.linuxfromscratch.org/BLFS/blfs-bootscripts/$BLFSBOOTSCRIPTS.tar.xz"
+	tar -xvf $BLFSBOOTSCRIPTS.tar.xz
+fi
+BOOTSCRIPTS="$BLFSBOOTSCRIPTS"
+
+installScript ()
+{
+	echo -e "${GREEN}Installing $1 ...${NORMAL}"
+	if ! make -C "$BOOTSCRIPTS" "install-service-$1" 2>/dev/null;then
+		make -C "$BOOTSCRIPTS" "install-$1"
+	fi
+}
+
+uninstallScript ()
+{
+	echo -e "${RED}Un-Installing $1 ...${NORMAL}"
+	make -C "$BOOTSCRIPTS" "uninstall-$1"
+}
+
+if [ "${#}" -gt 0 ];then
+	for arg in $@
+		do
+			installScript $arg
+		done
+	exit 0
+fi
+
+pushd $BOOTSCRIPTS &>/dev/null
+	SERVICEARRAY=( $(sed -n 's/^install-\([a-z]*-*[a-z]*\):.*$/\1/p' Makefile |sed 's/^service-//g'|sort) )
+	SERVICEARRAY="Cancel ${SERVICEARRAY}"
+popd &>/dev/null
+
+for (( j=0;j<${#SERVICEARRAY[@]};j++ ))
+	do
+		if [ -e "/etc/init.d/${SERVICEARRAY[j]}" ];then
+			SERVICEARRAY[j]="*${SERVICEARRAY[j]}"
+		else
+			if [ -e "/lib/services/${SERVICEARRAY[j]}" ];then
+				SERVICEARRAY[j]="*${SERVICEARRAY[j]}"
+			fi
+		fi
+	done
+
+select arg in ${SERVICEARRAY[@]}
+do
+	if [ "$arg" = "Cancel" ];then
+		break
+	fi
+
+	if [ "${arg:0:1}" = "*" ];then
+		read -p "Do You want to uninstall ${arg:1:1000}? [y/N] "
+		if [ "${REPLY^^}" = "Y" ];then
+			uninstallScript ${arg:1:1000}
+		fi
+	else
+		read -p "Do You want to install ${arg}? [y/N] "
+		if [ "${REPLY^^}" = "Y" ];then
+			installScript $arg
+		fi
+	fi
+done
+
+
+
+
+
+	
+
+
