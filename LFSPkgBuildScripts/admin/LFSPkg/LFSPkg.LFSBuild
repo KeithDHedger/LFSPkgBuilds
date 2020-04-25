@@ -15,20 +15,9 @@ MANPAGE=${PROGRAM}.1
 RCFILE=lfspkg.rc
 DOWHAT=${1:-"build"}
 
-setlfsuser ()
-{
-	UIDGIDPAIR=$(findnextpair "system")
-	groupadd -g $UIDGIDPAIR lfspkguser ||true
-	useradd -c "Unprivileged lfspkg user" -d /dev/null -g lfspkguser -s /bin/false -u $UIDGIDPAIR lfspkguser ||true
-}
-
 if [ "X$BOOTSTRAP" != "X" ];then
 	pushd "${TARNAME}-master"
 		make install
-		if [ "$(getent passwd lfspkguser)" = "" ] || [ "$(getent group lfspkguser)" = "" ];then
-			echo "No lfspkguser ... please create this user and group manually and try again."
-			exit 100
-		fi
 		. /usr/share/LFSPkg/LFSFunctions
 		PKG="${OUTPUT}/${PKGNAME}"
 		rm -rf "$PKG" || true
@@ -53,14 +42,6 @@ else
 		rm -rf "$PKG" || true
 		mkdir -p "$PKG"
 		make install DESTDIR=$PKG
-
-		if [ "$(getent passwd lfspkguser)" = "" ] || [ "$(getent group lfspkguser)" = "" ];then
-			setlfsuser||true
-			if [ "$(getent passwd lfspkguser)" = "" ] || [ "$(getent group lfspkguser)" = "" ];then
-				echo "No lfspkguser ... please create this user and group manually and try again."
-				exit 100
-			fi
-		fi
 	popd
 
 	mkdir -vp "${SOURCEARCHIVES}/${SECTION}" "${OUTPUT}/${SECTION}" 2>/dev/null
