@@ -36,7 +36,6 @@ echo $ADMINPWD|sudo -S mkdir -vp "$LFS/tools" "${COMPILEAT}"|| true
 echo $ADMINPWD|sudo -S rm /tools  2>/dev/null||true
 echo $ADMINPWD|sudo -S ln -sv $LFS/tools /  2>/dev/null|| true
 echo $ADMINPWD|sudo -S chown -R $USER:$USER $LFS/tools/
-#  "${SYSTEMSOURCE}" "$NETSOURCE" 2>/dev/null||true
 echo $ADMINPWD|sudo -S chmod -R 777 $LFS/tools/ $COMPILEAT||true
 
 cp ./SystemData ./SystemData.local $SYSTEMSOURCE
@@ -68,6 +67,7 @@ if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 			wget --no-check-certificate -c https://github.com/raspberrypi/linux/archive/rpi-${KERNELVERSION}.tar.gz -O linux-${KERNELVERSION}.tar.xz
 			#blobs
 			wget --no-check-certificate -c https://github.com/raspberrypi/firmware/archive/master.tar.gz -O firmware-${KERNELVERSION}.tar.xz
+			wget --no-check-certificate -c https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz -O firmware-RPI-blobs.tar.gz
 			wget --no-check-certificate -c http://www.intestinate.com/pilfs/patches/gcc-9.1.0-rpi${PIVERS}-cpu-default.patch
 		popd
 	fi
