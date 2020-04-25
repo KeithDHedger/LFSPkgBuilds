@@ -95,7 +95,7 @@ Wget-1.20.3
 unzip-6.0
 GPM-1.20.7
 ntp-4.2.8
-openssh-7.6
+openssh-8.0
 Links-2.19
 pilfs-bootscripts-20190902"
 
@@ -142,7 +142,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	fi
 
 	pushd "${BUILDSCRIPTS}/HelperScripts"
-		InstallServices "ntp sshd"
+		InstallService-NoDialog "ntp sshd"
 	popd
 
 	mkdir -vp $PKG/lib/udev/rules.d

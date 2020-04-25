@@ -1,8 +1,10 @@
 #!/bin/bash
 
+. /LFSSourceArchives/9.0/SYSTEM/SystemData.local
+
 update-desktop-database 2>/dev/null || true
 
-cat > /etc/sysconfig/ifconfig.wifi0 << "EOF"
+cat > /etc/sysconfig/ifconfig.wifi0 << EOF
 ONBOOT="yes"
 IFACE="wlan0"
 SERVICE="wpa"
@@ -11,7 +13,7 @@ SERVICE="wpa"
 WPA_ARGS=""
 
 WPA_SERVICE="ipv4-static"
-IP="192.168.1.XXX"
+IP="192.168.1.$IP"
 GATEWAY="192.168.1.254"
 PREFIX="24"
 BROADCAST="192.168.1.255"

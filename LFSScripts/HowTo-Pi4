@@ -209,11 +209,12 @@ cd /LFSPkgBuildScripts/net/wpa-supplicant/
 ./wpa-supplicant.LFSBuild install
 #configure
 wpa_passphrase SSID SECRET_PASSWORD > /etc/sysconfig/wpa_supplicant-wifi0.conf
+#Set the country code:
+sed '1s/^/country=GB\n/' /etc/sysconfig/wpa_supplicant-wifi0.conf
+
 cd /LFSPkgBuildScripts/HelperScripts/
-./InstallServices
-#if you get a "no dialog" found error you should install the wpa service manually like so:
-cd blfs-bootscripts-20190609
-make install-service-wpa
+#dialog program not yet installed so use:
+./InstallService-NoDialog wpa
 
 #Install any extra hardware/firmware packages you need ( you may have to boot into the 'real' system for this ).
 #eg usb wireless package:
