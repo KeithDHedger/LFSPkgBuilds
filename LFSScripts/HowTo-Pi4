@@ -205,14 +205,20 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 13)
 #No point in compiling your own kernel on pi so prebuilt one is used.
 #But you may want to set up wifi now so:
-
+cd /LFSPkgBuildScripts/net/wpa-supplicant/
+./wpa-supplicant.LFSBuild install
+#configure
+wpa_passphrase SSID SECRET_PASSWORD > /etc/sysconfig/wpa_supplicant-wifi0.conf
+cd /LFSPkgBuildScripts/HelperScripts/
+./InstallServices
+#if you get a "no dialog" found error you should install the wpa service manually like so:
+cd blfs-bootscripts-20190609
+make install-service-wpa
 
 #Install any extra hardware/firmware packages you need ( you may have to boot into the 'real' system for this ).
 #eg usb wireless package:
 cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
-
-
 
 14)
 #Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
