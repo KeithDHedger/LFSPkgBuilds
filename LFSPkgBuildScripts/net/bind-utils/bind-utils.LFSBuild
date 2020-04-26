@@ -4,7 +4,7 @@
 
 PKGNAME="bind-utils"
 TARNAME="bind"
-VERSION="9.12.0"
+VERSION="9.14.5"
 MINORVERSION=""
 BUILD=${BUILD:-1}
 SECTION="NET"
@@ -23,7 +23,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORVERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-python
 		make -C lib/dns
 		make -C lib/isc
 		make -C lib/bind9
