@@ -188,7 +188,7 @@ echo "SUBNET=$SUBNET"
 echo "NAMESERVERS=\"$NAMESERVERS\""
 echo "--------"
 
-SUMMARY="n"
+SUMMARY="N/y"
 readWithDefault "SUMMARY"  "Write Config Files And Copy Data Etc"
 
 if [ $SUMMARY = "n" ];then
