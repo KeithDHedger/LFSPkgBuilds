@@ -54,17 +54,17 @@ cd $LFS
 sudo git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
 
 Own the files:
-sudo chown -R $USER:$USER $LFS/LFSPkgBuilds
-sudo ln -sv LFSPkgBuilds/LFSPkgBuildScripts $LFS/LFSPkgBuildScripts
-sudo ln -sv LFSPkgBuilds/LFSScripts $LFS/LFSScripts
+sudo chown -R $USER:$USER LFSPkgBuilds
+sudo ln -sv LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
+sudo ln -sv LFSPkgBuilds/LFSScripts LFSScripts
 
 #If you want a swap file set up for later do:
 #set count to the size of the swapfile needed.
 
-sudo dd if=/dev/zero of=${LFS}/swapfile bs=1M count=512
-sudo chmod 600 ${LFS}/swapfile
-sudo mkswap ${LFS}/swapfile
-sudo swapon -v ${LFS}/swapfile
+sudo dd if=/dev/zero of=swapfile bs=1M count=512
+sudo chmod 600 swapfile
+sudo mkswap swapfile
+sudo swapon -v swapfile
 
 #If you are mounting a network folder over SOURCEARCHIVES & BUILTPACKAGES (reccomened to save room ) you may want to set where the actual compilation takes place.
 #This is usually at $LFS/$SOURCEARCHIVES, compiling over a network is slow so you can use a local compile instaead, eg:

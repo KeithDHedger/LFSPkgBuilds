@@ -56,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}-${MINORVERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}${MINORVERSION}"
 popd 2>/dev/null||true
