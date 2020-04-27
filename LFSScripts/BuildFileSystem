@@ -343,7 +343,8 @@ CHECKETC=0
 
 EOF
 	mv /tmp/.lfspkg.rc root
-	chown -R root:root $LFS/*
+#Set the perms for $LFS will fail for any mounted network tha can't have their perms changed ( eg a smaba mount ). 
+	chown -R root:root $LFS/* 2>/dev/null||true
 	touch var/log/{btmp,lastlog,wtmp}
 	chmod -v 664 var/log/lastlog
 	chmod -v 600  var/log/btmp

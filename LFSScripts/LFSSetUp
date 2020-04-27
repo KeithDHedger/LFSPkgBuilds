@@ -135,7 +135,7 @@ readWithDefault "ROOTFSTYPE"  "Enter Root FS Type"
 ROOTDEV=$(findmnt -no SOURCE $LFS)
 readWithDefault "ROOTDEV"  "Enter Root Device"
 
-SWAP=$(blkid|grep swap|tail -n1|awk -F: '{print $1}')
+SWAP=${SWAP:-$(blkid|grep swap|tail -n1|awk -F: '{print $1}')}
 readWithDefault "SWAP"  "Enter Swap Device Or Path To Swapfile"
 
 LANGUAGE=${LANGUAGE:-$LANG}
@@ -191,7 +191,7 @@ echo "--------"
 SUMMARY="N/y"
 readWithDefault "SUMMARY"  "Write Config Files And Copy Data Etc"
 
-if [ $SUMMARY = "n" ];then
+if [ ${SUMMARY^^} != "Y" ];then
 	exit 1
 fi
 
@@ -225,7 +225,7 @@ LIBDIRSUFFIX=$LIBDIRSUFFIX
 SOURCEARCHIVES=$SOURCEARCHIVES
 PKGARCHIVES=$PKGARCHIVES
 EXTFOLDER=$EXTFOLDER
-COMPILEAT=\${COMPILEAT:-$COMPILEAT}
+COMPILEAT=$COMPILEAT
 BUILDSCRIPTS=$BUILDSCRIPTS
 
 KEYBOARD=$KEYBOARD

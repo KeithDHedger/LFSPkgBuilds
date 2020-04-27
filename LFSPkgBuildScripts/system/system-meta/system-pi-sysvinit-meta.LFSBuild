@@ -70,7 +70,6 @@ Diffutils-3.7
 Gawk-5.0.1
 Findutils-4.6.0
 Groff-1.22.4
-GRUB-2.04
 Less-551
 Gzip-1.10
 IPRoute2-5.2.0
@@ -109,8 +108,8 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 #Set this to your blank boot partition, if NOT set boot files are not copied.
-PIBOOTDEV="/dev/mmcblk0p10"
-PIROOTDEV="/dev/mmcblk0p11"
+PIBOOTDEV="/dev/mmcblk0p15"
+PIROOTDEV="/dev/mmcblk0p16"
 ROOTFSTYPE="ext2"
 KERNELVERSION="4.19.y"
 
