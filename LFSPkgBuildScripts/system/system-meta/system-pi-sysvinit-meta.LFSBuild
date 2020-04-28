@@ -141,7 +141,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	fi
 
 	pushd "${BUILDSCRIPTS}/HelperScripts"
-		./InstallService-NoDialog "ntpd sshd"
+		./InstallService-NoDialog "ntpd sshd gpm"
 	popd
 
 	mkdir -vp $PKG/lib/udev/rules.d

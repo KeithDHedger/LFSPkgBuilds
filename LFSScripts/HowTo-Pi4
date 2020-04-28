@@ -176,14 +176,6 @@ Walk the dog
 #logout from temporary system:
 exit
 
-9.2)
-#lfspkg now creates an unprivileged user for certain actions eg extracting tarballs.
-#$LFS/LFSPkgBuilds should now have the group set to lfspkguser, and perms set to 775, if you want your normal user to have access just add yourself to the lfspkguser group.
-
-#You will have to re-own/set perms the various folders etc, so:
-sudo chown -R $USER:lfspkguser $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-chmod -R 775 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-
 10)
 #Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
 sudo rm /tools
@@ -191,7 +183,8 @@ sudo rm /tools
 sudo rm -rf $LFS/tools
 
 11)
-#Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
+#Change back to $LFS/LFSScripts folder and re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
+cd $LFS/LFSScripts
 sudo ./Chroot
 
 12)
@@ -217,96 +210,32 @@ cd /LFSPkgBuildScripts/HelperScripts/
 #dialog program not yet installed so use:
 ./InstallService-NoDialog wpa
 
+#Openssh and the sshd init script is installed by the system-meta package.
+
+#########################
+# If you have trouble ssh'ing into the 'real' LFS system you may need to manually set the date if the ntpd server takes too long.
+#########################
+
 #Install any extra hardware/firmware packages you need ( you may have to boot into the 'real' system for this ).
 #eg usb wireless package:
 cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
 
+
 14)
+#The following are optional but useful
 #Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
-#Build xorg:
+#Build xorg ( experimental at the moment ):
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
-
-15)
-#Install documentation stuff
-#Also installs python via dependency
-#Loads of apps need these for building documentation so might as well install now.
-cd /LFSPkgBuildScripts/devel/gtk-doc
-./gtk-doc.LFSBuild install
-
-cd /LFSPkgBuildScripts/devel/doxygen
-./doxygen.LFSBuild install
-
-16)
-#Install cups and gtk.
-#Gtk2 has a 'soft' dependency on cups so best to buils cups first.
-cd /LFSPkgBuildScripts/print/cups
-./cups.LFSBuild install
-
-cd /LFSPkgBuildScripts/gtk/gtk
-./gtk.LFSBuild install
-
-#xsane frontends and xsane require gimp installed first to build the plugin
-cd /LFSPkgBuildScripts/desktop/gimp
-./gimp.LFSBuild install
-
-#rest of printing stuff
-cd /LFSPkgBuildScripts/print/printing-meta
-./printing-meta.LFSBuild install
-
-16.5)
-#multi media
-cd /LFSPkgBuildScripts/mm/mm-meta
-./mm-meta.LFSBuild install
-
-17)
-#Development stuff
-cd /LFSPkgBuildScripts/devel/development-meta
-./development-meta.LFSBuild install
-
-18)
-#The big one! build a complete desktop
-#this meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!
-#this is for an xfce4 desktop.
-cd /LFSPkgBuildScripts/desktop/desktop-meta
-./desktop-meta.LFSBuild install
-
-#Or for an LFSDesktop
-cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
-./LFSDesktop-meta.LFSBuild install
-
-19)
-#Extra odd stuff
-#Chromium
-cd /LFSPkgBuildScripts/desktop/chromium
-./chromium.LFSBuild install
-#falkon
-cd /LFSPkgBuildScripts/qt/falkon/
-./falkon.LFSBuild install
-
-#Cairo-dock-plugins pulls in cairo-dock as a dependency
-cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins
-./cairo-dock-plugins.LFSBuild install
-
-#Qemu builds both static and dynamically linked versions
-cd /LFSPkgBuildScripts/hware/qemu
-./qemu.LFSBuild install
-
-#Seamonkey for web dev
-cd /LFSPkgBuildScripts/net/seamonkey
-./seamonkey.LFSBuild install
-
-#Icedtea-web BROKEN
-#cd /LFSPkgBuildScripts/net/icedtea-web
-#./icedtea-web.LFSBuild install
-#For pulse audio
-#cd /LFSPkgBuildScripts/net/icedtea-sound
-#./icedtea-sound.LFSBuild install
 
 #Samba
 cd /LFSPkgBuildScripts/net/samba
 ./samba.LFSBuild install
+
+#nfs
+cd /LFSPkgBuildScripts/net/nfs-utils
+./nfs-utils.LFSBuild install
 
 #Fuse and stuff
 cd /LFSPkgBuildScripts/net/sshfs

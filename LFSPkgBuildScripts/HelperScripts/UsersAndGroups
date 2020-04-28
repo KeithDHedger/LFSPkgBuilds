@@ -151,24 +151,23 @@ else
 	case $TYPE in
 		"ADDUSER")
 			if [ "$ISSYSTEM" = "Y" ];then
-				sudo useradd -r -d /dev/null -U -s /bin/false -u "$USEUIDS" -g "$USEUIDS" "$LOGINNAME"||true
+				useradd -r -d /dev/null -U -s /bin/false -u "$USEUIDS" -g "$USEUIDS" "$LOGINNAME"||true
 			else
-				sudo useradd -d "$USERHOME" -m -U -u "$USEUIDS" -G "$XTRAGROUPS" -s "$USERSHELL" "$LOGINNAME"
-				sudo passwd $LOGINNAME
+				useradd -d "$USERHOME" -m -U -u "$USEUIDS" -G "$XTRAGROUPS" -s "$USERSHELL" "$LOGINNAME"
+				passwd $LOGINNAME
 			fi			
 			;;
 		"DELUSER")
-			sudo userdel -f$DELETEFILES "$LOGINNAME"
+			userdel -f$DELETEFILES "$LOGINNAME"
 			;;
 		"ADDGROUP")
 			getGids
-			sudo groupadd -g "$USEUIDS" $ISSYSTEM "$LOGINNAME"
+			groupadd -g "$USEUIDS" $ISSYSTEM "$LOGINNAME"
 			;;
 		"DELGROUP")
-			sudo groupdel "$LOGINNAME"
+			groupdel "$LOGINNAME"
 			;;
 	esac
 fi
-
 
 
