@@ -32,8 +32,20 @@ gettar "https://github.com/xbmc/FFmpeg/archive/$_ffmpeg_version.tar.gz" ${SECTIO
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-#This for pi2 & pi3 change to arm1176jzf-s for pi 0 or pi 1
-CPU=${CPU:-"cortex-a7"}
+case $PIVERS in
+	0|1)
+		CPU=arm1176jzf-s
+		;;
+	2)
+		CPU=Cortex-A7
+		;;
+	3)
+		CPU=Cortex-A53
+		;;
+	4)
+		CPU=Cortex-A72
+		;;
+esac
 
 #create input gtroup
 groupadd -g $(findnextgid system) -r input || true

@@ -260,37 +260,21 @@ cd /LFSPkgBuildScripts/net/iptables
 cd /LFSPkgBuildScripts/net/fail2ban
 ./fail2ban.LFSBuild install
 
-
-#TODO
-cd /LFSPkgBuildScripts/qt/qt-creator
-./qt-creator.LFSBuild install
-
 #If you are building in chroot you will pobably have to rerun the postinstall script for this package AFTER booting to the 'real' system.
 cd /LFSPkgBuildScripts/admin/mariadb
 ./mariadb.LFSBuild install
 
-#Odd stuff
-cd /LFSPkgBuildScripts/xorg/xbindkeys
-./xbindkeys.LFSBuild install
-
-cd /LFSPkgBuildScripts/net/libcddb
-./libcddb.LFSBuild install
-
-cd /LFSPkgBuildScripts/desktop/epdfview
-./epdfview.LFSBuild install
-
-#Conky is getting increasingly tied to gnome and difficult ( impossible! )to build.
-#cd /LFSPkgBuildScripts/desktop/conky
-#./conky.LFSBuild install
-
-#Try an alternative!
-cd /LFSPkgBuildScripts/desktop/gkrellm
-./gkrellm.LFSBuild install
-
-
+#Kodi
+#Install needed deps
+cd /LFSPkgBuildScripts/mm/kodi
+./pi-kodi-mindeps
 #Add users
 cd /LFSPkgBuildScripts/HelperScripts/
 ./UsersAndGroups YOURUSERNAME
 
-
-
+#Add services
+cd /LFSPkgBuildScripts/HelperScripts/
+#Select from list, install/uninstall
+./InstallService-NoDialog 
+#Auto install
+./InstallService-NoDialog "ntpd sshd gpm"

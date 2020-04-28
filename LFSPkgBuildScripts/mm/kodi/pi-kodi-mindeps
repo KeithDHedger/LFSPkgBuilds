@@ -183,6 +183,11 @@ if [ "$(lfspkg -S 5 BinaryJDK)" = "false" ];then
 	./binaryjdk.LFSBuild install
 fi
 
+if [ "$(lfspkg -S 5 boost)" = "false" ];then
+	cd /LFSPkgBuildScripts/libs/boost/
+	./boost.LFSBuild install
+fi
+
 if [ "$(lfspkg -S 5 swig)" = "false" ];then
 	cd /LFSPkgBuildScripts/devel/swig/
 	./swig.LFSBuild install
