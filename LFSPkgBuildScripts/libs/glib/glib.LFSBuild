@@ -18,6 +18,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+OPTIONS=${OPTIONS:-"-Ddoc=true -Dman=true"}
+
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/glib/${VERSION%.?*}/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/9.0/${TARNAME}-${VERSION}-skip_warnings-1.patch" $SECTION
@@ -25,12 +27,12 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	#extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-skip_warnings-1.patch
+	#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-skip_warnings-1.patch
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dman=true -Dselinux=disabled --default-library=both ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dselinux=disabled --default-library=both ${OPTIONS} ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}

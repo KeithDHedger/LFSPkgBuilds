@@ -2,8 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="LMDB"
-TARNAME="$PKGNAME"
+PKGNAME="lmdb"
+TARNAME="${PKGNAME^^}"
 VERSION="0.9.24"
 BUILD=1
 SECTION="LIBS"
@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/LMDB/lmdb/archive/${TARBALL}" $SECTION
+gettar "https://github.com/${TARNAME}/${PKGNAME}/archive/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

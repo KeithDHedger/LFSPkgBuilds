@@ -159,6 +159,16 @@ if [ "$(lfspkg -S 5 libtirpc)" = "false" ];then
 	./libtirpc.LFSBuild install
 fi
 
+if [ "$(lfspkg -S 5 lmdb)" = "false" ];then
+	cd /LFSPkgBuildScripts/libs/lmdb/
+	./lmdb.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 rpcsvc-proto)" = "false" ];then
+	cd /LFSPkgBuildScripts/libs/rpcsvc-proto/
+	./rpcsvc-proto.LFSBuild install
+fi
+
 if [ "$(lfspkg -S 5 samba)" = "false" ];then
 	export OPTIONS="--without-ldap"
 	cd /LFSPkgBuildScripts/net/samba/
@@ -204,8 +214,10 @@ if [ "$(lfspkg -S 5 openssh)" = "false" ];then
 fi
 
 if [ "$(lfspkg -S 5 glib)" = "false" ];then
+	export OPTIONS="-Ddoc=false -Dman=false"
 	cd /LFSPkgBuildScripts/libs/glib/
 	./glib.LFSBuild install
+	unset OPTIONS
 fi
 
 if [ "$(lfspkg -S 5 udevil)" = "false" ];then
@@ -228,14 +240,26 @@ if [ "$(lfspkg -S 5 libmicrohttpd)" = "false" ];then
 	./libmicrohttpd.LFSBuild install
 fi
 
+if [ "$(lfspkg -S 5 mtdev)" = "false" ];then
+	cd /LFSPkgBuildScripts/hware/mtdev/
+	./mtdev.LFSBuild install
+fi
+
+if [ "$(lfspkg -S 5 libevdev)" = "false" ];then
+	cd /LFSPkgBuildScripts/hware/libevdev/
+	./libevdev.LFSBuild install
+fi
+
 if [ "$(lfspkg -S 5 libinput)" = "false" ];then
 	cd /LFSPkgBuildScripts/hware/libinput/
 	./libinput.LFSBuild install
 fi
 
 if [ "$(lfspkg -S 5 libxkbcommon)" = "false" ];then
+	export OPTIONS="--disable-x11"
 	cd /LFSPkgBuildScripts/libs/libxkbcommon/
 	./libxkbcommon.LFSBuild install
+	unset OPTIONS
 fi
 
 if [ "$(lfspkg -S 5 fmt)" = "false" ];then
@@ -249,8 +273,10 @@ if [ "$(lfspkg -S 5 crossguid)" = "false" ];then
 fi
 
 if [ "$(lfspkg -S 5 xkeyboard-config)" = "false" ];then
+	export OPTIONS="--disable-runtime-deps"
 	cd /LFSPkgBuildScripts/xorg/xkeyboard-config/
 	./xkeyboard-config.LFSBuild install
+	unset OPTIONS
 fi
 
 if [ "$(lfspkg -S 5 rapidjson)" = "false" ];then
