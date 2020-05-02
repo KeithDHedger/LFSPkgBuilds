@@ -1,0 +1,6 @@
+https://github.com/torvalds/linux/tree/master/tools/usb/usbip
+USB/IP protocol allows to pass USB device from server to client over the
+network. Server is a machine which provides (shares) a USB device. Client is
+a machine which uses USB device provided by server over the network.
+The USB device may be either physical device connected to a server or
+software entity created on a server using USB gadget subsystem.
