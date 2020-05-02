@@ -8,7 +8,7 @@ VERSION="1.0.0"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
-TARBALL="$(ls -1 $SOURCEARCHIVES/KERNEL|grep -i xz|head -n1)"
+TARBALL="$(ls -1 $SOURCEARCHIVES/KERNEL|grep -i linux|head -n1)"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -18,8 +18,8 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	tar -xvf ${SOURCEARCHIVES}/KERNEL/${TARBALL} ${TARBALL/.tar.*/}/tools/usb/usbip
-	pushd ${TARBALL/.tar.*/}/tools/usb/usbip
+	tar --strip-components=1 --wildcards -xvf ${SOURCEARCHIVES}/KERNEL/${TARBALL} "*/tools/usb/usbip"
+	pushd tools/usb/usbip
 		./autogen.sh
 		 CFLAGS="-Wno-stringop-truncation -Wno-address-of-packed-member"  ./configure $CONFIGOPTIONS
 		make $MAKEFLAGS||make|| exit 100
@@ -48,7 +48,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARBALL/.tar.*/}"
+	rm -r "$PKG" "tools"
 popd 2>/dev/null||true
 
 
