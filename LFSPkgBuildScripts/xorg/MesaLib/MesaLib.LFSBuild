@@ -24,27 +24,25 @@ gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-PLATFORMS=${PLATFORMS:-"x11,surfaceless,drm"}
-
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch||true
-		case $(uname -m) in
-			armv?l)
-				DRI_DRIVERS=
-				GALLIUM_DRV="vc4"
-				;;
-			*)
-				DRI_DRIVERS="i965,nouveau"
-				GALLIUM_DRV="i915,nouveau,r600,radeonsi,svga,swrast,virgl"
-				;;
-			esac
-
 		mkdir build||true
-		cd build
+		if [[ $PIBUILD -eq 1 ]];then
+			cd build
+			DRI_DRIVERS=
+			GALLIUM_DRV="vc4,v3d,kmsro"
+			PLATFORMS=${PLATFORMS:-"surfaceless,drm"}
+			meson --prefix=$XORG_PREFIX -Dglx=disabled -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false  -Dvalgrind=false -Dplatforms=$PLATFORMS ..
+		else
+			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch||true
+			cd build
+			DRI_DRIVERS="i965,nouveau"
+			GALLIUM_DRV="i915,nouveau,r600,radeonsi,svga,swrast,virgl"
+			PLATFORMS=${PLATFORMS:-"x11,surfaceless,drm"}
+			meson --prefix=$XORG_PREFIX -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false -Dplatforms=$PLATFORMS ..
+		fi
 
-		meson --prefix=$XORG_PREFIX -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false -Dplatforms=$PLATFORMS ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 		install -v -dm755 $PKG/usr/share/doc/${TARNAME}-${VERSION}
@@ -56,7 +54,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	packageclean "$PKG"
 	
 	pushd "$PKG"
-		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 	
 	case $DOWHAT in

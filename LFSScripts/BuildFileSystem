@@ -32,6 +32,7 @@ pushd $LFS
 		do
 			ln -sv share/{man,doc,info} $dir
 		done
+
 	case $(uname -m) in
 		x86_64)
 			ln -sv lib${LIBDIRSUFFIX} lib
@@ -89,7 +90,6 @@ network:x:22
 plugdev:x:23
 users:x:24
 power:x:25
-lfspkguser:x:26
 mail:x:34:
 nogroup:x:99:
 EOF
@@ -201,9 +201,9 @@ NORMAL="\[\e[0m\]"
 RED="\[\e[1;31m\]"
 GREEN="\[\e[1;32m\]"
 if [[ \$EUID == 0 ]] ; then
-	PS1="\$RED\u [ \$NORMAL\w\$RED ]# \$NORMAL"
+	PS1=''${RED}'\u@\h [ '${NORMAL}'\w '${RED}']$'${NORMAL}' '
 else
-	PS1="\$GREEN\u [ \$NORMAL\w\$GREEN ]\\\$ \$NORMAL"
+	PS1=''${GREEN}'\u@\h [ '${NORMAL}'\w '${GREEN}']$'${NORMAL}' '
 fi
 
 for script in /etc/profile.d/*.sh
@@ -327,7 +327,7 @@ EOF
 # End /etc/shells
 EOF
 
-	cat > /tmp/.lfspkg.rc << EOF
+	cat > etc/lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
 LIBDIRSUFFIX=$LIBDIRSUFFIX
@@ -342,7 +342,6 @@ MAKEFLAGS=" -j4 "
 CHECKETC=0
 
 EOF
-	mv /tmp/.lfspkg.rc root
 #Set the perms for $LFS will fail for any mounted network tha can't have their perms changed ( eg a smaba mount ). 
 	chown -R root:root $LFS/* 2>/dev/null||true
 	touch var/log/{btmp,lastlog,wtmp}
