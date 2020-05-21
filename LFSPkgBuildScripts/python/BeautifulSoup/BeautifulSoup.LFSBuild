@@ -2,41 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-9.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="libdrm"
+PKGNAME="BeautifulSoup"
 TARNAME="$PKGNAME"
-VERSION="2.4.100"
-BUILD=${BUILD:-1}
-SECTION="XORG"
+VERSION="3.2.1"
+BUILD=1
+SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dri.freedesktop.org/libdrm/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
+gettar "https://www.crummy.com/software/BeautifulSoup/download/3.x/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build
-		cd build
-
-		meson --prefix=$XORG_PREFIX -Dudev=true
-		ninja $MAKEFLAGS||ninja -j1||exit 100
-		DESTDIR=$PKG ninja install||exit 100
+		python setup.py build||exit 100
+		python setup.py install --optimize=1 --root=$PKG||exit 100
+		#python3 setup.py build||exit 100
+		#python2 setup.py install --root=$PKG||exit 100
+		#python setup.py install --root=$PKG||exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
