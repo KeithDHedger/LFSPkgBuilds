@@ -2,9 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="lame-3.100"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="ffmpeg"
 TARNAME="$PKGNAME"
-VERSION="4.1"
+VERSION="4.2"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -21,7 +26,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --disable-debug --disable-static --disable-logging --enable-pthreads --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --disable-doc --disable-libaom
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --disable-debug --disable-static --disable-logging --enable-pthreads --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --disable-doc --disable-libaom --enable-libmp3lame
+
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -50,3 +56,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
