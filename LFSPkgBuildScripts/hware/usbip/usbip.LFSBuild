@@ -1,0 +1,55 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="usbip"
+TARNAME="linux"
+VERSION="1.0.0"
+BUILD=${BUILD:-1}
+SECTION="HWARE"
+SUFFIX="LFSPKG"
+TARBALL="$(ls -1 $SOURCEARCHIVES/KERNEL|grep -i linux|head -n1)"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	tar --strip-components=1 --wildcards -xvf ${SOURCEARCHIVES}/KERNEL/${TARBALL} "*/tools/usb/usbip"
+	pushd tools/usb/usbip
+		./autogen.sh
+		 CFLAGS="-Wno-stringop-truncation -Wno-address-of-packed-member"  ./configure $CONFIGOPTIONS
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "tools"
+popd 2>/dev/null||true
+
+
+
