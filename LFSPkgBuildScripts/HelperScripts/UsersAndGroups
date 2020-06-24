@@ -130,7 +130,7 @@ if [ ! "$DRYRUN" = "" ];then
 	case $TYPE in
 		"ADDUSER")
 			if [ "$ISSYSTEM" = "Y" ];then
-				echo useradd -r -d /dev/null -U -s /bin/false -u \"$USEUIDS\" -g \"$USEUIDS\" \"$LOGINNAME\"||true
+				echo useradd -r -d /dev/null -U -s /bin/false -u \"$USEUIDS\" \"$LOGINNAME\"||true
 			else
 				echo useradd -d \"$USERHOME\" -m -U -u \"$USEUIDS\" -G \"$XTRAGROUPS\" -s \"$USERSHELL\" \"$LOGINNAME\"
 				echo passwd $LOGINNAME
@@ -151,7 +151,7 @@ else
 	case $TYPE in
 		"ADDUSER")
 			if [ "$ISSYSTEM" = "Y" ];then
-				useradd -r -d /dev/null -U -s /bin/false -u "$USEUIDS" -g "$USEUIDS" "$LOGINNAME"||true
+				useradd -r -d /dev/null -U -s /bin/false -u "$USEUIDS" "$LOGINNAME"||true
 			else
 				useradd -d "$USERHOME" -m -U -u "$USEUIDS" -G "$XTRAGROUPS" -s "$USERSHELL" "$LOGINNAME"
 				passwd $LOGINNAME
