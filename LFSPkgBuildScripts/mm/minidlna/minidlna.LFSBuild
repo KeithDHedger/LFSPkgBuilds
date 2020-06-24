@@ -2,41 +2,39 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="lame-3.100"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="ffmpeg"
+PKGNAME="minidlna"
 TARNAME="$PKGNAME"
-VERSION="4.2"
+VERSION="1.2.1"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://ffmpeg.org/releases/${TARBALL}" $SECTION
+gettar "https://netcologne.dl.sourceforge.net/project/minidlna/minidlna/1.2.1/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i 's/-lflite"/-lflite -lasound"/' configure
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --disable-static --disable-debug --enable-gpl --enable-version3 --enable-nonfree --enable-libmp3lame
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		install -Dm644 minidlna.conf ${PKG}/etc/minidlna.conf
+		install -Dm644 minidlna.conf.5 ${PKG}/usr/share/man/man5/minidlna.conf.5
+		install -Dm644 minidlnad.8 ${PKG}/usr/share/man/man8/minidlnad.8
+		install -Dm755 ${CWD}/minidlna ${PKG}/etc/init.d/minidlna
 	popd
-#--enable-avresample --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265
+
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 
 	case $DOWHAT in
