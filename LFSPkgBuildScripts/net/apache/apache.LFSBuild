@@ -43,7 +43,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		chgrp apache $PKG/usr/lib${LIBDIRSUFFIX}/httpd/suexec
 		chmod 4754 $PKG/usr/lib${LIBDIRSUFFIX}/httpd/suexec
 		chown -v -R apache:apache $PKG/srv/www
-
+		mkdir -vp $PKG/var/log/apache2
 	popd
 
 	checketc $PKG
