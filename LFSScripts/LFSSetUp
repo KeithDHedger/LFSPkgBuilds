@@ -66,6 +66,9 @@ if [ $PIBUILD -eq 1 ];then
 	readWithDefault "PIBOOTDEV"  "Enter BOOT Partition For Pi"
 	readWithDefault "PIROOTDEV"  "Enter ROOT Partition For Pi"
 	readWithDefault "PIVERS"  "Enter Pi Model"
+else
+	ROOTDEV=$(findmnt -no SOURCE $LFS)
+	readWithDefault "ROOTDEV"  "Enter Root Device"	
 fi
 
 #LFS Version
@@ -132,8 +135,8 @@ readWithDefault "ROOTFSTYPE"  "Enter Root FS Type"
 #Variable below this line are computed and probably don't need changing, but feel free.
 #computed stuff
 
-ROOTDEV=$(findmnt -no SOURCE $LFS)
-readWithDefault "ROOTDEV"  "Enter Root Device"
+#ROOTDEV=$(findmnt -no SOURCE $LFS)
+#readWithDefault "ROOTDEV"  "Enter Root Device"
 
 SWAP=${SWAP:-$(blkid|grep swap|tail -n1|awk -F: '{print $1}')}
 readWithDefault "SWAP"  "Enter Swap Device Or Path To Swapfile"
@@ -244,10 +247,10 @@ EOF
 sudo mkdir -vp $LFS/etc||true
 cat > /tmp/lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
-OUTPUT=$BUILTPACKAGES
+OUTPUT=$PKGARCHIVES
 SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
-COMPILEAT=\${COMPILEAT:-$COMPILEAT}
+COMPILEAT=$COMPILEAT
 EOF
 sudo mv /tmp/lfspkg.rc $LFS/etc/
 

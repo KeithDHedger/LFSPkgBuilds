@@ -18,7 +18,7 @@ else
 	#LFS init type eithe bbinit or sysvinit
 	INITTYPE=LFSInit
 	#Place to store built packages, defaults to /tmp
-	BUILTPACKAGES=${BUILTPACKAGES:-"/media/SkyNet/LFSBuiltPackages-${LFSVERSION}"}
+	PKGARCHIVES=${PKGARCHIVES:-"/media/SkyNet/LFSBuiltPackages-${LFSVERSION}"}
 	#Place to store downloaded source archives, defaults to /tmp
 	SOURCEARCHIVES=${SOURCEARCHIVES:-"/media/SkyNet/LFSSourceArchives/${LFSVERSION}"}
 

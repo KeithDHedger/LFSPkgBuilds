@@ -4,7 +4,7 @@
 
 PKGNAME="pi-kodi"
 TARNAME="Leia"
-VERSION="18.4"
+VERSION="18.6"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -14,38 +14,10 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-
-_codename=Leia
-_flatbuffers_version="1.9.0"
-_fstrcmp_version="0.7.D001"
-_ffmpeg_version="4.0.4-$_codename-18.4"
-
-
 gettar "https://github.com/xbmc/xbmc/archive/${TARBALL}" ${SECTION}
 
-KODIDEPS="${SOURCEARCHIVES}/${SECTION}/kodideps"
-gettar "http://mirrors.kodi.tv/build-deps/sources/flatbuffers-$_flatbuffers_version.tar.gz" ${SECTION}/kodideps
-gettar "http://mirrors.kodi.tv/build-deps/sources/fstrcmp-$_fstrcmp_version.tar.gz" ${SECTION}/kodideps
-gettar "https://github.com/xbmc/FFmpeg/archive/$_ffmpeg_version.tar.gz" ${SECTION}/kodideps "ffmpeg-$_ffmpeg_version.tar.gz"
-
-#https://github.com/xbmc/xbmc/archive/18.4-Leia.tar.gz
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
-case $PIVERS in
-	0|1)
-		CPU=arm1176jzf-s
-		;;
-	2)
-		CPU=Cortex-A7
-		;;
-	3)
-		CPU=Cortex-A53
-		;;
-	4)
-		CPU=Cortex-A72
-		;;
-esac
 
 #create input gtroup
 groupadd -g $(findnextgid system) -r input || true
@@ -59,13 +31,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		export PATH="$PATH:/opt/jdk/bin"
 		export JAVA_HOME=/opt/jdk
 
-		cmake -DCMAKE_PREFIX_PATH=/opt/vc -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCORE_PLATFORM_NAME=rbpi  -DENABLE_EVENTCLIENTS=ON -DENABLE_OPENGL=OFF -DENABLE_OPENGLES=ON -DCMAKE_BUILD_TYPE=Release -DENABLE_INTERNAL_FSTRCMP=ON -DENABLE_INTERNAL_FLATBUFFERS=ON -DENABLE_INTERNAL_CROSSGUID=ON -DENABLE_MARIADBCLIENT=OFF -DENABLE_MYSQLCLIENT=ON -DENABLE_INTERNAL_RapidJSON=OFF -DENABLE_INTERNAL_FFMPEG=OFF -DENABLE_EGL=ON -DFLATBUFFERS_URL="${KODIDEPS}/flatbuffers-$_flatbuffers_version.tar.gz" -DFSTRCMP_URL="${KODIDEPS}/fstrcmp-$_fstrcmp_version.tar.gz" -DFFMPEG_URL="${KODIDEPS}/ffmpeg-$_ffmpeg_version.tar.gz"  ..
+		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DENABLE_OPENGL=OFF -DENABLE_X11=OFF -DENABLE_OPENGLES=ON -DCORE_SYSTEM_NAME=linux -DCORE_PLATFORM_NAME=gbm -DGBM_RENDER_SYSTEM=gles -DENABLE_DVDCSS=ON -DENABLE_AIRTUNES=OFF -DENABLE_OPTICAL=ON -DENABLE_UPNP=ON  -DENABLE_LIRC=OFF -DENABLE_BLUETOOTH=OFF -DENABLE_BLURAY=OFF -DENABLE_AVAHI=OFF -DENABLE_CEC=OFF -DENABLE_SMBCLIENT=ON -DENABLE_ALSA=ON -DENABLE_VAAPI=OFF -DENABLE_VDPAU=OFF -DENABLE_INTERNAL_FLATBUFFERS=ON -DENABLE_INTERNAL_FMT=ON -DENABLE_INTERNAL_FSTRCMP=ON -DENABLE_MMAL=ON ..
 
 		make $MAKEFLAGS || make || exit 100
 		make install DESTDIR=$PKG || exit 100
-
-#fix kodi exit bugs
-		cp $CWD/kodi $PKG/usr/bin
 	popd
 
 	checketc "$PKG"

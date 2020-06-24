@@ -67,5 +67,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}"
+	rm -r "$PKG" "${TARNAME}_2_6_2"
 popd 2>/dev/null||true

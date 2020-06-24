@@ -9,7 +9,7 @@ fi
 
 PKGNAME="mesalib"
 TARNAME="mesa"
-VERSION="19.1.4"
+VERSION="20.0.7"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -20,7 +20,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://mesa.freedesktop.org/archive/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-add_xdemos-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -32,10 +31,9 @@ pushd $COMPILEAT 2>/dev/null||true
 			cd build
 			DRI_DRIVERS=
 			GALLIUM_DRV="vc4,v3d,kmsro"
-			PLATFORMS=${PLATFORMS:-"surfaceless,drm"}
-			meson --prefix=$XORG_PREFIX -Dglx=disabled -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false  -Dvalgrind=false -Dplatforms=$PLATFORMS ..
+			PLATFORMS="x11,surfaceless,drm"
+			meson --prefix=/usr -Dglx=disabled -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false  -Dvalgrind=false -Dplatforms=$PLATFORMS -Dopengl=true -Dgles2=true -Dgles1=true -Dgbm=true -Dglx-direct=true -Dllvm=true ..
 		else
-			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch||true
 			cd build
 			DRI_DRIVERS="i965,nouveau"
 			GALLIUM_DRV="i915,nouveau,r600,radeonsi,svga,swrast,virgl"
@@ -74,3 +72,4 @@ pushd $COMPILEAT 2>/dev/null||true
 	
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+

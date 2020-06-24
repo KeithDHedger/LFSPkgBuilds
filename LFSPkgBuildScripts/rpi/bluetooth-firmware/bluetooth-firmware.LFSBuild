@@ -2,11 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="glm"
-TARNAME="$PKGNAME"
-VERSION="0.9.9.5"
+PKGNAME="bluetooth-firmware"
+TARNAME="bluez-firmware"
+VERSION="1.2"
 BUILD=1
-SECTION="RPI3"
+SECTION="RPI"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -14,18 +14,19 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/g-truc/glm/archive/0.9.9.5/${TARBALL}" $SECTION
+gettar "http://bluez.sf.net/download/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build||true
-		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DGLM_TEST_ENABLE=ON -DGLM_TEST_ENABLE_CXX_11=ON -Wno-dev ..
-		make $MAKEFLAGS||make|| exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/lib/firmware/brcm
+		cd $PKG/lib/firmware/brcm
+		wget https://archlinuxarm.org/builder/src/bcm43430/7.45.98.38/brcmfmac43430-sdio.bin https://archlinuxarm.org/builder/src/bcm43430/7.45.98.38/brcmfmac43430-sdio.txt https://archlinuxarm.org/builder/src/bcm43430/BCM43430A1.hcd https://archlinuxarm.org/builder/src/bcm43455/7.45.154/brcmfmac43455-sdio.binhttps://archlinuxarm.org/builder/src/bcm43455/7.45.154/brcmfmac43455-sdio.clm_blob https://archlinuxarm.org/builder/src/bcm43455/7.45.154/brcmfmac43455-sdio.txt https://archlinuxarm.org/builder/src/bcm43455/BCM4345C0.hcd||true
 	popd
 
 	checketc "$PKG"

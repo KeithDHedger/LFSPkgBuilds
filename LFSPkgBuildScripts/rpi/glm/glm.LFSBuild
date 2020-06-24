@@ -2,33 +2,30 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.4 fbset-2.1 rpi-fonts-0.1.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="omxplayer"
+PKGNAME="glm"
 TARNAME="$PKGNAME"
-VERSION="1.8.19"
+VERSION="0.9.9.5"
 BUILD=1
-SECTION="RPI3"
+SECTION="RPI"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/popcornmix/omxplayer/archive/master.zip" $SECTION ${TARBALL}
+gettar "https://github.com/g-truc/glm/archive/0.9.9.5/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" "zip"
-	pushd "${TARNAME}-master"
-		make $MAKEFLAGS ffmpeg||make|| exit 100
-		INCLUDES="-I$CWD " make $MAKEFLAGS||make|| exit 100
-		cp -rvp omxplayer-dist/* $PKG
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		mkdir build||true
+		cd  build
+		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DGLM_TEST_ENABLE=ON -DGLM_TEST_ENABLE_CXX_11=ON -Wno-dev ..
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
@@ -53,6 +50,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -rf "$PKG" "${TARNAME}-master"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
-

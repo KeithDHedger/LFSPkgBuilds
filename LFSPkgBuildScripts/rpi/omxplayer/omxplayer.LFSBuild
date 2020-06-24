@@ -2,36 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="glm-0.9.9.5"
+DEPENDS="dbus-1.12.4 fbset-2.1 rpi-fonts-0.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="visualization-waveform"
+PKGNAME="omxplayer"
 TARNAME="$PKGNAME"
-VERSION="3.1.1"
+VERSION="1.8.19"
 BUILD=1
-SECTION="RPI3"
+SECTION="RPI"
 SUFFIX="LFSPKG"
-TARBALL="Leia.zip"
+TARBALL="${TARNAME}-${VERSION}.zip"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
-CODENAME="Leia"
-FOLDER="visualization.waveform"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/xbmc/visualization.waveform/archive/${TARBALL}" $SECTION "${PKGNAME}-${VERSION}"
-
+gettar "https://github.com/popcornmix/omxplayer/archive/master.zip" $SECTION ${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION} "zip"
-	pushd "${FOLDER}-${CODENAME}"
-		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib/kodi -DCMAKE_PREFIX_PATH=/opt/vc -DCMAKE_BUILD_TYPE=Release -Wno-dev .
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" "zip"
+	pushd "${TARNAME}-master"
+		make $MAKEFLAGS ffmpeg||make|| exit 100
+		INCLUDES="-I$CWD " make $MAKEFLAGS||make|| exit 100
+		cp -rvp omxplayer-dist/* $PKG
 	popd
 
 	checketc "$PKG"
@@ -56,12 +53,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${FOLDER}-${CODENAME}"
+	rm -rf "$PKG" "${TARNAME}-master"
 popd 2>/dev/null||true
-
-
-
-
-
-
 

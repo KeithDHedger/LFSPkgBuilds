@@ -26,17 +26,19 @@ pushd $LFS
 #this is the folder for the source archives:
 
 	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
-	mkdir -vp ${LFS}/${BUILTPACKAGES}||true
+	mkdir -vp ${LFS}/${PKGARCHIVES}||true
 	if [ "X$EXTFOLDER" != "X" ];then
-		mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
-		mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+		if ! mountpoint $LFS/${PKGARCHIVES} ;then
+			mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
+			mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+		fi
 	fi
 
 #This seems to be needed now as TERM=xterm screws up ncurses
 #Set TERM as dialog needs it
 	export TERM="xterm-color"
 	if [ "X$1" = "Xsystem" ];then
-		mv ${LFS}/etc/profile ${LFS}/etc/profile.BAK
+		mv ${LFS}/etc/profile ${LFS}/etc/profile.BAK||true
 		chroot "$LFS" /tools/bin/env -i HOME=/root TERM="$TERM" PS1='\u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /tools/bin/bash --login +h
 		mv ${LFS}/etc/profile.BAK ${LFS}/etc/profile
 	else

@@ -12,7 +12,7 @@ fi
 #this is optional see the Chroot script and the how to.
 if [ "X$EXTFOLDER" != "X" ];then
 	umount ${LFS}/${SOURCEARCHIVES} ||true
-	umount ${LFS}/${BUILTPACKAGES} ||true
+	umount ${LFS}/${PKGARCHIVES} ||true
 fi
 
 umount ${LFS}/run||true

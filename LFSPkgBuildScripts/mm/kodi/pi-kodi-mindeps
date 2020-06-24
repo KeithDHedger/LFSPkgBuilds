@@ -169,6 +169,11 @@ if [ "$(lfspkg -S 5 rpcsvc-proto)" = "false" ];then
 	./rpcsvc-proto.LFSBuild install
 fi
 
+if [ "$(lfspkg -S 5 jansson)" = "false" ];then
+	cd /LFSPkgBuildScripts/libs/jansson/
+	./jansson.LFSBuild install
+fi
+
 if [ "$(lfspkg -S 5 samba)" = "false" ];then
 	export OPTIONS="--without-ldap"
 	cd /LFSPkgBuildScripts/net/samba/
@@ -299,4 +304,16 @@ if [ "$(lfspkg -S 5 libdvdnav)" = "false" ];then
 	./libdvdnav.LFSBuild install
 fi
 
+if [ "$(lfspkg -S 5 mesalib)" = "false" ];then
+	export NODEPS=
+	cd /LFSPkgBuildScripts/xorg/MesaLib/
+	./MesaLib.LFSBuild install
+	export NODEPS=1
+fi
 
+#remove pi pre built gl libs etc
+if [ "$PIBUILD" -eq 1 ];then
+	mkdir -vp /opt/hold/include /opt/hold/lib
+	mv /opt/vc/include/{EGL,GLES,GLES2} /opt/hold/include||true
+	mv /opt/vc/lib/{libbrcmEGL.so,libGLESv1_CM.so,libbrcmGLESv2.so,libEGL.so,libEGL_static.a,libGLESv2.so,libGLESv2_static.a} /opt/hold/lib||true
+fi

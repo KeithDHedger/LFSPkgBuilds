@@ -11,7 +11,7 @@ Instructions for Raspberry Pi 4 !ONLY!
 LFS=/mnt/LFS
 LFSVERSION=9.0
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
-BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
+PKGARCHIVES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
 KERNELVERSION=4.19
 PIVERS=4
@@ -24,7 +24,7 @@ COMPILEAT=$LFS/$SOURCEARCHIVES
 export LFS
 export LFSVERSION
 export SOURCEARCHIVES
-export BUILTPACKAGES
+export PKGARCHIVES
 export EXTFOLDER
 export KERNELVERSION
 export PIVERS
@@ -34,7 +34,7 @@ export PIROOTDEV
 export COMPILEAT
 
 sudo mount /dev/mmcblk0p11 $LFS
-sudo mkdir -vp $SOURCEARCHIVES $BUILTPACKAGES
+sudo mkdir -vp $SOURCEARCHIVES $PKGARCHIVES
 
 #If compiling on raspberian you need to install some extra files like so:
 apt-get update
@@ -66,7 +66,7 @@ sudo chmod 600 swapfile
 sudo mkswap swapfile
 sudo swapon -v swapfile
 
-#If you are mounting a network folder over SOURCEARCHIVES & BUILTPACKAGES (reccomened to save room ) you may want to set where the actual compilation takes place.
+#If you are mounting a network folder over SOURCEARCHIVES & PKGARCHIVES (reccomened to save room ) you may want to set where the actual compilation takes place.
 #You will need to compile in a place that can set linux permissions so an smb mount would be no good for compiling as some files need to have specific permissions.
 #This is usually at $LFS/$SOURCEARCHIVES, compiling over a network is slow so you can use a local compile instead, eg:
 COMPILEAT=$LFS/tmp
@@ -91,9 +91,9 @@ sudo -E ./LFSSetUp
 #Mount bind external folder if set and if not already mounted.
 . ./SystemData
 mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
-mkdir -vp ${LFS}/${BUILTPACKAGES}||true
+mkdir -vp ${LFS}/${PKGARCHIVES}||true
 if [ "X$EXTFOLDER" != "X" ];then
-	sudo mount --bind $EXTFOLDER/${BUILTPACKAGES} $LFS/${BUILTPACKAGES}
+	sudo mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
 	sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
 fi
 
@@ -128,6 +128,9 @@ cd $LFS/LFSScripts
 screen
 
 #Chroot into temporary system:
+#make sure the /tools link on the host is valid
+#I necessary do:
+#sudo ln -sv $LFS/tools/ /tools
 sudo ./Chroot system
 
 7)
@@ -196,6 +199,8 @@ sudo ./Chroot
 cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild
 
+#You may/probably want to run sudo lfspkg --setup to set up the full /etc/lfspkg.rc file
+
 13)
 #No point in compiling your own kernel on pi so prebuilt one is used.
 #But you may want to set up wifi now so:
@@ -204,23 +209,27 @@ cd /LFSPkgBuildScripts/net/wpa-supplicant/
 #configure
 wpa_passphrase SSID SECRET_PASSWORD > /etc/sysconfig/wpa_supplicant-wifi0.conf
 #Set the country code:
-sed '1s/^/country=GB\n/' /etc/sysconfig/wpa_supplicant-wifi0.conf
+sed -i '1s/^/country=GB\n/' /etc/sysconfig/wpa_supplicant-wifi0.conf
 
 cd /LFSPkgBuildScripts/HelperScripts/
 #dialog program not yet installed so use:
 ./InstallService-NoDialog wpa
 
+#Don't forget to set up /etc/sysconfig/ifconfig.wifi0 if nessasary ( a default is created based on /LFSSourceArchives/9.0/SYSTEM/SystemData.local ).
+#Disable eth0
+mv  /etc/sysconfig/ifconfig.eth0 /etc/sysconfig/XXifconfig.eth0XX
+
 #Openssh and the sshd init script is installed by the system-meta package.
 
 #########################
-# If you have trouble ssh'ing into the 'real' LFS system you may need to manually set the date if the ntpd server takes too long.
+# If you have trouble ssh'ing into the 'real' LFS system you may need to manually set the date if the ntpd server takes too long, eg:
+ntpdate -s time.nist.gov
 #########################
 
 #Install any extra hardware/firmware packages you need ( you may have to boot into the 'real' system for this ).
 #eg usb wireless package:
 cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
-
 
 14)
 #The following are optional but useful

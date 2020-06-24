@@ -22,7 +22,7 @@ echo "Kernel version:" $KERNELVERSION
 echo "INIT type:" $INITTYPE
 echo
 echo "Folder for downloaded source archives:" $SOURCEARCHIVES
-echo "Folder for built packages:" $BUILTPACKAGES
+echo "Folder for built packages:" $PKGARCHIVES
 echo "Compile in this folder:" $COMPILEAT
 echo "Package Folders Bound To Folder:" $EXTFOLDER
 echo

@@ -58,7 +58,6 @@ root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/bin/false
 daemon:x:6:6:Daemon User:/dev/null:/bin/false
 messagebus:x:18:18:D-Bus Message Daemon User:/var/run/dbus:/bin/false
-lfspkguser:x:26:26:Unprivileged lfspkg user:/dev/null:/bin/false
 nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
 EOF
 
@@ -201,9 +200,9 @@ NORMAL="\[\e[0m\]"
 RED="\[\e[1;31m\]"
 GREEN="\[\e[1;32m\]"
 if [[ \$EUID == 0 ]] ; then
-	PS1=''${RED}'\u@\h [ '${NORMAL}'\w '${RED}']$'${NORMAL}' '
+	PS1=''\${RED}'\u@\h [ '\${NORMAL}'\w '\${RED}']$'\${NORMAL}' '
 else
-	PS1=''${GREEN}'\u@\h [ '${NORMAL}'\w '${GREEN}']$'${NORMAL}' '
+	PS1=''\${GREEN}'\u@\h [ '${NORMAL}'\w '\${GREEN}']$'\${NORMAL}' '
 fi
 
 for script in /etc/profile.d/*.sh
@@ -332,17 +331,17 @@ LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
 LIBDIRSUFFIX=$LIBDIRSUFFIX
 SCRIPTLOG=1
-OUTPUT=$BUILTPACKAGES
+OUTPUT=$PKGARCHIVES
 SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
-COMPILEAT=\${COMPILEAT:-"\$SOURCEARCHIVES"}
+COMPILEAT=$COMPILEAT
 CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib\$LIBDIRSUFFIX --disable-debug --disable-nls --disable-static"
 MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib\$LIBDIRSUFFIX --buildtype=release --default-library=shared"
 MAKEFLAGS=" -j4 "
 CHECKETC=0
 
 EOF
-#Set the perms for $LFS will fail for any mounted network tha can't have their perms changed ( eg a smaba mount ). 
+#Set the perms for $LFS will fail for any mounted network tha can't have their perms changed ( eg a samba mount ). 
 	chown -R root:root $LFS/* 2>/dev/null||true
 	touch var/log/{btmp,lastlog,wtmp}
 	chmod -v 664 var/log/lastlog
