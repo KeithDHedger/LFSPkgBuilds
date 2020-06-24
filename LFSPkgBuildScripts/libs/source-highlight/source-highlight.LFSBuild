@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Boost-1.66.0 doxygen-1.8.14"
+DEPENDS="Boost-1.66.0 icu4c-64.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-doxygen --with-bash-completion --with-boost
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-bash-completion --with-boost
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		cp doc/source-highlight-lib.html $PKG/usr/share/doc/source-highlight
