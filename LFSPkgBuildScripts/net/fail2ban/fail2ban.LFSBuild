@@ -9,17 +9,17 @@ fi
 
 PKGNAME="fail2ban"
 TARNAME="$PKGNAME"
-VERSION="0.10.4"
+VERSION="0.11.1"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/fail2ban/fail2ban/archive${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/fail2ban/fail2ban/archive/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

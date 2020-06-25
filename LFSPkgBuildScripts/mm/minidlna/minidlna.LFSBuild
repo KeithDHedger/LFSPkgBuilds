@@ -2,6 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="ffmpeg-4.2 libexif-0.6.21 libvorbis-1.3.6"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="minidlna"
 TARNAME="$PKGNAME"
 VERSION="1.2.1"
