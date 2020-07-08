@@ -24,7 +24,7 @@
 case "$1" in
 	start)
 		MOUNTRESULT="OK"
-		prettyMsgStart "Starting ntpd"
+		prettyMsgStart "Starting nullmailer"
 		/usr/sbin/nullmailer-send & 2>/dev/null
 		prettyMsgResult $MOUNTRESULT
 		;;
@@ -49,3 +49,4 @@ case "$1" in
 esac
 
 exit 0
+
