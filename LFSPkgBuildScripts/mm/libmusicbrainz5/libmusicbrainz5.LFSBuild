@@ -1,0 +1,73 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="CMake-3.15.2 libxml2-2.9.9 neon-0.30.2"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="libmusicbrainz5"
+TARNAME="libmusicbrainz"
+VERSION="5.1.0"
+BUILD=${BUILD:-1}
+SECTION="MM"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+#gettar "http://ftp.musicbrainz.org/pub/musicbrainz/historical/${TARBALL}" $SECTION
+gettar "https://github.com/metabrainz/${TARNAME}/releases/download/release-${VERSION}/${TARBALL}" $SECTION
+#gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-missing-includes-1.patch" $SECTION
+
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+pushd "${TARNAME}-${VERSION}"
+	mkdir build || true
+	cd build
+
+	cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+	make
+	doxygen ../Doxyfile
+	make install DESTDIR=$PKG
+	rm -rf $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	mkdir -vp $PKG/usr/share/doc/
+	cp -vr docs/ $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-missing-includes-1.patch
+#	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS -std=c++98" ./configure ${CONFIGOPTIONS}
+#	make $MAKEFLAGS||make|| exit 100
+#	(cd python && python setup.py build)
+#	make install DESTDIR=$PKG || exit 100
+#	(cd python && python setup.py install --root=$PKG)
+popd
+
+checketc $PKG
+packageclean "$PKG" "$CWD"
+
+pushd "$PKG"
+	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+
+rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
