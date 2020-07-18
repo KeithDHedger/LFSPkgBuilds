@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/wireshark.html
+The Wireshark package contains a network protocol analyzer, also known as a &ldquo;sniffer&rdquo;. This is useful for analyzing data captured &ldquo;off the wire&rdquo; from a live network connection, or data read from a capture file.

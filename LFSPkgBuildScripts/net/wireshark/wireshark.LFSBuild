@@ -2,36 +2,48 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="lame-3.100"
+DEPENDS="GLib-2.60.6 libpcap-1.7.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="ffmpeg"
+PKGNAME="wireshark"
 TARNAME="$PKGNAME"
-VERSION="4.2"
+VERSION="3.2.1"
 BUILD=1
-SECTION="MM"
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://ffmpeg.org/releases/${TARBALL}" $SECTION
+gettar "https://www.wireshark.org/download/src/all-versions/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i 's/-lflite"/-lflite -lasound"/' configure
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --disable-static --disable-debug --enable-gpl --enable-version3 --enable-nonfree --enable-libmp3lame --enable-libtheora --enable-libvorbis
+		mkdir build || true
+		cd  build
+		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -Wno-dev -DBUILD_wireshark=OFF ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+
+		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		install -v -m644 ../README.linux ../doc/README.* ../doc/{*.pod,randpkt.txt} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+
+		pushd $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+			for FILENAME in ../../wireshark/*.html
+				do
+					ln -s -v -f $FILENAME .
+				done
+		popd
+		unset FILENAME
 	popd
-#--enable-avresample --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265
+
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 

@@ -1,0 +1,9 @@
+#!/bin/bash
+#©keithhedger Fri 10 Jul 20:12:23 BST 2020
+
+. /usr/share/LFSPkg/LFSFunctions
+
+GID=$(findnextgid "system")
+groupadd -g $GID wireshark
+chown -v root:wireshark /usr/bin/{tshark,dumpcap}
+chmod -v 6550 /usr/bin/{tshark,dumpcap}
