@@ -1,0 +1,1 @@
+darkstat (packet sniffing daemon that serves statistics over HTTP) darkstat features: Traffic graphs, and reports per host, showing each port for each host. Embedded web-server with deflate compression. Asynchronous reverse DNS resolution using a child process. Small. Portable. Single-threaded. Efficient. Uncomplicated. http://dmr.ath.cx/net/darkstat/

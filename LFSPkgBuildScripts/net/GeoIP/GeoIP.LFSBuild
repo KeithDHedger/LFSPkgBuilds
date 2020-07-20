@@ -1,0 +1,67 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="GeoIP"
+TARNAME="$PKGNAME"
+VERSION="1.6.12"
+BUILD=1
+SECTION="NET"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/maxmind/geoip-api-c/releases/download/v${VERSION}/${TARBALL}" $SECTION
+gettar "https://sourceforge.net/projects/slackbuildsdirectlinks/files/${PKGNAME}/20180310/${PKGNAME}.dat.gz" $SECTION
+gettar "https://sourceforge.net/projects/slackbuildsdirectlinks/files/${PKGNAME}/20180310/${PKGNAME}v6.dat.gz" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		autoreconf -i
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		DATAFILES="GeoIP GeoIPv6"
+		mkdir -vp $PKG/var/lib/GeoIP
+		for datafile in $DATAFILES
+			do
+			    zcat ${SOURCEARCHIVES}/$SECTION/$datafile.dat.gz > $PKG/var/lib/GeoIP/$datafile.dat
+			done
+		if [ ! -e $PKG/var/lib/GeoIP/GeoIP.dat ];then
+			cat data/GeoIP.dat > $PKG/var/lib/GeoIP/GeoIP.dat
+		fi
+		# It's traditional to make the data available in /usr/share/GeoIP too:
+		mkdir -p $PKG/usr/share
+		ln -s ../../var/lib/GeoIP $PKG/usr/share/GeoIP
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

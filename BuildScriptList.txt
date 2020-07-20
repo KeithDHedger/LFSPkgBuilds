@@ -129,6 +129,7 @@
 ./devel/p11-kit/p11-kit.LFSBuild
 ./devel/poedit/poedit.LFSBuild
 ./devel/popt/popt.LFSBuild
+./devel/rrdtool/rrdtool.LFSBuild
 ./devel/ruby/ruby.LFSBuild
 ./devel/rustc/rustc.LFSBuild
 ./devel/scons/scons.LFSBuild
@@ -219,6 +220,7 @@
 ./hware/smartmontools/smartmontools.LFSBuild
 ./hware/udisks/udisks.LFSBuild
 ./hware/upower/upower.LFSBuild
+./hware/usbip/usbip.LFSBuild
 ./hware/usbutils/usbutils.LFSBuild
 ./hware/xf86-input-evdev/xf86-input-evdev.LFSBuild
 ./hware/xf86-input-keyboard/xf86-input-keyboard.LFSBuild
@@ -308,7 +310,7 @@
 ./libs/libxkbcommon/libxkbcommon.LFSBuild
 ./libs/libxml2/libxml2.LFSBuild
 ./libs/libxslt/libxslt.LFSBuild
-./libs/LMDB/LMDB_0.9.24.LFSBuild
+./libs/lmdb/lmdb.LFSBuild
 ./libs/luceneplus/luceneplus.LFSBuild
 ./libs/lzo/lzo.LFSBuild
 ./libs/menu-cache/menu-cache.LFSBuild
@@ -342,6 +344,7 @@
 ./mm/audacity/audacity.LFSBuild
 ./mm/avidemux/avidemux.LFSBuild
 ./mm/bchunk/bchunk.LFSBuild
+./mm/cdrdao/cdrdao.LFSBuild
 ./mm/cdrkit/cdrkit.LFSBuild
 ./mm/dvdauthor/dvdauthor.LFSBuild
 ./mm/dvdbackup/dvdbackup.LFSBuild
@@ -381,6 +384,7 @@
 ./mm/libmodplug/libmodplug.LFSBuild
 ./mm/libmp4v2/libmp4v2.LFSBuild
 ./mm/libmpeg2/libmpeg2.LFSBuild
+./mm/libmusicbrainz5/libmusicbrainz5.LFSBuild
 ./mm/libmusicbrainz/libmusicbrainz.LFSBuild
 ./mm/libogg/libogg.LFSBuild
 ./mm/libsamplerate/libsamplerate.LFSBuild
@@ -390,6 +394,7 @@
 ./mm/libvidstab/libvidstab.LFSBuild
 ./mm/libvorbis/libvorbis.LFSBuild
 ./mm/lsdvd/lsdvd.LFSBuild
+./mm/minidlna/minidlna.LFSBuild
 ./mm/mm-meta/mm-meta.LFSBuild
 ./mm/MPlayer/MPlayer.LFSBuild
 ./mm/ogmtools/ogmtools.LFSBuild
@@ -415,11 +420,13 @@
 ./net/cifs-utils/cifs-utils.LFSBuild
 ./net/curl/curl.LFSBuild
 ./net/curlftpfs/curlftpfs.LFSBuild
+./net/darkstat/darkstat.LFSBuild
 ./net/davfs2/davfs2.LFSBuild
 ./net/dovecot/dovecot.LFSBuild
 ./net/fail2ban/fail2ban.LFSBuild
 ./net/fetchmail/fetchmail.LFSBuild
 ./net/FreeRDP/FreeRDP.LFSBuild
+./net/GeoIP/GeoIP.LFSBuild
 ./net/httrack/httrack.LFSBuild
 ./net/icedtea-sound/icedtea-sound.LFSBuild
 ./net/icedtea-web/icedtea-web.LFSBuild
@@ -438,6 +445,7 @@
 ./net/node/node.LFSBuild
 ./net/npapi-sdk/npapi-sdk.LFSBuild
 ./net/nss/nss.LFSBuild
+./net/ntop/ntop.LFSBuild
 ./net/nullmailer/nullmailer.LFSBuild
 ./net/openvpn/openvpn.LFSBuild
 ./net/php/php.LFSBuild
@@ -448,8 +456,10 @@
 ./net/samba/samba.LFSBuild
 ./net/seamonkey/seamonkey.LFSBuild
 ./net/sendmail/sendmail.LFSBuild
+./net/socat/socat.LFSBuild
 ./net/sshfs/sshfs.LFSBuild
 ./net/surfraw/surfraw.LFSBuild
+./net/tcpdump/tcpdump.LFSBuild
 ./net/tor/tor.LFSBuild
 ./net/vidalia/vidalia.LFSBuild
 ./net/w3m/w3m.LFSBuild
@@ -459,6 +469,7 @@
 ./net/whois/whois.LFSBuild
 ./net/wicd/wicd.LFSBuild
 ./net/wireless-tools/wireless-tools.LFSBuild
+./net/wireshark/wireshark.LFSBuild
 ./net/wpa-supplicant/wpa-supplicant.LFSBuild
 ./perl/Archive-Zip/Archive-Zip.LFSBuild
 ./perl/Audio-Taglib/Audio-Taglib.LFSBuild
@@ -489,6 +500,7 @@
 ./print/xsane/xsane.LFSBuild
 ./python/arandr/arandr.LFSBuild
 ./python/Beaker/Beaker.LFSBuild
+./python/BeautifulSoup/BeautifulSoup.LFSBuild
 ./python/CloudFusion/CloudFusion.LFSBuild
 ./python/Cython/Cython.LFSBuild
 ./python/dbus-python/dbus-python.LFSBuild
@@ -532,11 +544,11 @@
 ./qt/qtwebengine/qtwebengine.LFSBuild
 ./qt/qtwebkit/qtwebkit.LFSBuild
 ./qt/QupZilla/QupZilla.LFSBuild
-./rpi3/bluetooth-firmware/bluetooth-firmware.LFSBuild
-./rpi3/glm/glm.LFSBuild
-./rpi3/omxplayer/omxplayer.LFSBuild
-./rpi3/rpi-fonts/rpi-fonts.LFSBuild
-./rpi3/visualization-waveform/visualization-waveform.LFSBuild
+./rpi/bluetooth-firmware/bluetooth-firmware.LFSBuild
+./rpi/glm/glm.LFSBuild
+./rpi/omxplayer/omxplayer.LFSBuild
+./rpi/rpi-fonts/rpi-fonts.LFSBuild
+./rpi/visualization-waveform/visualization-waveform.LFSBuild
 ./sys/acpid/acpid.LFSBuild
 ./sys/bootfiles/bootfiles.LFSBuild
 ./sys/busybox/busybox.LFSBuild

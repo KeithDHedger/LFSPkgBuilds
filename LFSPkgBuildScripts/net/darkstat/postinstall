@@ -1,0 +1,5 @@
+#!/bin/bash
+#©keithhedger Sun 19 Jul 19:10:38 BST 2020
+
+. /usr/share/LFSPkg/LFSFunctions
+

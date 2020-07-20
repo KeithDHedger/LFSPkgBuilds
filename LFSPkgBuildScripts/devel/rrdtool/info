@@ -1,0 +1,1 @@
+rrdtool (RRDTool Logging and Graphing) RRD is the acronym for Round Robin Database. It is a system to store and display time-series data (i.e. network bandwidth, machine-room temperature, server load average). Homepage: http://oss.oetiker.ch/rrdtool/

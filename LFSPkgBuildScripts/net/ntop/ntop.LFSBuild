@@ -1,0 +1,68 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="rrdtool-1.7.2 GeoIP-1.6.12"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="ntop"
+TARNAME="$PKGNAME"
+VERSION="5.0.1"
+BUILD=1
+SECTION="NET"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://downloads.sourceforge.net/ntop/${TARBALL}" $SECTION
+gettar "https://git.archlinux.org/svntogit/community.git/plain/trunk/ntop-rrdtool-1.6.0.patch?h=packages/ntop" $SECTION ntop-rrdtool-1.6.0.patch
+gettar "http://slackbuilds.org/slackbuilds/14.2/network/ntop/no_downloads.patch" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		## Patch Makefile so we won't do automatic downloads
+		#patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/no_downloads.patch
+		# Patch for rrdtool-1.6.0 (thanks to Gentoo)
+		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/ntop-rrdtool-1.6.0.patch
+	
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh ${CONFIGOPTIONS} --with-rrd-home=/usr/lib${LIBDIRSUFFIX} --disable-snmp
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		#rmdir -v $PKG/usr/lib${LIBDIRSUFFIX}/plugins||true
+
+		mkdir -p $PKG/etc/logrotate.d
+		install -m 0644 $CWD/$PKGNAME.logrotate $PKG/etc/logrotate.d/$PKGNAME
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
