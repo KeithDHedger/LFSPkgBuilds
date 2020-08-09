@@ -49,6 +49,8 @@ case $PIBUILD in
 		esac
 esac
 
+PIBUILD=0
+
 #set variables if possible
 if [ -f ./SystemData.local ];then
 	. ./SystemData.local
@@ -85,7 +87,7 @@ if [ $PIBUILD -eq 1 ];then
 	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|pi-sysvinit)"
 else
 	INITTYPE=${INITTYPE:-"sysvinit"}
-	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|sysvinit)"
+	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|sysvinit|systemd)"
 fi
 
 #libdir suffix
