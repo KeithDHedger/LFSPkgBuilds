@@ -68,7 +68,7 @@ fi
 
 5)
 #Run BuildFileSystem script:
-./BuildFileSystem
+[sudo] ./BuildFileSystem-SystemD
 
 5.2)
 #You may/will have to re-own/set perms the various folders etc, so:
