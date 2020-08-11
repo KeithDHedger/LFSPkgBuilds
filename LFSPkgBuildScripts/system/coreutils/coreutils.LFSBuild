@@ -34,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mv -v $PKG/usr/bin/chroot $PKG/usr/sbin
 		mv -v $PKG/usr/share/man/man1/chroot.1 $PKG/usr/share/man/man8/chroot.8
 		sed -i 's/\"1\"/\"8\"/1' "$PKG/usr/share/man/man8/chroot.8"
-		mv -v $PKG/usr/bin/{head,sleep,nice,test,[} $PKG/bin
+		mv -v $PKG/usr/bin/{head,nice,sleep,touch} $PKG/bin
 	popd
 
 	checketc "$PKG"

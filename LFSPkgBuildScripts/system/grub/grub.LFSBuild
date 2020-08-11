@@ -26,6 +26,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		./configure --sbindir=/sbin --prefix=/usr --sysconfdir=/etc --disable-efiemu  --disable-werror
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/bash-completion/completions
+		mv -v $PKG/etc/bash_completion.d/grub $PKG/usr/share/bash-completion/completions
 	popd
 
 	checketc "$PKG"
