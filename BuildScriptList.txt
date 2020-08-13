@@ -445,7 +445,6 @@
 ./net/node/node.LFSBuild
 ./net/npapi-sdk/npapi-sdk.LFSBuild
 ./net/nss/nss.LFSBuild
-./net/ntop/ntop.LFSBuild
 ./net/nullmailer/nullmailer.LFSBuild
 ./net/openvpn/openvpn.LFSBuild
 ./net/php/php.LFSBuild
@@ -556,7 +555,6 @@
 ./sys/ConsoleKit2/consolekit2.LFSBuild
 ./sys/ConsoleKit/ConsoleKit.LFSBuild
 ./sys/cpio/cpio.LFSBuild
-./sys/dbus/dbus.LFSBuild
 ./sys/dbus-glib/dbus-glib.LFSBuild
 ./sys/dosbox/dosbox.LFSBuild
 ./sys/dosfstools/dosfstools.LFSBuild
@@ -600,6 +598,7 @@
 ./system/bzip2/bzip2.LFSBuild
 ./system/check/check.LFSBuild
 ./system/coreutils/coreutils.LFSBuild
+./system/dbus/dbus.LFSBuild
 ./system/diffutils/diffutils.LFSBuild
 ./system/e2fsprogs/e2fsprogs.LFSBuild
 ./system/eudev/eudev.LFSBuild
@@ -656,9 +655,11 @@
 ./system/sed/sed.LFSBuild
 ./system/shadow/shadow.LFSBuild
 ./system/sysklogd/sysklogd.LFSBuild
+./system/systemd/systemd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
+./system/system-meta/system-systemd-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
 ./system/sysvinit/sysvinit.LFSBuild
 ./system/tar/tar.LFSBuild
