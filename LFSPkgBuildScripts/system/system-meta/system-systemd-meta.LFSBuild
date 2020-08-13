@@ -9,6 +9,9 @@ export CONFIGOPTIONS="--prefix=/usr --disable-debug"
 THISTTY=$(tty)
 export THISTTY
 export ANYVERSION=1
+export USESYSTEMD=1
+export LANG=en_GB.UTF-8
+export USESYSTEMD=1
 
 DEPENDS="linuxheaders-5.2.8
 Man-pages-5.02
@@ -75,16 +78,12 @@ Tar-1.32
 Texinfo-6.6
 Vim-8.1.1846
 systemd-241
-
+dbus-1.12.16
 Procps-ng-3.3.15
 Util-linux-2.34
 E2fsprogs-1.45.3
-Sysklogd-1.5.1
-Sysvinit-2.95
 Wget-1.20.3
 unzip-6.0
-lfs-bootscripts-20190524
-eudev-3.2.8
 Wget-1.20.3
 unzip-6.0
 GPM-1.20.7

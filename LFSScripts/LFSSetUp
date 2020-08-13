@@ -50,6 +50,7 @@ case $PIBUILD in
 esac
 
 PIBUILD=0
+USESYSTEMD=0
 
 #set variables if possible
 if [ -f ./SystemData.local ];then
@@ -81,13 +82,16 @@ readWithDefault "LFSVERSION"  "Enter LFS Version"
 LFSNAME=${LFSNAME:-"LFS"}
 readWithDefault "LFSNAME"  "Enter Hostname"
 
-#LFS init type eithe bbinit or sysvinit
+#LFS init type either bbinit, sysvinit, sytemd or custom
 if [ $PIBUILD -eq 1 ];then
 	INITTYPE=${INITTYPE:-"pi-sysvinit"}
 	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|pi-sysvinit)"
 else
 	INITTYPE=${INITTYPE:-"sysvinit"}
 	readWithDefault "INITTYPE"  "Enter Init Type (LFSInit|bbinit|sysvinit|systemd)"
+	if [ "$INITTYPE" = "systemd" ];then
+		USESYSTEMD=1
+	fi
 fi
 
 #libdir suffix
@@ -172,6 +176,7 @@ fi
 echo "LFSVERSION=$LFSVERSION"
 echo "LFSNAME=$LFSNAME"
 echo "INITTYPE=$INITTYPE"
+echo "USESYSTEMD=$USESYSTEMD"
 
 echo "LIBDIRSUFFIX=$LIBDIRSUFFIX"
 echo "BUILDSCRIPTS=$BUILDSCRIPTS"
@@ -225,6 +230,7 @@ LFSNAME=$LFSNAME
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
 INITTYPE=$INITTYPE
+USESYSTEMD=$USESYSTEMD
 
 LIBDIRSUFFIX=$LIBDIRSUFFIX
 SOURCEARCHIVES=$SOURCEARCHIVES
@@ -253,6 +259,9 @@ OUTPUT=$PKGARCHIVES
 SOURCEARCHIVES=$SOURCEARCHIVES
 BUILDSCRIPTS=$BUILDSCRIPTS
 COMPILEAT=$COMPILEAT
+USESYSTEMD=$USESYSTEMD
+PIBUILD=$PIBUILD
+LANG=$LANGUAGE
 EOF
 sudo mv /tmp/lfspkg.rc $LFS/etc/
 

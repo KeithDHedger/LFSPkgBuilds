@@ -9,23 +9,36 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
-PKG="${OUTPUT}/${PKGNAME}"
-DOWHAT=${1:-"build"}
-CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://dbus.freedesktop.org/releases/dbus/${TARBALL}" $SECTION
+PKG="${OUTPUT}/${PKGNAME}"
+
+DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+
+USESYSTEMD=${USESYSTEMD:-0}
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir= --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --with-console-auth-dir=/run/console/ --disable-doxygen-docs --disable-xml-docs --without-systemdsystemunitdir --disable-systemd --disable-static --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --with-console-auth-dir=/run/console --disable-doxygen-docs --disable-xml-docs --docdir=/usr/share/doc/${PKGNAME}-${VERSION} $SYSTEMDOPTS
+
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} $PKG/etc/${PKGNAME}-${VERSION}
-		mv -v $PKG/usr/share/doc/dbus $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		if [ $USESYSTEMD -eq 0 ];then
+			mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} $PKG/etc/${PKGNAME}-${VERSION}
+			mv -v $PKG/usr/share/doc/dbus $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		else
+			mkdir -vp ${PKG}/{lib,etc} ${PKG}/var/lib/dbus
+			mv -v ${PKG}/usr/lib/libdbus-1.so.* ${PKG}/lib
+			ln -sfv ../../lib/$(readlink ${PKG}/usr/lib/libdbus-1.so) ${PKG}/usr/lib/libdbus-1.so
+			ln -sfv ${PKG}/etc/machine-id ${PKG}/var/lib/dbus
+		fi
 	popd
 
 	checketc $PKG

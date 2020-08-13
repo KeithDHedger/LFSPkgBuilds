@@ -17,6 +17,7 @@ export SCRIPTLOG
 export MAKEFLAGS
 export NOLOADCONFIG=1
 export ANYVERSION=1
+export USESYSTEMD=0
 
 DEPENDS="pi-linuxheaders-4.19
 Man-pages-5.02

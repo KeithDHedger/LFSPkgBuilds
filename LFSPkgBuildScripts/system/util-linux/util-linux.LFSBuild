@@ -24,11 +24,18 @@ mkdir -p "$PKG"
 CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
+USESYSTEMD=${USESYSTEMD:-0}
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		if [ $USESYSTEMD -eq 0 ];then
+			SYSTEMDOPTS=" --without-systemd --without-systemdsystemunitdir"
+		else
+			rm -vf /usr/include/{blkid,libmount,uuid}||true
+		fi
 		mkdir -pv $PKG/var/lib/hwclock
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python --without-systemd --without-systemdsystemunitdir $BUILDSTATIC
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python $SYSTEMDOPTS $BUILDSTATIC
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		if [ "X$ENABLESTATIC" != "X" ];then

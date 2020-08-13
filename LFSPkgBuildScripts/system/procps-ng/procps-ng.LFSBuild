@@ -18,10 +18,15 @@ mkdir -p "$PKG"
 CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
+USESYSTEMD=${USESYSTEMD:-1}
+if [ $USESYSTEMD -eq 1 ];then
+	SYSTEMDOPTS="--with-systemd"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		./configure --prefix=/usr --exec-prefix= --libdir=/usr/lib${LIBDIRSUFFIX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static --disable-kill
+		./configure --prefix=/usr --exec-prefix= --libdir=/usr/lib${LIBDIRSUFFIX} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-static --disable-kill $SYSTEMDOPTS
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 

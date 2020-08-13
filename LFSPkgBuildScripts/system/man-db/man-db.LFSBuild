@@ -18,11 +18,17 @@ mkdir -p "$PKG"
 CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
+USESYSTEMD=${USESYSTEMD:-0}
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/find/s@/usr@@' init/systemd/man-db.service.in
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --sysconfdir=/etc --disable-setuid --enable-cache-owner=bin --with-browser=/usr/bin/links --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap --libdir=/usr/lib${LIBDIRSUFFIX}
+		if [ $USESYSTEMD -eq 0 ];then
+			SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir="
+		else
+			sed -i '/find/s@/usr@@' init/systemd/man-db.service.in
+		fi
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --sysconfdir=/etc --disable-setuid --enable-cache-owner=bin --with-browser=/usr/bin/links --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap $SYSTEMDOPTS --libdir=/usr/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

@@ -110,15 +110,17 @@ EOF
 	chmod -v 664  var/log/lastlog
 	chmod -v 600  var/log/btmp
 
-	mkdir -vp etc/sysconfig
-	cat > etc/sysconfig/ifconfig.eth0 << EOF
-ONBOOT=yes
-IFACE=eth0
-SERVICE=ipv4-static
-IP=$IP
-GATEWAY=$GATEWAY
-PREFIX=24
-BROADCAST=${SUBNET}
+
+	mkdir -vp etc/systemd/network
+	cat > etc/systemd/network/10-eth-static.network << "EOF"
+[Match]
+Name=eth0
+
+[Network]
+Address=$IP
+Gateway=$GATEWAY
+DNS=8.8.8.8
+Domains=$LFSNAME
 EOF
 
 	cat > etc/resolv.conf << EOF
@@ -138,22 +140,16 @@ $IP $LFSNAME $LFSNAME.local
 # End /etc/hosts (network card version)
 EOF
 
-	echo "HOSTNAME=$LFSNAME" > etc/sysconfig/network
+	echo "$LFSNAME" > etc/hostname
 
-	cat > etc/sysconfig/clock << "EOF"
-# Begin /etc/sysconfig/clock
-
-UTC=1
-
-# Set this to any options you might need to give to hwclock,
-# such as machine hardware clock type for Alphas.
-CLOCKPARAMS=
-
-# End /etc/sysconfig/clock
+	cat > etc/adjtime << "EOF"
+0.0 0 0.0
+0
+LOCAL
 EOF
 
-	cat > etc/sysconfig/console << EOF
-# Begin /etc/sysconfig/console
+	cat > etc/vconsole.conf << EOF
+# Begin /etc/vconsole.conf
 
 KEYMAP=$KEYBOARD
 #FONT="lat2a-16 -m 8859-2"
@@ -161,6 +157,9 @@ KEYMAP=$KEYBOARD
 # End /etc/sysconfig/console
 EOF
 
+	cat > etc/locale.conf << "EOF"
+LANG=$LANGUAGE
+EOF
 	cat > etc/profile << EOF
 # Begin /etc/profile
 
@@ -297,41 +296,13 @@ devtmpfs					/dev		devtmpfs	mode=0755,nosuid	0		0
 # End /etc/fstab
 EOF
 
-	cat > etc/inittab << "EOF"
-# Begin /etc/inittab
-
-id:3:initdefault:
-
-si::sysinit:/etc/rc.d/init.d/rc S
-
-l0:0:wait:/etc/rc.d/init.d/rc 0
-l1:S1:wait:/etc/rc.d/init.d/rc 1
-l2:2:wait:/etc/rc.d/init.d/rc 2
-l3:3:wait:/etc/rc.d/init.d/rc 3
-l4:4:wait:/etc/rc.d/init.d/rc 4
-l5:5:wait:/etc/rc.d/init.d/rc 5
-l6:6:wait:/etc/rc.d/init.d/rc 6
-
-ca:12345:ctrlaltdel:/sbin/shutdown -t1 -a -r now
-
-su:S016:once:/sbin/sulogin
-
-1:2345:respawn:/sbin/agetty --noclear tty1 9600
-2:2345:respawn:/sbin/agetty tty2 9600
-3:2345:respawn:/sbin/agetty tty3 9600
-4:2345:respawn:/sbin/agetty tty4 9600
-5:2345:respawn:/sbin/agetty tty5 9600
-6:2345:respawn:/sbin/agetty tty6 9600
-
-# End /etc/inittab
-EOF
-
-	echo $LFSVERSION > etc/lfs-release
+	echo $LFSVERSION > etc/os-release
 	cat > etc/lsb-release << EOF
-DISTRIB_ID="Linux From Scratch"
-DISTRIB_RELEASE="$LFSVERSION"
-DISTRIB_CODENAME="$LFSNAME"
-DISTRIB_DESCRIPTION="Linux From Scratch"
+NAME="Linux From Scratch"
+VERSION="${LFSVERSION}-systemd"
+ID=lfs
+PRETTY_NAME="Linux From Scratch 9.0-systemd"
+VERSION_CODENAME="$LFSNAME"
 EOF
 
 	cat > etc/shells << EOF
@@ -342,6 +313,14 @@ EOF
 
 # End /etc/shells
 EOF
+
+	mkdir -pv etc/systemd/system/getty@tty1.service.d
+
+	cat > etc/systemd/system/getty@tty1.service.d/noclear.conf << EOF
+[Service]
+TTYVTDisallocate=no
+EOF
+	ln -sfv /dev/null etc/systemd/system/tmp.mount
 
 	cat > etc/lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
@@ -356,6 +335,7 @@ CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libex
 MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib\$LIBDIRSUFFIX --buildtype=release --default-library=shared"
 MAKEFLAGS=" -j4 "
 CHECKETC=0
+USESYSTEMD=1
 
 EOF
 #Set the perms for $LFS will fail for any mounted network tha can't have their perms changed ( eg a samba mount ). 

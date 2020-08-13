@@ -9,6 +9,7 @@ export CONFIGOPTIONS="--prefix=/usr --disable-debug"
 THISTTY=$(tty)
 export THISTTY
 export ANYVERSION=0
+export USESYSTEMD=0
 
 DEPENDS="linuxheaders-5.2.8
 Man-pages-5.02
