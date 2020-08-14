@@ -23,7 +23,7 @@ pushd "${PKG}/usr/doc"
 popd
 
 pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
 
 case $DOWHAT in

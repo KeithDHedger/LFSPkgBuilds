@@ -79,8 +79,14 @@ EOF
 			install -v -m644 wpa_gui-qt4/icons/wpa_gui.svg $PKG/usr/share/pixmaps/
 		fi
 
-		mkdir -p ${PKG}/usr/share/dbus-1/system-services/
+		mkdir -p ${PKG}/usr/share/dbus-1/system-services/ ${PKG}/lib${LIBDIRSUFFIX}/systemd/system
 		install -v -m644 dbus/fi.w1.wpa_supplicant1.service $PKG/usr/share/dbus-1/system-services/
+		if [ $USESYSTEMD -eq 1 ];then
+			mkdir -vp ${PKG}/lib${LIBDIRSUFFIX}/systemd/system
+			install -v -d -m755 ${PKG}/etc/dbus-1/system.d
+			install -v -m644 dbus/dbus-wpa_supplicant.conf ${PKG}/etc/dbus-1/system.d/wpa_supplicant.conf
+			install -v -m644 systemd/*.service ${PKG}/lib${LIBDIRSUFFIX}/systemd/system/
+		fi
 	popd
 
 	checketc "$PKG"

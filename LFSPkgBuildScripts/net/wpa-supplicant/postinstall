@@ -1,10 +1,13 @@
 #!/bin/bash
 
-. /LFSSourceArchives/9.0/SYSTEM/SystemData.local
+. /LFSPkgBuilds/LFSScripts/SystemData.local
 
 update-desktop-database 2>/dev/null || true
 
-cat > /etc/sysconfig/ifconfig.wifi0 << EOF
+USESYSTEMD=1
+
+if [ $USESYSTEMD -eq 0 ];then
+	cat > /etc/sysconfig/ifconfig.wifi0 << EOF
 ONBOOT="yes"
 IFACE="wlan0"
 SERVICE="wpa"
@@ -14,8 +17,21 @@ WPA_ARGS=""
 
 WPA_SERVICE="ipv4-static"
 IP="$IP"
-GATEWAY="192.168.1.254"
+GATEWAY=$GATEWAY
 PREFIX="24"
 BROADCAST="192.168.1.255"
 EOF
+else
+	cat > /etc/systemd/network/10-wifi-static.network << EOF
+[Match]
+Name=wlan0
+MACAddress=$(cat /sys/class/ieee80211/*/device/net/wlan0/address)
 
+[Network]
+Address=${IP}/24
+Gateway=${GATEWAY}
+DNS=8.8.8.8
+EOF
+	systemctl enable wpa_supplicant@wlan0||true
+	systemctl start wpa_supplicant@wlan0||true
+fi

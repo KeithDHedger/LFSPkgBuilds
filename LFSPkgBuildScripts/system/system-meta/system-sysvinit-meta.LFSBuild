@@ -84,8 +84,6 @@ Wget-1.20.3
 unzip-6.0
 lfs-bootscripts-20190524
 eudev-3.2.8
-Wget-1.20.3
-unzip-6.0
 GPM-1.20.7
 Links-2.19"
 
@@ -109,7 +107,7 @@ checketc "$PKG"
 packageclean "$PKG" "$CWD"
 
 pushd "$PKG"
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
 
 case $DOWHAT in

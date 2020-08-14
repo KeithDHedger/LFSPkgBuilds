@@ -22,7 +22,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "unzip60"
-		LOCAL_UNZIP="-DNO_LCHMOD" make -f unix/Makefile generic
+		make -f unix/Makefile generic
 		make -f unix/Makefile prefix=$PKG/usr MANDIR=/usr/share/man/man1 install || exit 100
 	popd
 
@@ -30,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 
 	case $DOWHAT in

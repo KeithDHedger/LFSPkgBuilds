@@ -1,0 +1,86 @@
+#!/bin/bash -e
+
+#©keithhedger Sat 25 Apr 17:00:40 BST 2020 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+NORMAL='\e[0;0m'
+
+BLFSYSTEMDUNITS="blfs-systemd-units-20180105"
+if [ ! -d "$BLFSYSTEMDUNITS" ];then
+	wget -c --no-check-certificate "http://www.linuxfromscratch.org/blfs/downloads/${LFSVERSION}-systemd/${BLFSYSTEMDUNITS}.tar.bz2"
+	tar -xvf $BLFSYSTEMDUNITS.tar.bz2
+fi
+BOOTSCRIPTS="$BLFSYSTEMDUNITS"
+
+installScript ()
+{
+	echo -e "${GREEN}Installing $1 ...${NORMAL}"
+	if ! make "install-service-$1" 2>/dev/null;then
+		make "install-$1"
+	fi
+}
+
+uninstallScript ()
+{
+	echo -e "${RED}Un-Installing $1 ...${NORMAL}"
+	make "uninstall-$1"
+}
+
+if [ "${#}" -gt 0 ];then
+	pushd $BOOTSCRIPTS &>/dev/null
+		for arg in $@
+			do
+				installScript $arg
+			done
+	popd
+	exit 0
+fi
+
+pushd $BOOTSCRIPTS &>/dev/null
+	SERVICEARRAY=( $(sed -n 's/^install-\([a-z]*-*[a-z]*\):.*$/\1/p' Makefile |sed 's/^service-//g'|sort) )
+	SERVICEARRAY="Cancel ${SERVICEARRAY}"
+popd &>/dev/null
+
+for (( j=0;j<${#SERVICEARRAY[@]};j++ ))
+	do
+		if [ -e "/lib/systemd/system/${SERVICEARRAY[j]}.service" ];then
+			SERVICEARRAY[j]="*${SERVICEARRAY[j]}"
+		else
+			if [ -e "/lib/services/${SERVICEARRAY[j]}" ];then
+				SERVICEARRAY[j]="*${SERVICEARRAY[j]}"
+			fi
+		fi
+	done
+	
+pushd $BOOTSCRIPTS &>/dev/null
+
+	select arg in ${SERVICEARRAY[@]}
+	do
+		if [ "$arg" = "Cancel" ];then
+			break
+		fi
+
+		if [ "${arg:0:1}" = "*" ];then
+			read -p "Do You want to uninstall ${arg:1:1000}? [y/N] "
+			if [ "${REPLY^^}" = "Y" ];then
+				uninstallScript ${arg:1:1000}
+			fi
+		else
+			read -p "Do You want to install ${arg}? [y/N] "
+			if [ "${REPLY^^}" = "Y" ];then
+				installScript $arg
+			fi
+		fi
+	done
+popd
+
+
+
+
+
+	
+
+

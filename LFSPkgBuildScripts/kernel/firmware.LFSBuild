@@ -22,7 +22,7 @@ pushd "${PKG}"
 	NOCHANGEUSER=1 extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	mv linux-firmware-master lib${LIBDIRSUFFIX}/firmware
 	rm -rf lib${LIBDIRSUFFIX}/firmware/carl9170fw||true
-	/usr/bin/lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
 
 case $DOWHAT in

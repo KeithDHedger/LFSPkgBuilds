@@ -28,21 +28,6 @@ rpc: files
 EOF
 fi
 
-mkdir -vp "/etc/ld.so.conf.d" ||true
-if [ ! -e "/etc/ld.so.conf" ];then
-	cat > /etc/ld.so.conf << "EOF"
-# Begin /etc/ld.so.conf
-
-/lib64
-/usr/lib64
-/usr/local/lib
-/opt/lib
-
-include /etc/ld.so.conf.d/*.conf
-/usr/lib
-EOF
-fi
-
 pushd $COMPILEAT 2>/dev/null||true
 	mkdir build||true
 	pushd build

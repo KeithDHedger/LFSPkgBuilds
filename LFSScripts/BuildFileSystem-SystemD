@@ -112,7 +112,7 @@ EOF
 
 
 	mkdir -vp etc/systemd/network
-	cat > etc/systemd/network/10-eth-static.network << "EOF"
+	cat > etc/systemd/network/10-eth-static.network << EOF
 [Match]
 Name=eth0
 
@@ -142,7 +142,7 @@ EOF
 
 	echo "$LFSNAME" > etc/hostname
 
-	cat > etc/adjtime << "EOF"
+	cat > etc/adjtime << EOF
 0.0 0 0.0
 0
 LOCAL
@@ -345,5 +345,20 @@ EOF
 	chmod -v 600  var/log/btmp
 	chgrp -v utmp var/log/lastlog
 	chmod 777 tmp
+
+	mkdir -vp etc/ld.so.conf.d ||true
+	cat > etc/ld.so.conf << EOF
+# Begin /etc/ld.so.conf
+
+/lib${LIBDIRSUFFIX}
+/usr/lib${LIBDIRSUFFIX}
+/usr/local/lib
+/opt/lib
+
+include /etc/ld.so.conf.d/*.conf
+/usr/lib
+EOF
+
+
 popd
 

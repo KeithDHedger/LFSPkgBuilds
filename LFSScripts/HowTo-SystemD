@@ -164,6 +164,8 @@ exit
 cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild install
 
+#You may want to rerun lfspkg --setup
+
 13)
 #No point in compiling your own kernel on pi so prebuilt one is used, so skip this bit on pi.
 
@@ -185,6 +187,25 @@ cd /LFSPkgBuildScripts/kernel
 cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
 
+13.2)
+#You may want to set up wifi now so:
+cd /LFSPkgBuildScripts/net/wpa-supplicant/
+./wpa-supplicant.LFSBuild install
+#configure
+mkdir -vp /etc/wpa_supplicant/
+wpa_passphrase SSID SECRET_PASSWORD > /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+#Set the country code:
+sed -i '1s/^/country=GB\n/' /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+
+#Don't forget to set up wifi config.
+#A basic config is installed to /etc/systemd/network/10-wifi-static.network based on details entered earlier.
+#you may have to change some details depending on your hardware.
+#Change MACAddress, Name etc to suit.
+#you may have to run:
+systemctl enable wpa_supplicant@wlan0
+systemctl start wpa_supplicant@wlan0
+#manually from within the 'real' system.
+ 
 13.5)
 #No grub on pi
 #Optional install of grub, see here:
