@@ -17,7 +17,7 @@ DOWHAT=${1:-"build"}
 
 if [ "X$BOOTSTRAP" != "X" ];then
 	pushd "${TARNAME}-master"
-		make install
+		make install||true
 		. /usr/share/LFSPkg/LFSFunctions
 		PKG="${OUTPUT}/${PKGNAME}"
 		rm -rf "$PKG" || true
