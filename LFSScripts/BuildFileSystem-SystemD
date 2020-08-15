@@ -322,7 +322,8 @@ TTYVTDisallocate=no
 EOF
 	ln -sfv /dev/null etc/systemd/system/tmp.mount
 
-	cat > etc/lfspkg.rc << EOF
+	if [ ! -e etc/lfspkg.rc ];then
+		cat > etc/lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
 LIBDIRSUFFIX=$LIBDIRSUFFIX
@@ -336,8 +337,9 @@ MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --
 MAKEFLAGS=" -j4 "
 CHECKETC=0
 USESYSTEMD=1
-
 EOF
+	fi
+
 #Set the perms for $LFS will fail for any mounted network tha can't have their perms changed ( eg a samba mount ). 
 	chown -R root:root $LFS/* 2>/dev/null||true
 	touch var/log/{btmp,lastlog,wtmp}

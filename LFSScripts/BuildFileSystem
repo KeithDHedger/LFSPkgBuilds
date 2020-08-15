@@ -326,7 +326,8 @@ EOF
 # End /etc/shells
 EOF
 
-	cat > etc/lfspkg.rc << EOF
+	if [ ! -e etc/lfspkg.rc ];then
+		cat > etc/lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION
 LIBDIRSUFFIX=$LIBDIRSUFFIX
@@ -339,8 +340,9 @@ CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libex
 MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib\$LIBDIRSUFFIX --buildtype=release --default-library=shared"
 MAKEFLAGS=" -j4 "
 CHECKETC=0
-
 EOF
+	fi
+
 #Set the perms for $LFS will fail for any mounted network tha can't have their perms changed ( eg a samba mount ). 
 	chown -R root:root $LFS/* 2>/dev/null||true
 	touch var/log/{btmp,lastlog,wtmp}
