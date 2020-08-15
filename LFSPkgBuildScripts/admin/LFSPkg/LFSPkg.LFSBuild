@@ -23,6 +23,8 @@ if [ "X$BOOTSTRAP" != "X" ];then
 		rm -rf "$PKG" || true
 		mkdir -p "$PKG"
 		make install DESTDIR=$PKG
+		checketc "$PKG"
+		packageclean "$PKG"
 		pushd "$PKG"
 			lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 		popd
