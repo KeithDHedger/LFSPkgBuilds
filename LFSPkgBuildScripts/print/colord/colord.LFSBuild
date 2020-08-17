@@ -23,6 +23,12 @@ gettar "http://www.freedesktop.org/software/colord/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 1 ];then
+	SYSTEMDOPTS="-Dsystemd=true"
+else
+	SYSTEMDOPTS="-Dsystemd=false"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
@@ -30,7 +36,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i 's/fur/ur/' po/LINGUAS
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIBDIRSUFFIX} -Ddaemon_user=colord -Dvapi=true -Dsystemd=false -Dlibcolordcompat=true -Dargyllcms_sensor=false -Dbash_completion=false -Ddocs=false -Dman=false ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIBDIRSUFFIX} -Ddaemon_user=colord -Dvapi=true $SYSTEMDOPTS -Dlibcolordcompat=true -Dargyllcms_sensor=false -Dbash_completion=false -Ddocs=false -Dman=false ..
 
 		ninja ${MAKEFLAGS}||exit 100
 		DESTDIR=$PKG ninja install||exit 100

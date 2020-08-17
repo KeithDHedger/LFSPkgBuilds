@@ -1,0 +1,8 @@
+#!/bin/bash
+
+. /usr/share/LFSPkg/LFSFunctions
+
+if [ $USESYSTEMD -eq 1 ];then
+	sed -i '/load-module module-console-kit/s/^/#/' /etc/pulse/default.pa
+	rm -fv /etc/dbus-1/system.d/pulseaudio-system.conf
+fi

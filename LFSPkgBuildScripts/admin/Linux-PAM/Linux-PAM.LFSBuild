@@ -2,16 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.4 GLib-2.54.3 libical-3.0.1"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="bluez"
+PKGNAME="Linux-PAM"
 TARNAME="$PKGNAME"
-VERSION="5.50"
+VERSION="1.3.1"
 BUILD=1
-SECTION="HWARE"
+SECTION="ADMIN"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -19,31 +14,28 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.kernel.org/pub/linux/bluetooth/${TARBALL}" $SECTION
-if [ "$PIBUILD" = "1" ];then
-	gettar "http://intestinate.com/pilfs/patches/${PKGNAME}-5.40-rpi-fixes.patch" $SECTION
-fi
-
+gettar "https://github.com/linux-pam/linux-pam/releases/download/v1.3.1/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 if [ $USESYSTEMD -eq 0 ];then
-	SYSTEMDOPTS="--disable-systemd"
+	:
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		if [ "$PIBUILD" = "1" ];then
-			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-5.40-rpi-fixes.patch
-		fi
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr $SYSTEMDOPTS --enable-library --enable-deprecated --mandir=/usr/share/man --sysconfdir=/etc  --localstatedir=/var  --enable-sixaxis --disable-cups --enable-experimental --enable-deprecated
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-securedir=/lib${LIBDIRSUFFIX}/security --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-regenerate-docu
 		make $MAKEFLAGS||make|| exit 100
+		install -v -m755 -d ${PKG}/etc/pam.d
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/usr/sbin||true
-		ln -svf ../libexec/bluetooth/bluetoothd ${PKG}/usr/sbin
-		install -v -dm755 ${PKG}/etc/bluetooth
-		install -v -m644 src/main.conf ${PKG}/etc/bluetooth/main.conf
+		chmod -v 4755 ${PKG}/sbin/unix_chkpwd
+
+		for file in pam pam_misc pamc
+			do
+				mv -v ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so.* ${PKG}/lib${LIBDIRSUFFIX}
+				ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so) ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so
+			done
 	popd
 
 	checketc "$PKG"

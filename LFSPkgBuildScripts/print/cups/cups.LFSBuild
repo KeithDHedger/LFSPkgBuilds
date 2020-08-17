@@ -25,6 +25,10 @@ gettar "https://github.com/apple/cups/releases/download/v${VERSION}/${TARBALL}" 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--disable-systemd"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
@@ -35,7 +39,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		aclocal -I config-scripts
 		autoconf -I config-scripts
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc CXX=g++ ./configure --libdir=/usr/lib${LIBDIRSUFFIX} --disable-systemd --with-rcdir=/tmp/cupsinit --with-docdir=/usr/share/cups/doc/${PKGNAME}-${VERSION} --with-system-groups=lpadmin
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc CXX=g++ ./configure --libdir=/usr/lib${LIBDIRSUFFIX} $SYSTEMDOPTS --with-rcdir=/tmp/cupsinit --with-docdir=/usr/share/cups/doc/${PKGNAME}-${VERSION} --with-system-groups=lpadmin
 		make $MAKEFLAGS||make|| exit 100
 		make install BUILDROOT=$PKG || exit 100
 

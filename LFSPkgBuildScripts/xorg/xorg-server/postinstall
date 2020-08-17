@@ -6,7 +6,9 @@
 
 mkdir -pv /etc/X11/xorg.conf.d /etc/sysconfig || true
 
-cat >> /etc/sysconfig/createfiles << "EOF"
+if [ $USESYSTEMD -eq 0 ];then
+	cat >> /etc/sysconfig/createfiles << "EOF"
 /tmp/.ICE-unix dir 1777 root root
 /tmp/.X11-unix dir 1777 root root
 EOF
+fi
