@@ -24,10 +24,14 @@ gettar "https://github.com/${TARNAME}/${TARNAME}/releases/download/${VERSION}/${
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--with-systemdsystemunitdir=no"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 pushd "${TARNAME}-${VERSION}"
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc  --enable-udev-acl --libexecdir=/usr/lib/${PKGNAME} --localstatedir=/var  --with-systemdsystemunitdir=no --enable-docbook-docs --enable-polkit --with-xinitrc-dir=/etc/X11/app-defaults/xinitrc.d
+	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc  --enable-udev-acl --libexecdir=/usr/lib/${PKGNAME} --localstatedir=/var  $SYSTEMDOPTS --enable-docbook-docs --enable-polkit --with-xinitrc-dir=/etc/X11/app-defaults/xinitrc.d
 	make $MAKEFLAGS||make|| exit 100
 	make install DESTDIR=$PKG || exit 100
 

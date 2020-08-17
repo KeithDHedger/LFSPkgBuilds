@@ -20,10 +20,14 @@ gettar "https://nodeload.github.com/IgnorantGuru/udevil/zip/master" ${SECTION} $
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--disable-systemd"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip" "zip"
 	pushd "udevil-master"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-systemd --with-setfacl-prog="/bin/setfacl"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} $SYSTEMDOPTS --with-setfacl-prog="/bin/setfacl"
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc ||true

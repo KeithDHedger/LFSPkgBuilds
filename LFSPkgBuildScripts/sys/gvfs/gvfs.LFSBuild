@@ -24,12 +24,16 @@ gettar "http://ftp.gnome.org/pub/gnome/sources/gvfs/${VERSION%.?*}/${TARBALL}" $
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="-Dsystemduserunitdir=no"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dfuse=false -Dgphoto2=false -Dafc=false -Dbluray=false -Dnfs=false -Dmtp=false -Dsmb=false -Dtmpfilesdir=no -Ddnssd=false -Dgoa=false -Dgoogle=false -Dsystemduserunitdir=no -Dgcrypt=false -Dgcr=false -Dudisks2=false -Dlogind=false  -Dcdda=false -Dsftp=false ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dfuse=false -Dgphoto2=false -Dafc=false -Dbluray=false -Dnfs=false -Dmtp=false -Dsmb=false -Dtmpfilesdir=no -Ddnssd=false -Dgoa=false -Dgoogle=false $SYSTEMDOPTS -Dgcrypt=false -Dgcr=false -Dudisks2=false -Dlogind=false  -Dcdda=false -Dsftp=false ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd
