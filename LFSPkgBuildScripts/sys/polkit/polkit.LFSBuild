@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.60.6  Intltool-0.51.0 JS-60.8.0"
+DEPENDS="GLib-2.60.6  Intltool-0.51.0 JS-60.8.0 Linux-PAM-1.3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -27,9 +27,14 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch
-		autoreconf -fi
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --enable-libsystemd-login=no --disable-static --disable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libelogind=no
+		if [ $USESYSTEMD -eq 0 ];then
+			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch
+			autoreconf -fi
+			SYSTEMDOPTS="--enable-libsystemd-login=no"
+		else
+			sed -i "s:/sys/fs/cgroup/systemd/:/sys:g" configure
+		fi
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var $SYSTEMDOPTS --disable-static --disable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libelogind=no
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
