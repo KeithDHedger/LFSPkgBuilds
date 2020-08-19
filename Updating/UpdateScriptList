@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+#©keithhedger Wed 19 Aug 14:07:47 BST 2020 kdhedger68713@gmail.com
+
+cd ../LFSPkgBuildScripts
+find -iname "*.LFSBuild"|sort > ../BuildScriptList.txt

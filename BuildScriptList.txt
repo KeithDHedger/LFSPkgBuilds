@@ -6,6 +6,7 @@
 ./admin/GConf/GConf.LFSBuild
 ./admin/GtkSu/GtkSu.LFSBuild
 ./admin/LFSPkg/LFSPkg.LFSBuild
+./admin/Linux-PAM/Linux-PAM.LFSBuild
 ./admin/logrotate/logrotate.LFSBuild
 ./admin/mariadb/mariadb.LFSBuild
 ./admin/mysql/mysql.LFSBuild
@@ -587,6 +588,7 @@
 ./sys/recode/recode.LFSBuild
 ./sys/sqlite/sqlite.LFSBuild
 ./sys/startup-notification/startup-notification.LFSBuild
+./sys/syslinux/syslinux.LFSBuild
 ./system/acl/acl.LFSBuild
 ./system/attr/attr.LFSBuild
 ./system/autoconf/autoconf.LFSBuild
@@ -658,7 +660,6 @@
 ./system/systemd/systemd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
-./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-systemd-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
