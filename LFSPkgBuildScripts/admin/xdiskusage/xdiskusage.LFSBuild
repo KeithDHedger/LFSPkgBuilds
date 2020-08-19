@@ -2,36 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-9.0"
+DEPENDS="fltk-1.3.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="fltk"
+PKGNAME="xdiskusage"
 TARNAME="$PKGNAME"
-VERSION="1.3.5"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="1.51"
+BUILD=1
+SECTION="ADMIN"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}-source.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tgz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.fltk.org/pub/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
+gettar "http://xdiskusage.sourceforge.net/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i -e '/cat./d' documentation/Makefile
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-shared
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
-		make -C documentation html|| exit 100
-		make docdir=/usr/share/doc/${PKGNAME}-${VERSION} install DESTDIR=$PKG || exit 100
-		make -C documentation docdir=/usr/share/doc/${PKGNAME}-${VERSION} DESTDIR=$PKG install-linux
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
