@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/general/hdparm.html
+The Hdparm package contains a utility that is useful for obtaining information about, and controlling ATA/IDE controllers and hard drives.
+It allows to increase performance and sometimes to increase stability.

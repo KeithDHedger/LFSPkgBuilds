@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.60.6 icu-64.2 FreeType-2.10.1"
+DEPENDS="GLib-2.60.6 icu4c-64.2 FreeType-2.10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
