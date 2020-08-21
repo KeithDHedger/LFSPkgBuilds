@@ -32,7 +32,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 100
 		if [ $USESYSTEMD -eq 0 ];then
 			mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} $PKG/etc/${PKGNAME}-${VERSION}
-			mv -v $PKG/usr/share/doc/dbus $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		else
 			mkdir -vp ${PKG}/{lib,etc} ${PKG}/var/lib/dbus
 			mv -v ${PKG}/usr/lib/libdbus-1.so.* ${PKG}/lib
