@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libnotify-0.5.2 UPower-0.9.23 xfce4-panel-4.10.1"
+DEPENDS="libnotify-0.7.8 UPower-0.99.10 xfce4-panel-4.14.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-power-manager"
 TARNAME="$PKGNAME"
-VERSION="1.4.0"
+VERSION="1.6.5"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/xfce4-power-manager/1.4/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

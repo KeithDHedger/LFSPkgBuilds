@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=" libnotify-0.5.2 libxfce4ui-4.10.0 "
+DEPENDS=" libnotify-0.7.8 libxfce4ui-4.14.1 xfce4-panel-4.14.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-notifyd"
 TARNAME="$PKGNAME"
-VERSION="0.1.1"
+VERSION="0.4.4"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/apps/xfce4-notifyd/0.1/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

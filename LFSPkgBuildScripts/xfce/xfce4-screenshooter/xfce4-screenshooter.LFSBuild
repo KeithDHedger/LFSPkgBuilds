@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libsoup-2.66.2 xfce4-panel-4.10.1 libxfcegui4-4.10.0"
+DEPENDS="libsoup-2.66.2 xfce4-panel-4.14.0 libxfcegui4-4.10.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-screenshooter"
 TARNAME="$PKGNAME"
-VERSION="1.7.9"
+VERSION="1.4.90.0"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/apps/xfce4-screenshooter/1.7/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.??*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
