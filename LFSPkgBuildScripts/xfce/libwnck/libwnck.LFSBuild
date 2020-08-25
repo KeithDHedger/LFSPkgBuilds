@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32 Intltool-0.51.0 startup-notification-0.12 gobject-introspection-1.60.2 GTK-Doc-1.32"
+DEPENDS="gtk3-3.24.10 Intltool-0.51.0 startup-notification-0.12 gobject-introspection-1.60.2 GTK-Doc-1.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libwnck"
 TARNAME="$PKGNAME"
-VERSION="2.30.7"
+VERSION="3.32.0"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -26,9 +26,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --program-suffix=-1 
-		make  GETTEXT_PACKAGE=libwnck-1|| exit 100
-		make  GETTEXT_PACKAGE=libwnck-1 install DESTDIR=$PKG || exit 100
+	mkdir build
+	cd build
+		meson --prefix=/usr -Dbuildtype=release -Dgtk_doc=true ..
+		ninja|| exit 100
+		DESTDIR=$PKG ninja install|| exit 100
 	popd
 
 	checketc $PKG

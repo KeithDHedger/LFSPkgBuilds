@@ -2,33 +2,35 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxfce4ui-4.14.1 vte2-0.56.3"
+DEPENDS="gtk3-3.24.10"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="xfce4-terminal"
+PKGNAME="libnotify3"
 TARNAME="$PKGNAME"
-VERSION="0.8.8"
+VERSION="0.7.8"
 BUILD=${BUILD:-1}
-SECTION="XFCE"
+SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+	mkdir build
+	cd build
+		meson --prefix=/usr -Dgtk_doc=false ..
+		ninja|| exit 100
+		DESTDIR=$PKG ninja install|| exit 100
 	popd
 
 	checketc $PKG
@@ -40,7 +42,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	case $DOWHAT in
 		up*)
-			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			lfspkg "^${PKGNAME}-" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
 			;;
 		"install")
 			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i

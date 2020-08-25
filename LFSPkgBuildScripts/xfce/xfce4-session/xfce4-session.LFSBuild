@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libwnck-3.32.0 libxfce4ui-4.14.1 Which-2.21 xorg-apps Xfdesktop-4.14.1"
+DEPENDS="libwnck-3.32.0 libxfce4ui-4.14.1 Which-2.21 x-apps Xfdesktop-4.14.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=" libnotify-0.7.8 libxfce4ui-4.14.1 xfce4-panel-4.14.0"
+DEPENDS=" libnotify3-0.7.8 libxfce4ui-4.14.1 xfce4-panel-4.14.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
