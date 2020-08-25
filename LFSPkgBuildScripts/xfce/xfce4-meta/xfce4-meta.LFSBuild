@@ -2,7 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk-xfce-engine-3.2.0
+DEPENDS="gobject-introspection-1.60.2
+gtk-xfce-engine-3.2.0
 libxfce4util-4.14.0
 Xfconf-4.14.1
 libxfcegui4-4.10.0

@@ -20,11 +20,21 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 #Be aware add blockers hang this version of chromium
-
 #The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at https://www.chromium.org/developers/how-tos/api-keys.
-GOOGLE_API_KEY="AIzaSyBhWJ-j5RXyt5911BMuVen-WuS10mvOnrY"
-GOOGLE_DEFAULT_CLIENT_ID="952820686433-mbp5sv9scfj78siq96jlvrem47qgvbi3.apps.googleusercontent.com"
-GOOGLE_DEFAULT_CLIENT_SECRET="XU4b-j0Ssy-XkTvSVmiFMvNY"
+
+if [ ${USETHESEKEYS:-0} -eq 0 ];then
+	echo "The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at https://www.chromium.org/developers/how-tos/api-keys."
+	echo "This is a bit clearer:"
+	echo "https://gist.github.com/ezeeyahoo/dc4bdd250c6c6468959e107ddaef53f4"
+	echo "Change the variables below to hold your own keys, or leave them as is:"
+	echo "export USETHESEKEYS=1"
+	echo "Then re-run this script"
+	exit 100
+else
+	GOOGLE_API_KEY="AIzaSyBhWJ-j5RXyt5911BMuVen-WuS10mvOnrY"
+	GOOGLE_DEFAULT_CLIENT_ID="952820686433-mbp5sv9scfj78siq96jlvrem47qgvbi3.apps.googleusercontent.com"
+	GOOGLE_DEFAULT_CLIENT_SECRET="XU4b-j0Ssy-XkTvSVmiFMvNY"
+fi
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
