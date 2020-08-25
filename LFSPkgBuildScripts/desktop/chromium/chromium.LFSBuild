@@ -23,7 +23,8 @@ CWD=$(pwd)
 #The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at https://www.chromium.org/developers/how-tos/api-keys.
 
 if [ ${USETHESEKEYS:-0} -eq 0 ];then
-	echo "The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at https://www.chromium.org/developers/how-tos/api-keys."
+	echo "The Google API Key and OAuth tokens below are specific to Me. If using these instructions for another distro, or if you intend to distribute binary copies of the software using these instructions, please obtain your own keys following the instructions located at:"
+	echo "https://www.chromium.org/developers/how-tos/api-keys"
 	echo "This is a bit clearer:"
 	echo "https://gist.github.com/ezeeyahoo/dc4bdd250c6c6468959e107ddaef53f4"
 	echo "Change the variables below to hold your own keys, or leave them as is:"
