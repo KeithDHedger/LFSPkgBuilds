@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://archive.xfce.org/src/archive/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -19,18 +19,19 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/libwnck/2.30/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-	mkdir build
+	mkdir -vp build
 	cd build
-		meson --prefix=/usr -Dbuildtype=release -Dgtk_doc=true ..
-		ninja|| exit 100
-		DESTDIR=$PKG ninja install|| exit 100
+		meson --prefix=/usr -Dbuildtype=release ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc $PKG

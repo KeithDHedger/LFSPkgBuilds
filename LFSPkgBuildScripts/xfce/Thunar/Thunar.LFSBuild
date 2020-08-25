@@ -7,8 +7,8 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="Thunar"
-TARNAME="$PKGNAME"
+PKGNAME="thunar"
+TARNAME="Thunar"
 VERSION="1.8.9"
 BUILD=${BUILD:-1}
 SECTION="XFCE"

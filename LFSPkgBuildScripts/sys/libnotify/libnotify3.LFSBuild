@@ -8,18 +8,18 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="libnotify3"
-TARNAME="$PKGNAME"
+TARNAME="libnotify"
 VERSION="0.7.8"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
