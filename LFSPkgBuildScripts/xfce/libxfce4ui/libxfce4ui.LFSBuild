@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32 Xfconf-4.10.0"
+DEPENDS="GTK-2.24.32 Xfconf-4.14.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libxfce4ui"
 TARNAME="$PKGNAME"
-VERSION="4.10.0"
+VERSION="4.14.1"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/libxfce4ui/4.10/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/xfce/libxfce4ui/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

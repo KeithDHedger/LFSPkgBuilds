@@ -2,14 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk-xfce-engine-3.0.1
-libxfce4util-4.10.1
+DEPENDS="gtk-xfce-engine-3.2.0
+libxfce4util-4.14.0
+Xfconf-4.14.1
 libxfcegui4-4.10.0
-Exo-0.10.2
+libxfce4ui-4.10.0
+Exo-0.12.11
+
+
 Garcon-0.2.1
 libwnck-2.30.7
-Xfconf-4.10.0
-libxfce4ui-4.10.0
 xfce4-panel-4.10.1
 Thunar-1.6.3
 thunar-volman-0.8.0

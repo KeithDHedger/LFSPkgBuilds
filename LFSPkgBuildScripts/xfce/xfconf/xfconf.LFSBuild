@@ -9,7 +9,7 @@ fi
 
 PKGNAME="xfconf"
 TARNAME="$PKGNAME"
-VERSION="4.10.0"
+VERSION="4.14.1"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/xfconf/4.10/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/xfce/xfconf/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

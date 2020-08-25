@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libglade-2.6.4 libxfce4util-4.10.1"
+DEPENDS="libglade-2.6.4 libxfce4util-4.14.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/libxfcegui4/4.10/${TARBALL}" $SECTION
+gettar "https://archive.xfce.org/src/xfce/libxfcegui4/4.10/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
