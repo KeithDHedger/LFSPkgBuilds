@@ -9,7 +9,7 @@ fi
 
 PKGNAME="xfce4-screenshooter"
 TARNAME="$PKGNAME"
-VERSION="1.4.90.0"
+VERSION="1.9.7"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.??*}/${TARBALL}" $SECTION
+gettar "https://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
