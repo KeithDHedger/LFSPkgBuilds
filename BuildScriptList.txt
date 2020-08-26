@@ -10,11 +10,13 @@
 ./admin/logrotate/logrotate.LFSBuild
 ./admin/mariadb/mariadb.LFSBuild
 ./admin/mysql/mysql.LFSBuild
+./admin/ncdu/ncdu.LFSBuild
 ./admin/postfix/postfix.LFSBuild
 ./admin/rpm/rpm.LFSBuild
 ./admin/screen/screen.LFSBuild
 ./admin/sudo/sudo.LFSBuild
 ./admin/sysstat/sysstat.LFSBuild
+./admin/xdiskusage/xdiskusage.LFSBuild
 ./BROKEN/conky/conky.LFSBuild
 ./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/icedtea-sound/icedtea-sound.LFSBuild
@@ -200,6 +202,7 @@
 ./hware/DirectFB/pi-DirectFB.LFSBuild
 ./hware/glamor-egl/glamor-egl.LFSBuild
 ./hware/hardinfo/hardinfo.LFSBuild
+./hware/hdparm/hdparm.LFSBuild
 ./hware/hwinfo/hwinfo.LFSBuild
 ./hware/libaio/libaio.LFSBuild
 ./hware/libatasmart/libatasmart.LFSBuild
@@ -456,6 +459,7 @@
 ./net/samba/samba.LFSBuild
 ./net/seamonkey/seamonkey.LFSBuild
 ./net/sendmail/sendmail.LFSBuild
+./net/skype/skype.LFSBuild
 ./net/socat/socat.LFSBuild
 ./net/sshfs/sshfs.LFSBuild
 ./net/surfraw/surfraw.LFSBuild
@@ -571,6 +575,7 @@
 ./sys/htop/htop.LFSBuild
 ./sys/icu/icu.LFSBuild
 ./sys/itstool/itstool.LFSBuild
+./sys/libnotify/libnotify3.LFSBuild
 ./sys/libnotify/libnotify.LFSBuild
 ./sys/linux-vt-setcolors/linux-vt-setcolors.LFSBuild
 ./sys/lsof/lsof.LFSBuild
@@ -587,6 +592,7 @@
 ./sys/rar/rar.LFSBuild
 ./sys/recode/recode.LFSBuild
 ./sys/sqlite/sqlite.LFSBuild
+./sys/squashfs-tools/squashfs-tools.LFSBuild
 ./sys/startup-notification/startup-notification.LFSBuild
 ./sys/syslinux/syslinux.LFSBuild
 ./system/acl/acl.LFSBuild
