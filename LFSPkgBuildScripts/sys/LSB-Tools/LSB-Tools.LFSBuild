@@ -1,37 +1,36 @@
 #!/bin/bash -e
-#Original user submitted build script
-#hendrickx.maarten@gmail.com
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="wireless-tools"
-TARNAME="wireless_tools"
-VERSION="29"
-BUILD=${BUILD:-1}
-SECTION="NET"
+DEPENDS="python3-3.7.4"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="LSB-Tools"
+TARNAME="$PKGNAME"
+VERSION="0.6"
+BUILD=1
+SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}.${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://hewlettpackard.github.io/${PKGNAME}/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-fix_iwlist_scanning-1.patch" $SECTION
-
+gettar "https://github.com/djlucas/${PKGNAME}/releases/download/v0.6/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}.${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fix_iwlist_scanning-1.patch
-		make $MAKEFLAGS||make|| exit 100
-		mkdir -vp $PKG/usr/share
-		make $MAKEFLAGS PREFIX=${PKG}/usr INSTALL_MAN=${PKG}/usr/share/man install || exit 100
+	pushd "${TARNAME}-${VERSION}"
+		python3 setup.py build||exit 100
+		python3 setup.py install --optimize=1 --root=$PKG||exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -53,5 +52,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}.${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
