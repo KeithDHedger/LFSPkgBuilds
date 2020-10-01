@@ -47,6 +47,7 @@
 ./desktop/feh/feh.LFSBuild
 ./desktop/firefox/firefox.LFSBuild
 ./desktop/gegl/gegl.LFSBuild
+./desktop/gftp/gftp.LFSBuild
 ./desktop/gimp/gimp.LFSBuild
 ./desktop/gkrellm/gkrellm.LFSBuild
 ./desktop/gmic/gmic.LFSBuild
@@ -578,6 +579,7 @@
 ./sys/libnotify/libnotify3.LFSBuild
 ./sys/libnotify/libnotify.LFSBuild
 ./sys/linux-vt-setcolors/linux-vt-setcolors.LFSBuild
+./sys/LSB-Tools/LSB-Tools.LFSBuild
 ./sys/lsof/lsof.LFSBuild
 ./sys/mbox/mbox.LFSBuild
 ./sys/most/most.LFSBuild
