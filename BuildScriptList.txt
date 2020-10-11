@@ -173,6 +173,7 @@
 ./gnome/nemiver/nemiver.LFSBuild
 ./gnome/polkit-gnome/polkit-gnome.LFSBuild
 ./gnome/system-tools-backends/system-tools-backends.LFSBuild
+./gtk/adwaita-icon-theme/adwaita-icon-theme.LFSBuild
 ./gtk/atk/atk.LFSBuild
 ./gtk/atkmm/atkmm.LFSBuild
 ./gtk/at-spi2-atk/at-spi2-atk.LFSBuild

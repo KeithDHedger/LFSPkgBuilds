@@ -23,7 +23,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-MAKEFLAGS=" -j2 "
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -48,7 +47,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		export CFLAGS
 		export CXXFLAGS
 
-		../configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib${LIBDIRSUFFIX}/WebKitGTK --disable-geolocation --enable-introspection --enable-gtk-doc
+		../configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib${LIBDIRSUFFIX}/WebKitGTK --disable-geolocation --enable-introspection --disable-gtk-doc
 		sed -i "s/ -shared / -Wl,-O1,--as-needed\0/g" "libtool"
 		make $MAKEFLAGS||exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -80,3 +79,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
