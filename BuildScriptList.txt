@@ -753,6 +753,7 @@
 ./xorg/libva-intel-driver/libva-intel-driver.LFSBuild
 ./xorg/libva/libva.LFSBuild
 ./xorg/libvdpau/libvdpau.LFSBuild
+./xorg/LibVNCServer/LibVNCServer.LFSBuild
 ./xorg/libXau/libXau.LFSBuild
 ./xorg/libxcb/libxcb.LFSBuild
 ./xorg/libXdmcp/libXdmcp.LFSBuild
@@ -766,6 +767,7 @@
 ./xorg/proto/proto.LFSBuild
 ./xorg/twm/twm.LFSBuild
 ./xorg/util-macros/util-macros.LFSBuild
+./xorg/x11vnc/x11vnc.LFSBuild
 ./xorg/x-apps/x-apps.LFSBuild
 ./xorg/xbindkeys/xbindkeys.LFSBuild
 ./xorg/xbitmaps/xbitmaps.LFSBuild
