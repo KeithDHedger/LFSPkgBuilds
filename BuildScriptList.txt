@@ -1,6 +1,7 @@
 ./admin/at/at.LFSBuild
 ./admin/berkeley-db/berkeley-db.LFSBuild
 ./admin/clamav/clamav.LFSBuild
+./admin/conspy/conspy.LFSBuild
 ./admin/cyrus-sasl/cyrus-sasl.LFSBuild
 ./admin/fcron/fcron.LFSBuild
 ./admin/GConf/GConf.LFSBuild
@@ -483,6 +484,7 @@
 ./perl/File-DesktopEntry/File-DesktopEntry.LFSBuild
 ./perl/File-MimeInfo/File-MimeInfo.LFSBuild
 ./perl/HTML-Parser/HTML-Parser.LFSBuild
+./perl/Image-ExifTool/Image-ExifTool.LFSBuild
 ./perl/Module-Build/Module-Build.LFSBuild
 ./perl/Switch/Switch.LFSBuild
 ./perl/UI-Dialog/UI-Dialog.LFSBuild
