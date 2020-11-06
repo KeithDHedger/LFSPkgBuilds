@@ -23,10 +23,6 @@ gettar "https://launchpad.net/lightdm-gtk-greeter/2.0/2.0.6/+download/${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-if [ $USESYSTEMD -eq 0 ];then
-	:
-fi
-
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"

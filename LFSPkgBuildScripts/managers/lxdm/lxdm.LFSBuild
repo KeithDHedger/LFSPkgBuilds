@@ -25,6 +25,8 @@ mkdir -p "$PKG"
 
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="--with-systemdsystemunitdir=no"
+else
+	SYSTEMDOPTS="--with-systemdsystemunitdir=/lib/systemd/system"
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
