@@ -21,6 +21,8 @@ scriptLog "${PKGNAME}-${VERSION}"
 USESYSTEMD=${USESYSTEMD:-0}
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir= --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
+else
+	SYSTEMDOPTS="--enable-x11-autolaunch"
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -37,6 +39,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			mv -v ${PKG}/usr/lib/libdbus-1.so.* ${PKG}/lib
 			ln -sfv ../../lib/$(readlink ${PKG}/usr/lib/libdbus-1.so) ${PKG}/usr/lib/libdbus-1.so
 			ln -sfv ${PKG}/etc/machine-id ${PKG}/var/lib/dbus
+			sed -i 's:/var/run:/run:' ${PKG}/lib/systemd/system/dbus.socket
 		fi
 	popd
 
