@@ -3,7 +3,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-		install -vdm755 /etc/pam.d
+	install -vdm755 /etc/pam.d
 		cat >  ${PKG}/etc/pam.d/system-account << "EOF"
 # Begin /etc/pam.d/system-account
 

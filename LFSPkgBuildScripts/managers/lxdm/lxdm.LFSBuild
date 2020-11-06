@@ -1,0 +1,83 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="GTK-2.24.32 ISO-Codes-4.3 librsvg-2.44.14 Linux-PAM-1.3.1"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="lxdm"
+TARNAME="$PKGNAME"
+VERSION="0.5.3"
+BUILD=1
+SECTION="MANAGERS"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://downloads.sourceforge.net/lxdm/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--with-systemdsystemunitdir=no"
+fi
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+	cat > pam/lxdm << "EOF"
+# Begin /etc/pam.d/lxdm
+
+auth     requisite      pam_nologin.so
+auth     required       pam_env.so
+auth     required       pam_succeed_if.so uid >= 1000 quiet
+auth     include        system-auth
+
+account  include        system-account
+
+password include        system-password
+
+session  required       pam_limits.so
+session  include        system-session
+
+# End /etc/pam.d/lxdm
+EOF
+
+		sed -i 's:sysconfig/i18n:profile.d/i18n.sh:g' data/lxdm.in
+		sed -i 's:/etc/xprofile:/etc/profile:g' data/Xsession
+		sed -e 's/^bg/#&/' -e '/reset=1/ s/# //' -e 's/logou$/logout/' -e "/arg=/a arg=$XORG_PREFIX/bin/X" -i data/lxdm.conf.in
+
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-pam $SYSTEMDOPTS
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

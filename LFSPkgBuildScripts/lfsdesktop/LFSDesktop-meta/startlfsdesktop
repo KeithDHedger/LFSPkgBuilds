@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#©keithhedger Fri 6 Nov 13:03:55 GMT 2020 kdhedger68713@gmail.com
+
+lfssetwallpaper &
+lfswmanager &
+lfsdesktop &
+lfspanel &
+
+file=`mktemp -u`
+cat > $file << EOF
+#!/bin/bash
+touch /tmp/lfssession.pid
+while [ -e /tmp/lfssession.pid ]
+	do
+		sleep 5
+	done
+EOF
+
+chmod +x $file
+$file

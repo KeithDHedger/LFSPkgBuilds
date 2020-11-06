@@ -215,6 +215,7 @@
 ./hware/libinput/libinput.LFSBuild
 ./hware/libusb-compat/libusb-compat.LFSBuild
 ./hware/libusb/libusb.LFSBuild
+./hware/libxklavier/libxklavier.LFSBuild
 ./hware/lm-sensors/lm-sensors.LFSBuild
 ./hware/lshw/lshw.LFSBuild
 ./hware/lvm2/lvm2.LFSBuild
@@ -344,6 +345,10 @@
 ./libs/xapian/xapian.LFSBuild
 ./libs/yajl/yajl.LFSBuild
 ./lxqt/lxqt-build-tools/lxqt-build-tools.LFSBuild
+./managers/lightdm-gtk-greeter/lightdm-gtk-greeter.LFSBuild
+./managers/lightdm/lightdm.LFSBuild
+./managers/lxdm/lxdm.LFSBuild
+./managers/xdm/xdm.LFSBuild
 ./mm/a52dec/a52dec.LFSBuild
 ./mm/alsa-lib/alsa-lib.LFSBuild
 ./mm/alsa-oss/alsa-oss.LFSBuild
@@ -578,6 +583,7 @@
 ./sys/gvfs/gvfs.LFSBuild
 ./sys/htop/htop.LFSBuild
 ./sys/icu/icu.LFSBuild
+./sys/iso-codes/iso-codes.LFSBuild
 ./sys/itstool/itstool.LFSBuild
 ./sys/libnotify/libnotify3.LFSBuild
 ./sys/libnotify/libnotify.LFSBuild

@@ -1,0 +1,15 @@
+#!/bin/bash
+#©keithhedger Fri  6 Nov 12:05:18 GMT 2020
+
+. /usr/share/LFSPkg/LFSFunctions
+
+mkdir -vp /usr/share/xsessions||true
+
+UIDGIDPAIR=$(findnextpair "system")
+groupadd -g $UIDGIDPAIR lightdm||true
+useradd -c "Lightdm Daemon" -d /var/lib/lightdm -g lightdm -s /bin/false -u $UIDGIDPAIR lightdm||true
+
+install -v -dm755 -o lightdm -g lightdm /var/lib/lightdm
+install -v -dm755 -o lightdm -g lightdm /var/lib/lightdm-data
+install -v -dm755 -o lightdm -g lightdm /var/cache/lightdm
+install -v -dm770 -o lightdm -g lightdm /var/log/lightdm
