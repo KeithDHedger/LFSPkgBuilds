@@ -73,6 +73,7 @@ mkdir -p "${PKG}/usr/bin" "${PKG}/usr/share/xsessions"
 
 cp "${CWD}/startlfsdesktop" "${PKG}/usr/bin"
 cp "${CWD}/lfsdesktop.desktop" "${PKG}/usr/share/xsessions"
+chmod +x "${PKG}/usr/bin/startlfsdesktop" "${PKG}/usr/share/xsessions/lfsdesktop.desktop"
 
 pushd "$PKG"
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

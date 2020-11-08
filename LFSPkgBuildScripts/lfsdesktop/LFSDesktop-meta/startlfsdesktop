@@ -4,8 +4,9 @@
 
 lfssetwallpaper &
 lfswmanager &
-lfsdesktop &
 lfspanel &
+sleep 1
+lfsdesktop &
 
 file=`mktemp -u`
 cat > $file << EOF
