@@ -21,8 +21,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 USESYSTEMD=${USESYSTEMD:-0}
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir= --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
-else
-	SYSTEMDOPTS="--enable-x11-autolaunch"
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
