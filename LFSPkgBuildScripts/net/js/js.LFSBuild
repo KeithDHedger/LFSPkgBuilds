@@ -26,13 +26,7 @@ mkdir -p "$PKG"
 
 OPTIONS="--prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc"
 
-if [ -e "/etc/pkgoptions/${PKGNAME}.options" ];then
-	. "/etc/pkgoptions/${PKGNAME}.options"
-else
-	if [ -e "${CWD}/${PKGNAME}.options" ];then
-		. "${CWD}/${PKGNAME}.options"
-	fi
-fi
+checkforoptions
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
