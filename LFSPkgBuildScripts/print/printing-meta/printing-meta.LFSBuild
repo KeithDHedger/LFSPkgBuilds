@@ -8,7 +8,6 @@ cups-filters-1.25.2
 Gutenprint-5.3.3
 sane-backends-1.0.25
 sane-frontends-1.0.14
-hplip-3.19.8
 GTK-2.24.32
 XSane-0.999"
 
@@ -51,3 +50,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG"
+

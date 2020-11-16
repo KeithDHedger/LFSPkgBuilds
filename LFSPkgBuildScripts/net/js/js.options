@@ -1,0 +1,4 @@
+if [ $PIBUILD -eq 1 ];then
+	OPTIONS="${OPTIONS} --disable-tests"
+fi
+

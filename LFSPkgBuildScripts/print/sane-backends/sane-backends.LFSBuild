@@ -9,7 +9,7 @@ fi
 
 PKGNAME="sane-backends"
 TARNAME="$PKGNAME"
-VERSION="1.0.27"
+VERSION="1.0.31"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -58,3 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

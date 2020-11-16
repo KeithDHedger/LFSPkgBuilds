@@ -39,7 +39,6 @@ OpenSSH-8.0
 ntp-4.2.8
 xdg-utils-1.1.3
 desktop-file-utils-0.24
-Gimp-2.10.12
 gtkmm-2.24.5
 ImageMagick-7.0.9
 claws-mail-3.17.3
@@ -50,8 +49,9 @@ KKEdit-0.4.3
 xarchiver-0.5.4
 ClipboardViewer-2.2.2
 GtkSu-0.1.6
-xscreensaver-5.38
-LibreOffice-6.3.0"
+xscreensaver-5.38"
+
+#LibreOffice-6.3.0"
 
 #Thunderbird-52.6.0 -- broken
 
@@ -95,3 +95,4 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG"
+
