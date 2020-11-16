@@ -677,6 +677,7 @@
 ./system/systemd/systemd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
+./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-systemd-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
