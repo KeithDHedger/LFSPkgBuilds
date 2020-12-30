@@ -1,0 +1,8 @@
+#!/bin/bash
+#©keithhedger Tue 29 Dec 20:10:22 GMT 2020
+
+. /usr/share/LFSPkg/LFSFunctions
+
+gtk-update-icon-cache -qtf /usr/share/icons/hicolor
+update-desktop-database -q
+/usr/lib/vlc/vlc-cache-gen /usr/lib/vlc/plugins

@@ -69,7 +69,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 rm -rf "$PKG" || true
-mkdir -p "${PKG}/usr/bin" "${PKG}/usr/share/xsessions"
 
 pushd "$PKG"
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

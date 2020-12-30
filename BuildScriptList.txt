@@ -420,6 +420,7 @@
 ./mm/speex/speex.LFSBuild
 ./mm/taglib/taglib.LFSBuild
 ./mm/twolame/twolame.LFSBuild
+./mm/vlc/vlc.LFSBuild
 ./mm/x264/x264.LFSBuild
 ./mm/xvid/xvid.LFSBuild
 ./mm/youtube-dl/youtube-dl.LFSBuild
@@ -677,7 +678,6 @@
 ./system/systemd/systemd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
-./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-systemd-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
