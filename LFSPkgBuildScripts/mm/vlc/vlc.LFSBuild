@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.1.9 FFmpeg-4.2 liba52-0.7.4 libgcrypt-1.8.5 libmad-0.15.1"
+DEPENDS="alsa-lib-1.1.9 FFmpeg-4.2 liba52-0.7.4 libgcrypt-1.8.5 libmad-0.15.1 Lua-5.3.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -29,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i '/vlc_demux.h/a #define LUA_COMPAT_APIINTCASTS' modules/lua/vlc.h
 		sed -i '/LIBSSH2_VERSION_NUM/s/10801/10900/' modules/access/sftp.c
 
-		BUILDCC=gcc CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-opencv --disable-vpx --disable-lua
+		BUILDCC=gcc CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-opencv --disable-vpx
 		make $MAKEFLAGS||make|| exit 100
 		make docdir=/usr/share/doc/${PKGNAME}-${VERSION} install DESTDIR=$PKG || exit 100
 	popd
