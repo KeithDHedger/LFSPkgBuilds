@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.4.4 File-MimeInfo-0.29"
+DEPENDS="LFSToolKit-0.5.1 File-MimeInfo-0.29"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
