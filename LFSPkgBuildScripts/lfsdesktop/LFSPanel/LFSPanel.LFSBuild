@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.5.1  alsa-lib-1.1.9"
+DEPENDS="LFSToolKit-0.5.1  alsa-lib-1.1.9 libnotify-0.5.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
