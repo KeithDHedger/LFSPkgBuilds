@@ -3,10 +3,11 @@
 #©keithhedger Thu 3 Dec 12:26:07 GMT 2015 kdhedger68713@gmail.com
 
 . /usr/share/LFSPkg/LFSFunctions
+
 . /LFSScripts/PkgVersions
 
 SECTION="SYSTEM"
-TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata2019b.tar.gz
+TZDATATARBALL=${SOURCEARCHIVES}/${SECTION}/tzdata${tzdata_version}${tzdata_minor_rev}.tar.gz
 
 if [ ! -e "/etc/nsswitch.conf" ];then
 	cat > /etc/nsswitch.conf << "EOF"

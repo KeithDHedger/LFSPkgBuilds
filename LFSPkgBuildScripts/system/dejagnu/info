@@ -1,0 +1,1 @@
+The DejaGnu package contains a framework for running test suites on GNU tools. It is written in expect, which itself uses Tcl (Tool Command Language).

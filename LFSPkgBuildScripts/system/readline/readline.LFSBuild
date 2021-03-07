@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="readline"
 TARNAME="$PKGNAME"
-VERSION="8.0"
+VERSION=$readline_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$readline_arctype"
 
 BUILDSTATIC="--disable-static"
 if [ "X$ENABLESTATIC" != "X" ];then
@@ -29,16 +31,15 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/MV.*old/d' Makefile.in
 		sed -i '/{OLDSUFF}/c:' support/shlib-install
-		./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} $BUILDSTATIC
-		make $MAKEFLAGS SHLIB_LIBS="-L/tools/lib -lncursesw"||make SHLIB_LIBS="-L/tools/lib -lncursesw"|| exit 100
+		./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-curses $BUILDSTATIC
+		make $MAKEFLAGS SHLIB_LIBS="-lncursesw"||make SHLIB_LIBS="-lncursesw"|| exit 100
 		if [ "X$ENABLESTATIC" != "X" ];then
 			make install DESTDIR="$PKG" || exit
 			rm -rf $PKG/usr/include $PKG/usr/share
 		else
-			make install SHLIB_LIBS="-L/tools/lib -lncursesw" DESTDIR="$PKG" || exit
+			make install SHLIB_LIBS="-lncursesw" DESTDIR="$PKG" || exit
 			mkdir -vp $PKG/usr/lib  $PKG/lib||true
 			mv -v $PKG/usr/lib/lib{readline,history}.so.* $PKG/lib
-			chmod -v u+w ${PKG}/lib/lib{readline,history}.so.*
 			ln -sfv ../../lib/$(readlink $PKG/usr/lib/libreadline.so) $PKG/usr/lib/libreadline.so
 			ln -sfv ../../lib/$(readlink $PKG/usr/lib/libhistory.so ) $PKG/usr/lib/libhistory.so
 			install -v -m644 doc/*.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}

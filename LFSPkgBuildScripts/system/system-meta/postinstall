@@ -17,3 +17,9 @@ if [ $USESYSTEMD -eq 0 ];then
 else
 	ln -s /dev/null /etc/systemd/network/99-default.link
 fi
+
+find /usr/lib -type f -name "*.a" -exec strip --strip-debug {} ';'
+find /lib /usr/lib -type f -name "*.so*" ! -name \*dbg -exec strip --strip-unneeded {} ';'
+find /{bin,sbin}/ /usr/{bin,sbin,libexec}/ -type f -exec strip --strip-all {} ';'
+find /usr/lib /usr/libexec -name "*.la" -delete
+rm -rf /tools

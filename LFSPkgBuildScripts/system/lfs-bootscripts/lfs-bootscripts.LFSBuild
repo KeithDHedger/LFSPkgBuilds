@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="lfs-bootscripts"
 TARNAME="$PKGNAME"
-VERSION="20190524"
+VERSION=$lfs_bootscripts_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$lfs_bootscripts_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)

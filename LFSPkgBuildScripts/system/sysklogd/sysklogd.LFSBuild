@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="sysklogd"
 TARNAME="$PKGNAME"
-VERSION="1.5.1"
+VERSION=$sysklogd_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$sysklogd_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 

@@ -57,6 +57,11 @@ if [ -f ./SystemData.local ];then
 	. ./SystemData.local
 fi
 
+#build for pi
+readWithDefault "PIBUILD"  "Build for RPi"
+#build for systemd
+readWithDefault "USESYSTEMD"  "SystemD Build"
+
 #set default language
 LANG=${LANG:-"en_GB"}
 
@@ -75,7 +80,7 @@ else
 fi
 
 #LFS Version
-LFSVERSION=${LFSVERSION:-9.0}
+LFSVERSION=${LFSVERSION:-10.0}
 readWithDefault "LFSVERSION"  "Enter LFS Version"
 
 #Computer name
@@ -102,7 +107,7 @@ BUILDSCRIPTS="/LFSPkgBuildScripts/"
 readWithDefault "BUILDSCRIPTS"  "Enter Folder For Build Scripts"
 
 #Place to store package archives, defaults to $OUTPUT
-PKGARCHIVES=${PKGARCHIVES:-"$OUTPUT"}
+PKGARCHIVES=${PKGARCHIVES:-"/LFSBuiltPackages/$LFSVERSION"}
 readWithDefault "PKGARCHIVES" "Enter Folder For Built Package Archives"
 
 #Place to store downloaded source archives, defaults to /LFSSourceArchives/${LFSVERSION}
@@ -241,7 +246,7 @@ BUILDSCRIPTS=$BUILDSCRIPTS
 
 KEYBOARD=$KEYBOARD
 ROOTFSTYPE=$ROOTFSTYPE
-ROOTDEV=\$(findmnt -no SOURCE \$LFS)
+ROOTDEV=$(findmnt -no SOURCE $LFS)
 SWAP=$SWAP
 
 LANGUAGE=$LANGUAGE
@@ -252,8 +257,8 @@ SUBNET=$SUBNET
 NAMESERVERS="$NAMESERVERS"
 EOF
 
-sudo mkdir -vp $LFS/etc||true
-cat > /tmp/lfspkg.rc << EOF
+mkdir -vp $LFS/etc||true
+cat > $LFS/etc/lfspkg.rc << EOF
 LFSVERSION=$LFSVERSION
 OUTPUT=$PKGARCHIVES
 SOURCEARCHIVES=$SOURCEARCHIVES
@@ -263,5 +268,4 @@ USESYSTEMD=$USESYSTEMD
 PIBUILD=$PIBUILD
 LANG=$LANGUAGE
 EOF
-sudo mv /tmp/lfspkg.rc $LFS/etc/
 

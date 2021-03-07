@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="iana-etc"
 TARNAME="$PKGNAME"
-VERSION="2.30"
+VERSION=$iana_etc_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.$iana_etc_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,8 +23,8 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir $PKG/etc
+		cp services protocols $PKG/etc
 	popd
 
 	checketc "$PKG"

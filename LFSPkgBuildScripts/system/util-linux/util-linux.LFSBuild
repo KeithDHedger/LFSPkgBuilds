@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="util-linux"
 TARNAME="$PKGNAME"
-VERSION="2.34"
+VERSION=$util_linux_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$util_linux_arctype"
 
 DOWHAT=${1:-"build"}
 
@@ -31,11 +33,11 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		if [ $USESYSTEMD -eq 0 ];then
 			SYSTEMDOPTS=" --without-systemd --without-systemdsystemunitdir"
-		else
-			rm -vf /usr/include/{blkid,libmount,uuid}||true
+#		else
+#			rm -vf /usr/include/{blkid,libmount,uuid}||true
 		fi
 		mkdir -pv $PKG/var/lib/hwclock
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python $SYSTEMDOPTS $BUILDSTATIC
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python $SYSTEMDOPTS $BUILDSTATIC runstatedir=/run
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		if [ "X$ENABLESTATIC" != "X" ];then

@@ -17,11 +17,11 @@ apt-get install bison gawk m4 texinfo
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS
-LFSVERSION=9.0
+LFSVERSION=10.1
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
 BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
-KERNELVERSION=5.2.8
+KERNELVERSION=5.10.17
 
 export LFS
 export LFSVERSION
@@ -36,10 +36,10 @@ export KERNELVERSION
 cd $LFS
 [sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
 
-Own the files:
-[sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds
-[sudo] ln -sv LFSPkgBuilds/LFSPkgBuildScripts $LFS/LFSPkgBuildScripts
-[sudo] ln -sv LFSPkgBuilds/LFSScripts $LFS/LFSScripts
+Own the files ( If needed ):
+[sudo -E] chown -R $USER:$USER $LFS/LFSPkgBuilds
+[sudo -E] ln -sv LFSPkgBuilds/LFSPkgBuildScripts $LFS/LFSPkgBuildScripts
+[sudo -E] ln -sv LFSPkgBuilds/LFSScripts $LFS/LFSScripts
 
 3)
 #cd into the lfsscripts folder
@@ -47,16 +47,50 @@ cd LFSScripts
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
-[sudo] -E ./LFSSetUp
+[sudo -E] ./LFSSetUp
 
 #To check config:
 ./ShowSystemData
 
-4)
-#Run BuildTools script:
-./BuildTools
+#You can rerun LFSSetUp if needed.
 
-4.5)
+4)
+#make sure normal user owns $LFS ( if you are using a dedicated user change $USER if needed ).
+[sudo -E] chown $USER $LFS
+#Run BuildTools script:
+./BuildTools1
+
+5)
+#Run BuildFileSystem script:
+[sudo -E ] ./BuildFileSystem
+
+6)
+#Enter chroot
+[sudo] ./Chroot
+cd /LFSScripts
+
+7)
+#finish building tempory tools.
+./BuildTools2
+exit
+
+#Make sure you are no longer in the chroot.
+
+8)
+cd $LFS
+[sudo] strip --strip-debug usr/lib/*
+[sudo] strip --strip-unneeded usr/{,s}bin/*
+[sudo] strip --strip-unneeded tools/bin/*
+
+#tar MUST be run as root to preserve permissions.
+#change ${HOME}/tools-${LFSVERSION}.tar.xz to suit.
+#make sure all virtual file systems etc are unmounted, including /LFSSourceArchives etc if you have mounted an extern drive there.
+[sudo -E] tar -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
+
+9)
+#make sure you are back in the lfsscripts folder.
+cd $LFS/LFSScripts
+
 #Mount bind external folder if set and if not already mounted.
 . ./SystemData
 mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
@@ -66,28 +100,24 @@ if [ "X$EXTFOLDER" != "X" ];then
 	sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
 fi
 
-5)
-#Run BuildFileSystem script:
-./BuildFileSystem
-
-5.2)
+10)
 #You may/will have to re-own/set perms the various folders etc, so:
 [sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+#chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 
-5.5)
+11)
 #Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
 mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz .
 
-5.6)
+12)
 #get the package manager archive via the host system:
 cd $LFS/LFSPkgBuildScripts/admin/LFSPkg
 wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/master.zip" -O LFSPkg.zip
 unzip LFSPkg.zip
 
-6)
+13)
 #Change back to $LFS/LFSScripts folder.
 cd $LFS/LFSScripts
 
@@ -95,16 +125,17 @@ cd $LFS/LFSScripts
 screen
 
 #Chroot into temporary system:
-[sudo] ./Chroot system
+[sudo] ./Chroot
 
-7)
+14)
 #You should now be in the chroot
 #First install lfspkg:
 cd /LFSPkgBuildScripts/admin/LFSPkg
 BOOTSTRAP=1 ./LFSPkg.LFSBuild install
+#If you are asked whether to replace files etc You should reply 'R' to keep the settings created by the LFSSetup script.
 
 #As part of the LFSSetUp script $LFS/etc/lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
-#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
+#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
 #At this point wget/openssl is not installed so you will get a load of complaints from lfspkg, ignore them as lfspkg will be reinstalled later with the main system.
 
 #You should run lfspkg --setup to create the lfspkg.rc file ( in /etc )
@@ -113,7 +144,9 @@ BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 #For building the main system you should probably set the configure options config files in /etc and log options.
 lfspkg --setup
 
-8)
+#You shoud probably set log file to 1, and check etc to 0 when installing the base system.
+
+15)
 #Build main system:
 cd /LFSPkgBuildScripts/system/system-meta
 
@@ -140,28 +173,54 @@ Have coffee
 Walk the dog
 ...
 
-9)
+16)
 #logout from temporary system:
 exit
 
-10)
-#Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
-[sudo] sudo rm /tools
-#Remove the tools folder from your LFS install disk:
-[sudo] rm -rf $LFS/tools
+17)
+#optional strip etc see:
+#http://www.linuxfromscratch.org/lfs/view/stable/chapter08/strippingagain.html
 
-11)
-#Re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
+cd $LFS
+save_lib="ld-2.33.so libc-2.33.so libpthread-2.33.so libthread_db-1.0.so"
+cd lib
+for LIB in $save_lib
+	do
+		sudo objcopy --only-keep-debug $LIB $LIB.dbg 
+		sudo strip --strip-unneeded $LIB
+		sudo objcopy --add-gnu-debuglink=$LIB.dbg $LIB 
+	done    
+
+save_usrlib="libquadmath.so.0.0.0 libstdc++.so.6.0.28 libitm.so.1.0.0 libatomic.so.1.2.0" 
+cd $LFS/usr/lib
+for LIB in $save_usrlib
+	do
+		sudo  objcopy --only-keep-debug $LIB $LIB.dbg
+		sudo strip --strip-unneeded $LIB
+		sudo  objcopy --add-gnu-debuglink=$LIB.dbg $LIB
+	done
+unset LIB save_lib save_usrlib
+
+cd $LFS
+sudo find usr/lib/ -type f -name "*.a" -exec strip --strip-debug {} ';'
+sudo find lib/ usr/lib/ -type f -name "*.so*" ! -name "*dbg" -exec strip --strip-unneeded {} ';'
+sudo find bin sbin usr/{bin,sbin,libexec} -type f -exec strip --strip-all {} ';'
+
+18)
+#Re-enter the chroot:
+cd $LFS/LFSScripts
 [sudo] ./Chroot
 
-12)
+19)
 #You MUST rebuild lfspkg after completeing the the basic system and removing the tools folder.
 #Use same process as 2)/7) EXCEPT do NOT use BOOTSTRAP=1
 #If you have set any vairiable in /etc/lfspkg.rc then reply 'R' ( without the quotes ) when asked about replacing files in /etc.
 #If you forgot to do the above bit just re-edit /etc/lfspkg.rc:
 
 cd /LFSPkgBuildScripts/admin/LFSPkg
-./LFSPkg.LFSBuild install
+./LFSPkg.LFSBuild
+#rerun setup
+lfspkg --setup
 
 13)
 #Configure and build the kernel:

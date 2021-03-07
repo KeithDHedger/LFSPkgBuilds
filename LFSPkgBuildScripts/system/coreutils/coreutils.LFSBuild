@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="coreutils"
 TARNAME="$PKGNAME"
-VERSION="8.31"
+VERSION=$coreutils_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$coreutils_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -24,7 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-i18n-1.patch
 		sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
 		autoreconf -fiv
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --enable-no-install-program=kill,uptime --libdir=/usr/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" FORCE_UNSAFE_CONFIGURE=1 ./configure $CONFIGOPTIONS --enable-no-install-program=kill,uptime
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/bin $PKG/usr/sbin $PKG/usr/share/man/man8
@@ -34,7 +36,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mv -v $PKG/usr/bin/chroot $PKG/usr/sbin
 		mv -v $PKG/usr/share/man/man1/chroot.1 $PKG/usr/share/man/man8/chroot.8
 		sed -i 's/\"1\"/\"8\"/1' "$PKG/usr/share/man/man8/chroot.8"
-		mv -v $PKG/usr/bin/{head,nice,sleep,touch,test,[} $PKG/bin
+		mv -v $PKG/usr/bin/{head,nice,sleep,touch} $PKG/bin
 	popd
 
 	checketc "$PKG"

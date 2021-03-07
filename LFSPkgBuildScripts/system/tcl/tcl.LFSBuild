@@ -1,0 +1,64 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+. ../PkgVersions
+
+PKGNAME="tcl"
+TARNAME="$PKGNAME"
+VERSION=$tcl_version
+BUILD=${BUILD:-1}
+SECTION="SYSTEM"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}${VERSION}-src.$tcl_arctype"
+
+PKG="${OUTPUT}/${PKGNAME}"
+
+DOWHAT=${1:-"build"}
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}${VERSION}"
+		tar -xf "${SOURCEARCHIVES}/${SECTION}/${TARNAME}${VERSION}-html.tar.gz" --strip-components=1
+		SRCDIR=$(pwd)
+		cd unix
+		./configure $CONFIGOPTIONS --mandir=/usr/share/man $([ "$(uname -m)" = x86_64 ] && echo --enable-64bit)
+		make $MAKEFLAGS||make || exit 100
+		sed -e "s|$SRCDIR/unix|/usr/lib|" -e "s|$SRCDIR|/usr/include|" -i tclConfig.sh
+		sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.2|/usr/lib/tdbc1.1.2|" -e "s|$SRCDIR/pkgs/tdbc1.1.2/generic|/usr/include|" -e "s|$SRCDIR/pkgs/tdbc1.1.2/library|/usr/lib/tcl8.6|" -e "s|$SRCDIR/pkgs/tdbc1.1.2|/usr/include|" -i pkgs/tdbc1.1.2/tdbcConfig.sh
+		sed -e "s|$SRCDIR/unix/pkgs/itcl4.2.0|/usr/lib/itcl4.2.1|" -e "s|$SRCDIR/pkgs/itcl4.2.1/generic|/usr/include|" -e "s|$SRCDIR/pkgs/itcl4.2.1|/usr/include|" -i pkgs/itcl4.2.1/itclConfig.sh
+		unset SRCDIR
+		make install DESTDIR=$PKG || exit 100
+		chmod -v u+w $PKG/usr/lib${LIBDIRSUFFIX}/libtcl8.6.so
+		make install-private-headers DESTDIR=$PKG
+		ln -sfv tclsh8.6 $PKG/usr/bin/tclsh
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}${VERSION}"
+popd 2>/dev/null||true

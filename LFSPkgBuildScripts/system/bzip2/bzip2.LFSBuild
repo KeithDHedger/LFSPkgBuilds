@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="bzip2"
 TARNAME="$PKGNAME"
-VERSION="1.0.8"
+VERSION=$bzip2_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$bzip2_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,10 +27,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
 		sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
 		make -f Makefile-libbz2_so || exit
-		make $MAKEFLAGS clean
+		make clean
 		make $MAKEFLAGS||make|| exit
-		make install PREFIX="$PKG/usr" || exit
 		mkdir -p $PKG/bin $PKG/lib${LIBDIRSUFFIX} $PKG $PKG/usr/lib${LIBDIRSUFFIX}
+		make install PREFIX="$PKG/usr" || exit
 		cp -v bzip2-shared $PKG/bin/bzip2
 		cp -av libbz2.so* $PKG/lib${LIBDIRSUFFIX}
 		ln -sv ../../lib${LIBDIRSUFFIX}/libbz2.so.1.0 $PKG/usr/lib${LIBDIRSUFFIX}/libbz2.so

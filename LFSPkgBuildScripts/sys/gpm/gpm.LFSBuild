@@ -15,15 +15,14 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.nico.schottelius.org/software/gpm/archives/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-glibc_2.26-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-consolidated-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i -e 's:<gpm.h>:"headers/gpm.h":' src/prog/{display-buttons,display-coords,get-versions}.c
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-glibc_2.26-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-consolidated-1.patch
 		./autogen.sh
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100

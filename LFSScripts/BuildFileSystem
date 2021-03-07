@@ -2,6 +2,18 @@
 
 #©keithhedger Mon 2 Feb 12:38:29 GMT 2015 kdhedger68713@gmail.com
 
+readWithDefault ()
+{
+	local varname="$1"
+	local varcontents="${!varname}"
+	local message="$2"
+
+	read -e -p "$message [ ${varcontents} ] "
+	if [ "X$REPLY" != "X" ];then
+		eval "${varname}=$REPLY"
+	fi
+}
+
 if [ $UID -ne 0 ];then
 	echo "You MUST run this script as root ..."
 	exit 100
@@ -11,7 +23,18 @@ if [ -e ./SystemData ];then
 	. ./SystemData
 else
 	echo "No SystemData file found ..."
-	exit 0
+	exit 100
+fi
+
+if [[ -z $LFS ]];then
+	echo 'LFS NOT SET!!! Exiting ...'
+	exit 100
+else
+	readWithDefault "LFS" "LFS set to \"$LFS\""
+	if ! mountpoint $LFS;then
+		echo "LFS NOT Mounted, exiting ..."
+		exit 100
+	fi
 fi
 
 pushd $LFS
@@ -19,7 +42,7 @@ pushd $LFS
 	mknod -m 600 dev/console c 5 1
 	mknod -m 666 dev/null c 1 3
 
-	mkdir -pv {bin,boot,etc/{sysconfig,profile.d},home,lib${LIBDIRSUFFIX},mnt,opt,run}
+	mkdir -pv {bin,boot,etc/{sysconfig,profile.d},home,mnt,opt,run}
 	mkdir -pv {media/{floppy,cdrom},sbin,srv,var}
 	install -dv -m 0750 root
 	install -dv -m 777 tmp var/tmp
@@ -30,28 +53,22 @@ pushd $LFS
 	mkdir -pv usr/{,local/}share/man/man{1..8}
 	for dir in usr usr/local
 		do
-			ln -sv share/{man,doc,info} $dir
+			ln -sfnv share/{man,doc,info} $dir
 		done
 
 	case $(uname -m) in
 		x86_64)
-			ln -sv lib${LIBDIRSUFFIX} lib
-			ln -sv lib${LIBDIRSUFFIX} usr/lib
+			ln -sfnv lib${LIBDIRSUFFIX} usr/local/lib
 			;;
 	esac
 
 	mkdir -vp run/shm
 	mkdir -v var/{log,mail,spool}
-	ln -sv /run var/run
-	ln -sv /run/lock var/lock
+	ln -sfnv /run var/run
+	ln -sfnv /run/lock var/lock
 	mkdir -pv var/{opt,cache,lib/{color,misc,locate},local}
 
-	ln -sv /tools/bin/{bash,cat,echo,pwd,stty} bin
-	ln -sv /tools/bin/{perl,env,mkdir} usr/bin
-	ln -sv /tools/lib/libgcc_s.so{,.1} usr/lib
-	ln -sv /tools/lib/libstdc++.so{,.6} usr/lib
-	ln -sv bash bin/sh
-	ln -sv /proc/self/mounts etc/mtab
+	ln -sfnv /proc/self/mounts etc/mtab
 
 	cat > etc/passwd << "EOF"
 root:x:0:0:root:/root:/bin/bash

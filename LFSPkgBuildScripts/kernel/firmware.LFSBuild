@@ -2,9 +2,10 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="linux-firmware"
-VERSION="5.2.8"
+. PkgVersions
 
+PKGNAME="linux-firmware"
+VERSION=$linux_version
 BUILD=${BUILD:-1}
 SECTION="KERNEL"
 SUFFIX="LFSPKG"

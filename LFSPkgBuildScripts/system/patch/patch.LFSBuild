@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="patch"
 TARNAME="$PKGNAME"
-VERSION="2.7.6"
+VERSION=$patch_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$patch_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 

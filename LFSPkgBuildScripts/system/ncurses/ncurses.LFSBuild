@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="ncurses"
 TARNAME="$PKGNAME"
-VERSION="6.1"
+VERSION=$ncurses_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$ncurses_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -21,10 +23,11 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --mandir=/usr/share/man --with-pkg-config-libdir=/usr/lib/pkgconfig --with-shared --with-normal --without-debug --without-ada --enable-widec --enable-pc-files --with-cxx-binding --with-cxx-shared
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --mandir=/usr/share/man --with-shared --without-normal --without-debug --enable-widec --enable-pc-files
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/lib  $PKG/usr/lib/pkgconfig|| true
+
 		mv -v $PKG/usr/lib/libncursesw.so.6* $PKG/lib
 		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libncursesw.so) $PKG/usr/lib/libncursesw.so
 		for lib in ncurses form panel menu
@@ -39,8 +42,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -sfv libncurses.so $PKG/usr/lib/libcurses.so
 		mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		#//TODO//not needed?
-		ln -sfv ../share/terminfo $PKG/usr/lib||true
 	popd
 
 	checketc "$PKG"

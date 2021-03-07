@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="inetutils"
 TARNAME="$PKGNAME"
-VERSION="1.9.4"
+VERSION=$inetutils_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$inetutils_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,7 +23,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		./configure --prefix=/usr --localstatedir=/var --disable-logger --disable-whois --disable-servers --disable-rcp --disable-rexec --disable-rlogin --disable-rsh
+		./configure $CONFIGOPTIONS --localstatedir=/var --disable-logger --disable-whois --disable-servers --disable-rcp --disable-rexec --disable-rlogin --disable-rsh
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/bin $PKG/sbin||true

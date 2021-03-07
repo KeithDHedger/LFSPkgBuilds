@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="make"
 TARNAME="$PKGNAME"
-VERSION="4.2.1"
+VERSION=$make_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$make_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,8 +23,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '211,217 d; 219,229 d; 232 d' glob/glob.c
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

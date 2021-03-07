@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="gdbm"
 TARNAME="$PKGNAME"
-VERSION="1.18.1"
+VERSION=$gdbm_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$gdbm_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,7 +23,8 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --disable-static --enable-libgdbm-compat
+		sed -r -i '/^char.*parseopt_program_(doc|args)/d' src/parseopt.c
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --enable-libgdbm-compat
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

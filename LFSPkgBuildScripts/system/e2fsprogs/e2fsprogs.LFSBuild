@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="e2fsprogs"
 TARNAME="$PKGNAME"
-VERSION="1.45.3"
+VERSION=$e2fsprogs_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$e2fsprogs_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -23,7 +25,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -v build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --bindir=/bin --with-root-prefix="" --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck --libdir=/usr/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --bindir=/bin --with-root-prefix="" --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		make install-libs DESTDIR="$PKG" || exit

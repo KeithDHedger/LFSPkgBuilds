@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="gcc"
 TARNAME="$PKGNAME"
-VERSION="9.2.0"
+VERSION=$gcc_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$gcc_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,21 +27,19 @@ pushd $COMPILEAT 2>/dev/null||true
 			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc-9.1.0-rpi$PIVERS-cpu-default.patch
 		fi
 
-		mkdir -v build
+		mkdir -v build||true
 		cd build
-		SED=sed ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/lib --enable-shared --enable-threads=posix --enable-__cxa_atexit --enable-clocale=gnu --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
-
+		../configure $CONFIGOPTIONS LD=ld --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR="$PKG" || exit 100
 		rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/gcc/$(gcc -dumpmachine)/${VERSION}/include-fixed/bits/||true
 		chown -v -R root:root ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/*linux-gnu/${VERSION}/include{,-fixed}
-		mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib
-		ln -sv ../usr/bin/cpp $PKG/lib
-		ln -sv gcc $PKG/usr/bin/cc
-		install -v -dm755 $PKG/usr/lib/bfd-plugins
-		ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/${VERSION}/liblto_plugin.so $PKG/usr/lib/bfd-plugins/
-		mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib||true
-		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib
+		mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib${LIBDIRSUFFIX} $PKG/usr/lib${LIBDIRSUFFIX}/bfd-plugins
+		ln -sfv ../usr/bin/cpp $PKG/lib${LIBDIRSUFFIX}
+		ln -sfv gcc $PKG/usr/bin/cc
+		ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/${VERSION}/liblto_plugin.so $PKG/usr/lib${LIBDIRSUFFIX}/bfd-plugins/
+		mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib${LIBDIRSUFFIX}||true
+		mv -v $PKG/usr/lib*/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib${LIBDIRSUFFIX}
 	popd
 
 	checketc "$PKG"

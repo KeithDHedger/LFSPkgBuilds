@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="gmp"
 TARNAME="$PKGNAME"
-VERSION="6.1.2"
+VERSION=$gmp_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$gmp_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -31,7 +33,7 @@ esac
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ABI=$ABI ./configure --prefix=/usr --enable-cxx --disable-static --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ABI=$ABI ./configure $CONFIGOPTIONS --enable-cxx --disable-static --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
 		make html $MAKEFLAGS||make html|| exit 100
 		make install DESTDIR=$PKG || exit 100

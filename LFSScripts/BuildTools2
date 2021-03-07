@@ -1,0 +1,173 @@
+#!/bin/bash -e
+#
+#©K. D. Hedger. Wed  3 Mar 14:38:04 GMT 2021 keithdhedger@gmail.com
+#
+#This file (BuildTools2) is part of LFSPkgBuilds.
+#
+#LFSPkgBuilds is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#at your option) any later version.
+#
+#LFSPkgBuilds is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with LFSPkgBuilds.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+if [ ! -e /inchroot ];then
+	echo "You need to be in chroot please run the Chroot script in the LFSScripts folder ..."
+	exit 100
+fi
+
+if [ -e ./SystemData ];then
+	. ./SystemData
+else
+	echo "No SystemData file found ..."
+	exit 100
+fi
+
+if [ -e ./PkgVersions ];then
+	. ./PkgVersions
+else
+	echo "No PkgVersions file found ..."
+	exit 100
+fi
+
+export MAKEFLAGS=${MAKEFLAGS:-'-j4'}
+
+SYSTEMSOURCE="${SOURCEARCHIVES}/SYSTEM"
+NETSOURCE="${SOURCEARCHIVES}/NET"
+TOOLNUM=$(cat ${SYSTEMSOURCE}/toolnum2 2>/dev/null||true)
+
+if [ "X$TOOLNUM" = "X" ];then
+	TOOLNUM=1
+	echo $TOOLNUM > ${SYSTEMSOURCE}/toolnum2
+fi
+
+while [ $TOOLNUM != "DONE" ]
+do
+	cd "$SYSTEMSOURCE"
+	case $TOOLNUM in
+		1)
+			NAME=gcc
+			VERSION=$gcc_version
+			tar -xvf ${NAME}-${VERSION}.$gcc_arctype
+			pushd ${NAME}-${VERSION}
+				ln -snf gthr-posix.h libgcc/gthr-default.h
+				mkdir -pv build
+				cd build
+				../libstdc++-v3/configure CXXFLAGS="-g -O2 -D_GNU_SOURCE" --prefix=/usr --disable-multilib --disable-nls --host=$(uname -m)-lfs-linux-gnu --disable-libstdcxx-pch
+				make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum2
+			;;
+
+		2)
+			NAME=gettext
+			VERSION=$gettext_version
+			tar -xvf ${NAME}-${VERSION}.$gettext_arctype
+			pushd ${NAME}-${VERSION}
+				./configure --disable-shared
+				make $MAKEFLAGS||make
+				cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum2
+			;;
+
+		3)
+			NAME=bison
+			VERSION=$bison_version
+			tar -xvf ${NAME}-${VERSION}.$bison_arctype
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.7.1
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum2
+			;;
+
+		4)
+			NAME=perl
+			VERSION=$perl_version
+			tar -xvf ${NAME}-${VERSION}.$perl_arctype
+			pushd ${NAME}-${VERSION}
+				sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr -Dprivlib=/usr/lib/perl5/5.32/core_perl -Darchlib=/usr/lib/perl5/5.32/core_perl -Dsitelib=/usr/lib/perl5/5.32/site_perl -Dsitearch=/usr/lib/perl5/5.32/site_perl -Dvendorlib=/usr/lib/perl5/5.32/vendor_perl -Dvendorarch=/usr/lib/perl5/5.32/vendor_perl
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum2
+			;;
+
+		5)
+			NAME=Python
+			VERSION=$python_version
+			tar -xvf ${NAME}-${VERSION}.$python_arctype
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/usr --enable-shared --without-ensurepip
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum2
+			;;
+
+		6)
+			NAME=texinfo
+			VERSION=$texinfo_version
+			tar -xvf ${NAME}-${VERSION}.$texinfo_arctype
+			pushd ${NAME}-${VERSION}
+				./configure --prefix=/usr
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum2
+			;;
+
+		7)
+			NAME=util-linux
+			VERSION=$util_linux_version
+			tar -xvf ${NAME}-${VERSION}.$util_linux_arctype
+			mkdir -pv /var/lib/hwclock
+			pushd ${NAME}-${VERSION}
+				./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/util-linux-2.36 --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run
+				make $MAKEFLAGS||make
+				make install
+			popd
+			rm -rf ${NAME}-${VERSION}
+			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum2
+			;;
+
+		8)
+			find /usr/{lib,libexec}/ -name "*.la" -delete
+			rm -rf /usr/share/{info,man,doc}/*
+			echo "DONE" > ${SYSTEMSOURCE}/toolnum2
+			TOOLNUM="DONE"
+			;;
+	esac
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,14 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="openssl"
 TARNAME="${PKGNAME}"
-VERSION="1.1.1"
+VERSION=$openssl_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-MINORSUFFIX="c"
-TARBALL="${TARNAME}-${VERSION}${MINORSUFFIX}.tar.gz"
+MINORSUFFIX=$openssl_minor_rev
+TARBALL="${TARNAME}-${VERSION}${MINORSUFFIX}.$openssl_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -21,18 +23,17 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORSUFFIX}"
-		sed -i '/\} data/s/ =.*$/;\n    memset(\&data, 0, sizeof(data));/' crypto/rand/rand_lib.c
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./config --prefix=/usr --openssldir=/etc/ssl --libdir=/lib shared zlib-dynamic
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./config $CONFIGOPTIONS --openssldir=/etc/ssl shared zlib-dynamic
 		make $MAKEFLAGS||make|| exit 100
 		sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
 		make MANSUFFIX=ssl install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
+		cp -vfr doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		#PKG_CONFIG_PATH not set when building base system.
 		#move misplaced .pc files.
 		mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig||true
-		mv $PKG/lib/pkgconfig/*.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
-		rmdir $PKG/lib/pkgconfig||true
-		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
-		cp -vfr doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		mv $PKG/lib${LIBDIRSUFFIX}/pkgconfig/*.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
+		rmdir $PKG/lib${LIBDIRSUFFIX}/pkgconfig||true
 	popd
 
 	checketc $PKG

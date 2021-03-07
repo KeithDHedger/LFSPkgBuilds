@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="kmod"
 TARNAME="$PKGNAME"
-VERSION="26"
+VERSION=$kmod_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$kmod_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,7 +23,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib${LIBDIRSUFFIX} --with-xz --with-zlib
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --bindir=/bin --with-rootlibdir=/lib${LIBDIRSUFFIX} --with-xz --with-zlib --with-zstd
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/sbin $PKG/bin||true

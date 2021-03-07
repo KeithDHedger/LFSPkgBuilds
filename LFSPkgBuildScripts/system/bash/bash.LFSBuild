@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="bash"
 TARNAME="$PKGNAME"
-VERSION="5.0"
+VERSION=$bash_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$bash_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,7 +23,8 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --htmldir=/usr/share/doc/${PKGNAME}-${VERSION} --without-bash-malloc --with-installed-readline
+		sed -i  '/^bashline.o:.*shmbchar.h/a bashline.o: ${DEFDIR}/builtext.h' Makefile.in
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --bindir=/bin --htmldir=/usr/share/doc/${PKGNAME}-${VERSION} --without-bash-malloc --with-installed-readline
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR=$PKG || exit 100
 	popd

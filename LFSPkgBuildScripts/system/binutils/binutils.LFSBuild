@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="binutils"
 TARNAME="$PKGNAME"
-VERSION="2.32"
+VERSION=$binutils_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${PKGNAME}-${VERSION}.tar.xz"
+TARBALL="${PKGNAME}-${VERSION}.$binutils_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -24,7 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${PKGNAME}-${VERSION}"
 		mkdir -v build
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd --libdir=/usr/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd
 		make $MAKEFLAGS tooldir=/usr||make tooldir=/usr|| exit 100
 		make $MAKEFLAGS tooldir=/usr install DESTDIR=$PKG||make tooldir=/usr install DESTDIR=$PKG|| exit 100
 	popd

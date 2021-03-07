@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="glibc"
 TARNAME="$PKGNAME"
-VERSION="2.30"
+VERSION=$glibc_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$glibc_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -22,53 +24,23 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fhs-1.patch
-		sed -i '/asm.socket.h/a# include <linux/sockios.h>' sysdeps/unix/sysv/linux/bits/socket.h
-		mkdir -vp ${PKG}/lib${LIBDIRSUFFIX}||true
-
-		if [ "${DOWHAT:0:2}" != "up" ];then
-			case $(uname -m) in
-				i?86|armv?l)
-					GCC_INCDIR=/usr/lib/gcc/$(uname -m)-pc-linux-gnu/${VERSION}/include
-					ln -sfv ld-linux.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb.so.3
-					;;
-				x86_64)
-					GCC_INCDIR=/usr/lib/gcc/x86_64-pc-linux-gnu/${VERSION}/include
-					ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}
-					ln -sfv ../lib/ld-linux-x86-64.so.2 ${PKG}/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
-					;;
-			esac
-		fi
-
 		mkdir -v build || true
 		cd build
-		if [ "${DOWHAT:0:2}" != "up" ];then
-			CC="gcc -ffile-prefix-map=/tools=/usr" CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
-		else
-			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}|| exit 100
-		fi
-
+			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --disable-werror --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make
-
 		touch /etc/ld.so.conf
-		#is this needed if not running full tests?
-		sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 		make install DESTDIR="$PKG" || exit 100
 		mkdir -p "$PKG/etc/"||true
 		cp -v ../nscd/nscd.conf $PKG/etc/nscd.conf
 		mkdir -pv $PKG/var/cache/nscd||true
-
 		mkdir -pv $PKG/usr/lib/locale $PKG/lib${LIBDIRSUFFIX}||true
-		#now in postinstall
-		#uncomment for all locales
-		#		make localedata/install-locales install_root="$PKG" || exit 100
-		ln -s ld-linux.so.2 $PKG/lib${LIBDIRSUFFIX}/ld-lsb.so.3||true
 	popd
 
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 #Save an unstripped version of glibc for debugging ( valgrind for instance needs this )
 #To use the debug version just change the symlink  '/lib64/ld-linux-x86-64.so.2' to point to the debug version
-	cp ${PKG}/lib${LIBDIRSUFFIX}/ld-2.30.so ${PKG}/lib${LIBDIRSUFFIX}/ld-2.30.so.DEBUG
+	cp ${PKG}/lib${LIBDIRSUFFIX}/ld-${VERSION}.so ${PKG}/lib${LIBDIRSUFFIX}/ld-${VERSION}.so.DEBUG
 
 	pushd "$PKG"
 		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -90,15 +62,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
-
-	if [ "${DOWHAT:0:2}" != "up" ];then
-		mv -v /tools/bin/{ld,ld-old}
-		mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old}
-		mv -v /tools/bin/{ld-new,ld}
-		ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld
-
-		gcc -dumpspecs | sed -e 's@/tools@@g' -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' -e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > $(dirname $(gcc --print-libgcc-file-name))/specs
-	fi
 
 	echo 'main(){}' > dummy.c
 	cc dummy.c -v -Wl,--verbose &> dummy.log

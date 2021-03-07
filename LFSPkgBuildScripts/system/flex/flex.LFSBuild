@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="flex"
 TARNAME="$PKGNAME"
-VERSION="2.6.4"
+VERSION=$flex_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$flex_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -21,8 +23,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i "/math.h/a #include <malloc.h>" src/flexdef.h
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" HELP2MAN=/tools/bin/true  ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/bin||true

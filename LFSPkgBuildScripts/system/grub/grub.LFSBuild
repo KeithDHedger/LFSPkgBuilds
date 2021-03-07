@@ -2,15 +2,17 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="grub"
 TARNAME="$PKGNAME"
-VERSION="2.04"
+VERSION=$grub_version
 MINORVERSION=""""
 
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}${MINORVERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}${MINORVERSION}.$grub_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -23,7 +25,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORVERSION}"
-		./configure --sbindir=/sbin --prefix=/usr --sysconfdir=/etc --disable-efiemu  --disable-werror
+		./configure --sbindir=/sbin $CONFIGOPTIONS --disable-efiemu  --disable-werror
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/bash-completion/completions

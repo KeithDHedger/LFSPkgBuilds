@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="ninja"
 TARNAME="$PKGNAME"
-VERSION="1.9.0"
+VERSION=$ninja_version
 BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$ninja_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}

@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="libelf"
 TARNAME="elfutils"
-VERSION="0.177"
+VERSION=$elfutils_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.$elfutils_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
@@ -20,11 +22,12 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --disable-debuginfod --enable-libdebuginfod=dummy
 		make $MAKEFLAGS||make || exit 100
 		make -C libelf install DESTDIR=$PKG || exit 100
 		mkdir -vp ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig ||true
 		install -vm644 config/libelf.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
+		rm ${PKG}/lib${LIBDIRSUFFIX}/libelf.a
 	popd
 
 	checketc $PKG

@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="iproute2"
 TARNAME="$PKGNAME"
-VERSION="5.2.0"
+VERSION=$iproute2_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$iproute2_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 

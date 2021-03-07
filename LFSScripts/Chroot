@@ -11,14 +11,14 @@ fi
 
 pushd $LFS
 	mount -v --bind /dev dev
+	mount -v --bind /dev/pts $LFS/dev/pts
 	mount -vt proc proc proc
 	mount -vt sysfs sysfs sys
-	mount -t tmpfs tmpfs run
+	mount -vt tmpfs tmpfs run
 
-	if [ -e dev/shm ];then
-		mkdir -pv "${LFS}$(readlink dev/shm)"||true
+	if [ -h $LFS/dev/shm ]; then
+		mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 	fi
-	mount -vt devpts devpts dev/pts -o gid=5,mode=620
 
 #extra folders from the host can be mounted either from here or from the chroot environment
 #dont forget to add the unmount commands to the AfterExitChroot script or unmount them before leaving the chroot.
@@ -27,23 +27,20 @@ pushd $LFS
 
 	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
 	mkdir -vp ${LFS}/${PKGARCHIVES}||true
-	if [ "X$EXTFOLDER" != "X" ];then
-		if ! mountpoint $LFS/${PKGARCHIVES} ;then
-			mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
-			mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+
+	if ! mountpoint $LFS/${PKGARCHIVES} && ! mountpoint $LFS/${SOURCEARCHIVES} ;then
+		if [ "X$EXTFOLDER" != "X" ];then
+			sudo mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
+			sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
 		fi
 	fi
 
+	touch ${LFS}/inchroot
 #This seems to be needed now as TERM=xterm screws up ncurses
 #Set TERM as dialog needs it
 	export TERM="xterm-color"
-	if [ "X$1" = "Xsystem" ];then
-		mv ${LFS}/etc/profile ${LFS}/etc/profile.BAK||true
-		chroot "$LFS" /tools/bin/env -i HOME=/root TERM="$TERM" PS1='\u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /tools/bin/bash --login +h
-		mv ${LFS}/etc/profile.BAK ${LFS}/etc/profile
-	else
-		chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='\u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/bash --login
-	fi
+	chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/bash --login +h
+	rm ${LFS}/inchroot
 popd
 
 ./AfterExitChroot

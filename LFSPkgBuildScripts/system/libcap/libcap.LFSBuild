@@ -2,16 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="libcap"
 TARNAME="$PKGNAME"
-VERSION="2.27"
+VERSION=$libcap_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$libcap_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
+
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -20,13 +23,14 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/install.*STALIBNAME/d' libcap/Makefile
-		make $MAKEFLAGS||make|| exit 100
-		make RAISE_SETFCAP=no prefix=/usr install DESTDIR=$PKG || exit 100
-		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so
-		mkdir -vp  $PKG/lib${LIBDIRSUFFIX}||true
+		make clean
+		sed -i '/install -m.*STACAPLIBNAME/d' libcap/Makefile
+		make prefix=/usr lib=lib${LIBDIRSUFFIX} $MAKEFLAGS||make prefix=/usr lib=lib${LIBDIRSUFFIX}|| exit 100
+		make prefix=/usr lib=lib${LIBDIRSUFFIX} PKGCONFIGDIR=/usr/lib${LIBDIRSUFFIX}/pkgconfig install DESTDIR=$PKG || exit 100
+		mkdir -vp  $PKG/lib${LIBDIRSUFFIX} $PKG/usr/lib${LIBDIRSUFFIX}||true
 		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so.* $PKG/lib${LIBDIRSUFFIX}
-		ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so) $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so
+		ln -sfv ../../lib${LIBDIRSUFFIX}/libcap.so.2 $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so
+		chmod -v 755 $PKG/lib${LIBDIRSUFFIX}/libcap.so.${VERSION}
 	popd
 
 	checketc "$PKG"

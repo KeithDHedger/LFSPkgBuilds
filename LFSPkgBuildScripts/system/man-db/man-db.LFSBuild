@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="man-db"
 TARNAME="$PKGNAME"
-VERSION="2.8.6.1"
+VERSION=$man_db_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$man_db_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,10 +27,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		if [ $USESYSTEMD -eq 0 ];then
 			SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir="
-		else
-			sed -i '/find/s@/usr@@' init/systemd/man-db.service.in
+#		else
+#			sed -i '/find/s@/usr@@' init/systemd/man-db.service.in
 		fi
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --sysconfdir=/etc --disable-setuid --enable-cache-owner=bin --with-browser=/usr/bin/links --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap $SYSTEMDOPTS --libdir=/usr/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-setuid --enable-cache-owner=bin --with-browser=/usr/bin/links --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap $SYSTEMDOPTS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

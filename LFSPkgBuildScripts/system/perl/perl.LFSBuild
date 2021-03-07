@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="perl"
 TARNAME="$PKGNAME"
-VERSION="5.30.0"
+VERSION=$perl_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.$perl_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -23,7 +25,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		export BUILD_ZLIB=False
 		export BUILD_BZIP2=0
 
-		sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads
+		sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr -Dprivlib=/usr/lib/perl5/5.32/core_perl -Darchlib=/usr/lib/perl5/5.32/core_perl -Dsitelib=/usr/lib/perl5/5.32/site_perl -Dsitearch=/usr/lib/perl5/5.32/site_perl -Dvendorlib=/usr/lib/perl5/5.32/vendor_perl -Dvendorarch=/usr/lib/perl5/5.32/vendor_perl -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		unset BUILD_ZLIB BUILD_BZIP2

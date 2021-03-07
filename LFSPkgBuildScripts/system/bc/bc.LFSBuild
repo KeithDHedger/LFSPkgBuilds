@@ -2,13 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="bc"
 TARNAME="$PKGNAME"
-VERSION="2.1.3"
+VERSION=$bc_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$bc_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 

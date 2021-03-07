@@ -2,15 +2,17 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+. ../PkgVersions
+
 PKGNAME="eudev"
 TARNAME="$PKGNAME"
-VERSION="3.2.8"
+VERSION=$eudev_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$eudev_arctype"
 
-UDEVLFS="udev-lfs-20171102"
+UDEVLFS=udev-lfs-$udev_lfs_version
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -23,15 +25,15 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/sbin --sbindir=/sbin --libdir=/usr/lib${LIBDIRSUFFIX} --sysconfdir=/etc --libexecdir=/lib${LIBDIRSUFFIX} --with-rootprefix= --with-rootlibdir=/lib${LIBDIRSUFFIX} --enable-manpages --disable-static
-		LIBRARY_PATH=/tools/lib make $MAKEFLAGS||LIBRARY_PATH=/tools/lib make||LIBRARY_PATH=/tools/lib make || exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --bindir=/sbin --sbindir=/sbin --libexecdir=/lib${LIBDIRSUFFIX} --with-rootprefix= --with-rootlibdir=/lib${LIBDIRSUFFIX} --enable-manpages
+		make $MAKEFLAGS||make || exit 100
 
 		make $MAKEFLAGS||make|| exit 100
 		mkdir -pv $PKG/lib/udev/rules.d
 		mkdir -pv $PKG/etc/udev/rules.d
 		mkdir -pv $PKG/lib${LIBDIRSUFFIX}/{firmware,udev/devices/pts,}||true
 		make install DESTDIR=$PKG || exit 100
-		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.tar.xz
+		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.$udev_lfs_arctype
 		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 100
 	popd
 
