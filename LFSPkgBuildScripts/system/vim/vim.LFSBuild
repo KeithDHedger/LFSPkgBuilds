@@ -31,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -sv vim $PKG/usr/bin/vi
 		for L in  $PKG/usr/share/man/{,*/}man1/vim.1
 			do
-				ln -sv vim.1 $(dirname $L)/vi.1
+				ln -sv vim.1 $(dirname $L)/vi.1||true
 			done
 		ln -sv ../vim/vim${VIMVERS}/doc $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd

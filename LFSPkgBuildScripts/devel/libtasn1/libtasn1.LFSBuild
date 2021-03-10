@@ -2,14 +2,9 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="six-1.12.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="libtasn1"
 TARNAME="$PKGNAME"
-VERSION="4.14"
+VERSION="4.16.0"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -26,7 +21,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

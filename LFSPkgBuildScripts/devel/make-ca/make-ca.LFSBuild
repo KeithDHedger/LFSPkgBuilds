@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.1 p11-kit-0.23.16.1"
+DEPENDS="p11-kit-0.23.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="make-ca"
 TARNAME="$PKGNAME"
-VERSION="1.4"
+VERSION="1.7"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"

@@ -22,7 +22,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --disable-debuginfod --enable-libdebuginfod=dummy
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --disable-debuginfod --enable-libdebuginfod=dummy --libdir=/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make || exit 100
 		make -C libelf install DESTDIR=$PKG || exit 100
 		mkdir -vp ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig ||true

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-9.0"
+DEPENDS="xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xkeyboard-config"
 TARNAME="$PKGNAME"
-VERSION="2.27"
+VERSION="2.32"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -33,7 +33,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-xkb-rules-symlink=xorg ${OPTIONS}
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
-		sed -i 's|\(<I[3|5].*>\)|//\1|' $PKG/usr/share/X11/xkb/keycodes/evdev
 	popd
 
 	checketc $PKG

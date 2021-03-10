@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Fontconfig-2.13.1 Cairo-1.16.0 Harfbuzz-2.6.0 FriBidi-1.0.5 GLib-2.60.6 xorg-libs-9.0"
+DEPENDS="Fontconfig-2.13.1 Cairo-1.16.0 Harfbuzz-2.6.0 FriBidi-1.0.5 GLib-2.60.6 xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

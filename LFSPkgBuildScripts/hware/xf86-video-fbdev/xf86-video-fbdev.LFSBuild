@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Xorg-Server-1.20.5"
+DEPENDS="Xorg-Server-1.20.10"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxcb-1.12"
+DEPENDS="libxcb-1.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

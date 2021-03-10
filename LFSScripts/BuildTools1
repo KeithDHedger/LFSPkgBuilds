@@ -188,15 +188,6 @@ do
 			tar -xvf ${NAME}-${VERSION}.$glibc_arctype
 			pushd ${NAME}-${VERSION}
 				ln -sfv ld-linux-x86-64.so.2 $LFS/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
-#				case $(uname -m) in
-#					i?86)
-#						ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
-#						;;
-#					x86_64)
-#						ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64
-#						ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
-#						;;
-#				esac
 				patch -Np1 -i ../${NAME}-${VERSION}-fhs-1.patch
 				mkdir -v build
 				cd build

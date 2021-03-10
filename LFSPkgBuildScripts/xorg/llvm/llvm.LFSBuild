@@ -2,24 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libffi-3.2.1 Python-2.7.16 CMake-3.15.2"
+DEPENDS="CMake-3.19.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="llvm"
 TARNAME="$PKGNAME"
-VERSION="8.0.1"
+VERSION="11.1.0"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.src.tar.xz"
-CFETARBALL=cfe-${VERSION}.src.tar.xz
+CLANGTARBALL="clang-${VERSION}.src.tar.xz"
 COMPILERTARBALL=compiler-rt-${VERSION}.src.tar.xz
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${TARBALL}" $SECTION
-gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$CFETARBALL" $SECTION
+gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$CLANGTARBALL" $SECTION
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$COMPILERTARBALL" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
@@ -38,15 +38,16 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}.src"
-		tar -xvf ${SOURCEARCHIVES}/${SECTION}/$CFETARBALL -C tools
-		tar -xvf ${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL -C projects
-
-		mv tools/cfe-${VERSION}.src tools/clang
+		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$CLANGTARBALL" -C tools
+		mv tools/clang-${VERSION}.src tools/clang
+		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL" -C projects
 		mv projects/compiler-rt-${VERSION}.src projects/compiler-rt
+
+		grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
 
 		mkdir build || true
 		pushd build
-			CC=gcc CXX=g++ cmake -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_FFI=ON -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_LLVM_DYLIB=ON  -DLLVM_LINK_LLVM_DYLIB=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_TARGETS_TO_BUILD="$TARGETS" -Wno-dev -G Ninja ..
+			CC=gcc CXX=g++ cmake -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_FFI=ON -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_LLVM_DYLIB=ON  -DLLVM_LINK_LLVM_DYLIB=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_TARGETS_TO_BUILD="$TARGETS" -DLLVM_BINUTILS_INCDIR=/usr/include -Wno-dev -G Ninja ..
 			ninja $MAKEFLAGS||ninja -j1||exit 100
 			DESTDIR=$PKG ninja install
 		popd

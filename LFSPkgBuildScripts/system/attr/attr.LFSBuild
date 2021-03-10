@@ -26,9 +26,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --bindir=/bin --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -p ${PKG}/lib || true
-		mv -v ${PKG}/usr/lib/libattr.so.* ${PKG}/lib
-		ln -sfv ../../lib/$(readlink ${PKG}/usr/lib/libattr.so) ${PKG}/usr/lib/libattr.so
+		mkdir -p ${PKG}/lib${LIBDIRSUFFIX} || true
+		mv -v ${PKG}/usr/lib${LIBDIRSUFFIX}/libattr.so.* ${PKG}/lib${LIBDIRSUFFIX}
+		ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink ${PKG}/usr/lib${LIBDIRSUFFIX}/libattr.so) ${PKG}/usr/lib${LIBDIRSUFFIX}/libattr.so
 	popd
 
 	checketc "$PKG"

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.65.3 libarchive-3.4.0 libuv-1.31.0"
+DEPENDS="curl-7.75.0 libarchive-3.5.1 libuv-1.41.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cmake"
 TARNAME="$PKGNAME"
-VERSION="3.15.2"
+VERSION="3.19.5"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"

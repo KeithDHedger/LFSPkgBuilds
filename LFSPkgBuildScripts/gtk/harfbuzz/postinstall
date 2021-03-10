@@ -5,8 +5,7 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 lfspkg -r FreeType||true
-lfspkg -r fontconfig||true
-lfspkg -B "fontconfig-2.13.1"
+lfspkg -B "freetype-2.10.4"||true
 
 exit 0
 

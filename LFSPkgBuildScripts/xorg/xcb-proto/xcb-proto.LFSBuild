@@ -2,21 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.16"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="xcb-proto"
 TARNAME="${PKGNAME}"
-VERSION="1.13"
+VERSION="1.14.1"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
+gettar "https://xorg.freedesktop.org/archive/individual/proto/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -28,7 +23,7 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${XORG_CONFIG}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure ${XORG_CONFIG}
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

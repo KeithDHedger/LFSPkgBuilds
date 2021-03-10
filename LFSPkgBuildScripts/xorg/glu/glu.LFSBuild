@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="MesaLib-19.1.4"
+DEPENDS="MesaLib-20.3.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

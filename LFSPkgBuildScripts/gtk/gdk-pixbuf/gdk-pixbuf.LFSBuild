@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.60.6 libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10 gobject-introspection-1.60.2 shared-mime-info-1.12 xorg-libs-9.0"
+DEPENDS="GLib-2.60.6 libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10 gobject-introspection-1.60.2 shared-mime-info-1.12 xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

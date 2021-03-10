@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-9.0 alsa-lib-1.1.9 DBus-1.12.16 MesaLib-19.1.4 libxkbcommon xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-12.2 pciutils-3.6.2 NSS-3.35"
+DEPENDS="xorg-libs-10.1 alsa-lib-1.1.9 DBus-1.12.16 MesaLib-19.1.4 libxkbcommon xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-12.2 pciutils-3.6.2 NSS-3.35"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

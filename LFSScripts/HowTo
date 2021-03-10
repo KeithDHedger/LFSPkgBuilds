@@ -109,7 +109,7 @@ fi
 #Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
 mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
 cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
-ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz .
+ln -snfv ../SYSTEM/linux-$KERNELVERSION.tar.xz .
 
 12)
 #get the package manager archive via the host system:
@@ -136,7 +136,7 @@ BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 
 #As part of the LFSSetUp script $LFS/etc/lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
 #Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
-#At this point wget/openssl is not installed so you will get a load of complaints from lfspkg, ignore them as lfspkg will be reinstalled later with the main system.
+#At this point wget/openssl is not installed so you will get a load of complaints from lfspkg about no wget etc, ignore them as lfspkg will be reinstalled later with the main system.
 
 #You should run lfspkg --setup to create the lfspkg.rc file ( in /etc )
 #Rc files are sourced from /etc/lfspkg.rc
@@ -145,6 +145,8 @@ BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 lfspkg --setup
 
 #You shoud probably set log file to 1, and check etc to 0 when installing the base system.
+#You can rerun lfspkg --setup at any time to tweak the settings.
+#after installing the base system you will probably want to at least set check etc to 1.
 
 15)
 #Build main system:
@@ -180,7 +182,7 @@ exit
 17)
 #optional strip etc see:
 #http://www.linuxfromscratch.org/lfs/view/stable/chapter08/strippingagain.html
-
+#Mostly not needed as the package manager does a strip before installing.
 cd $LFS
 save_lib="ld-2.33.so libc-2.33.so libpthread-2.33.so libthread_db-1.0.so"
 cd lib
@@ -219,14 +221,14 @@ cd $LFS/LFSScripts
 
 cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild
-#rerun setup
+#rerun setup if needed, ( probably best to set "Check /etc For Possible Config File Clashes" to 1 now.
 lfspkg --setup
 
-13)
+20)
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
 
-#Optional copy the config for the running kernel, don't do this if running from bootcd
+#Optional copy the config for the running kernel, don't do this if running from bootcd, you may have to set KERNELVERSION.
 #gunzip < /proc/config.gz > config-${KERNELVERSION}
 
 ./kernel.LFSBuild install
@@ -240,7 +242,7 @@ cd /LFSPkgBuildScripts/kernel
 cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
 
-13.5)
+21)
 #Optional install of grub, see here:
 #http://www.linuxfromscratch.org/lfs/view/stable/chapter08/grub.html
 
@@ -263,7 +265,8 @@ menuentry "GNU/Linux, Linux $LFSVERSION" {
 }
 EOF
 
-14)
+##all below here is for LFS9.0 needs updating to 10.1
+22)
 #Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
 #Build xorg:
 cd /LFSPkgBuildScripts/xorg/xorg-meta/

@@ -20,7 +20,7 @@ mkdir -vp ${KERNELSOURCEDIR}||true
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-#Copy the config for the running kernel
+#Copy the config for the running kernel if needed
 #gunzip < /proc/config.gz > ${KERNELCONFIG}
 
 scriptLog "${PKGNAME}-${VERSION}"

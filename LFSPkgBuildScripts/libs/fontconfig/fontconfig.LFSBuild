@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="FreeType-2.10.1"
+DEPENDS="FreeType-2.10.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

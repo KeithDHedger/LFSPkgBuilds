@@ -26,9 +26,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --bindir=/bin --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/lib||true
-		mv -v $PKG/usr/lib/libacl.so.* $PKG/lib
-		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libacl.so) $PKG/usr/lib/libacl.so
+		mkdir -vp $PKG/lib${LIBDIRSUFFIX}||true
+		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libacl.so.* $PKG/lib${LIBDIRSUFFIX}
+		ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libacl.so) $PKG/usr/lib${LIBDIRSUFFIX}/libacl.so
 	popd
 
 	checketc "$PKG"

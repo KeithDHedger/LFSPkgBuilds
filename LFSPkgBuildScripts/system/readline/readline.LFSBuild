@@ -39,9 +39,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		else
 			make install SHLIB_LIBS="-lncursesw" DESTDIR="$PKG" || exit
 			mkdir -vp $PKG/usr/lib  $PKG/lib||true
-			mv -v $PKG/usr/lib/lib{readline,history}.so.* $PKG/lib
-			ln -sfv ../../lib/$(readlink $PKG/usr/lib/libreadline.so) $PKG/usr/lib/libreadline.so
-			ln -sfv ../../lib/$(readlink $PKG/usr/lib/libhistory.so ) $PKG/usr/lib/libhistory.so
+			mv -v $PKG/usr/lib${LIBDIRSUFFIX}/lib{readline,history}.so.* $PKG/lib
+			ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libreadline.so) $PKG/usr/lib${LIBDIRSUFFIX}/libreadline.so
+			ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libhistory.so ) $PKG/usr/lib${LIBDIRSUFFIX}/libhistory.so
 			install -v -m644 doc/*.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		fi
 	popd

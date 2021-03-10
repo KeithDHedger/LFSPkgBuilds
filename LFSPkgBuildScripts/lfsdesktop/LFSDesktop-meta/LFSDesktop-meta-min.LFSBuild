@@ -1,0 +1,58 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+DEPENDS="LFSToolKit-0.5.1
+LFSWManager-0.1.3
+LFSDesktop-0.2.0
+LFSApplications-0.2.0
+LFSPanel-0.2.0
+LFSSetWallpaper-0.2.0
+CliMsg-0.1.1
+dbus-glib-0.110
+compton-9.0
+libnotify-0.5.2
+gnome-icon-theme-3.12.0
+Sudo-1.8.27
+shared-mime-info-1.12
+OpenSSH-8.0
+xdg-utils-1.1.3
+desktop-file-utils-0.24
+spacefm-1.0.6"
+
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="LFSDesktop-meta-min"
+VERSION="10.1"
+BUILD=1
+SECTION="LFSDESKTOP"
+SUFFIX="LFSPKG"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+rm -rf "$PKG" || true
+
+pushd "$PKG"
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+
+rm -r "$PKG"
+

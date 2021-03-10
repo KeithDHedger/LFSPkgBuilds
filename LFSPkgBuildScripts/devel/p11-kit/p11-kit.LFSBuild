@@ -2,32 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libtasn1-4.14"
+DEPENDS="libtasn1-4.16.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="p11-kit"
 TARNAME="$PKGNAME"
-VERSION="0.23.16.1"
+VERSION="0.23.22"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/p11-glue/p11-kit/releases/download/0.23.16.1/${TARBALL}" $SECTION
+gettar "https://github.com/p11-glue/p11-kit/releases/download/${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed '20,$ d' -i trust/trust-extract-compat.in
-		cat >> trust/trust-extract-compat.in << "EOF"
+		sed '20,$ d' -i trust/trust-extract-compat
+		cat >> trust/trust-extract-compat << "EOF"
 # Copy existing anchor modifications to /etc/ssl/local
 /usr/libexec/make-ca/copy-trust-modifications
 

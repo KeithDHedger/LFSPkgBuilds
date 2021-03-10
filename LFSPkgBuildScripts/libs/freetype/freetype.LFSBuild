@@ -9,7 +9,7 @@ fi
 
 PKGNAME="freetype"
 TARNAME="$PKGNAME"
-VERSION="2.10.1"
+VERSION="2.10.4"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -20,12 +20,14 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/freetype/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/freetype/${PKGNAME}-doc-${VERSION}.tar.xz"  $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		tar -xf ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-doc-${VERSION}.tar.xz --strip-components=2 -C docs
 		sed -ri "s:.*(AUX_MODULES.*valid):\1:" modules.cfg
 		sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" -i include/freetype/config/ftoption.h
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-freetype-config --disable-static

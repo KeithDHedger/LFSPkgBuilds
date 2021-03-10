@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="proto-2019.1"
+DEPENDS="proto-2020.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

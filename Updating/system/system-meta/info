@@ -1,8 +1,0 @@
-The package installs a complete LFS system plus openssl and wget.
-
-The init system is either sysvinit, LFSInit, busybox or sysvinit for RPi denpending on what build script is used.
-
-system-sysvinit-meta.LFSBuild
-system-LFSInit-meta.LFSBuild
-system-bbinit-meta.LFSBuild
-system-pi-sysvinit-meta.LFSBuild

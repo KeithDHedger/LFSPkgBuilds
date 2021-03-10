@@ -4,7 +4,7 @@
 
 PKGNAME="pixman"
 TARNAME="$PKGNAME"
-VERSION="0.38.4"
+VERSION="0.40.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -23,7 +23,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build
-		meson --prefix=/usr
+		meson $MESONCONFIGOPTIONS
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

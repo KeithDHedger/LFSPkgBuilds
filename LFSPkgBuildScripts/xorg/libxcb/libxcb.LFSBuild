@@ -2,24 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libXau-1.0.9 xcb-proto-1.13"
+DEPENDS="libXau-1.0.9 xcb-proto-1.14"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libxcb"
 TARNAME="$PKGNAME"
-VERSION="1.13.1"
+VERSION="1.14"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
+gettar "https://xorg.freedesktop.org/archive/individual/lib/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -e "s/pthread-stubs//" -i configure
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --enable-xinput --without-doxygen
+		CFLAGS="$LFSFLAGS -Wno-error=format-extra-args" CXXFLAGS="$LFSFLAGS -Wno-error=format-extra-args" ./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --without-doxygen
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

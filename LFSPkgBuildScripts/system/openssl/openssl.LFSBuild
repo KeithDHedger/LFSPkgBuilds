@@ -23,17 +23,17 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}${MINORSUFFIX}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./config $CONFIGOPTIONS --openssldir=/etc/ssl shared zlib-dynamic
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib${LIBDIRSUFFIX} shared zlib-dynamic
 		make $MAKEFLAGS||make|| exit 100
 		sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
 		make MANSUFFIX=ssl install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
-		cp -vfr doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		#PKG_CONFIG_PATH not set when building base system.
+		cp -vfr doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
+		#PKG_CONFIG_PATH not set when building base system. ?Fixed?
 		#move misplaced .pc files.
-		mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig||true
-		mv $PKG/lib${LIBDIRSUFFIX}/pkgconfig/*.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
-		rmdir $PKG/lib${LIBDIRSUFFIX}/pkgconfig||true
+		#mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig||true
+		#mv $PKG/lib${LIBDIRSUFFIX}/pkgconfig/*.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
+		#rmdir $PKG/lib${LIBDIRSUFFIX}/pkgconfig||true
 	popd
 
 	checketc $PKG

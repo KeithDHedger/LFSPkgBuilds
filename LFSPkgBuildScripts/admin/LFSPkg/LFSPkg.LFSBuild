@@ -23,7 +23,7 @@ if [ "X$BOOTSTRAP" != "X" ];then
 		rm -rf "$PKG" || true
 		mkdir -p "$PKG"
 		make install DESTDIR=$PKG
-		checketc "$PKG"
+		CHECKETC=1 checketc "$PKG"
 		packageclean "$PKG"
 		pushd "$PKG"
 			lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
@@ -49,7 +49,7 @@ else
 	mkdir -vp "${SOURCEARCHIVES}/${SECTION}" "${OUTPUT}/${SECTION}" 2>/dev/null
 	mv "$TARBALL" "${SOURCEARCHIVES}/${SECTION}"
 
-	checketc "$PKG"
+	CHECKETC=1 checketc "$PKG"
 	packageclean "$PKG"
 
 	pushd "$PKG"

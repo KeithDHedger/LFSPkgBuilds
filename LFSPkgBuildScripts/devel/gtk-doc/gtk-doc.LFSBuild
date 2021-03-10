@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.16 six-1.12.0 docbook-xml-4.5 docbook-xsl-1.79.2 Itstool-2.0.6 libxslt-1.1.33 xmlto-0.0.28 Pygments-2.4.2"
+DEPENDS="docbook-xml-4.5 docbook-xsl-1.79.2 Itstool-2.0.6 libxslt-1.1.34"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gtk-doc"
 TARNAME="$PKGNAME"
-VERSION="1.32"
+VERSION="1.33.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -19,13 +19,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/gtk-doc/${VERSION}/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/gtk-doc/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		autoreconf -fiv
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
