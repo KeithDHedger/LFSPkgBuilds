@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/general/perl-deps.html#perl-encode-locale
+Encode::Locale determines the locale encoding.
+
