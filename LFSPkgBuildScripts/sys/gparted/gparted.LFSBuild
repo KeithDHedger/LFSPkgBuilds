@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtkmm-2.24.5 Intltool-0.51.0 parted-3.3 dosfstools-4.1 mtools-4.0.18"
+DEPENDS="gtkmm-2.24.5 Intltool-0.51.0 parted-3.4 dosfstools-4.2 mtools-4.0.26"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gparted"
 TARNAME="$PKGNAME"
-VERSION="0.31.0"
+VERSION="0.33.0"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"

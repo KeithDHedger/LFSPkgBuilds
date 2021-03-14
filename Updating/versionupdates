@@ -1,2 +1,6 @@
 
 search xorg-libs-9.0|awk -F: '{print $1}'|xargs sed -i 's/xorg-libs-9.0/xorg-libs-10.1/'
+search "[^-]glib\b-"|awk -F: '{print $1}'|xargs sed -i 's/[Gg][Ll]ib-[[:digit:].]*/glib-2.66.7/'
+search "\bgobject-introspection-"|awk -F: '{print $1}'|xargs sed -i 's/\bgobject-introspection-[[:digit:].]*/gobject-introspection-1.66.1/'
+search "\bgtk-doc-"|awk -F: '{print $1}'|xargs sed -i 's/\bgtk-doc-[[:digit:].]*/gtk-doc-1.33.2/i'
+search "DEPENDS=.*\bgtk-[[:digit:].][[:digit:].]*"|awk -F: '{print $1}'|xargs sed -i 's/\bgtk-[[:digit:].][[:digit:].]*/gtk-2.24.33/i'

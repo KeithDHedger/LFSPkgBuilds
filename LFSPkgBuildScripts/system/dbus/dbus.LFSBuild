@@ -4,7 +4,7 @@
 
 PKGNAME="dbus"
 TARNAME="$PKGNAME"
-VERSION="1.12.16"
+VERSION="1.12.20"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
@@ -20,7 +20,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 USESYSTEMD=${USESYSTEMD:-0}
 if [ $USESYSTEMD -eq 0 ];then
-	SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir= --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
+	SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir=no --with-systemdsystemunitdir=no --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
 fi
 
 pushd $COMPILEAT 2>/dev/null||true

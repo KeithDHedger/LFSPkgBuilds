@@ -9,7 +9,7 @@ fi
 
 PKGNAME="LVM2"
 TARNAME="$PKGNAME"
-VERSION="2.03.05"
+VERSION="2.03.11"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://sources.redhat.com/pub/lvm2/${TARBALL}" $SECTION
+gettar "https://sourceware.org/ftp/lvm2/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -4,8 +4,8 @@
 
 PKGNAME="sqlite"
 TARNAME="sqlite-autoconf"
-VERSION="3.29.0"
-MINORVERSION="3290000"
+VERSION="3.34.1"
+MINORVERSION="3340100"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -15,7 +15,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://sqlite.org/2019/${TARBALL}" $SECTION
+gettar "https://sqlite.org/2021/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

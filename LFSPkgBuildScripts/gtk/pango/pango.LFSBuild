@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Fontconfig-2.13.1 Cairo-1.16.0 Harfbuzz-2.6.0 FriBidi-1.0.5 GLib-2.60.6 xorg-libs-10.1"
+DEPENDS="Fontconfig-2.13.1 Cairo-1.17.2 Harfbuzz-2.7.4 FriBidi-1.0.9 glib-2.66.7 xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="pango"
 TARNAME="$PKGNAME"
-VERSION="1.42.4"
+VERSION="1.48.2"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -32,7 +32,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build || true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dgtk_doc=true ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

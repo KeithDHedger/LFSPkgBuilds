@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenJDK-9.0.4 GLib-2.60.6"
+DEPENDS="OpenJDK-9.0.4 glib-2.66.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32 gobject-introspection-1.60.2 GTK-Doc-1.32 libglade-2.6.4"
+DEPENDS="GTK-2.24.33 gobject-introspection-1.66.1 gtk-doc-1.33.2 libglade-2.6.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -26,7 +26,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" LDFLAGS="-lglib-2.0 -lgtk-x11-2.0 -lgobject-2.0 -L/usr/lib" ./configure ${CONFIGOPTIONS} --disable-introspection
+#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" LDFLAGS="-lglib-2.66.7 -lgtk-x11-2.0 -lgobject-2.0 -L/usr/lib" ./configure ${CONFIGOPTIONS} --disable-introspection
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-introspection --disable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

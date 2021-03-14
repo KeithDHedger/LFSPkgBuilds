@@ -20,7 +20,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://xmlsoft.org/sources/${TARBALL}" $SECTION
-#gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-security_fix-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

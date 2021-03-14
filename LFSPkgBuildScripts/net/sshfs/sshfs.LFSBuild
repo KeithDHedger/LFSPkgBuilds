@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Fuse-3.6.2 GLib-2.60.6 OpenSSH-8.0"
+DEPENDS="Fuse-3.6.2 glib-2.66.7 OpenSSH-8.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

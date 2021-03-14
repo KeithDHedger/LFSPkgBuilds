@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.60.6  Intltool-0.51.0 JS-60.8.0 Linux-PAM-1.3.1"
+DEPENDS="glib-2.66.7  Intltool-0.51.0 JS-60.8.0 Linux-PAM-1.3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="OpenSSL-1.1.1 libedit-3.1"
+DEPENDS="libedit-3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="openssh"
 TARNAME="$PKGNAME"
-VERSION="8.0"
+VERSION="8.4"
 MINORREVISION=p1
 BUILD=${BUILD:-1}
 SECTION="SYS"
@@ -31,7 +31,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	useradd -c 'sshd PrivSep' -d /var/lib/sshd -s /bin/false -ru $UIDGIDPAIR sshd||true
 
 	pushd "${TARNAME}-${VERSION}${MINORREVISION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libexecdir=/usr/lib/openssh --sysconfdir=/etc/ssh --datadir=/usr/share/sshd --with-md5-passwords --with-privsep-path=/var/lib/sshd --with-xauth=/usr/bin/xauth --with-libedit
+		sed -e '/INSTALLKEYS_SH/s/)//' -e '260a\  )' -i contrib/ssh-copy-id
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libexecdir=/usr/lib${LIBDIRSUFFIX}/openssh --sysconfdir=/etc/ssh --datadir=/usr/share/sshd --with-md5-passwords --with-privsep-path=/var/lib/sshd --with-xauth=/usr/bin/xauth --with-libedit
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/man/man1 $PKG/usr/share/doc/${TARNAME}-${VERSION}${MINORREVISION}
@@ -39,14 +40,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		install -v -m644 contrib/ssh-copy-id.1 $PKG/usr/share/man/man1
 		install -v -m755 -d $PKG/usr/share/doc/${TARNAME}-${VERSION}${MINORREVISION}
 		install -v -m644 INSTALL LICENCE OVERVIEW README* $PKG/usr/share/doc/${TARNAME}-${VERSION}${MINORREVISION}
-		#sshaskpass
-		#if [ "X$MAKEASKPASS" != "XNOPASS" ];then
-		#	cd contrib
-		#	make gnome-ssh-askpass2
-	#		install -v -d -m755 $PKG/usr/lib/openssh/contrib
-	#		install -v -m755 gnome-ssh-askpass2 $PKG/usr/lib/openssh/contrib
-	#		ln -sv -f contrib/gnome-ssh-askpass2 $PKG/usr/lib/openssh/ssh-askpass
-	#	fi
 	popd
 
 	checketc $PKG

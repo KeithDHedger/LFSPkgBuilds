@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="at-spi2-core-2.32.1 ATK-2.32.0"
+DEPENDS="at-spi2-core-2.38.0 ATK-2.36.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="at-spi2-atk"
 TARNAME="$PKGNAME"
-VERSION="2.32.0"
+VERSION="2.38.0"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Ddocs=false  ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

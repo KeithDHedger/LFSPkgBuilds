@@ -19,7 +19,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/SYSTEM/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-introspection --enable-gudev --enable-gtk-doc-html --enable-gtk-doc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-introspection --enable-gudev --enable-gtk-doc-1.33.2html --enable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100
 		cd docs
 		make install DESTDIR=$PKG || exit 100

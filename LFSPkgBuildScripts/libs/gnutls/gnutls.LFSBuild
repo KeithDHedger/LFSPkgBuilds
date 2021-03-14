@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libunistring-0.9.10 Nettle-3.5.1 p11-kit-0.23.16.1"
+DEPENDS="libunistring-0.9.10 Nettle-3.7.1 p11-kit-0.23.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gnutls"
 TARNAME="$PKGNAME"
-VERSION="3.6.9"
+VERSION="3.7.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

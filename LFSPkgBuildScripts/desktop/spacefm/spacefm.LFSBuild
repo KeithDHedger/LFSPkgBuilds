@@ -20,6 +20,9 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/IgnorantGuru/spacefm/archive/${VERSION}.tar.gz" $SECTION ${TARBALL}
+gettar "https://github.com/FabioLolix/AUR-artifacts/raw/master/spacefm-Fix-GCC-10-build.patch" $SECTION
+gettar "https://raw.githubusercontent.com/FabioLolix/AUR-artifacts/master/spacefm-glibc-2.28-compatibility.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -32,8 +35,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	fi
 
 	pushd "${TARNAME}-${VERSION}"
-		sed -i 's@#include <sys/un.h>@#include <sys/un.h>\n#include <sys/sysmacros.h>\n@' src/main.c
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} $VIDEO_THUMBNAIL_FLAG 
+		#Thanks to AUR for these patches
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/spacefm-Fix-GCC-10-build.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/spacefm-glibc-2.28-compatibility.patch
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gtk2 $VIDEO_THUMBNAIL_FLAG
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

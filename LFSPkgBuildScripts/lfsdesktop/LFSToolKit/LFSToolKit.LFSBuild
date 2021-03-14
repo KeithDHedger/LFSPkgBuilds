@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="imlib2-1.5.1 cairo-1.16.0"
+DEPENDS="glib-2.66.7 imlib2-1.5.1 cairo-1.16.0 libjpeg-turbo-2.0.6"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

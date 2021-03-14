@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libusb-1.0.22 gobject-introspection-1.60.2 Vala-0.44.7"
+DEPENDS="libusb-1.0.22 gobject-introspection-1.66.1 Vala-0.44.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

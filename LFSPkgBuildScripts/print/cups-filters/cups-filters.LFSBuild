@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cups-2.2.12 GLib-2.60.6 ghostscript-9.27 lcms2-2.9 MuPDF-1.12.0 Poppler-0.79.0 Qpdf-8.4.2 MuPDF-1.16.1"
+DEPENDS="Cups-2.2.12 glib-2.66.7 ghostscript-9.27 lcms2-2.9 MuPDF-1.12.0 Poppler-0.79.0 Qpdf-8.4.2 MuPDF-1.16.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

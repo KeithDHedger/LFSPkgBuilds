@@ -15,8 +15,8 @@ Description: Adds a capabiility to skip printing warning messages using
              For instance GLIB_LOG_LEVEL=4 will skip output of Waring and 
              Notice messages (and Info/Debug messages if they are turned on).
 
---- glib-2.54.0/glib/gmessages.c	2017-08-19 08:39:20.000000000 -0500
-+++ glib-2.54.0-new/glib/gmessages.c	2017-10-15 14:45:52.004885278 -0500
+--- glib-2.66.7/glib/gmessages.c	2017-08-19 08:39:20.000000000 -0500
++++ glib-2.66.7-new/glib/gmessages.c	2017-10-15 14:45:52.004885278 -0500
 @@ -523,6 +523,35 @@
  
  /* --- functions --- */

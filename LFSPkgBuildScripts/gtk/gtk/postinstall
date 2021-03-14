@@ -8,13 +8,10 @@
 mkdir -vp /etc/gtk-2.0||true
 mkdir -vp /etc/pango ||true
 mkdir -vp /var/cache/man/fsstnd||true
-mkdir -vp /usr/share/glib-2.0/||true
+mkdir -vp /usr/share/glib-2.66.7/||true
 
-glib-compile-schemas /usr/share/glib-2.0/schemas
-
-#pango-querymodules > /etc/pango/pango.modules||true
+glib-2.66.7compile-schemas /usr/share/glib-2.0/schemas
 gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders||true
-
 gtk-query-immodules-2.0 --update-cache
 gtk-update-icon-cache||true
 gdk-pixbuf-query-loaders --update-cache

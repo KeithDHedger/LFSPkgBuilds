@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LVM2-2.03.05"
+DEPENDS="LVM2-2.03.11"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="parted"
 TARNAME="$PKGNAME"
-VERSION="3.3"
+VERSION="3.4"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -26,7 +26,6 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/utsname.h/a#include <sys/sysmacros.h>' libparted/arch/linux.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make -C doc html
 		makeinfo --html -o doc/html doc/parted.texi

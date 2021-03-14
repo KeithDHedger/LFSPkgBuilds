@@ -2,7 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="LFSToolKit-0.5.1
+mkdir -vp /etc/pkgoptions/
+echo "EXTRAOPTIONS=\"--disable-docviewer\"" >/etc/pkgoptions/KKEdit.options
+
+DEPENDS="glib-2.66.7
+shared-mime-info-1.12
+desktop-file-utils-0.26
+gobject-introspection-1.66.1
+gtk-2.24.33
+libnotify-0.5.2
+LFSToolKit-0.5.1
 LFSWManager-0.1.3
 LFSDesktop-0.2.0
 LFSApplications-0.2.0
@@ -10,15 +19,18 @@ LFSPanel-0.2.0
 LFSSetWallpaper-0.2.0
 CliMsg-0.1.1
 dbus-glib-0.110
-compton-9.0
-libnotify-0.5.2
+compton-10.1
 gnome-icon-theme-3.12.0
-Sudo-1.8.27
-shared-mime-info-1.12
-OpenSSH-8.0
+Sudo-1.9.5
+OpenSSH-8.4
 xdg-utils-1.1.3
-desktop-file-utils-0.24
-spacefm-1.0.6"
+KKEdit-0.4.6
+KKTerminal
+GtkSu-0.1.6
+dump-0.4.47
+gparted-0.33.0
+spacefm-1.0.6
+Xfce-Theme-Manager-0.3.8"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -34,6 +46,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 rm -rf "$PKG" || true
+mkdir -p "$PKG"
 
 pushd "$PKG"
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

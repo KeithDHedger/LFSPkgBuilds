@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.60.6 Python-2.7.16 SDL2-2.0.10 xorg-meta-9.0 nasm-2.14.02"
+DEPENDS="glib-2.66.7 Python-2.7.16 SDL2-2.0.10 xorg-meta-9.0 nasm-2.14.02"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk3-3.24.10 Intltool-0.51.0 startup-notification-0.12 gobject-introspection-1.60.2 GTK-Doc-1.32"
+DEPENDS="gtk3-3.24.10 Intltool-0.51.0 startup-notification-0.12 gobject-introspection-1.66.1 gtk-doc-1.33.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

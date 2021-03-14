@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="JSON-C-0.13.1 GLib-2.60.6 gobject-introspection-1.60.2"
+DEPENDS="JSON-C-0.13.1 glib-2.66.7 gobject-introspection-1.66.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

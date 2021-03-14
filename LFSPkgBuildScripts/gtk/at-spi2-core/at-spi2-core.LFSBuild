@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="DBus-1.12.16 GLib-2.60.6 xorg-libs-10.1"
+DEPENDS="DBus-1.12.20 glib-2.66.7 xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="at-spi2-core"
 TARNAME="$PKGNAME"
-VERSION="2.32.1"
+VERSION="2.38.0"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -24,7 +24,7 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 if [ $USESYSTEMD -eq 0 ];then
-	SYSTEMDOPTS="-Dsystemd_user_dir=no"
+	SYSTEMDOPTS="-Dsystemd_user_dir=/tmp"
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -35,6 +35,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} $SYSTEMDOPTS ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
+		rm -rf $PKG/tmp
 	popd
 
 	checketc "$PKG"

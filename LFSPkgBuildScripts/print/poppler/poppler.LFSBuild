@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.15.2 Fontconfig-2.13.1 gobject-introspection-1.60.2 Cairo-1.16.0 libjpeg-turbo-2.0.2 libpng-1.6.37 OpenJPEG-2.3.0"
+DEPENDS="CMake-3.15.2 Fontconfig-2.13.1 gobject-introspection-1.66.1 Cairo-1.16.0 libjpeg-turbo-2.0.2 libpng-1.6.37 OpenJPEG-2.3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

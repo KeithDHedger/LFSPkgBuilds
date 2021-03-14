@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="File-BaseDir-0.08 File-DesktopEntry-0.22"
+DEPENDS="File-BaseDir-0.08 File-DesktopEntry-0.22 Encode-Locale-1.05"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="File-MimeInfo"
 TARNAME="$PKGNAME"
-VERSION="0.29"
+VERSION="0.30"
 BUILD=1
 SECTION="PERL"
 SUFFIX="LFSPKG"

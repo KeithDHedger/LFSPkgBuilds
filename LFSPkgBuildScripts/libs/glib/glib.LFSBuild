@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="PCRE-8.44 libxslt-1.1.34 GTK-Doc-1.33.2"
+DEPENDS="PCRE-8.44 libxslt-1.1.34 gtk-doc-1.33.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

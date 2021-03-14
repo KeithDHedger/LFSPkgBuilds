@@ -2,6 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="dbus-glib-0.110"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="libnotify"
 TARNAME="$PKGNAME"
 VERSION="0.5.2"

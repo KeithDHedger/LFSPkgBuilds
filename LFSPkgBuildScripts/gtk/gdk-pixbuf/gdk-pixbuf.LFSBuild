@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GLib-2.60.6 libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10 gobject-introspection-1.60.2 shared-mime-info-1.12 xorg-libs-10.1"
+DEPENDS="glib-2.66.7 libjpeg-turbo-2.0.6 libpng-1.6.37 LibTIFF-4.2.0 gobject-introspection-1.66.1 shared-mime-info-2.1 gtk-doc-1.33.2 xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 TARNAME="gdk-pixbuf"
 PKGNAME="gdk-pixbuf"
-VERSION="2.38.1"
+VERSION="2.42.2"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dgtk_doc=true ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

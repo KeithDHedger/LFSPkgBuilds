@@ -1,4 +1,4 @@
 #!/bin/bash
 
-mkdir -vp /usr/share/glib-2.0/schemas||true
-glib-compile-schemas /usr/share/glib-2.0/schemas
+mkdir -vp /usr/share/glib-2.66.7/schemas||true
+glib-2.66.7compile-schemas /usr/share/glib-2.0/schemas

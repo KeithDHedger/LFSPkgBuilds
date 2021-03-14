@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="acl-2.2.53 libatasmart-0.19 libxslt-1.1.33 Polkit-0.116 libgudev-233 gobject-introspection-1.60.2 GTK-Doc-1.32"
+DEPENDS="acl-2.2.53 libatasmart-0.19 libxslt-1.1.33 Polkit-0.116 libgudev-233 gobject-introspection-1.66.1 gtk-doc-1.33.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

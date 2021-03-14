@@ -2,12 +2,12 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="glib-2.60.6 GnuTLS-3.6.9 gsettings-desktop-schemas-3.32.0"
+DEPENDS="glib-2.66.7 GnuTLS-3.6.9 gsettings-desktop-schemas-3.32.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="glib-networking"
+PKGNAME="glib-2.66.7networking"
 TARNAME="$PKGNAME"
 VERSION="2.60.3"
 BUILD=${BUILD:-1}
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/glib-networking/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/glib-2.66.7networking/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

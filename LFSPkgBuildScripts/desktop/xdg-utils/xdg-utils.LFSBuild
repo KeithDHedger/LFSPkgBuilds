@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xmlto-0.0.28 Links-2.19 File-MimeInfo-0.29"
+DEPENDS="xmlto-0.0.28 Links-2.21 File-MimeInfo-0.30"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		./configure --prefix=/usr --mandir=/usr/share/man
+		./configure ${CONFIGOPTIONS} --mandir=/usr/share/man
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

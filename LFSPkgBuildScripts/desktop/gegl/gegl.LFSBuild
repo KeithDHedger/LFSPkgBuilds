@@ -4,7 +4,7 @@
 
 #Graphviz-2.40.1
 
-DEPENDS="babl-0.1.42 Cairo-1.16.0 gdk-pixbuf-2.38.1 libjpeg-turbo-2.0.2 libpng-1.6.37 Pango-1.42.4 Python-2.7.16 gobject-introspection-1.60.2 Vala-0.44.7 json-glib-1.4.4"
+DEPENDS="babl-0.1.42 Cairo-1.16.0 gdk-pixbuf-2.38.1 libjpeg-turbo-2.0.2 libpng-1.6.37 Pango-1.42.4 Python-2.7.16 gobject-introspection-1.66.1 Vala-0.44.7 json-glib-1.4.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
