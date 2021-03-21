@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk3-3.24.10"
+DEPENDS="gtk3-3.24.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="adwaita-icon-theme"
 TARNAME="$PKGNAME"
-VERSION="3.36.1"
+VERSION="3.38.0"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -26,9 +26,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr
 		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		make install DESTDIR=$PKG || true
 	popd
 
 	checketc "$PKG"
@@ -55,3 +55,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+

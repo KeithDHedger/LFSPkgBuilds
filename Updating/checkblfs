@@ -6,31 +6,45 @@
 
 ALPHA=${1:-"a"}
 LFSGLOB="${ALPHA}.*"
+
+FOLD=${2:-${ALPHA}}
 DATAFILE="/tmp/$$${ALPHA}-site"
 OPENINKKEDIT=${OPENINKKEDIT:=1}
+OPENWEBPAGE=${OPENWEBPAGE:=1}
 ROOT=$(findmnt --target=. -no TARGET)
-
-links -dump ftp://ftp.lfs-matrix.net/pub/blfs/8.1/$ALPHA > "$DATAFILE"
+ROOT=/mnt/LFS
+links -dump http://ftp.osuosl.org/pub/blfs/10.1/$FOLD > "$DATAFILE"
+#links -dump ftp://ftp.lfs-matrix.net/pub/blfs/10.0/$ALPHA > "$DATAFILE"
+#echo links -dump http://ftp.osuosl.org/pub/blfs/10.1/$FOLD
 while read
 	do
-		if [ "X$(cat "$DATAFILE"|awk '{print $NF}'|grep -v ".patch"|grep "/\b${REPLY}\b")" != "X" ];then
-			NEWVERSION="$(cat "$DATAFILE"|awk '{print $NF}'|grep -v ".patch"|grep "/\b${REPLY}\b"|awk -F/ '{print $NF}'|sed -r 's/^.*[-_]([0-9.]+)\..*/\1/')"
+		if lfspkg -S 3 $REPLY|grep /LFSPkgBuildScripts/system &>/dev/null;then
+			continue
+		fi
+		#if [ "X$(cat "$DATAFILE"|awk '{print $NF}'|grep -v ".patch"|grep "/\b${REPLY}\b")" != "X" ];then
+			#NEWVERSION="$(cat "$DATAFILE"|awk '{print $NF}'|grep -v ".patch"|grep "/\b${REPLY}\b"|awk -F/ '{print $NF}'|sed -r 's/^.*[-_]([0-9.]+)\..*/\1/')"
+			NEWVERSION="$(cat "$DATAFILE"|sed -n "s/.*\(${REPLY}-.*\)/\1/p"|grep -v md5sum|sed 's/.*-\([[:digit:].][[:digit:].]*\)\.tar.*/\1/')"
 			if [ $(echo "$NEWVERSION"|wc -l) -gt 1 ];then
-				echo -e "${GREEN}Manually check $(lfspkg -S $REPLY 3) ...${NORMAL}"
+				echo -e "${GREEN}Manually check $(lfspkg -R "$ROOT" -S 3 $REPLY) ...${NORMAL}\n"
 				continue
 			fi
-			OLDVERSION=$(lfspkg -R "$ROOT" -S $REPLY 2)
-
+			OLDVERSION=$(lfspkg -R "$ROOT" -S 2 $REPLY)
+			#echo "$REPLY - $NEWVERSION - $OLDVERSION"
 			if [ $(checkversion $NEWVERSION $OLDVERSION) -ne 0 ];then
 				echo -e "${RED}$REPLY needs adjusting ..${NORMAL}"
-				lfspkg -R "$ROOT" -S $REPLY 3
+				lfspkg -R "$ROOT" -S 3 $REPLY
 				if  [ $OPENINKKEDIT -eq 1 ];then
-					kkedit "${ROOT}$(lfspkg -R "$ROOT" -S $REPLY 3)"
-					lfspkg --webpage $REPLY
+					kkedit "${ROOT}$(lfspkg -R "$ROOT" -S 3 $REPLY)"
 				fi
-				echo
+				if  [ $OPENWEBPAGE -eq 1 ];then
+					lfspkg --webpage $REPLY 2>/dev/null
+				fi
+			else
+				echo -e "$REPLY - $NEWVERSION - $OLDVERSION ... ${GREEN}OK"
 			fi
-		fi
-	done < <(lfspkg  -S "$LFSGLOB" |sed -n 's/^Package name=\(.*\)/\1/p')
+			echo -e "${NORMAL}"
+		#fi
+#	done < <(lfspkg -S "" "$LFSGLOB" |sed -n 's/^Package name=\(.*\)/\1/p')
+	done < <(lfspkg -R "$ROOT" -S 1 "$LFSGLOB")
 
 rm $DATAFILE

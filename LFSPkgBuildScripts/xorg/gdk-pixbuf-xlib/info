@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/svn/x/gdk-pixbuf-xlib.html
+The gdk-pixbuf-xlib package provides a deprecated Xlib interface to gdk-pixbuf, which is needed for some applications which have not been ported to use the new interfaces yet.

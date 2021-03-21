@@ -4,7 +4,7 @@
 
 PKGNAME="apr"
 TARNAME="$PKGNAME"
-VERSION="1.6.3"
+VERSION="1.7.0"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -50,3 +50,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+

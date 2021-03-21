@@ -2,36 +2,43 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.2.4"
+DEPENDS="gdk-pixbuf-2.42.2 xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="alsa-utils"
+PKGNAME="gdk-pixbuf-xlib"
 TARNAME="$PKGNAME"
-VERSION="1.2.4"
-BUILD=${BUILD:-1}
-SECTION="MM"
+VERSION="3116"
+MINRREV="b8ae"
+BUILD=1
+SECTION="XORG"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}${MINRREV}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.alsa-project.org/pub/utils/${TARBALL}" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/gdk-pixbuf-xlib/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-alsaconf --disable-bat --disable-xmlto --with-curses=ncursesw
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+	pushd "${TARNAME}-${VERSION}${MINRREV}"
+		mkdir build || true
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -53,6 +60,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}${MINRREV}"
 popd 2>/dev/null||true
-
