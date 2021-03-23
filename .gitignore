@@ -13,3 +13,4 @@ LFSPkgBuildScripts/HelperScripts/blfs-bootscripts-*
 LFSPkgBuildScripts/HelperScripts/blfs-systemd-units-*
 LFSPkgBuildScripts/system/system-meta/system-meta.LFSBuild
 LFSPkgBuildScripts/kernel/config*
+Updating/uplist

@@ -6,7 +6,8 @@
 
 ALPHA=${1:-"a"}
 LFSGLOB="${ALPHA}.*"
-
+#echo "$LFSGLOB"
+#exit
 FOLD=${2:-${ALPHA}}
 DATAFILE="/tmp/$$${ALPHA}-site"
 OPENINKKEDIT=${OPENINKKEDIT:=1}
@@ -16,6 +17,13 @@ ROOT=/mnt/LFS
 links -dump http://ftp.osuosl.org/pub/blfs/10.1/$FOLD > "$DATAFILE"
 #links -dump ftp://ftp.lfs-matrix.net/pub/blfs/10.0/$ALPHA > "$DATAFILE"
 #echo links -dump http://ftp.osuosl.org/pub/blfs/10.1/$FOLD
+if [ $NOCOLOURS -eq 1 ];then
+	NORMAL=""
+	GREEN=""
+	RED=""
+fi
+#lfspkg -R "$ROOT" -S 1 $LFSGLOB
+#exit
 while read
 	do
 		if lfspkg -S 3 $REPLY|grep /LFSPkgBuildScripts/system &>/dev/null;then
@@ -45,6 +53,6 @@ while read
 			echo -e "${NORMAL}"
 		#fi
 #	done < <(lfspkg -S "" "$LFSGLOB" |sed -n 's/^Package name=\(.*\)/\1/p')
-	done < <(lfspkg -R "$ROOT" -S 1 "$LFSGLOB")
+	done < <(lfspkg -R "$ROOT" -S 1 $LFSGLOB)
 
 rm $DATAFILE
