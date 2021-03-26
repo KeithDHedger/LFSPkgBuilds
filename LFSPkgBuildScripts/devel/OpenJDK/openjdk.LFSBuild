@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="BinaryJDK-12.0.2 make-ca-1.4 alsa-lib-1.1.9 giflib-5.2.1 cpio-2.12 Cups-2.2.12 UnZip-6.0 Wget-1.20.3 Which-2.21 xorg-libs-10.1 Zip-3.0"
+DEPENDS="BinaryJDK-15.0.2 make-ca-1.7 alsa-lib-1.2.4 giflib-5.2.1 cpio-2.13 Cups-2.3.3 UnZip-6.0 Wget-1.20.3 Which-2.21 xorg-libs-10.1 Zip-3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="OpenJDK"
-TARNAME="$PKGNAME"
-VERSION="12.0.2"
+TARNAME="${PKGNAME,,}"
+VERSION="15.0.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -17,25 +17,26 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-TARROOTPKGNAME="jdk12u"
-TARROOTPKGSUBVERSION="+10"
+TARROOTPKGNAME="jdk15u"
+TARROOTPKGSUBVERSION="+7"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://hg.openjdk.java.net/jdk-updates/${TARROOTPKGNAME}/archive/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2" $SECTION
+gettar "https://github.com/${TARNAME}/${TARROOTPKGNAME}/archive/jdk-${VERSION}-ga.tar.gz" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	#tar -xvf "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}${TARROOTPKGSUBVERSION}.tar.bz2"
-	pushd "${TARROOTPKGNAME}-jdk-${VERSION}${TARROOTPKGSUBVERSION}"
+	tar -xvf "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}-ga.tar.gz"
+	pushd "${TARROOTPKGNAME}-jdk-${VERSION}-ga"
 		. /etc/profile.d/openjdk.sh
 		PATH="${PATH}:/opt/jdk/bin"
 		unset JAVA_HOME
-		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="10" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/pki/tls/java/cacerts
+		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="7" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/pki/tls/java/cacerts
 		make images
 		install -vdm755 $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}
 		cp -Rpv build/*/images/jdk/* $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}
+		chown -R root:root /opt/jdk-15.0.2+7||true
 		find $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION} -name \*.diz -delete
 		for s in 16 24 32 48
 			do
@@ -65,6 +66,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARROOTPKGNAME}-jdk-${VERSION}${TARROOTPKGSUBVERSION}"
+	rm -r "$PKG" "${TARROOTPKGNAME}-jdk-${VERSION}-ga"
 popd 2>/dev/null||true
 

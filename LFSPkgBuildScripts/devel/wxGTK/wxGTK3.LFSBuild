@@ -2,16 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="glib-2.66.7 JS-78.8.0 Linux-PAM-1.5.1"
+DEPENDS="gtk3-3.24.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="polkit"
-TARNAME="$PKGNAME"
-VERSION="0.118"
+PKGNAME="wxGTK3"
+TARNAME="wxWidgets"
+VERSION="3.0.5"
 BUILD=${BUILD:-1}
-SECTION="SYS"
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -19,27 +19,22 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.freedesktop.org/software/polkit/releases/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch" $SECTION
+gettar "https://github.com/wxWidgets/wxWidgets/archive/v${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		if [ $USESYSTEMD -eq 0 ];then
-			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch
-			autoreconf -fi
-			SYSTEMDOPTS="--enable-libsystemd-login=no"
-		else
-			sed -i "s:/sys/fs/cgroup/systemd/:/sys:g" configure
-		fi
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var $SYSTEMDOPTS --disable-static --disable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libelogind=no
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --sysconfdir=/etc --enable-shared --with-opengl --enable-graphics_ctx --with-gtk=3 --enable-unicode --enable-plugins --enable-ipv6 --enable-webview --disable-webkit --disable-stl --disable-precomp-headers
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		rm $PKG/usr/bin/wx-config||true
+		ln -fs /usr/lib${LIBDIRSUFFIX}/wx/config/gtk3-unicode-3.0 $PKG/usr/bin/wx-config-gtk3
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -48,7 +43,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	case $DOWHAT in
 		up*)
-			lfspkg "^${PKGNAME}-" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
 			;;
 		"install")
 			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i

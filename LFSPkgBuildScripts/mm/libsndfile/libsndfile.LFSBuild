@@ -2,19 +2,25 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="FLAC-1.3.3 Opus-1.3.1 libvorbis-1.3.7"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="libsndfile"
 TARNAME="$PKGNAME"
-VERSION="1.0.28"
+VERSION="1.0.31"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.mega-nerd.com/libsndfile/files/${TARBALL}" $SECTION
+gettar "https://github.com/libsndfile/libsndfile/releases/download/${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

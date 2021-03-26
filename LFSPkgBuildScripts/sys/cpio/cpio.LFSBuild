@@ -4,14 +4,14 @@
 
 PKGNAME="cpio"
 TARNAME="$PKGNAME"
-VERSION="2.12"
+VERSION="2.13"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnu.org/pub/gnu/cpio/${TARBALL}" $SECTION
+gettar "https://ftp.gnu.org/pub/gnu/cpio/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -23,6 +23,7 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed -i '/The name/,+2 d' src/global.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --libexecdir=/tmp --enable-mt --with-rmt=/usr/sbin/rmt
 		make $MAKEFLAGS||make|| exit 100
 		makeinfo --html -o doc/html doc/cpio.texi

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.16 glib-2.66.7 lcms2-2.9 SQLite-3.29.0 Vala-0.44.7 libgudev-233 libgusb-0.3.0 gobject-introspection-1.66.1 polkit-0.116"
+DEPENDS="dbus-1.12.20 glib-2.66.7 lcms2-2.12 SQLite-3.34.1 Vala-0.50.3 libgudev-234 libgusb-0.3.0 gobject-introspection-1.66.1 polkit-0.118"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="colord"
 TARNAME="$PKGNAME"
-VERSION="1.4.4"
+VERSION="1.4.5"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -36,8 +36,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i 's/fur/ur/' po/LINGUAS
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${LIBDIRSUFFIX} -Ddaemon_user=colord -Dvapi=true $SYSTEMDOPTS -Dlibcolordcompat=true -Dargyllcms_sensor=false -Dbash_completion=false -Ddocs=false -Dman=false ..
-
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Ddaemon_user=colord -Dvapi=true $SYSTEMDOPTS -Dlibcolordcompat=true -Dargyllcms_sensor=false -Dbash_completion=false -Ddocs=false -Dman=false ..
 		ninja ${MAKEFLAGS}||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 	popd

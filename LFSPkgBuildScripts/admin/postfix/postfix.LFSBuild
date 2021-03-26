@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Berkeley-DB-6.2.23 SQLite-3.22.0"
+DEPENDS="Berkeley-DB-5.3.28 SQLite-3.34.1 cyrus-sasl-2.1.27"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="postfix"
 TARNAME="$PKGNAME"
-VERSION="3.2.5"
+VERSION="3.5.9"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -37,11 +37,15 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's/.\x08//g' README_FILES/*
 		sed -i 's/Linux.3\*/Linux.[34]\*/' makedefs
-		CCARGS='-DHAS_SQLITE'
-		AUXLIBS='-lsqlite3 -lpthread'
+		CCARGS='-DNO_NIS -DHAS_SQLITE -DUSE_SASL_AUTH -DUSE_CYRUS_SASL -I/usr/include/sasl'
+		AUXLIBS='-lsqlite3 -lpthread -lsasl2'
+		export CCARGS
+		export AUXLIBS
 		make makefiles
 		make
-		sh postfix-install -non-interactive daemon_directory=/usr/lib/postfix manpage_directory=/usr/share/man html_directory=/usr/share/doc/Postfix-3.0.2/html readme_directory=/usr/share/doc/Postfix-3.0.2/readme install_root=$PKG
+		sh postfix-install -non-interactive daemon_directory=/usr/lib/postfix manpage_directory=/usr/share/man html_directory=/usr/share/doc/${PKGNAME}-${VERSION}/html readme_directory=/usr/share/doc/${PKGNAME}-${VERSION}/readme install_root=$PKG
+		unset CCARGS
+		unset AUXLIBS
 	popd
 
 	checketc "$PKG"

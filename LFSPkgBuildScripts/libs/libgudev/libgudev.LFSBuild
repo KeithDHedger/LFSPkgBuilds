@@ -9,7 +9,7 @@ fi
 
 PKGNAME="libgudev"
 TARNAME="$PKGNAME"
-VERSION="233"
+VERSION="234"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-umockdev --disable-gtk-doc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-umockdev
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

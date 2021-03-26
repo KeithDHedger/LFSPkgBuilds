@@ -2,24 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NSPR-4.21 Python-2.7.16 Zip-3.0 autoconf213-2.13 icu-64.2 xorg-libs-10.1"
+DEPENDS="NSPR-4.21 Python-2.7.18 Zip-3.0 autoconf213-2.13 icu-68.2 Rust-1.47.0 Which-2.21 xorg-libs-10.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="js"
-VERSION="60.8.0"
-TARNAME="mozjs"
+VERSION="78.8.0"
+TARNAME="firefox-${VERSION}esr.source"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/teams/releng/tarballs-needing-help/${TARNAME}/${TARBALL}" $SECTION
+gettar "https://archive.mozilla.org/pub/firefox/releases/${VERSION}esr/source/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -30,8 +30,9 @@ checkforoptions
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "firefox-${VERSION}"
 		export SHELL=/bin/bash
+		source /etc/profile.d/rustc.sh
 		mkdir mozjs-build||true
 		cd mozjs-build
 
@@ -62,7 +63,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "firefox-${VERSION}"
 popd 2>/dev/null||true
 
 

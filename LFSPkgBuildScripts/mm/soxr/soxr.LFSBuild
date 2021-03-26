@@ -4,7 +4,7 @@
 
 PKGNAME="soxr"
 TARNAME="$PKGNAME"
-VERSION="0.1.2"
+VERSION="0.1.3"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://heanet.dl.sourceforge.net/project/soxr/${TARBALL}" $SECTION
+gettar "https://phoenixnap.dl.sourceforge.net/project/${PKGNAME}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -24,7 +24,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}-Source"
 		mkdir build
 		cd build
-		cmake . -DCMAKE_INSTALL_PREFIX:STRING="/usr" -DCMAKE_VERBOSE_MAKEFILE:BOOL="TRUE" -DLIB_SUFFIX:STRING="$LIBDIRSUFFIX" ..
+		cmake . $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DCMAKE_VERBOSE_MAKEFILE:BOOL="TRUE" -DCMAKE_BUILD_TYPE=Release -Wno-dev ..
 		make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

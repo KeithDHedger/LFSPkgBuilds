@@ -5,7 +5,11 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="BinaryJDK"
-VERSION="12.0.2"
+VERSION="15.0.2"
+
+rm -f /opt/jdk||true
+(cd /opt;ln -sv ${PKGNAME} jdk)
+
 
 mkdir -vp /etc/profile.d/||true
 

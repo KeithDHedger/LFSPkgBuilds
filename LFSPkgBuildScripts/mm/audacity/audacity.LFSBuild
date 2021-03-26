@@ -2,32 +2,36 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="wxgtk-2.8.12 libsndfile-1.0.28"
+DEPENDS="wxgtk2-2.8.12 lame-3.100 libsndfile-1.0.31 soxr-0.1.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="audacity"
-TARNAME="${PKGNAME}-minsrc"
-VERSION="2.2.2"
+TARNAME="${PKGNAME}"
+VERSION="2.4.1"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${PKGNAME}-${TARNAME^}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://mirror9.fosshub.com/programs/${TARBALL}" $SECTION
+gettar "https://github.com/${PKGNAME}/${PKGNAME}/archive/${PKGNAME^}-${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/dvzrv/audacity/commit/d7e769040b508aaf15ce7b51cc1a565d41cdb079.patch" $SECTION ${PKGNAME}-${VERSION}-resize_crash.patch
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${PKGNAME}-src-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --enable-gtk-doc --disable-debug --disable-nls --disable-static --enable-unicode  --with-expat  --with-libvorbis --with-libflac --with-libsndfile --with-libid3tag --with-libresample --with-ffmpeg=local --with-libmad --disable-nyquist --with-libsoxr --without-lv2 --without-soundtouch  --without-midi  --without-sbsms  --without-libvamp 
-		make || exit 100
+	pushd "${PKGNAME}-${TARNAME^}-${VERSION}"
+		patch -Np1 -i "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-resize_crash.patch"
+		autoreconf -vfi
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" WX_CONFIG=wx-config-gtk3  ./configure ${CONFIGOPTIONS} --disable-debug --enable-unicode  --with-expat  --with-libvorbis --with-libflac --with-libsndfile --with-libid3tag --with-libresample --with-ffmpeg=local --with-libmad --with-libsoxr --without-lv2 --without-soundtouch  --without-midi  --without-sbsms  --without-libvamp
+		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
@@ -53,5 +57,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${PKGNAME}-src-${VERSION}"
+	rm -r "$PKG" "${PKGNAME}-${TARNAME^}-${VERSION}"
 popd 2>/dev/null||true

@@ -4,15 +4,15 @@
 
 PKGNAME="BinaryJDK"
 TARNAME="OpenJDK"
-VERSION="12.0.2"
+VERSION="15.0.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
-MINORVERSION="+9"
-TARSUFFIX=".tar.xz"
+MINORVERSION="+7"
+TARSUFFIX=".tar.gz"
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -20,12 +20,13 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 case $ARCH in
 	x86_64)
-		gettar "https://download.java.net/java/GA/jdk12.0.2/e482c34c86bd4bf8b56c0b35558996b9/10/GPL/openjdk-${VERSION}_linux-x64_bin.tar.gz" $SECTION "${PKGNAME}${TARSUFFIX}"
+		gettar "https://download.java.net/java/GA/jdk${VERSION}/0d1cfde4252546c6931946de8db48ee2/7/GPL/openjdk-${VERSION}_linux-x64_bin${TARSUFFIX}" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	i?86)
-		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-11.0.2/${TARNAME}-11.0.2${MINORVERSION}-i686-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
+		gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}${MINORVERSION}-i686-bin${TARSUFFIX}" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	arm*)
+#TODO
 		TARSUFFIX=".tar.gz"
 		gettar "http://cdn.azul.com/zulu-embedded/bin/ezdk-1.8.0_162-8.27.0.91-eval-linux_aarch32hf.tar.gz"  $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
@@ -38,7 +39,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -vp  $PKG/opt/${PKGNAME} ||true
 		mv -v * $PKG/opt/${PKGNAME}
 		chown -R root:root $PKG/opt
-		ln -sv ${PKGNAME} $PKG/opt/jdk
 	popd
 
 	checketc $PKG

@@ -4,7 +4,7 @@
 
 PKGNAME="Linux-PAM"
 TARNAME="$PKGNAME"
-VERSION="1.3.1"
+VERSION="1.5.1"
 BUILD=1
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/linux-pam/linux-pam/releases/download/v1.3.1/${TARBALL}" $SECTION
+gettar "https://github.com/linux-pam/linux-pam/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -25,6 +25,8 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed -e /service_DATA/d -i modules/pam_namespace/Makefile.am
+		autoreconf
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-securedir=/lib${LIBDIRSUFFIX}/security --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-regenerate-docu
 		make $MAKEFLAGS||make|| exit 100
 		install -v -m755 -d ${PKG}/etc/pam.d

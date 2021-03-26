@@ -2,9 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="wxGTK"
-TARNAME="$PKGNAME"
-VERSION="2.8.12"
+DEPENDS="gtk-2.24.33"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="wxGTK2"
+TARNAME="wxWidgets"
+VERSION="3.0.5"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -14,8 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://garr.dl.sourceforge.net/project/wxwindows/2.8.12/${TARBALL}" $SECTION
-gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/wxGTK/wxGTK-gcc.patch" $SECTION
+gettar "https://github.com/wxWidgets/wxWidgets/archive/v${VERSION}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -23,10 +27,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -p1 -i "${SOURCEARCHIVES}/${SECTION}/wxGTK-gcc.patch"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-unicode --enable-shared --enable-mediactrl
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --sysconfdir=/etc --enable-shared --with-opengl --enable-graphics_ctx --with-gtk=2 --enable-unicode --enable-plugins --enable-ipv6 --enable-webview --disable-webkit --disable-stl --disable-precomp-headers
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		rm $PKG/usr/bin/wx-config||true
+		ln -fs /usr/lib${LIBDIRSUFFIX}/wx/config/gtk2-unicode-3.0 $PKG/usr/bin/wx-config||exit 100
 	popd
 
 	checketc "$PKG"

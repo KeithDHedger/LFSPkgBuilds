@@ -4,7 +4,7 @@
 
 PKGNAME="berkeley-db"
 TARNAME="db"
-VERSION="6.2.32"
+VERSION="5.3.28"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -14,13 +14,15 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.oracle.com/${PKGNAME}/${TARBALL}" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/bdb/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed -i 's/\(__atomic_compare_exchange\)/\1_db/' src/dbinc/atomic.h
 		cd build_unix
 		../dist/configure --prefix=/usr --enable-compat185 --enable-dbm --disable-static --enable-cxx
 		make $MAKEFLAGS||make|| exit 100

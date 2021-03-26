@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="cURL-7.65.3 CMake-3.15.2 libssh2-1.9.0 LLVM-8.0.1"
+DEPENDS="cURL-7.75.0 CMake-3.19.5 libssh2-1.9.0 LLVM-11.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="rust"
 TARNAME="$PKGNAME"
-VERSION="1.35.0"
+VERSION="1.47.0"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
