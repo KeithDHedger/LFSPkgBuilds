@@ -2,32 +2,32 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Which-2.21 icu-64.2 Python-2.7.16"
+DEPENDS="Which-2.21 icu-68.2 Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="boost"
 TARNAME="$PKGNAME"
-VERSION="1.70.0"
+VERSION="1.75.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARVERSION="1_63_0"
-TARBALL="${TARNAME}_${TARVERSION}.tar.bz2"
+TARBALL="${TARNAME}_${VERSION//./_}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/${PKGNAME}/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
+gettar "https://dl.bintray.com/boostorg/release/${VERSION}/source/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}_${TARVERSION}"
-		./bootstrap.sh --prefix=$PKG/usr || exit 
+	pushd "${TARNAME}_${VERSION//./_}"
+		./bootstrap.sh --prefix=$PKG/usr --with-python=python3|| exit 
 		./b2 -j3 stage threading=multi link=shared || true 
 		./b2 -j3 install threading=multi link=shared || true
 		mkdir -vp $PKG/usr/include/boost/uuid || true
@@ -56,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}_${TARVERSION}"
+	rm -r "$PKG" "${TARNAME}_${VERSION//./_}"
 popd 2>/dev/null||true

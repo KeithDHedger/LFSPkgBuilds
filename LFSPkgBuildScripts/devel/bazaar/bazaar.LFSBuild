@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.16"
+DEPENDS="Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

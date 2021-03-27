@@ -4,7 +4,7 @@
 
 PKGNAME="aria2"
 TARNAME="$PKGNAME"
-VERSION="1.34.0"
+VERSION="1.35.0"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -27,19 +27,19 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc/bash_completion.d
 		ln -sv /usr/share/doc/aria2/bash_completion/aria2c $PKG/etc/bash_completion.d
-		wget -c "https://github.com/ziahamza/webui-aria2/archive/master.zip"
-		unzip master.zip
-		cd webui-aria2-master
-		mkdir -vp $PKG/usr/share/doc/aria2/webiface||true
-		cp -rf css flags fonts js configuration.js favicon.ico index.html $PKG/usr/share/doc/aria2/webiface
-		cat > >$PKG/usr/bin/startariawebif << EOF
-#!/bin/bash -e
-
-#©keithhedger Sun 14 May 13:27:34 BST 2017 kdhedger68713@gmail.com
-aria2c --enable-rpc --rpc-listen-all &
-xdg-open /usr/share/doc/aria2/webiface/index.html
-EOF
-		chmod +x $PKG/usr/bin/startariawebif
+#		wget -c "https://github.com/ziahamza/webui-aria2/archive/master.zip"
+#		unzip master.zip
+#		cd webui-aria2-master
+#		mkdir -vp $PKG/usr/share/doc/aria2/webiface||true
+#		cp -rf css flags fonts js configuration.js favicon.ico index.html $PKG/usr/share/doc/aria2/webiface
+#		cat > >$PKG/usr/bin/startariawebif << EOF
+##!/bin/bash -e
+#
+##©keithhedger Sun 14 May 13:27:34 BST 2017 kdhedger68713@gmail.com
+#aria2c --enable-rpc --rpc-listen-all &
+#xdg-open /usr/share/doc/aria2/webiface/index.html
+#EOF
+#		chmod +x $PKG/usr/bin/startariawebif
 	popd
 
 	checketc "$PKG"

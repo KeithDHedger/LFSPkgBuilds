@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.4 glib-2.66.7 libical-3.0.1"
+DEPENDS="dbus-1.12.20 glib-2.66.7 libical-3.0.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="bluez"
 TARNAME="$PKGNAME"
-VERSION="5.50"
+VERSION="5.55"
 BUILD=1
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -21,7 +21,9 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/linux/bluetooth/${TARBALL}" $SECTION
 if [ "$PIBUILD" = "1" ];then
-	gettar "http://intestinate.com/pilfs/patches/${PKGNAME}-5.40-rpi-fixes.patch" $SECTION
+	gettar "http://intestinate.com/pilfs/patches/${PKGNAME}-${VERSION}-rpi-fixes.patch" $SECTION
+else
+	gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-upstream_fixes-1.patch" $SECTION
 fi
 
 rm -rf "$PKG" || true
@@ -35,9 +37,11 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		if [ "$PIBUILD" = "1" ];then
-			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-5.40-rpi-fixes.patch
+			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-rpi-fixes.patch
+		else
+			patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-upstream_fixes-1.patch
 		fi
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr $SYSTEMDOPTS --enable-library --enable-deprecated --mandir=/usr/share/man --sysconfdir=/etc  --localstatedir=/var  --enable-sixaxis --disable-cups --enable-experimental --enable-deprecated
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS $SYSTEMDOPTS --enable-library  --enable-sixaxis --disable-cups --enable-experimental --enable-deprecated
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/sbin||true

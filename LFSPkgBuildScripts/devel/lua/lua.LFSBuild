@@ -4,7 +4,7 @@
 
 PKGNAME="lua"
 TARNAME="$PKGNAME"
-VERSION="5.3.5"
+VERSION="5.4.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -13,8 +13,9 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.lua.org/ftp/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/9.0/${TARNAME}-${VERSION}-shared_library-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-shared_library-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -22,9 +23,10 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-shared_library-1.patch
-		sed -i '/#define LUA_ROOT/s:/usr/local/:/usr/:' src/luaconf.h
-		make MYCFLAGS="-DLUA_COMPAT_5_2 -DLUA_COMPAT_5_1" linux
-		make INSTALL_TOP=$PKG/usr INSTALL_DATA="cp -d" INSTALL_MAN=$PKG/usr/share/man/man1 TO_LIB="liblua.so liblua.so.5.3 liblua.so.5.3.4" INSTALL_LIB=$PKG/usr/lib${LIBDIRSUFFIX} INSTALL_LMOD=$PKG/usr/share/lua/5.1 INSTALL_CMOD=$PKG/usr/lib/lua/5.1 install
+		make $MAKEFLAGS linux||make linux || exit 100
+		make INSTALL_TOP=$PKG/usr INSTALL_DATA="cp -d" INSTALL_MAN=$PKG/usr/share/man/man1 TO_LIB="liblua.so liblua.so.5.4 liblua.so.${VERSION}" INSTALL_LIB=$PKG/usr/lib${LIBDIRSUFFIX} install
+		mkdir -pv ${PKG}/usr/share/doc/${PKGNAME}-${VERSION}
+		cp -v doc/*.{html,css,gif,png}  ${PKG}/usr/share/doc/${PKGNAME}-${VERSION}
 
 # and install the pkgconfig file
 		mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
