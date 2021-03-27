@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NSPR-4.21 SQLite-3.29.0"
+DEPENDS="NSPR-4.29 SQLite-3.34.1 p11-kit-0.23.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="nss"
 TARNAME="$PKGNAME"
-VERSION="3.45"
+VERSION="3.61"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -19,8 +19,9 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://archive.mozilla.org/pub/security/${PKGNAME}/releases/NSS_3_45_RTM/src/${TARBALL}" $SECTION
+gettar "https://archive.mozilla.org/pub/security/${PKGNAME}/releases/NSS_3_61_RTM/src/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${TARNAME}-${VERSION}-standalone-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -29,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-standalone-1.patch
 		cd nss
-		make BUILD_OPT=1 NSPR_INCLUDE_DIR=/usr/include/nspr USE_SYSTEM_ZLIB=1 ZLIB_LIBS=-lz $([ $(uname -m) = x86_64 ] && echo USE_64=1) $([ -f /usr/include/sqlite3.h ] && echo NSS_USE_SYSTEM_SQLITE=1) || exit 100
+		make BUILD_OPT=1 NSPR_INCLUDE_DIR=/usr/include/nspr USE_SYSTEM_ZLIB=1 ZLIB_LIBS=-lz NSS_ENABLE_WERROR=0 $([ $(uname -m) = x86_64 ] && echo USE_64=1) $([ -f /usr/include/sqlite3.h ] && echo NSS_USE_SYSTEM_SQLITE=1) NSS_DISABLE_GTESTS=1|| exit 100
 		cd ../dist
 		mkdir -vp $PKG/usr/bin $PKG/usr/lib/pkgconfig $PKG/usr/include/nss || true
 		install -v -m755 Linux*/lib/*.so $PKG/usr/lib
@@ -39,6 +40,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		chmod 644 $PKG/usr/include/nss/*
 		install -v -m755 Linux*/bin/{certutil,nss-config,pk12util} $PKG/usr/bin
 		install -v -m644 Linux*/lib/pkgconfig/nss.pc  $PKG/usr/lib/pkgconfig
+		ln -sfv ./pkcs11/p11-kit-trust.so $PKG/usr/lib/libnssckbi.so
 	popd
 
 	checketc $PKG

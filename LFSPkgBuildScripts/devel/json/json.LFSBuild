@@ -4,7 +4,7 @@
 
 PKGNAME="json-c"
 TARNAME="${PKGNAME}"
-VERSION="0.13.1"
+VERSION="0.15"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -21,9 +21,10 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		mkdir build
+		cd    build
+		cmake $CMAKEOPTIONS -DBUILD_STATIC_LIBS=OFF ..
 		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

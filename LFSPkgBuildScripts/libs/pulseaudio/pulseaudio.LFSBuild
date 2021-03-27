@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="json-c-0.13.1 libsndfile-1.0.28"
+DEPENDS="json-c-0.15 libsndfile-1.0.31"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="pulseaudio"
 TARNAME="$PKGNAME"
-VERSION="12.2"
+VERSION="14.2"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -31,16 +31,12 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i "s:asoundlib.h:alsa/asoundlib.h:" src/modules/alsa/*.{c,h}
-		sed -i "s:use-case.h:alsa/use-case.h:" configure.ac
-		sed -i "s:use-case.h:alsa/use-case.h:" src/modules/alsa/alsa-ucm.h
-		
-		NOCONFIGURE=1 ./bootstrap.sh
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath $SYSTEMDOPTS --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules --enable-nls
-
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
-		rm -r $PKG/etc/dbus-1/system.d||true
+		mkdir build
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Ddatabase=gdbm -Dbluez5=false ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
+		rm -fv ${PKG}/etc/dbus-1/system.d/pulseaudio-system.conf||true
 	popd
 
 	checketc "$PKG"

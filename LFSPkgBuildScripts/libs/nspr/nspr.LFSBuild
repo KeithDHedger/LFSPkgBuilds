@@ -4,7 +4,7 @@
 
 PKGNAME="nspr"
 TARNAME="$PKGNAME"
-VERSION="4.21"
+VERSION="4.29"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i 's#$(LIBRARY) ##' config/rules.mk
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-mozilla --with-pthreads $([ $(uname -m) = x86_64 ] && echo --enable-64bit)
-		make || exit 100
+		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 

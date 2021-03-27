@@ -2,32 +2,31 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="NASM-2.14.02"
+DEPENDS="NASM-2.15.05"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="x264"
-MINORREVISION="20190815"
-VERSION="2245"
-TARNAME="${PKGNAME}-snapshot-${MINORREVISION}-${VERSION}"
+TARNAME="${PKGNAME}"
+VERSION="20210211"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.videolan.org/${PKGNAME}/snapshots/${TARBALL}" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}"
+	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-shared --disable-cli
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -55,5 +54,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null

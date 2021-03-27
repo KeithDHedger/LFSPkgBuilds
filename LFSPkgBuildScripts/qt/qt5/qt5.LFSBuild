@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-10.1 alsa-lib-1.1.9 DBus-1.12.16 MesaLib-19.1.4 libxkbcommon xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-12.2 pciutils-3.6.2 NSS-3.35"
+DEPENDS="xorg-libs-10.1 alsa-lib-1.2.4 DBus-1.12.20 MesaLib-20.3.4 libxkbcommon-1.0.3 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-14.2 pciutils-3.7.0 NSS-3.61"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qt5"
 TARNAME="qt-everywhere-src"
-VERSION="5.14.1"
+VERSION="5.15.2"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"

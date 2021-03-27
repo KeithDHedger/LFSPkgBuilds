@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Apr-Util-1.6.1 PCRE-8.43 OpenSSL-1.1.1"
+DEPENDS="Apr-Util-1.6.1 PCRE-8.44"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="apache"
 TARNAME="httpd"
-VERSION="2.4.41"
+VERSION="2.4.46"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -32,6 +32,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	useradd -c "Apache Server" -d /srv/www -s /bin/false -ru $UIDGIDPAIR apache||true
 
 	pushd "${TARNAME}-${VERSION}"
+		sed -i 's/lua_resume(a, NULL, b)/lua_resume(a, NULL, b, NULL)/' modules/lua/mod_lua.h
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-blfs_layout-1.patch
 		sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --libdir=/usr/lib${LIBDIRSUFFIX} --enable-authnz-fcgi --enable-layout=BLFS --enable-mods-shared="all cgi" --enable-mpms-shared=all --enable-suexec=shared --with-apr=/usr/bin/apr-1-config --with-apr-util=/usr/bin/apu-1-config --with-suexec-bin=/usr/lib/httpd/suexec --with-suexec-docroot=/srv/www --with-suexec-caller=apache --with-suexec-userdir=public_html --with-suexec-logfile=/var/log/httpd/suexec.log --with-suexec-uidmin=100
