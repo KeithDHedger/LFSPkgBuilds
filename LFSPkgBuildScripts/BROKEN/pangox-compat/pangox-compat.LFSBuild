@@ -2,43 +2,32 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Lua-5.3.4 SCons-3.0.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="tolua++"
+PKGNAME="pangox-compat"
 TARNAME="$PKGNAME"
-VERSION="1.0.93"
+VERSION="0.0.2"
 BUILD=${BUILD:-1}
-SECTION="DEVEL"
+SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-gettar "http://ponce.cc/slackware/sources/repo/${TARBALL}" $SECTION
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.gnome.org/sources/${PKGNAME}/0.0/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		# thanks to:
-		# Slackware build script for tolua++
-		# from slacbuilds.org
-		# Written by Larry Hajali <larryhaja[at]gmail[dot]com>
-		sed -i "s|'/lib'|'/lib${LIBDIRSUFFIX}'|g" SConstruct
-		sed -i "s|\"tolua++-1.0.92\"|\"tolua++-1.0.93\"|" include/tolua++.h || true
-		cat >> custom.py << EOF
-		LIBS = ['lua', 'dl', 'm']
-		LIBPATH = ['/lib', '/usr/lib']
-		EOF
-		scons install CCFLAGS="-I/usr/include -ansi -Wall" prefix="$PKG/usr" shared="TRUE" || exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

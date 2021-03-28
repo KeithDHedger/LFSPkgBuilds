@@ -4,7 +4,7 @@
 
 PKGNAME="busybox"
 TARNAME="$PKGNAME"
-VERSION="1.29.1"
+VERSION="1.32.1"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -20,16 +20,22 @@ gettar "http://busybox.net/downloads/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ "$1" = "install" ];then
+	echo -e "${RED}!!WARNING!!\nInstalling this package into a normal system will destroy essential system binary's ( like kill )"
+	echo -e "Only use in a minimal system, alternatively unpack the package to /tmp/ and manually copy what you need,"
+	echo -e "You can just build the package with ${GREEN}./busybox.LFSBuild build${RED}"
+	echo -e "Remove the following line and re run this script${NORMAL}"
+	exit 100
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		cp ../${CONFIGFILE} .config
+		cp ${CWD}/${CONFIGFILE} .config||true
 		make menuconfig
 		make $MAKEFLAGS||make|| exit 100
 		make install CONFIG_PREFIX=$PKG || exit 100
-		cp .config ../config.current
-		rm $PKG/linuxrc
-		rm $PKG/bin/kill
+		cp .config ${CWD}/config.current
 	popd
 
 	checketc "$PKG"

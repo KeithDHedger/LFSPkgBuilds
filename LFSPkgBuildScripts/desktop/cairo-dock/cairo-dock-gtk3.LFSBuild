@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.10.2 gtkglext-1.2.0"
+DEPENDS="CMake-3.19.5 gtk3-3.24.25 librsvg-2.50.3"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -14,19 +14,20 @@ VERSION="3.4.1"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://launchpad.net/cairo-dock-core/${VERSION%.?*}/${VERSION}/+download/${TARBALL}" $SECTION
+gettar "https://github.com/Cairo-Dock/cairo-dock-core/archive/${TARBALL}" $SECTION "${PKGNAME}-${TARBALL}"
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${TARBALL}"
+	pushd "${TARNAME}-core-${VERSION}"
 		mkdir build || true
 		cd build
 		cmake .. -DCMAKE_INSTALL_PREFIX=/usr
@@ -56,5 +57,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-core-${VERSION}"
 popd 2>/dev/null||true

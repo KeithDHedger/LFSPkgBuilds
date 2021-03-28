@@ -2,14 +2,19 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="libuv-1.41.0"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="bind-utils"
 TARNAME="bind"
-VERSION="9.14.5"
+VERSION="9.16.11"
 MINORVERSION=""
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}${MINORVERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}${MINORVERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -30,8 +35,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		make -C lib/isccfg
 		make -C lib/irs
 		make -C bin/dig
-
+		make -C doc
 		make  -C bin/dig install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/man/man1||true
+		cp -v doc/man/{dig.1,host.1,nslookup.1} $PKG/usr/share/man/man1
 	popd
 
 	checketc "$PKG"

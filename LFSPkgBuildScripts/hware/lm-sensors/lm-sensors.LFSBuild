@@ -8,24 +8,25 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="lm-sensors"
-TARNAME="lm_sensors"
-VERSION="3.4.0"
+TARNAME="${PKGNAME}"
+VERSION="3.6.0"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION//./-}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://pkgs.fedoraproject.org/repo/pkgs/lm_sensors/${TARBALL}/c03675ae9d43d60322110c679416901a/${TARBALL}" $SECTION
+gettar "https://github.com/lm-sensors/${PKGNAME}/archive/V3-6-0/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "${TARNAME}-${VERSION//./-}"
 		make PREFIX=/usr BUILD_STATIC_LIB=0 MANDIR=/usr/share/man DESTDIR=$PKG || exit 100
 		make PREFIX=/usr BUILD_STATIC_LIB=0 MANDIR=/usr/share/man DESTDIR=$PKG install || exit 1install -v -m755 -d /usr/share/doc/lm_sensors-3.3.5 &&
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION} || true
@@ -54,5 +55,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION//./-}"
 popd 2>/dev/null||true

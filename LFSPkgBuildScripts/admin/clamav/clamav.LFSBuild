@@ -4,7 +4,7 @@
 
 PKGNAME="clamav"
 TARNAME="$PKGNAME"
-VERSION="0.101.2"
+VERSION="0.103.1"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -15,6 +15,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.clamav.net/downloads/production/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

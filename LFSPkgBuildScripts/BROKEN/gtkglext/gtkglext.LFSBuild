@@ -13,14 +13,15 @@ VERSION="1.2.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/gtkglext/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 gettar "http://slackbuilds.org/slackbuilds/14.1/libraries/gtkglext/gtkglext-no-deprecated-flags.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
