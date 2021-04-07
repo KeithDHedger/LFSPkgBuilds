@@ -1,0 +1,19 @@
+In Slackware 14.1 and older, gzip does not support the --rsyncable option.
+The compilation errors out as a result. So we remove the 'rsyncable' flag.
+
+diff --git a/tools/grit/grit/format/gzip_string.py b/tools/grit/grit/format/gzip_string.py
+index 4f54aac..68f9ea1 100644
+--- a/tools/grit/grit/format/gzip_string.py
++++ b/tools/grit/grit/format/gzip_string.py
+@@ -15,7 +15,7 @@ def GzipStringRsyncable(data):
+   # Instead, --rsyncable breaks the file into small chunks, so that one doesn't
+   # affect the other in compression, and then only that chunk will have to be
+   # updated.
+-  gzip_proc = subprocess.Popen(['gzip', '--stdout', '--rsyncable',
++  gzip_proc = subprocess.Popen(['gzip', '--stdout',
+                                 '--best', '--no-name'],
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+-- 
+2.7.4
+

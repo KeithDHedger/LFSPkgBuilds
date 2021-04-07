@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="alsa-lib-1.1.5 Cups-2.2.6 dbus-1.12.4 node-9.5.0 Python-2.7.14 libgcrypt-1.8.2 libexif-0.6.21 git-2.16.2 pulseaudio-11.1 bzip2-1.0.6 flac-1.3.2 harfbuzz-1.7.5 icu-60.2 libevent-2.1.8 openjpeg-2.3.0 libpng-1.6.34 nspr-4.18 openssl-1.1.0 xdg-utils-1.1.2 yasm-1.3.0 krb5-1.15 desktop-file-utils-0.23 File-BaseDir-0.07 usbutils-009  ninja-1.8.2 gtk3-3.22.28 opus-1.2.1"
+DEPENDS="alsa-lib-1.2.4 Cups-2.3.3 dbus-1.12.20 nodejs-14.16.0 Python-2.7.18 libgcrypt-1.9.2 libexif-0.6.22 git-2.30.1 pulseaudio-14.2 flac-1.3.3 harfbuzz-2.7.4 icu-68.2 libevent-2.1.12 openjpeg-2.4.0 libpng-1.6.37 nspr-4.29 xdg-utils-1.1.3 yasm-1.3.0 krb5-1.19.1 desktop-file-utils-0.26 File-BaseDir-0.08 usbutils-013 gtk3-3.24.25 opus-1.3.1"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -10,7 +10,7 @@ fi
 
 PKGNAME="chromium"
 TARNAME="$PKGNAME"
-VERSION="64.0.3282.186"
+VERSION="89.0.4389.90"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -28,6 +28,13 @@ if [ ${USETHESEKEYS:-0} -eq 0 ];then
 	echo "This is a bit clearer:"
 	echo "https://gist.github.com/ezeeyahoo/dc4bdd250c6c6468959e107ddaef53f4"
 	echo "Change the variables below to hold your own keys, or leave them as is:"
+	echo
+	echo "Large parts of the script are thanks to Slackwares AlienBob, the original is here:"
+	echo "http://www.slackware.com/~alien/slackbuilds/chromium/"
+	echo
+	echo "Be warned this is a HUGE compile and can take in excess of 24 hours to run and will need at least 15G of disk space."
+	echo "I would STRONGLY reccomend installing the official google-chrome from /LFSPkgBuildScripts/desktop/google-chrome"
+	echo
 	echo "export USETHESEKEYS=1"
 	echo "Then re-run this script"
 	exit 100
@@ -39,145 +46,498 @@ fi
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://commondatastorage.googleapis.com/chromium-browser-official/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${PKGNAME}-${VERSION}-constexpr-1.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+SRCNAM=$PKGNAME
+CRFLAGS="CHROMIUM_FLAGS"
+CRUSERFLAGS="CHROMIUM_USER_FLAGS"
+# Build Chromium using a debian sysroot for Slackware 14.2 or older;
+# FYI, this will actually also just work for Slackware > 14.2:
+USE_SYSROOT=${USE_SYSROOT:-1}
+USE_HOTWORD=${USE_HOTWORD:-0}
+FFMPEG_HEVC=${FFMPEG_HEVC:-1}
+USE_UNGOOGLED=${USE_UNGOOGLED:-0}
+USE_DEV=${USE_DEV:-0}
+SHARED_FFMPEG=${SHARED_FFMPEG:-false} # other option is 'true'
+FFMPEG_BRANDING=${FFMPEG_BRANDING:-ChromeOS} # or "Chrome", or "Chromium"
+USE_WAYLAND=${USE_WAYLAND:-0}
+USE_PA=${USE_PA:-0}
+
+DOCS="AUTHORS BUILD.gn CODE_OF_CONDUCT.md DEPS LICENSE* OWNERS WATCHLISTS README*"
+
+USE_CLANG=${USE_CLANG:-1}
+
+# If you don't want to enable support for Widevine CDM
+# (content decryption module) say "0" here.
+USE_CDM=${USE_CDM:-1}
+
+SRCDIR=$CWD
+
 case "$ARCH" in
+#  i?86) #to be done
+	#        LFSFLAGS="-O2 -march=${ARCH} -mtune=i686"
+	#             # Fix for using lld while linking chromium in a 32bit chroot:
+	#             SLKLDFLAGS="-Wl,-z,notext"; LIBDIRSUFFIX=""
+	#             DSSE="1"
+	#             FFMPEG_ARCH="ia32"
+	#             SYSROOT_ARCH="i386"
+	#             SYSROOT_TARGET="i386"
+	#             PKGARCH="$ARCH"
+	#             ;;
 	x86_64)
-		DEBNAME=google-chrome-stable_current_amd64.deb
-		gettar "https://dl.google.com/linux/direct/$DEBNAME" $SECTION
-		gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux64/flash_player_ppapi_linux.x86_64.tar.gz" $SECTION
-		;;
-	*)
-		gettar "http://mirror.retrosnub.co.uk/apt/google/pool/main/g/google-chrome-stable/google-chrome-stable_48.0.2564.116-1_i386.deb" $SECTION
-		gettar "https://fpdownload.macromedia.com/pub/labs/flashruntimes/flashplayer/linux32/flash_player_ppapi_linux.i386.tar.gz" $SECTION
+		FFMPEG_ARCH="x64"
+		SYSROOT_ARCH="amd64"
+		SYSROOT_TARGET="x86_64"
+		PKGARCH="$ARCH"
+		TARGET=$ARCH-slackware-linux
+		LFSLDFLAGS="-L/usr/lib$LIBDIRSUFFIX"
+		DSSE="1"
 		;;
 esac
+
+# Exit the script on errors:
+set -e
+trap 'echo "$0 FAILED at line ${LINENO}"' ERR
+P1=${1:-1}
+
+# Save old umask and set to 0022:
+_UMASK_=$(umask)
+umask 0022
+
+SOURCE[0]="${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+SRCURL[0]="https://commondatastorage.googleapis.com/chromium-browser-official-browser-official/${TARBALL}"
+
+SOURCE[1]="$CWD/widevine-versions.txt"
+SRCURL[1]="https://dl.google.com/widevine-cdm/versions.txt"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		line='#define WIDEVINE_CDM_VERSION_STRING "Pinkie Pie"' 
-		sed "/WIDEVINE_CDM_AVAILABLE/a$line" -i third_party/widevine/cdm/stub/widevine_cdm_version.h
-		sed '/static_assert/s:^://:' -i third_party/WebKit/Source/platform/wtf/text/TextCodec.h
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-constexpr-1.patch
+		python3 build/linux/sysroot_scripts/install-sysroot.py --arch=${SYSROOT_ARCH}
 
-		for LIB in flac freetype harfbuzz-ng libjpeg libjpeg_turbo libwebp libxslt yasm
+# Allow building against system libraries in official builds:
+		sed -e 's/OFFICIAL_BUILD/GOOGLE_CHROME_BUILD/' -i tools/generate_shim_headers/generate_shim_headers.py
+	# Patches and bug fixes:
+	# Be compatible with glibc >= 2.31:
+		cat $SRCDIR/patches/chromium_glibc231.patch | patch -p1 --verbose 2>&1
+			# Fix 32bit builds on glibc >= 2.33:
+		cat $SRCDIR/patches/chromium_glibc233.patch | patch -p1 --verbose 2>&1
+		cat $SRCDIR/patches/chromium_glibc233_syscall422.patch | patch -p1 --verbose 2>&1
+	# Be compatible with gcc 10:
+		cat $SRCDIR/patches/chromium_gcc10.patch | patch -p1 --verbose 2>&1
+	# Fix the link on 32bit:
+		sed -e '/ldflags /s/-m32/&", "-Wl,-z,notext/' -i build/config/compiler BUILD.gn 2>&1
+	# Fix a compilation error because we enable HEVC but are not ChromeOS:
+		cat $SRCDIR/patches/chromium_hevc_non_chromeos.patch | patch -p1 --verbose 2>&1
+	# Slackware specific:
+	# When compiling google's clang on 32bit Slackware use 'i586' in the triplet.
+	# I am a python noob so this is clumsy, better implementation is welcome :-)
+		cp $SRCDIR/patches/clang.toolchains.i586.triple.diff .
+		cat $SRCDIR/patches/chromium_32bit_triplet.patch | patch -p1 --verbose 2>&1
+	# Don't crap out when gzip does not support '--rsyncable' (Slackware < 14.2):
+		if ! gzip --help |grep -q rsyncable ; then
+			cat $SRCDIR/patches/chromium_no_rsyncable.patch | patch -p1 --verbose 2>&1
+		fi
+		if [ $FFMPEG_HEVC -eq 1 ]; then
+	# Add essential proprietary codecs to the "chrome" branding of ffmpeg:
+			cat $SRCDIR/patches/chromium_ffmpeg_prop.patch | patch -p1 --verbose 2>&1
+		fi
+
+		if [ ${USE_UNGOOGLED} -ne 0 ]; then
+	# Apply ungoogled-chromium patch kit:
+			UGDIR=$TMP/tmp-$PKGNAME/ungoogled-chromium-${UNGOOGLED}
+			echo "-- Un-googling internal binaries:"
+			python3 ${UGDIR}/utils/prune_binaries.py ./ ${UGDIR}/pruning.list
+			echo "-- Un-googling sources; apply patches:"
+			python3 ${UGDIR}/utils/patches.py apply ./ ${UGDIR}/patches
+			echo "-- Un-googling internally used domain list:"
+			python3 ${UGDIR}/utils/domain_substitution.py apply -r ${UGDIR}/domain_regex.list -f ${UGDIR}/domain_substitution.list -c domainsubcache.tar.gz ./
+		fi
+
+	# Also needed for Slackware <= 14.2:
+		if [ $(LC_ALL=C gcc -dumpversion |cut -d. -f1) -eq 4 ]; then
+			cat $SRCDIR/patches/chromium56_gcc4.patch | patch -p1 --verbose 2>&1
+		fi
+
+	# When compiling google's clang, we want 32bit too - don't limit us, devs:
+		sed -i tools/clang/scripts/build.py -e "s/x86_64-unknown-linux-gnu/$TARGET/g"
+
+	# And fix the 32bit compilation while we are at it:
+		sed -i tools/clang/scripts/build.py -e "s/ldflags = \[\]/ldflags = \['-latomic'\]/"
+
+	# When compiling google's clang, use the system cmake
+	# (prebuilt binary from google is only available as 64bit):
+		sed -i tools/clang/scripts/build.py -e 's/^ *AddCMakeToPath/#&/'
+
+	# Force script incompatible with Python 3 to use /usr/bin/python2:
+		sed -i '1s|python$|&2|' third_party/dom_distiller_js/protoc_plugins/*.py
+
+	# Prevent a build failure (yes, 'x64' even on 32bit Slackware):
+		mkdir -p third_party/node/linux/node-linux-x64/bin
+		ln -snf /usr/bin/node third_party/node/linux/node-linux-x64/bin/
+
+		if [ "$PKGNAME" != "$SRCNAM" ]; then
+	# Save configuration in ~/.config/$PKGNAME:
+			sed -e 's|filename = "chromium-browser|&'$SRCEXT'|' -e 's|confdir = "chromium|&'$SRCEXT'|' -i chrome/BUILD.gn
+			sed -e 's|data_dir_basename = "chromium|&'$SRCEXT'|' -e 's|config_dir.Append("chromium|&'$SRCEXT'|' -i chrome/common/chrome_paths_linux.cc
+			sed -e 's|/etc/chromium|&'$SRCEXT'|'  -e 's|/usr/share/chromium|&'$SRCEXT'|'  -i chrome/browser/web_applications/external_web_app_manager.cc
+			sed -e 's|/etc/chromium|&'$SRCEXT'|' -e 's|/usr/share/chromium|&'$SRCEXT'|' -i chrome/common/chrome_paths.cc
+			sed -e 's|/etc/chromium|&'$SRCEXT'|' -i components/policy/tools/template_writers/writer_configuration.py
+		fi
+
+		chown -R root:root .
+		chmod -R u+w,go+r-w,a+X-s .
+		echo Building ...
+
+		[ ${USE_CLANG} -eq 1 ] && do_clang=true || do_clang=false
+		[ ${USE_CDM} -eq 1 ] && do_cdm=true || do_cdm=false
+		[ ${USE_HOTWORD} -eq 1 ] && do_hotword=true || do_hotword=false
+		[ ${USE_PA} -eq 1 ] && do_pa=true || do_pa=false
+		[ ${USE_SYSROOT} -eq 1 ] && do_sysroot=true || do_sysroot=false
+		[ ${USE_WAYLAND} -eq 1 ] && do_wayland=true || do_wayland=false
+		[ ${FFMPEG_HEVC} -eq 1 ] && do_hevc=true || do_hevc=false 
+
+		export LDFLAGS="$LFSLDFLAGS"
+		export CXXFLAGS="$LFSFLAGS -Wno-unknown-warning-option"
+		export CFLAGS="$LFSFLAGS -Wno-unused-local-typedefs -Wno-unknown-warning-option"
+		export PATH="$TMP/tmp-$PKGNAME/privatebin:$PATH"
+
+# After building gn, run:
+# "./out/Release/gn args out/Release --list"
+# for a list of all variables.
+		_chromium_conf=(
+			'enable_hidpi=true'
+			"enable_platform_hevc=${do_hevc}"
+			'enable_platform_ac3_eac3_audio=true'
+			'enable_platform_mpeg_h_audio=true'
+			'enable_platform_dolby_vision=true'
+			'enable_mse_mpeg2ts_stream_parser=true'
+			'enable_precompiled_headers=false'
+			'enable_swiftshader=true'
+			'enable_webrtc=true'
+			'fatal_linker_warnings=false'
+			"ffmpeg_branding=\"${FFMPEG_BRANDING}\""
+			"is_clang=${do_clang}"
+			'is_debug=false'
+			"is_component_build=${SHARED_FFMPEG}"
+			"is_component_ffmpeg=${SHARED_FFMPEG}"
+			"link_pulseaudio=${do_pa}"
+			"linux_sandbox_path=\"/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chrome_sandbox\""
+			'linux_strip_binary=true'
+			'linux_use_bundled_binutils=false'
+			"ozone_platform_wayland=${do_wayland}"
+			'proprietary_codecs=true'
+			'remove_webcore_debug_symbols=true'
+			'symbol_level=0'
+			'treat_warnings_as_errors=false'
+			"usb_ids_path=\"/usr/share/hwdata/usb.ids\""
+			'use_allocator="none"'
+			'use_bundled_fontconfig=false'
+			'use_cfi_icall=false'
+			'use_cups=true'
+			'use_custom_libcxx=true'
+			'use_gconf=false'
+			'use_kerberos=false'
+			'use_lld=true'
+			'use_ozone=true'
+			"use_pulseaudio=${do_pa}"
+			"use_sysroot=${do_sysroot}"
+			'use_vaapi=true'
+			"use_xkbcommon=${do_wayland}"
+			"extra_cxxflags=\"${CXXFLAGS}\""
+			"extra_ldflags=\"${LDFLAGS}\""
+			)
+
+		if [ ${USE_UNGOOGLED} -ne 0 ];then
+	# Add ungoogled flags if requested:
+			readarray -t -O ${#_chromium_conf[@]} _chromium_conf < ${UGDIR}/flags.gn
+		else
+	# Add remainder of standard chromium flags:
+			_chromium_conf+=(
+			"clang_use_chrome_plugins=${do_clang}"
+			'enable_hangout_services_extension=true'
+			"enable_hotwording=${do_hotword}"
+			'enable_js_type_check=true'
+			'enable_nacl=false'
+			'enable_nacl_nonsfi=false'
+			'enable_pepper_cdms=true'
+			"enable_widevine=${do_cdm}"
+			'exclude_unwind_tables=true'
+			'fieldtrial_testing_like_official_build=true'
+			'logging_like_official_build=true'
+			)
+		fi
+
+# Add Google API key if defined:
+		if [ -n "$GOOGLE_API_KEY" ];then
+			_chromium_conf+=(
+			"google_api_key=\"$GOOGLE_API_KEY\""
+			"google_default_client_id=\"$GOOGLE_DEFAULT_CLIENT_ID\""
+			"google_default_client_secret=\"$GOOGLE_DEFAULT_CLIENT_SECRET\""
+			)
+		fi
+
+# Change this back when CRBUG 592268 is fixed (error during final link:
+# undefined reference to `base::i18n::GetRawIcuMemory())
+# See https://bugs.chromium.org/p/chromium/issues/detail?id=592268
+# icu_use_data_file_flag=false
+
+# The array of possible replacements of embedded with system libraries is
+# found in 'build/linux/unbundle/replace_gn_files.py':
+		gn_system_libraries=(
+	# 'bzip2'
+	# 'ffmpeg'
+		'flac'
+	# 'freetype2'
+	# 'harfbuzz'
+	# 'icu'
+	# 'libdrm'
+	# 'libevent'
+	# 'libjpeg'
+	# 'libpng'
+	# 'libvpx'
+	# 'libwebp'
+	# 'libxml'
+	# 'libxslt'
+	# 'opus'
+	# 're2'
+	# 'snappy'
+	# 'zlib'
+	)
+
+# Unbundle the libraries which we use from the system.
+# (taken from Arch Linux:)
+# This *should* do what the remove_bundled_libraries.py script does,
+# with the added benefit of not having to list all the remaining libraries:
+		echo "-- Unbundling system libraries from $PKGNAME sources."
+		for ULIB in ${gn_system_libraries[@]}
 			do
-				find -type f -path "*third_party/$LIB/*" \! -path "*third_party/$LIB/chromium/*" \! -path "*third_party/$LIB/google/*" \! -path "*base/third_party/icu/*" \! -path './third_party/yasm/run_yasm.py' \! -regex '.*\.\(gn\|gni\|isolate\|py\)' \! -path './third_party/freetype/src/src/psnames/pstables.h' -delete
+				find -type f -path "*third_party/$ULIB/*" \! -path "*third_party/$ULIB/chromium/*" \! -path "*third_party/$ULIB/google/*" \! -regex '.*\.\(gn\|gni\|isolate\)' -delete
 			done
 
-		python build/linux/unbundle/replace_gn_files.py --system-libraries flac libjpeg libxml libevent libwebp libxslt yasm opus
-		python third_party/libaddressinput/chromium/tools/update-strings.py
+# Change bundled libraries to system ones:
+		echo "-- Change bundled to system libraries in $PKGNAME sources."
+		python3 build/linux/unbundle/replace_gn_files.py --system-libraries ${gn_system_libraries[@]}
 
-		GN_CONFIG=("google_api_key=\"$GOOGLE_API_KEY\""
-		"google_default_client_id=\"$GOOGLE_DEFAULT_CLIENT_ID\""
-		"google_default_client_secret=\"$GOOGLE_DEFAULT_CLIENT_SECRET\""
-		'clang_use_chrome_plugins=false'
-		'enable_hangout_services_extension=true'
-		'enable_nacl=false'
-		'enable_nacl_nonsfi=false'
-		'enable_swiftshader=false'
-		'enable_widevine=true'
-		'fatal_linker_warnings=false'
-		'ffmpeg_branding="Chrome"'
-		'fieldtrial_testing_like_official_build=true'
-		'is_debug=false'
-		'is_clang=false'
-		'link_pulseaudio=true'
-		'linux_use_bundled_binutils=false'
-		'proprietary_codecs=true'
-		'remove_webcore_debug_symbols=true'
-		'symbol_level=0'
-		'treat_warnings_as_errors=false'
-		'use_allocator="none"'
-		'use_cups=true'
-		'use_gconf=false'
-		'use_gnome_keyring=false'
-		'use_gold=false'
-		'use_gtk3=true'
-		'use_kerberos=true'
-		'use_pulseaudio=true'
-		'use_sysroot=false'
-		'use_system_freetype=true'
-		'use_system_harfbuzz=true')
+# Do not make the build fail, see Chromium issue #386097:
+		python3 third_party/libaddressinput/chromium/tools/update-strings.py 2>&1 | tee $OUTPUT/update_strings-${PKGNAME}.log
 
-		python tools/gn/bootstrap/bootstrap.py --gn-gen-args "${GN_CONFIG[*]}"
-		out/Release/gn gen out/Release --args="${GN_CONFIG[*]}"
+# Use usb.ids at run time instead of compiling it in:
+		sed -i services/device/public/cpp/usb/BUILD.gn -e 's|//third_party/usb_ids/usb.ids|/usr/share/hwdata/usb.ids|g'
 
-		mkdir -vp third_party/node/linux/node-linux-x64/bin
-		ln -s /usr/bin/node third_party/node/linux/node-linux-x64/bin/||true
+# Do not make the build fail, see https://groups.google.com/a/chromium.org/d/topic/chromium-packagers/9JX1N2nf4PU/discussion :
+		touch chrome/test/data/webui/i18n_process_css_test.html
 
-		ninja -C out/Release chrome chrome_sandbox chromedriver widevinecdmadapter
+# Do not make the build fail:
+		if [ ! -f chrome/test/data/webui_test_resources.grd ];then
+			cat <<EOF >chrome/test/data/webui_test_resources.grd
+<?xml version="1.0" encoding="UTF-8"?>
+<grit latest_public_release="0" current_release="1">
+  <outputs>
+    <output filename="chrome/test/data/grit/webui_test_resources.h" type="rc_header">
+      <emit emit_type='prepend'></emit>
+    </output>
+    <output filename="webui_test_resources.pak" type="data_package" />
+  </outputs>
+  <release seq="1">
+  </release>
+</grit>
+EOF
+		fi
 
-		install -vDm755  out/Release/chrome $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chromium
-		install -vDm4755 out/Release/chrome_sandbox $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chrome-sandbox
-		install -vDm755  out/Release/chromedriver $PKG/usr/lib${LIBDIRSUFFIX}/chromium/chromedriver
+		if [ ${USE_SYSROOT} -eq 1 ]; then
+	# Take care of Debian/Ubuntu related missing header issues:
+			SYSROOTDIR=$(basename $(ls build/linux/ |grep ${SYSROOT_ARCH}-sysroot))
 
-		mkdir -vp $PKG/usr/bin $PKG/usr/share/applications $PKG/usr/share/man/man1||true
-		ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromium $PKG/usr/bin
-		ln -svf /usr/lib${LIBDIRSUFFIX}/chromium/chromedriver $PKG/usr/bin
+			ln -snf ../../lib/${SYSROOT_TARGET}-linux-gnu/glib-2.0/include/glibconfig.h build/linux/${SYSROOTDIR}/usr/include/glib-2.0/glibconfig.h
+			ln -snf ../../../lib/${SYSROOT_TARGET}-linux-gnu/dbus-1.0/include/dbus/dbus-arch-deps.h build/linux/${SYSROOTDIR}/usr/include/dbus-1.0/dbus/dbus-arch-deps.h
+			ln -snf ../../lib/${SYSROOT_TARGET}-linux-gnu/graphene-1.0/include/graphene-config.h build/linux/${SYSROOTDIR}/usr/include/graphene-1.0/graphene-config.h
 
-		install -vDm644 out/Release/gen/content/content_resources.pak $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-		install -vDm644 out/Release/icudtl.dat $PKG/usr/lib${LIBDIRSUFFIX}/chromium/icudtl.dat
-		install -vDm644 out/Release/{*.pak,*.bin} $PKG/usr/lib${LIBDIRSUFFIX}/chromium/		
+  # Take care of Debian/Ubuntu related linker issues:
+			echo "/usr/lib/${SYSROOT_TARGET}-linux-gnu/nss" >> build/linux/${SYSROOTDIR}/etc/ld.so.conf.d/${SYSROOT_TARGET}-linux-gnu.conf
+			ln -snf libsqlite3.so.0 build/linux/${SYSROOTDIR}/usr/lib/${SYSROOT_TARGET}-linux-gnu/libsqlite3.so
+		fi
 
-		sed -i -e "s/@@MENUNAME@@/Chromium/g" -e "s/@@PACKAGE@@/chromium/g" -e "s/@@USR_BIN_SYMLINK_NAME@@/chromium/g" chrome/installer/linux/common/desktop.template chrome/app/resources/manpage.1.in
+# --- Compile --- #
 
-		install -vDm644 chrome/installer/linux/common/desktop.template $PKG/usr/share/applications/chromium.desktop
-		install -vDm644 chrome/app/resources/manpage.1.in $PKG/usr/share/man/man1/chromium.1
+# Final link uses lots of file descriptors.
+		ulimit -n 2048
 
-		cp -av out/Release/locales $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-		chown -Rv root:root $PKG/usr/lib${LIBDIRSUFFIX}/chromium/locales
+# Compile google's internal clang sources if needed
+		if [ ${USE_CLANG} -eq 1 ]; then
+	# Build clang from source instead of downloading:
+			echo "-- Building google's clang toolchain."
+			LDFLAGS="$LDFLAGS" python2 tools/clang/scripts/build.py --bootstrap --disable-asserts --gcc-toolchain /usr --skip-checkout --use-system-cmake --without-android --without-fuchsia 2>&1 | tee $OUTPUT/clang_build-${PKGNAME}.log
+			#--llvm-force-head-revision \
+		fi
 
-		for size in 16 32
+# Ensure that only this new clang is used, ignoring the system version:
+		MYCLANG_PATH="${SOURCEARCHIVES}/${PKGNAME}-${VERSION}/third_party/llvm-build/Release+Asserts/bin"
+		export PATH="$MYCLANG_PATH:$PATH"
+
+# Generate the ninja build files:
+		echo "-- Bootstrapping 'gn'."
+
+# Symlink ld to lld to make gn linking stage succeed:
+		cd $MYCLANG_PATH ; ln -snf lld ld ; cd - 1>/dev/null
+		LDFLAGS="$LDFLAGS" python3 tools/gn/bootstrap/bootstrap.py 2>&1 | tee $OUTPUT/gyp-${PKGNAME}.log
+		MYCLANG_PATH="${SOURCEARCHIVES}/${PKGNAME}-${VERSION}/third_party/llvm-build/Release+Asserts/bin"
+# Remove symlink again:
+		rm $MYCLANG_PATH/ld
+
+		echo "-- Generating ninja build files."
+			out/Release/gn gen out/Release -v --args="${_chromium_conf[*]}" 2>&1 | tee -a $OUTPUT/gyp-${PKGNAME}.log
+
+# Compile everything:
+		echo "-- Compiling the lot."
+
+		if [ "$USE_CLANG" = "1" ];then
+	# Use the clang that we build in-tree instead of using the system version:
+			export CC="$MYCLANG_PATH/clang"
+			export CXX="$MYCLANG_PATH/clang++"
+			export LD="$MYCLANG_PATH/lld"
+		else
+	# Be careful not to override CC and CXX (may have been set by gcc5):
+			export CC=${CC:-"gcc"}
+			export CXX=${CXX:-"g++"}
+		fi
+		export AS=as
+		export AR=ar
+
+		cd ${SOURCEARCHIVES}/${PKGNAME}-${VERSION}
+
+		LDFLAGS="$LDFLAGS" LC_ALL=C ninja -C out/Release pdf chrome chrome_sandbox chromedriver 2>&1 | tee $OUTPUT/ninja-${PKGNAME}.log
+
+# Manually install everything:
+		echo "-- Manually installing everything."
+
+# The main binary:
+		install -D out/Release/chrome $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/${PKGNAME}
+
+# The sandbox:
+		install -D -m4755 -o root -g root out/Release/chrome_sandbox $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chrome-sandbox
+
+# The Chromium implementation of the WebDriver wire protocol
+# (automated testing of web apps):
+		install -D out/Release/chromedriver $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chromedriver
+
+# Copy libraries:
+		for CRLIB in {libEGL,libGLESv2,libVkICD_mock_icd,libvk_swiftshader}.so
 			do
-				install -vDm644 "chrome/app/theme/default_100_percent/chromium/product_logo_$size.png" "$PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium.png"
+				install -D -m0755 -o root -g root out/Release/$CRLIB $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/$CRLIB
 			done
 
-		for size in 22 24 48 64 128 256
+# Copy over the remaining binaries:
+		cp -a out/Release/{swiftshader,angledata} $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+	# Un-googled chromium disables MEI Preload:
+		if [ -d out/Release/MEIPreload ]; then
+			cp -a out/Release/MEIPreload $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+		fi
+
+		cp -a out/Release/*.pak $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+		if [ -f out/Release/libffmpeg*.so ]; then
+			cp -a out/Release/libffmpeg*.so* $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+		elif [ -f out/Release/lib/libffmpeg.so ]; then
+			mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/lib/
+			cp -a out/Release/lib/libffmpeg.so* $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/lib/
+		fi
+			
+		for BLOB in out/Release/{natives_blob.bin,snapshot_blob.bin,v8_context_snapshot.bin};
 			do
-				install -vDm644 "chrome/app/theme/chromium/product_logo_$size.png" "$PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium.png"
+				if [ -f $BLOB ]; then
+					cp -a $BLOB $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+				fi
 			done
 
-		mkdir -vp $PKG/usr/share/applications||true
-		mkdir temp||true
-		cd temp
-		case $ARCH in
-			x86_64)
-				ar -x ${SOURCEARCHIVES}/${SECTION}/$DEBNAME
-				;;
-			*)
-				ar -x ${SOURCEARCHIVES}/${SECTION}/google-chrome-stable_48.0.2564.116-1_i386.deb
-				;;
-		esac
+# Install appdata but remove text with relevance to Google only (thanks Arch):
+		mkdir -p $PKG/usr/share/metainfo
+		sed -n -e "s/chromium-browser\.desktop/chromium-browser${SRCEXT}.desktop/" -e '/<update_contact>/d' -e '/<p>/N;/<p>\n.*\(We invite\|Chromium supports Vorbis\)/,/<\/p>/d' -e '/^<?xml/,$p' chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml > $PKG/usr/share/metainfo/${PKGNAME}.appdata.xml
+		chmod 644 $PKG/usr/share/metainfo/${PKGNAME}.appdata.xml
 
-		tar -xf data.tar.xz
-		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/chromium
-		install -vm755 ../out/Release/libwidevinecdmadapter.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
-		case "$ARCH" in
-			x86_64)
-				install -vm755 opt/google/chrome/WidevineCdm/_platform_specific/linux_x64/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
-				;;
-			*)
-				install -vm755 opt/google/chrome/libwidevinecdm.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium/
-				;;
-		esac
+# Manually strip binaries:
+		strip  --strip-unneeded $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/{${PKGNAME},chrome-sandbox} $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/chromedriver
+		strip  --strip-unneeded $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/*.so
+		if [ -f $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/lib/libffmpeg*.so ]; then
+			strip  --strip-unneeded $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/lib/lib*.so
+		fi
 
-		case "$ARCH" in
-			x86_64)
-				tar -xf "${SOURCEARCHIVES}/${SECTION}/flash_player_ppapi_linux.x86_64.tar.gz"
-				;;
-			*)
-				tar -xf "${SOURCEARCHIVES}/${SECTION}/flash_player_ppapi_linux.i386.tar.gz"
-				;;
-		esac
-		install -vdm755 $PKG/usr/lib/PepperFlash
-		install -vm755 libpepflashplayer.so $PKG/usr/lib/PepperFlash
-		install -vm644 manifest.json $PKG/usr/lib/PepperFlash
-	
+# Add locales:
+		cp -a out/Release/locales $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+		ln -snf locales $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/remoting_locales
+
+# Add resource files:
+		cp -a out/Release/resources $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+
+# This step used to be done for us, now do it manually too.
+# This script's 'process_template' function is needed in order
+# to generate man page and desktop file:
+
+		source chrome/installer/linux/common/installer.include
+		PACKAGE=${PKGNAME}
+		PROGNAME=${PKGNAME}
+		MENUNAME="${PKGNAME^} Web Browser"
+		USR_BIN_SYMLINK_NAME=${PKGNAME}
+
+# Install a man page:
+		process_template chrome/app/resources/manpage.1.in out/Release/${PKGNAME}.1
+		install -D -m0644 out/Release/${PKGNAME}.1 $PKG/usr/man/man1/${PKGNAME}.1
+
+# Add a desktop file:
+		process_template chrome/installer/linux/common/desktop.template out/Release/${PKGNAME}.desktop
+		install -D -m0644 out/Release/${PKGNAME}.desktop $PKG/usr/share/applications/${PKGNAME}.desktop
+
+# Install desktop icons:
+		if [ ${USE_UNGOOGLED} -eq 0 ]; then
+			for size in 16 32
+				do
+					install -D -m0644 chrome/app/theme/default_100_percent/chromium/product_logo_$size.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps/${PKGNAME}.png
+					ln -snf ${PKGNAME}.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium-browser${SRCEXT}.png
+				done
+			for size in 24 48 64 128 256
+				do
+					install -D -m0644 chrome/app/theme/chromium/product_logo_$size.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps/${PKGNAME}.png
+					ln -snf ${PKGNAME}.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium-browser${SRCEXT}.png
+				done
+		else
+			for size in 16 24 32 48 64 128 256
+				do
+					mkdir -p $PKG/usr/share/icons/hicolor/${size}x${size}/apps/
+					convert ${SRCDIR}/${PKGNAME}.png -resize ${size}x${size} $PKG/usr/share/icons/hicolor/${size}x${size}/apps/${PKGNAME}.png
+					ln -snf ${PKGNAME}.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps/chromium-browser${SRCEXT}.png
+				done
+		fi
+
+# Without this file, chromium refuses to start:
+		cp -a out/Release/icudtl.dat $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/
+
+# Install a wrapper script:
+		install -D -m0755 $SRCDIR/${SRCNAM}.sh $PKG/usr/bin/${PKGNAME}
+		sed -e "s/@PKGNAME@/${PKGNAME}/g" -e "s/@SRCEXT@/${SRCEXT}/g" -e "s/@LIBDIRSUFFIX@/${LIBDIRSUFFIX}/g" -e "s/@CRFLAGS@/${CRFLAGS}/g" -e "s/@CRUSERFLAGS@/${CRUSERFLAGS}/g" -i $PKG/usr/bin/${PKGNAME}
+
+# Make the chromedriver available in the $PATH :
+		mkdir -vp $PKG/usr/bin/||true
+		ln -snf ../lib${LIBDIRSUFFIX}/${PKGNAME}/chromedriver $PKG/usr/bin/chromedriver${SRCEXT}
+
+# xdg-utils looks for "chromium-browser" so symlink it to the wrapper:
+		ln -snf ${PKGNAME} $PKG/usr/bin/chromium-browser${SRCEXT}
+
+# Move the 'default' file into place.
+# This allows users to override command-line options:
+		mkdir -p $PKG/etc/${PKGNAME}
+		cat $SRCDIR/${SRCNAM}.default | sed -e "s/@PKGNAME@/${PKGNAME}/g" -e "s/@SRCEXT@/${SRCEXT}/g" -e "s/@CRFLAGS@/${CRFLAGS}/g" -e "s/@CRUSERFLAGS@/${CRUSERFLAGS}/g" -e "s/@LIBDIRSUFFIX@/${LIBDIRSUFFIX}/g" > $PKG/etc/${PKGNAME}/00-default.conf.new
+
+		if [ -z "$GOOGLE_API_KEY" ] && [ $USE_UNGOOGLED -eq 0 ]; then
+	# If the package was built without an API key, install the sample file:
+			cat $SRCDIR/${SRCNAM}.apikeys.sample > $PKG/etc/${PKGNAME}/01-apikeys.conf.new
+		fi
+
+# Add documentation:
+		mkdir -p $PKG/usr/doc/$PKGNAME-$VERSION||true
+		cp -a $DOCS $PKG/usr/doc/$PKGNAME-$VERSION || true
+		find $PKG/usr/doc -type f -exec chmod 644 {} \;
+
 	popd
 
 	checketc $PKG

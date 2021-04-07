@@ -1,0 +1,14 @@
+--- chromium-77.0.3865.75/tools/clang/scripts/build.py.orig	2019-09-15 18:07:36.473402940 +0200
++++ chromium-77.0.3865.75/tools/clang/scripts/build.py	2019-09-16 00:08:30.826435347 +0200
+@@ -426,6 +426,11 @@
+   if args.skip_build:
+     return 0
+ 
++  # Slackware's 32bit host triplet contains i586, not i486:
++  import shlex
++  os.chdir(LLVM_DIR)
++  subprocess.call(['patch' , '-p0' , '-i' , '../../clang.toolchains.i586.triple.diff' , '--verbose'])
++
+   # The variable "lld" is only used on Windows because only there does setting
+   # CMAKE_LINKER have an effect: On Windows, the linker is called directly,
+   # while elsewhere it's called through the compiler driver, and we pass

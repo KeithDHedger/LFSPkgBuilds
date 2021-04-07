@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.65.3  OpenSSL-1.1.1 Python-2.7.16 pcre2-10.33 Subversion-1.12.2"
+DEPENDS="curl-7.75.0 pcre2-10.36 Subversion-1.14.1 asciidoc-9.1.0 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="git"
 TARNAME="$PKGNAME"
-VERSION="2.23.0"
+VERSION="2.30.1"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -20,34 +20,36 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/software/scm/git/${TARBALL}" $SECTION
-gettar "https://www.kernel.org/pub/software/scm/git/git-manpages-${VERSION}.tar.xz" $SECTION
-gettar "https://www.kernel.org/pub/software/scm/git/git-htmldocs-${VERSION}.tar.xz" $SECTION
+#gettar "https://www.kernel.org/pub/software/scm/git/git-manpages-${VERSION}.tar.xz" $SECTION
+#gettar "https://www.kernel.org/pub/software/scm/git/git-htmldocs-${VERSION}.tar.xz" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-gitconfig=/etc/gitconfig --with-libpcre2
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --with-gitconfig=/etc/gitconfig --with-python=python3
+		make html
+		make man
+		make perllibdir=/usr/lib/perl5/5.32/site_perl install DESTDIR=$PKG || exit 100
+		make install-man DESTDIR=$PKG || exit 100
+		make htmldir=/usr/share/doc/git-2.30.1 install-html DESTDIR=$PKG || exit 100
 
-		mkdir -vp $PKG/usr/share/man $PKG/usr/share/doc/||true
-		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}/man-pages/{html,text}||true
-
-		tar -xf ${SOURCEARCHIVES}/${SECTION}/git-manpages-${VERSION}.tar.xz -C $PKG/usr/share/man --no-same-owner --no-overwrite-dir
-		tar -xf  ${SOURCEARCHIVES}/${SECTION}/git-htmldocs-${VERSION}.tar.xz -C $PKG/usr/share/doc/${PKGNAME}-${VERSION} --no-same-owner --no-overwrite-dir
-		find $PKG/usr/share/doc/${PKGNAME}-${VERSION} -type d -exec chmod 755 {} \;
-		find $PKG/usr/share/doc/${PKGNAME}-${VERSION} -type f -exec chmod 644 {} \;
-
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}/man-pages/{html,text}
 		mv $PKG/usr/share/doc/${PKGNAME}-${VERSION}/{git*.txt,man-pages/text}
 		mv $PKG/usr/share/doc/${PKGNAME}-${VERSION}/{git*.,index.,man-pages/}html
-		mkdir $PKG/usr/share/doc/${PKGNAME}-${VERSION}/technical/{html,text}||true
+
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}/technical/{html,text}
 		mv $PKG/usr/share/doc/${PKGNAME}-${VERSION}/technical/{*.txt,text}
 		mv $PKG/usr/share/doc/${PKGNAME}-${VERSION}/technical/{*.,}html
-		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}/howto/{html,text}||true
+
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}/howto/{html,text}
 		mv $PKG/usr/share/doc/${PKGNAME}-${VERSION}/howto/{*.txt,text}
 		mv $PKG/usr/share/doc/${PKGNAME}-${VERSION}/howto/{*.,}html
+
+		sed -i '/^<a href=/s|howto/|&html/|' $PKG/usr/share/doc/${PKGNAME}-${VERSION}/howto-index.html
+		sed -i '/^\* link:/s|howto/|&html/|' $PKG/usr/share/doc/${PKGNAME}-${VERSION}/howto-index.txt
 	popd
 
 	checketc $PKG

@@ -1,0 +1,6 @@
+# Default settings for chromium@SRCEXT@.
+# This file is sourced by /usr/bin/chromium@SRCEXT@
+
+# Options to pass to chromium@SRCEXT@:
+#@CRFLAGS@=""
+

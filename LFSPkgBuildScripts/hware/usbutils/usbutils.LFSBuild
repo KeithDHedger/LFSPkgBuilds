@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libusb-1.0.21 pkg-config-0.29.2"
+DEPENDS="libusb-1.0.24"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 TARNAME="usbutils"
 PKGNAME="usbutils"
-VERSION="009"
+VERSION="013"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -26,9 +26,15 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --datadir=/usr/share/hwdata
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh $CONFIGOPTIONS --datadir=/usr/share/hwdata
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/etc/cron.weekly||true
+		cat > $PKG/etc/cron.weekly/update-usbids.sh << "EOF"
+#!/bin/bash
+/usr/bin/wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids
+EOF
+		chmod 754 $PKG/etc/cron.weekly/update-usbids.sh
 	popd
 
 	checketc $PKG

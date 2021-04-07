@@ -2,34 +2,34 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="pcre-8.44"
-
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="swig"
+PKGNAME="google-chrome"
 TARNAME="$PKGNAME"
-VERSION="4.0.2"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="10.1"
+BUILD=1
+SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="google-chrome-stable_current_amd64.deb"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sourceforge.net/swig/${TARBALL}" $SECTION
+gettar "https://dl.google.com/linux/direct/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-clisp --without-maximum-compile-warnings
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+	mkdir "debtmp"
+	(cd debtmp;ar x ${SOURCEARCHIVES}/${SECTION}/${TARBALL})
+	pushd "debtmp"
+		tar -xvf data.tar.xz
+		cp -r opt usr $PKG
+		mkdir -vp $PKG/usr/share/pixmaps/
+		ln -svf /opt/google/chrome/product_logo_256.png $PKG/usr/share/pixmaps/google-chrome.png
 	popd
 
 	checketc "$PKG"
@@ -54,5 +54,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "debtmp"
 popd 2>/dev/null||true

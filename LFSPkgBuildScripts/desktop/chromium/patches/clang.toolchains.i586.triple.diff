@@ -1,0 +1,12 @@
+--- ./clang/lib/Driver/ToolChains/Gnu.cpp.orig	2019-07-29 22:41:22.000000000 +0200
++++ ./clang/lib/Driver/ToolChains/Gnu.cpp	2019-07-31 21:18:47.019077741 +0200
+@@ -1943,7 +1943,8 @@
+       "i686-linux-gnu",       "i686-pc-linux-gnu",     "i486-linux-gnu",
+       "i386-linux-gnu",       "i386-redhat-linux6E",   "i686-redhat-linux",
+       "i586-redhat-linux",    "i386-redhat-linux",     "i586-suse-linux",
+-      "i486-slackware-linux", "i686-montavista-linux", "i586-linux-gnu",
++      "i486-slackware-linux", "i586-slackware-linux",  "i686-slackware-linux",
++      "i686-montavista-linux", "i586-linux-gnu",
+       "i686-linux-android",   "i386-gnu",              "i486-gnu",
+       "i586-gnu",             "i686-gnu"};
+ 

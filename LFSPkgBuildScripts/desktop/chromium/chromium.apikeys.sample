@@ -1,0 +1,7 @@
+# Remove the '.sample' suffix from the filename to enable its content:
+
+# Google API keys (see http://www.chromium.org/developers/how-tos/api-keys)
+# Example using values found in the public Chromium sources, YMMV:
+export GOOGLE_API_KEY='AIzaSyBHDrl33hwRp4rMQY0ziRbj8K9LPA6vUCY'
+export GOOGLE_DEFAULT_CLIENT_ID='77185425430.apps.googleusercontent.com'
+export GOOGLE_DEFAULT_CLIENT_SECRET='OTJgUOQcT7lO7GsGZq2G4IlT'

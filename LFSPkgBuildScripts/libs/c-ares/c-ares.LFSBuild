@@ -2,17 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="pcre-8.44"
-
+DEPENDS="cmake-3.19.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="swig"
+PKGNAME="c-ares"
 TARNAME="$PKGNAME"
-VERSION="4.0.2"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="1.17.1"
+BUILD=1
+SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -20,14 +19,21 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sourceforge.net/swig/${TARBALL}" $SECTION
+gettar "https://c-ares.haxx.se/download/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-clisp --without-maximum-compile-warnings
+		mkdir build || true
+		cd  build
+		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

@@ -2,34 +2,35 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="pcre-8.44"
-
+DEPENDS="Which-2.21 c-ares-1.17.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="swig"
-TARNAME="$PKGNAME"
-VERSION="4.0.2"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+PKGNAME="nodejs"
+TARNAME="node"
+VERSION="14.16.0"
+BUILD=1
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-v${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sourceforge.net/swig/${TARBALL}" $SECTION
+gettar "https://nodejs.org/dist/v${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-clisp --without-maximum-compile-warnings
+	pushd "${TARNAME}-v${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --shared-cares --shared-libuv --shared-openssl --shared-zlib --with-intl=system-icu  
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		ln -sf node $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
 
 	checketc "$PKG"
@@ -54,5 +55,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-v${VERSION}"
 popd 2>/dev/null||true

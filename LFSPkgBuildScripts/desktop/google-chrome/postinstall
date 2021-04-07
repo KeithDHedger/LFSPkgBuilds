@@ -1,0 +1,27 @@
+#!/bin/bash
+#©keithhedger Thu  1 Apr 14:02:07 BST 2021
+
+. /usr/share/LFSPkg/LFSFunctions
+
+chown root:root /opt/google/chrome/chrome-sandbox
+chmod 4755 /opt/google/chrome/chrome-sandbox
+
+mkdir -vp /etc/gtk-2.0||true
+mkdir -vp /etc/pango ||true
+mkdir -vp /var/cache/man/fsstnd||true
+mkdir -vp /usr/share/glib-2.0/||true
+
+glib-compile-schemas /usr/share/glib-2.0/schemas
+
+gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders||true
+
+gtk-query-immodules-2.0 --update-cache
+gtk-update-icon-cache||true
+gdk-pixbuf-query-loaders --update-cache
+
+fc-cache -f||true
+
+update-mime-database /usr/share/mime||true
+mandb -c||true
+
+exit 0

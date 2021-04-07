@@ -2,34 +2,33 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.16"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="node"
+PKGNAME="py3c"
 TARNAME="$PKGNAME"
-VERSION="10.16.3"
+VERSION="1.3.1"
 BUILD=1
-SECTION="NET"
+SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-v${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://nodejs.org/dist/v${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/encukou/${PKGNAME}/archive/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-v${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --shared-libuv --shared-openssl --shared-zlib --with-intl=system-icu  
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
-		ln -sf node $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+	pushd "${TARNAME}-${VERSION}"
+		mkdir -vp $PKG/usr/include $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
+		make prefix=$PKG/usr install|| exit 100
+		mv $PKG/usr/share/pkgconfig/py3c.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig || exit 100
+		rm -rf $PKG/usr/share
 	popd
 
 	checketc "$PKG"
@@ -54,5 +53,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-v${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

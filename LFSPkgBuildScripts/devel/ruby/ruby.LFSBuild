@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Berkeley-DB-6.2.32"
+DEPENDS="Berkeley-DB-5.3.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ruby"
 TARNAME="$PKGNAME"
-VERSION="2.6.4"
+VERSION="3.0.0"
 
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
@@ -29,6 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-shared
 		make $MAKEFLAGS||make|| exit 100
+		make capi|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 

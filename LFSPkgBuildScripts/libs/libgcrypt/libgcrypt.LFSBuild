@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libgpg-error-1.36"
+DEPENDS="libgpg-error-1.41"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libgcrypt"
 TARNAME="$PKGNAME"
-VERSION="1.8.5"
+VERSION="1.9.2"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

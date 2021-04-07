@@ -1,0 +1,61 @@
+#
+# Checking out the sources of an official chromium release:
+#
+# In a working directory, you create three directories:
+# - depot_tools: this contains all the tools needed for creating the tarball
+# - checkout: here over a GB of source will be checked out
+# - output: here the chromium-${RELEASE}.tar.xz source tarball will be created.
+
+# Note: if you want to find out the recommended version for the native_client
+# toolchains, search for the line:
+#   'src/native_client':
+# in
+#   http://src.chromium.org/viewvc/chrome/releases/$VERSION}/DEPS
+# and take the value which is after the '@'on the next line, e.g.:
+#   '/trunk/src/native_client@12558',
+
+# Some variables:
+
+CHROMIUM_REL=${CHROMIUM_REL:-"43.0.2357.124"}
+WORKING_DIR=${WORKING_DIR:-"${HOME}/chromium_src"}
+
+DEPOT_TOOLS_REPO="https://chromium.googlesource.com/chromium/tools/depot_tools.git"
+
+# The actual work (takes a while to checkout 1 GB of source and pack it up:
+
+mkdir -p ${WORKING_DIR}
+cd ${WORKING_DIR}
+
+# Clone the tools:
+git clone ${DEPOT_TOOLS_REPO}
+
+# Check out the sources:
+mkdir -p checkout
+cd checkout
+PATH="../depot_tools/:$PATH" fetch --nohooks chromium --target_os=linux
+PATH="../depot_tools/:$PATH" gclient sync --force --nohooks --with_branch_heads
+
+# Expose the release tag we want:
+cd src
+  git fetch origin --tags
+  git reset --hard $CHROMIUM_REL
+  PATH="../../depot_tools/:$PATH" gclient sync --force --nohooks --with_branch_heads
+cd -
+
+# -- OLD ------------------------------------------------------------------
+#RELEASES_URL="https://src.chromium.org/chrome/releases"
+#PATH="../depot_tools/:$PATH" gclient config ${RELEASES_URL}/${CHROMIUM_REL}
+## At this moment, your config will have been written to a file '.gclient'
+#PATH="../depot_tools/:$PATH" gclient sync 2>&1 | tee ../sync.log
+## The sync will download everything, based on what it found in this file:
+## ${CHROMIUM_REL}/DEPS 
+#PATH="../depot_tools/:$PATH" gclient sync 2>&1 | tee ../sync.2.log
+# -- OLD ------------------------------------------------------------------
+
+# Pack up the source tarball:
+mkdir ../output
+python src/tools/export_tarball/export_tarball.py --remove-nonessential-files ../output/chromium-${CHROMIUM_REL}
+
+echo ""
+echo "Resulting source tarball is: ${WORKING_DIR}/output/chromium-${CHROMIUM_REL}.tar.xz"
+echo ""

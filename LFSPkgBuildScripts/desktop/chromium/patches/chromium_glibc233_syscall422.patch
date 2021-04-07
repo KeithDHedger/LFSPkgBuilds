@@ -1,0 +1,43 @@
+commit	955a586c63c4f99fb734e44221db63f5b2ca25a9
+author	Matthew Denton <mpdenton@chromium.org>	Fri Mar 12 00:24:39 2021
+committer	Matthew Denton <mpdenton@chromium.org>	Fri Mar 12 00:24:39 2021
+tree	1a7de74e5c55397bc6d27761a1bb0dd2339e2ba5
+parent	ada8253c243be1bf713ce42e2f9eba1360ba528d
+Linux sandbox: support futex_time64 on 32-bit platforms
+
+This updates futex-related syscall sets to include futex_time64, which
+is a version of the futex syscall which uses 64 bit time on 32-bit
+systems, to prepare for the Y2038 problem.
+
+Change-Id: Ie933d9fec221233bf837f00c08eb7daee204081d
+diff --git a/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc b/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+index ab0566b..2403ea3 100644
+--- a/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/baseline_policy.cc
+@@ -193,7 +193,11 @@
+   }
+ #endif
+ 
+-  if (sysno == __NR_futex)
++  if (sysno == __NR_futex
++#if defined(__NR_futex_time64)
++      || sysno == __NR_futex_time64
++#endif
++  )
+     return RestrictFutex();
+ 
+   if (sysno == __NR_set_robust_list)
+diff --git a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+index a76fd30..0330aeab 100644
+--- a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+@@ -423,6 +423,9 @@
+     case __NR_get_robust_list:
+     case __NR_set_robust_list:
+     case __NR_futex:
++#if defined(__NR_futex_time64)
++    case __NR_futex_time64:
++#endif
+     default:
+       return false;
+   }

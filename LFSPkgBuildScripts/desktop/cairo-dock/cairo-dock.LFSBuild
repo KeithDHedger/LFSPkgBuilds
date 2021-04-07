@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.15.2"
+DEPENDS="CMake-3.19.5"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -29,8 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build || true
 		cd build
-		cmake .. -DCMAKE_INSTALL_PREFIX=/usr -Dforce-gtk2=ON
-		make -j $(grep -c ^processor /proc/cpuinfo) || exit 100
+		cmake $CMAKEOPTIONS -Dforce-gtk2=ON ..
+		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR="$PKG" || exit 100
 	popd
 
