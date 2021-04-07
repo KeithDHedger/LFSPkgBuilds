@@ -322,7 +322,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		python3 build/linux/unbundle/replace_gn_files.py --system-libraries ${gn_system_libraries[@]}
 
 # Do not make the build fail, see Chromium issue #386097:
-		python3 third_party/libaddressinput/chromium/tools/update-strings.py 2>&1 | tee $OUTPUT/update_strings-${PKGNAME}.log
+		python3 third_party/libaddressinput/chromium/tools/update-strings.py 2>&1
 
 # Use usb.ids at run time instead of compiling it in:
 		sed -i services/device/public/cpp/usb/BUILD.gn -e 's|//third_party/usb_ids/usb.ids|/usr/share/hwdata/usb.ids|g'
@@ -369,7 +369,7 @@ EOF
 		if [ ${USE_CLANG} -eq 1 ]; then
 	# Build clang from source instead of downloading:
 			echo "-- Building google's clang toolchain."
-			LDFLAGS="$LDFLAGS" python2 tools/clang/scripts/build.py --bootstrap --disable-asserts --gcc-toolchain /usr --skip-checkout --use-system-cmake --without-android --without-fuchsia 2>&1 | tee $OUTPUT/clang_build-${PKGNAME}.log
+			LDFLAGS="$LDFLAGS" python2 tools/clang/scripts/build.py --bootstrap --disable-asserts --gcc-toolchain /usr --skip-checkout --use-system-cmake --without-android --without-fuchsia 2>&1
 			#--llvm-force-head-revision \
 		fi
 
@@ -382,13 +382,13 @@ EOF
 
 # Symlink ld to lld to make gn linking stage succeed:
 		cd $MYCLANG_PATH ; ln -snf lld ld ; cd - 1>/dev/null
-		LDFLAGS="$LDFLAGS" python3 tools/gn/bootstrap/bootstrap.py 2>&1 | tee $OUTPUT/gyp-${PKGNAME}.log
+		LDFLAGS="$LDFLAGS" python3 tools/gn/bootstrap/bootstrap.py 2>&1
 		MYCLANG_PATH="${SOURCEARCHIVES}/${PKGNAME}-${VERSION}/third_party/llvm-build/Release+Asserts/bin"
 # Remove symlink again:
 		rm $MYCLANG_PATH/ld
 
 		echo "-- Generating ninja build files."
-			out/Release/gn gen out/Release -v --args="${_chromium_conf[*]}" 2>&1 | tee -a $OUTPUT/gyp-${PKGNAME}.log
+			out/Release/gn gen out/Release -v --args="${_chromium_conf[*]}" 2>&1
 
 # Compile everything:
 		echo "-- Compiling the lot."
@@ -408,7 +408,7 @@ EOF
 
 		cd ${SOURCEARCHIVES}/${PKGNAME}-${VERSION}
 
-		LDFLAGS="$LDFLAGS" LC_ALL=C ninja -C out/Release pdf chrome chrome_sandbox chromedriver 2>&1 | tee $OUTPUT/ninja-${PKGNAME}.log
+		LDFLAGS="$LDFLAGS" LC_ALL=C ninja -C out/Release pdf chrome chrome_sandbox chromedriver 2>&1
 
 # Manually install everything:
 		echo "-- Manually installing everything."
