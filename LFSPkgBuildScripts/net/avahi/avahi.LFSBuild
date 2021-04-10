@@ -2,28 +2,37 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="gtest"
+DEPENDS="libdaemon-0.14"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="avahi"
 TARNAME="$PKGNAME"
-VERSION="1.10.0"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="0.8"
+BUILD=1
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="release-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/google/googletest/archive/${TARBALL}" $SECTION "${PKGNAME}-${VERSION}.tar.gz"
+gettar "https://github.com/lathiat/avahi/releases/download/v0.8/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/10.1/avahi-0.8-ipv6_race_condition_fix-1.patch"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--with-systemdsystemunitdir=no"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.tar.gz"
-	pushd "googletest-release-${VERSION}"
-		mkdir -p build||true
-		cd build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH -DBUILD_SHARED_LIBS=ON -DCMAKE_SKIP_RPATH=ON -DCMAKE_BUILD_TYPE=Release ..
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ../avahi-0.8-ipv6_race_condition_fix-1.patch	
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-libevent --disable-mono --disable-monodoc --disable-python --disable-qt3 --disable-qt4 --enable-core-docs --with-distro=none --enable-compat-libdns_sd $SYSTEMDOPTS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -50,5 +59,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "googletest-release-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+

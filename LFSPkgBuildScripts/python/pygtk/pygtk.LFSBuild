@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32 PyGObject-2.28.7 pango-1.42.4 PyCairo-1.18.1 libglade-2.6.4 libxslt-1.1.33 ATK-2.32.0 pango-1.42.4 PyCairo-1.18.1"
+DEPENDS="GTK-2.24.33 PyGObject-2.28.7 pango-1.48.2 PyCairo-1.18.1 libglade-2.6.4 libxslt-1.1.34 ATK-2.36.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,13 +19,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/pygtk/2.24/${TARBALL}" $SECTION
+gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed -i '1394,1402 d' pango.defs
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-docs
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

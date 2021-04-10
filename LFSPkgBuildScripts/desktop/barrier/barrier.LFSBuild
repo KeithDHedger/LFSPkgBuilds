@@ -2,30 +2,41 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="gtest"
+DEPENDS="avahi-0.8 gtest-1.10.0"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="barrier"
 TARNAME="$PKGNAME"
-VERSION="1.10.0"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="2.1.2"
+BUILD=1
+SECTION="LFSTESTBUILDS"
 SUFFIX="LFSPKG"
-TARBALL="release-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/google/googletest/archive/${TARBALL}" $SECTION "${PKGNAME}-${VERSION}.tar.gz"
+gettar "https://github.com/debauchee/barrier/archive/refs/tags/v${VERSION}.tar.gz" $SECTION $TARBALL
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.tar.gz"
-	pushd "googletest-release-${VERSION}"
-		mkdir -p build||true
-		cd build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH -DBUILD_SHARED_LIBS=ON -DCMAKE_SKIP_RPATH=ON -DCMAKE_BUILD_TYPE=Release ..
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		mkdir build || true
+		cd  build
+		cmake $CMAKEOPTIONS -DBARRIER_REVISION:STRING=00000000 ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/pixmaps || exit 100
+		cp ${CWD}/barrier.png $PKG/usr/share/pixmaps
 	popd
 
 	checketc "$PKG"
@@ -50,5 +61,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "googletest-release-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
