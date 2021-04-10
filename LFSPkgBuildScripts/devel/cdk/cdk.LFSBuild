@@ -2,15 +2,10 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="ncurses-6.1"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="cdk"
 TARNAME="$PKGNAME"
 VERSION="5.0"
-BUILDVERSION="20180306"
+BUILDVERSION="20210324"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -20,7 +15,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://invisible-island.net/datafiles/release/${TARBALL}" $SECTION
+gettar "https://invisible-island.net/datafiles/release/cdk.tar.gz" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -32,8 +27,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-shared --with-x --with-Xaw3d --with-Xaw3dxft --with-libtool --with-shared --with-pkg-config
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		ABI_VERSION=$($PKG/usr/bin/${PKGNAME}5-config --abi-version)
-		chmod 0755 $PKG/usr/lib${LIBDIRSUFFIX}/libcdk.so.${ABI_VERSION}
+		mv $PKG/usr/lib${LIBDIRSUFFIX}/.libs/*.so* $PKG/usr/lib${LIBDIRSUFFIX}/
+		rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/.libs
 		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
 		cp $CWD/cdk.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	popd

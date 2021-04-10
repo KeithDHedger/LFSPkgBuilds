@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="CMake-3.15.2 Boost-1.70.0"
+DEPENDS="CMake-3.19.5 Boost-1.75.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-contribs_lib-1.patch
-		mkdir build
+		mkdir build||true
 		cd build
 		cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_CONTRIBS_LIB=ON ..
 		make $MAKEFLAGS||make|| exit 100

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="FreeType-2.10.1 libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10 lcms2-2.9 GTK-2.24.32"
+DEPENDS="FreeType-2.10.4 libjpeg-turbo-2.0.6 openjpeg-2.4.0 libpng-1.6.37 LibTIFF-4.2.0 lcms2-2.12 gtk3-3.24.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ghostscript"
 TARNAME="$PKGNAME"
-VERSION="9.27"
+VERSION="9.53.3"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -19,8 +19,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs927/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-upstream_fixes-1.patch" $SECTION
+gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9533/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-freetype_fix-1.patch" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/gnu-gs-fonts-other-6.0.tar.gz" $SECTION
 rm -rf "$PKG" || true
@@ -29,8 +29,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		rm -rf freetype lcms2 jpeg libpng zlib||true
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-upstream_fixes-1.patch
+		rm -rf freetype lcms2mt jpeg libpng openjpeg||true
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-freetype_fix-1.patch
+		rm -rf zlib||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-compile-inits --enable-dynamic --with-system-libtiff
 		make $MAKEFLAGS||make|| exit 100
 		make $MAKEFLAGS so||make so|| exit 100

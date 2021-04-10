@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="xorg-libs-10.1 OpenJPEG-2.3.1"
+DEPENDS="xorg-libs-10.1 OpenJPEG-2.4.0 GLU-9.0.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="mupdf"
 TARNAME="$PKGNAME"
-VERSION="1.16.1"
+VERSION="1.18.0"
 BUILD=1
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -20,19 +20,36 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.mupdf.com/downloads/archive/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-shared_libs-1.patch" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}-source"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-shared_libs-1.patch
-		#freeglut NOT installed
-		sed -i 's/USE_SYSTEM_GLUT := yes/#USE_SYSTEM_GLUT := yes/' Makethird
-		USE_SYSTEM_LIBS=yes make
-		USE_SYSTEM_LIBS=yes make prefix=/usr build=release docdir=/usr/share/doc/${PKGNAME}-${VERSION} install DESTDIR=$PKG || exit 100
+		sed -i '/MU.*_EXE. :/{
+        s/\(.(MUPDF_LIB)\)\(.*\)$/\2 | \1/
+        N
+        s/$/ -lmupdf -L$(OUT)/
+        }' Makefile
+
+		cat > user.make << EOF
+USE_SYSTEM_FREETYPE := yes
+USE_SYSTEM_HARFBUZZ := yes
+USE_SYSTEM_JBIG2DEC := no
+USE_SYSTEM_JPEGXR := no # not used without HAVE_JPEGXR
+USE_SYSTEM_LCMS2 := no # need lcms2-art fork
+USE_SYSTEM_LIBJPEG := yes
+USE_SYSTEM_MUJS := no # build needs source anyways
+USE_SYSTEM_OPENJPEG := yes
+USE_SYSTEM_ZLIB := yes
+USE_SYSTEM_GLUT := no # need freeglut2-art fork
+USE_SYSTEM_CURL := yes
+USE_SYSTEM_GUMBO := no
+EOF
+		export XCFLAGS=-fPIC
+		make build=release shared=yes
+		unset XCFLAGS
+		make prefix=/usr shared=yes docdir=/usr/share/doc/${TARNAME}-${VERSION} install DESTDIR=$PKG || exit 100
 		ln -sfv mupdf-x11-curl $PKG/usr/bin/mupdf
 	popd
 

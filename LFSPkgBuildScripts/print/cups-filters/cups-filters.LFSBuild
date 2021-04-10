@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cups-2.2.12 glib-2.66.7 ghostscript-9.27 lcms2-2.9 MuPDF-1.12.0 Poppler-0.79.0 Qpdf-8.4.2 MuPDF-1.16.1"
+DEPENDS="Cups-2.3.3 glib-2.66.7 ghostscript-9.53.3 lcms2-2.12 MuPDF-1.18.0 Poppler-21.02.0 Qpdf-8.4.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cups-filters"
 TARNAME="$PKGNAME"
-VERSION="1.25.2"
+VERSION="1.28.7"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -26,7 +26,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --without-rcdir --with-gs-path=/usr/bin/gs --with-pdftops-path=/usr/bin/gs --disable-static --disable-avahi
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --without-rcdir --with-gs-path=/usr/bin/gs --with-pdftops-path=/usr/bin/gs --disable-avahi
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

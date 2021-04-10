@@ -4,17 +4,17 @@
 
 PKGNAME="codeblocks"
 TARNAME="$PKGNAME"
-VERSION="17.12"
+VERSION="20.03"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}_${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://heanet.dl.sourceforge.net/project/codeblocks/Sources/${VERSION}/${TARBALL}" $SECTION
+gettar "https://kumisystems.dl.sourceforge.net/project/${PKGNAME}/Sources/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

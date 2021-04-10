@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="UnRar-5.5.8 rar-5.5.0 Imaging-1.1.7"
+DEPENDS="UnRar-6.0.3 rar-6.0.1 Imaging-1.1.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://freefr.dl.sourceforge.net/project/comix/comix/comix-4.0.4/${TARBALL}" $SECTION
+gettar "https://freefr.dl.sourceforge.net/project/comix/comix/${PKGNAME}-${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

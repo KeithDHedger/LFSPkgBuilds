@@ -2,18 +2,18 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk-2.24.32 enchant-2.2.5 libetpan-1.9.3 gnutls-3.6.9"
+DEPENDS="gtk-2.24.33 enchant-2.2.15 libetpan-1.9.4 gnutls-3.7.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="claws-mail"
 TARNAME="$PKGNAME"
-VERSION="3.17.3"
+VERSION="3.99.0"
 BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)

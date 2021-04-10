@@ -3,8 +3,8 @@
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="rar"
-TARNAME="rarlinux-x64"
-VERSION="5.5.0"
+TARNAME="rarlinux"
+VERSION="6.0.1"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -12,6 +12,16 @@ TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
+
+case "$ARCH" in
+	"x86_64")
+		ARCHTYPE=x64
+		;;
+	*)
+		ARCHTYPE=""
+		;;
+esac
+TARBALL="${TARNAME}-${ARCHTYPE}-${VERSION}b1.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.rarlab.com/rar/${TARBALL}" $SECTION

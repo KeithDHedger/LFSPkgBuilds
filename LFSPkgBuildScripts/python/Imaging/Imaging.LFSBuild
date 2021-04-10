@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Python-2.7.14"
+DEPENDS="Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://effbot.org/media/downloads/${TARBALL}" $SECTION
+gettar "https://src.fedoraproject.org/repo/pkgs/python-imaging/${TARBALL}/fc14a54e1ce02a0225be8854bfba478e/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

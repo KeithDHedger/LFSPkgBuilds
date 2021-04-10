@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libjpeg-turbo-2.0.2"
+DEPENDS="libjpeg-turbo-2.0.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qpdf"
 TARNAME="$PKGNAME"
-VERSION="8.4.2"
+VERSION="10.1.0"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"

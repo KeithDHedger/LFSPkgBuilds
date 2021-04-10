@@ -4,7 +4,7 @@
 
 PKGNAME="gdb"
 TARNAME="$PKGNAME"
-VERSION="8.3"
+VERSION="10.1"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -14,14 +14,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnu.org/gnu/gdb/${TARBALL}" $SECTION
+gettar "https://ftp.gnu.org/gnu/gdb/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-system-readline --with-python=/usr/bin/python3
+		mkdir build
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --with-system-readline --with-python=/usr/bin/python3
 		make $MAKEFLAGS||make|| exit 100
 		make -C gdb  $MAKEFLAGS install DESTDIR=$PKG || exit 100
 	popd

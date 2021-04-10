@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="curl-7.65.3 fuse2-2.9.8"
+DEPENDS="curl-7.75.0 fuse2-2.9.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,7 +20,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://netcologne.dl.sourceforge.net/project/${PKGNAME}/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

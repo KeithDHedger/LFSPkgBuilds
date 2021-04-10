@@ -15,12 +15,12 @@ CWD=$(pwd)
 CMAKECFLAGS="-DCMAKE_C_FLAGS="$LFSFLAGS""
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/bulletphysics/${PKGNAME}/archive/${TARBALL}" $SECTION
+gettar "https://github.com/bulletphysics/${PKGNAME}/archive/${TARBALL}" $SECTION ${PKGNAME}-${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${TARBALL}"
 	pushd "${PKGNAME}-${VERSION}"
 		mkdir build||true
 		cd  build

@@ -2,9 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+DEPENDS="talloc-2.3.2"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="cifs-utils"
 TARNAME="$PKGNAME"
-VERSION="6.8"
+VERSION="6.12"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -14,15 +19,22 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.samba.org/pub/linux-cifs/${PKGNAME}/${TARBALL}" $SECTION
+gettar "https://www.samba.org/ftp/linux-cifs/${PKGNAME}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTIONS="--disable-systemd"
+else
+	SYSTEMDOPTIONS=""
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-pam $SYSTEMDOPTIONS
+		mkdir -vp $PKG/sbin ||true
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
