@@ -2,25 +2,24 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.110 xorg-libs-10.1 Polkit-0.116 xmlto-0.0.28"
+DEPENDS="dbus-glib-0.110 xorg-libs-10.1 Polkit-0.118 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ConsoleKit2"
 TARNAME="$PKGNAME"
-BASEPKGNAME="$PKGNAME"
-VERSION="1.0.2"
+VERSION="1.2.2"
 BUILD=1
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${PKGNAME}.zip"
+TARBALL="${PKGNAME}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/ConsoleKit2/${PKGNAME}/archive/master.zip" $SECTION/ "${PKGNAME}.zip" "zip"
+gettar "https://github.com/${PKGNAME}/${PKGNAME}/archive/refs/tags/${VERSION}.tar.gz" $SECTION $TARBALL
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -29,8 +28,8 @@ if [ $USESYSTEMD -eq 0 ];then
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip"
-	pushd "${BASEPKGNAME}-master"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${PKGNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh ${CONFIGOPTIONS} $SYSTEMDOPTS --enable-udev-acl --enable-polkit --disable-nls --with-xinitrc-dir=/etc/X11/app-defaults/xinitrc.d --enable-polkit
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -59,5 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${BASEPKGNAME}-master"
+	rm -r "$PKG" "${PKGNAME}-${VERSION}"
 popd 2>/dev/null||true
