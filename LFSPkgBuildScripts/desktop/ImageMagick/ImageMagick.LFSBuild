@@ -2,34 +2,36 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libjpeg-turbo-1.5.3 OpenJPEG-2.3.0"
+DEPENDS="libjpeg-turbo-2.0.6 OpenJPEG-2.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ImageMagick"
 TARNAME="$PKGNAME"
-VERSION="7.0.9"
+VERSION="7.0.11-0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-URL="ftp://ftp.imagemagick.org/pub/${PKGNAME}"
-TARBALL=$(findArchive "${URL}" "${PKGNAME}" ".tar.xz")
-LATESTVERSION=${TARBALL#?*-}
-VERSION=${LATESTVERSION/.tar.xz}
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+#URL="https://download.imagemagick.org/ImageMagick/download/releases/"
+#TARBALL=$(findArchive "${URL}" "${PKGNAME}" ".tar.xz") #TODO
+#LATESTVERSION=${TARBALL#?*-}
+#VERSION=${LATESTVERSION/.tar.xz}
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+gettar "https://download.imagemagick.org/ImageMagick/download/releases/${TARBALL}" $SECTION
 scriptLog "${PKGNAME}-${LATESTVERSION}"
-gettar "${URL}/${TARBALL}" $SECTION
+#gettar "${URL}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} -with-modules --with-perl --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-hdri -with-modules --with-perl --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
 		make $MAKEFLAGS||make|| exit 100
 		make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${VERSION} install DESTDIR=$PKG || exit 100
 	popd

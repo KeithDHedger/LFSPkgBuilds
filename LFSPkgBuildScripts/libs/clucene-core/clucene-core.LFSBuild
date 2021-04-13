@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/clucene/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/clucene/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-contribs_lib-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

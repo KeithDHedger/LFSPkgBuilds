@@ -9,7 +9,7 @@ fi
 
 PKGNAME="openldap"
 TARNAME="$PKGNAME"
-VERSION="2.4.48"
+VERSION="2.4.57"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/${TARBALL}" $SECTION
+gettar "https://www.openldap.org/software/download/OpenLDAP/openldap-release/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-consolidated-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -33,7 +33,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-consolidated-1.patch
 		autoconf
-
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-dynamic --with-tls=openssl --with-cyrus-sasl --enable-crypt --enable-spasswd --enable-slapd --enable-modules --enable-rlookups --enable-backends=mod --disable-ndb --disable-sql --disable-shell --disable-bdb --disable-hdb --enable-overlays=mod
 		make depend $MAKEFLAGS||make depend|| exit 100
 		make $MAKEFLAGS||make|| exit 100

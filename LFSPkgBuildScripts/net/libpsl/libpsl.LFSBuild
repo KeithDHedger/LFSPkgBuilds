@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libidn2-2.2.0"
+DEPENDS="libidn2-2.3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libpsl"
 TARNAME="$PKGNAME"
-VERSION="0.21.0"
+VERSION="0.21.1"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -19,8 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/rockdaboot/libpsl/releases/download/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
-
+gettar "https://github.com/rockdaboot/${PKGNAME}/releases/download/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

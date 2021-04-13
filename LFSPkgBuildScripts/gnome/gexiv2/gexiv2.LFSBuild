@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="exiv2-0.27.2 cURL-7.65.3"
+DEPENDS="exiv2-0.27.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gexiv2"
 TARNAME="$PKGNAME"
-VERSION="0.12.0"
+VERSION="0.12.2"
 BUILD=1
 SECTION="GNOME"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.gnome.org/sources/gexiv2/0.12/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

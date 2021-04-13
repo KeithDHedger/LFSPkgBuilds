@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="cmake-3.15.2"
+DEPENDS="cmake-3.19.5 cURL-7.75.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="exiv2"
 TARNAME="$PKGNAME"
-VERSION="0.27.2"
+VERSION="0.27.3"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -29,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}-Source"
 		mkdir build||true
 		cd build
-		cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DEXIV2_ENABLE_VIDEO=yes -DEXIV2_ENABLE_WEBREADY=yes -DEXIV2_ENABLE_CURL=yes -DEXIV2_BUILD_SAMPLES=no -G "Unix Makefiles" .. #//TODO//
+		cmake $CMAKEOPTIONS -DEXIV2_ENABLE_VIDEO=yes -DEXIV2_ENABLE_WEBREADY=yes -DEXIV2_ENABLE_CURL=yes -DEXIV2_BUILD_SAMPLES=no -G "Unix Makefiles" ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

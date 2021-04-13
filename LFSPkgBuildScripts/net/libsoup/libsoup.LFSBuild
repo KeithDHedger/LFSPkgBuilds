@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="glib-2.66.7networking-2.60.3 libpsl-0.21.0 libxml2-2.9.9 SQLite-3.29.0 vala-0.44.7"
+DEPENDS="glib-networking-2.66.0 libpsl-0.21.1 libxml2-2.9.10 SQLite-3.34.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libsoup"
 TARNAME="$PKGNAME"
-VERSION="2.66.2"
+VERSION="2.72.0"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -19,16 +19,18 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-testsuite_fix-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-testsuite_fix-1.patch
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dvapi=true -Dgssapi=false ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dvapi=enabled -Dgssapi=disabled ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

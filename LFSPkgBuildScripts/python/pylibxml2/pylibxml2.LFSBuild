@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxml2-2.9.9 Python-2.7.16"
+DEPENDS="libxml2-2.9.10 Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="pylibxml2"
 TARNAME="libxml2"
-VERSION="2.9.9"
+VERSION="2.9.10"
 BUILD=1
 SECTION="PYTHON"
 SUFFIX="LFSPKG"

@@ -14,8 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://bitbucket.org/mgorny/npapi-sdk/downloads/${TARBALL}" $SECTION
-gettar "https://github.com/mgorny/npapi-sdk/archive/npapi-sdk-0.27.2.tar.gz" $SECTION
+gettar "https://github.com/mgorny/npapi-sdk/archive/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

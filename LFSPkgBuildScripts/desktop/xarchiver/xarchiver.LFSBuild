@@ -9,25 +9,23 @@ fi
 
 PKGNAME="xarchiver"
 TARNAME="$PKGNAME"
-VERSION="0.5.4"
+VERSION="0.5.4.17"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/project/xarchiver/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-${VERSION}-fixes-1.patch"  $SECTION
+gettar "https://github.com/ib/${PKGNAME}/archive/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-gtk3
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

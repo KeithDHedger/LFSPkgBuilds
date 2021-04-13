@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://cpan.metacpan.org/authors/id/P/PH/PHRED/${TARBALL}" $SECTION
+gettar "https://cpan.metacpan.org/authors/id/P/PH/PHRED/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

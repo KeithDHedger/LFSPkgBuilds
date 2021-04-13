@@ -2,13 +2,13 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Cups-2.2.12
-ghostscript-9.27
-cups-filters-1.25.2
+DEPENDS="Cups-2.3.3
+ghostscript-9.53.3
+cups-filters-1.28.7
 Gutenprint-5.3.3
-sane-backends-1.0.25
+sane-backends-1.0.32
 sane-frontends-1.0.14
-GTK-2.24.32
+GTK-2.24.33
 XSane-0.999"
 
 if ! lfspkg -B "$DEPENDS";then
@@ -16,7 +16,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="printing-meta"
-VERSION="9.0"
+VERSION="10.1"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"

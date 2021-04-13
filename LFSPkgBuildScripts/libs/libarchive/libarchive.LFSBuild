@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxml2-2.9.10 LZO-2.10 OpenSSL-1.1.1 Nettle-3.7.1"
+DEPENDS="libxml2-2.9.10 LZO-2.10 Nettle-3.7.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -25,6 +25,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		cd    build
 		cmake $CMAKEOPTIONS -DBUILD_STATIC_LIBS=OFF ..
 		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

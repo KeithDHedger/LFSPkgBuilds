@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GStreamer-1.16.0"
+DEPENDS="GStreamer-1.18.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gst-plugins-base"
 TARNAME="${PKGNAME}"
-VERSION="1.16.0"
+VERSION="1.18.3"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dgtk_doc=disabled -Dpackage-origin="http://www.linuxfromscratch.org/blfs/view/svn/" -Dpackage-name="GStreamer ${VERSION} BLFS" ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dpackage-origin="http://www.linuxfromscratch.org/blfs/view/svn/" -Dpackage-name="GStreamer ${VERSION} BLFS" --wrap-mode=nodownload ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

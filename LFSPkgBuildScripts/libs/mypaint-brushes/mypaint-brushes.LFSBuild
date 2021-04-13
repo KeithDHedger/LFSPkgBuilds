@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libmypaint-1.3.0"
+DEPENDS="libmypaint-1.6.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/Jehan/mypaint-brushes/archive/v${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/Jehan/${PKGNAME}/archive/v${VERSION}/${TARBALL}" $SECTION
 gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/$PKGNAME-1.3.0-automake_1.16-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

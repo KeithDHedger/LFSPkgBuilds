@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-1.12.16 glib-2.66.7 Intltool-0.51.0 libusb-1.0.22 libsecret-0.18.8 libsoup-2.66.2"
+DEPENDS="dbus-1.12.20 glib-2.66.7 libusb-1.0.24 libsecret-0.20.4 libsoup-2.72.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gvfs"
 TARNAME="$PKGNAME"
-VERSION="1.40.2"
+VERSION="1.46.2"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -19,13 +19,12 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/gvfs/${VERSION%.?*}/${TARBALL}" $SECTION
-
+gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 if [ $USESYSTEMD -eq 0 ];then
-	SYSTEMDOPTS="-Dsystemduserunitdir=no"
+	SYSTEMDOPTS="-Dsystemduserunitdir=no -Dtmpfilesdir=no -Dlogind=false"
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -33,7 +32,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dfuse=false -Dgphoto2=false -Dafc=false -Dbluray=false -Dnfs=false -Dmtp=false -Dsmb=false -Dtmpfilesdir=no -Ddnssd=false -Dgoa=false -Dgoogle=false $SYSTEMDOPTS -Dgcrypt=false -Dgcr=false -Dudisks2=false -Dlogind=false  -Dcdda=false -Dsftp=false ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dfuse=false -Dgphoto2=false -Dafc=false -Dbluray=false -Dnfs=false -Dmtp=false -Dsmb=false -Ddnssd=false -Dgoa=false -Dgoogle=false $SYSTEMDOPTS -Dgcrypt=false -Dgcr=false -Dudisks2=false  -Dcdda=false -Dsftp=false ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

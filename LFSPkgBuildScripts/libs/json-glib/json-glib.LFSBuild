@@ -9,7 +9,7 @@ fi
 
 PKGNAME="json-glib"
 TARNAME="$PKGNAME"
-VERSION="1.4.4"
+VERSION="1.6.2"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
