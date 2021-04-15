@@ -2,15 +2,15 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base-1.16.0 GTK-2.24.32 icu-64.2 libsoup-2.66.2 MesaLib-19.1.4 Ruby-2.6.4 SQLite-3.29.0 Which-2.21 libwebp-1.0.3 libsecret-0.18.8 GTK-Doc-1.32 libgcrypt-1.8.5"
+DEPENDS="gst-plugins-base-1.18.3 GTK-2.24.33 icu-68.2 libsoup-2.72.0 MesaLib-20.3.4 Ruby-3.0.0 SQLite-3.34.10 Which-2.21 libwebp-1.2.0 libsecret-0.20.4 gtk-doc-1.33.2 libgcrypt-1.9.2 libnotify3-0.7.9"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="webkitgtk"
+PKGNAME="webkitgtk4"
 TARNAME="$PKGNAME"
-VERSION="2.4.11"
+VERSION="2.30.5"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -27,33 +27,12 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-
-		mkdir -p "build-gtk" "path" ||true
-		PATH="$(pwd)/path:${PATH}"
-		ln -rTsf "$(which python2)" "$(pwd)/path/python"
-
-		checkforoptions
-
-		#slightly faster?
-		export LD=ld.gold
-		#webkit webkitmarshal not always built on pi4, go figure!
-		touch ./Source/WebKit/gtk/webkitmarshal.list
-		error_count=0
-		until make $MAKEFLAGS
-			do
-				if (( $((error_count++)) > 6 ));then
-					echo "Too Many Errors"
-					echo "Last Chance ..."
-					touch ./Source/WebKit/gtk/webkitmarshal.list
-					make -j1||exit 100
-					break
-				fi
-			done
-		unset error_count
-
-		make -j1 install DESTDIR=$PKG || exit 100
-		mkdir -p $PKG/usr/share/gtk-doc/html/
-		cp -rv ../Documentation/webkitgtk/html $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
+		mkdir -vp build||true
+		cd build
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=ON -DPORT=GTK -DLIB_INSTALL_DIR=/usr/lib -DUSE_LIBHYPHEN=OFF -DENABLE_MINIBROWSER=ON -DUSE_WOFF2=OFF -DUSE_WPE_RENDERER=OFF -DUSE_SYSTEMD=OFF -DENABLE_BUBBLEWRAP_SANDBOX=OFF -DUSE_LIBNOTIFY=OFF -Wno-dev -G Ninja ..
+    
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
 	popd
 
 	checketc $PKG

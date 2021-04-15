@@ -2,37 +2,42 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="docutils-0.17"
+DEPENDS="GTK3-3.24.25 GTK-2.24.33 libvorbis-1.3.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="ctags"
+PKGNAME="libcanberra"
 TARNAME="$PKGNAME"
-VERSION="10.1"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="0.30"
+BUILD=1
+SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/universal-ctags/ctags/archive/master.zip" $SECTION $TARBALL
+gettar "http://0pointer.de/lennart/projects/libcanberra/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/10.1/${PKGNAME}-${VERSION}-wayland-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" "zip"
-	pushd "ctags-master"
-		./autogen.sh
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-debug --disable-nls --enable-tmpdir=/tmp  --mandir=/usr/man
-		make $MAKEFLAGS||make|| exit
-		make install DESTDIR="$PKG"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-wayland-1.patch
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-gtk-doc --disable-oss
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -54,5 +59,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "ctags-master"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

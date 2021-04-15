@@ -5,28 +5,27 @@
 PKGNAME="dialog"
 TARNAME="$PKGNAME"
 VERSION="1.3"
-MINORVERSION=20190808
+MINORVERSION=20210324
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}_${VERSION}-${MINORVERSION}.orig.tar.gz"
+TARBALL="${TARNAME}-${VERSION}-${MINORVERSION}.tgz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.us.debian.org/pub/debian/debian/pool/main/d/dialog/${TARBALL}" $SECTION
+gettar "https://invisible-mirror.net/archives/dialog/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}-${MINORVERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-ncursesw --with-shared --enable-extras --with-no-leaks
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-ncursesw --with-shared --enable-extras --with-no-leaks --with-libtool
 		make $MAKEFLAGS||make|| exit 100
 		make install-full DESTDIR=$PKG || exit 100
 		cd $PKG/usr/lib${LIBDIRSUFFIX}
-		ln -sv libdialog.so.$VERSION libdialog.so 
 	popd
 
 	checketc $PKG

@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="GTK-2.24.32"
+DEPENDS="GTK-2.24.33"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="yad"
 TARNAME="$PKGNAME"
-VERSION="0.38.1"
+VERSION="0.40.0"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -19,9 +19,11 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://netix.dl.sourceforge.net/project/yad-dialog/${TARBALL}" $SECTION
+gettar "https://downloads.sf.net/yad-dialog/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+USEGTKVERSION=${USEGTKVERSION:-2}
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -32,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	fi
 
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-nls --enable-icon-browser $HTML --with-gtk=gtk2 --with-rgb=/usr/share/X11/rgb.txt
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-nls --enable-icon-browser $HTML --with-gtk=gtk${USEGTKVERSION} --with-rgb=/usr/share/X11/rgb.txt
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		ln -sv yad $PKG/usr/bin/zenity

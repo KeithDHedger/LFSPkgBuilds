@@ -26,8 +26,12 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#sed -i 's/$(MAKE) -C help//' Makefile
-		make prefix=/usr libdir=/usr/lib docdir=/usr/doc/${PKGNAME}-${VERSION} install DESTDIR=$PKG||true
+		sed -i 's/$(MAKE) -C help install//' Makefile
+		sed -i 's/$(MAKE) -C po install//' Makefile
+		sed -i 's/$(MAKE) -C help//' Makefile
+		sed -i 's/$(MAKE) -C po//' Makefile
+		make PYTHON=/usr/bin/python2 prefix=/usr
+		make PYTHON=/usr/bin/python2 prefix=/usr DESTDIR="${PKG}" install
 	popd
 
 	checketc "$PKG"

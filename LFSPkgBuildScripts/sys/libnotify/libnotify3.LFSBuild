@@ -9,7 +9,7 @@ fi
 
 PKGNAME="libnotify3"
 TARNAME="libnotify"
-VERSION="0.7.8"
+VERSION="0.7.9"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -26,9 +26,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-	mkdir build
+	mkdir build||true
 	cd build
-		meson --prefix=/usr -Dgtk_doc=false ..
+		meson --prefix=/usr -Dgtk_doc=false -Dman=false ..
 		ninja|| exit 100
 		DESTDIR=$PKG ninja install|| exit 100
 	popd

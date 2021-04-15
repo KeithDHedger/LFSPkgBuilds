@@ -4,7 +4,7 @@
 
 PKGNAME="help2man"
 TARNAME="$PKGNAME"
-VERSION="1.47.11"
+VERSION="1.48.3"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnu.org/gnu/${PKGNAME}/${TARBALL}" $SECTION
+gettar "https://ftp.gnu.org/gnu/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

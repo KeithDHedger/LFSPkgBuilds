@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk3-3.22.28"
+DEPENDS="gtk3-3.24.25 libcanberra-0.30"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

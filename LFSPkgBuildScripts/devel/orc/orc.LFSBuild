@@ -4,7 +4,7 @@
 
 PKGNAME="orc"
 TARNAME="$PKGNAME"
-VERSION="0.4.31"
+VERSION="0.4.32"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://gstreamer.freedesktop.org/data/src/${PKGNAME}/${TARBALL}" $SECTION
+gettar "https://gstreamer.freedesktop.org/data/src/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

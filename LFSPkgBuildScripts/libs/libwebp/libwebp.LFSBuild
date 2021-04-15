@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libjpeg-turbo-2.0.2 libpng-1.6.37 LibTIFF-4.0.10"
+DEPENDS="libjpeg-turbo-2.0.6 libpng-1.6.37 LibTIFF-4.2.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libwebp"
 TARNAME="$PKGNAME"
-VERSION="1.0.3"
+VERSION="1.2.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
