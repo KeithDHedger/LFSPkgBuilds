@@ -19,5 +19,7 @@ cat > /etc/profile.d/rustc.sh << "EOF"
 
 pathappend /opt/rust/bin	PATH
 
+export CARGO_HOME=/opt/cargo
+
 # End /etc/profile.d/rustc.sh
 EOF
