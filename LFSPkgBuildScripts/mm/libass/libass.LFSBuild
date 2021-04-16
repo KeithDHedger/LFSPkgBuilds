@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="FreeType-2.10.1 FriBidi-1.0.5 Fontconfig-2.13.1 NASM-2.14.02"
+DEPENDS="FreeType-2.10.4 FriBidi-1.0.9 Fontconfig-2.13.1 NASM-2.15.05"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libass"
 TARNAME="$PKGNAME"
-VERSION="0.14.0"
+VERSION="0.15.0"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"

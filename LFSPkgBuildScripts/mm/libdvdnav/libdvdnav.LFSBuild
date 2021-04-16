@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Libdvdread-6.0.1"
+DEPENDS="Libdvdread-6.1.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libdvdnav"
 TARNAME="$PKGNAME"
-VERSION="6.0.0"
+VERSION="6.1.0"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.videolan.org/pub/videolan/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
+gettar "https://get.videolan.org/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
