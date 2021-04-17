@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://prdownloads.sourceforge.net/mad/${TARBALL}" $SECTION
+gettar "https://prdownloads.sourceforge.net/mad/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

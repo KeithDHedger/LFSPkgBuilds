@@ -20,7 +20,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://pkgs.fedoraproject.org/repo/pkgs/${PKGNAME}/${TARBALL}/efe08e2f3ca478486037b053acd512e9/${TARBALL}" $SECTION
+gettar "http://ponce.cc/slackware/sources/repo//${TARBALL}/" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -28,6 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	(cd /usr/lib${LIBDIRSUFFIX}; ln -sv libnettle.so libnettle.so.4||true)
 	pushd "${TARNAME}-${VERSION}"
+		sed -i 's/^char[[:space:]]*\*outfile;$/extern char *outfile;/' genisoimage/genisoimage.h
 		cmake -DCMAKE_INSTALL_PREFIX=/usr
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

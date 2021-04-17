@@ -18,8 +18,9 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+#You may have to download this archive manually as sourceforge keep fucking with download links.
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sourceforge.net/project/gtkpod/${PKGNAME}/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
+gettar "https://master.dl.sourceforge.net/project/gtkpod/${PKGNAME}/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
