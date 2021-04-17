@@ -18,11 +18,20 @@
 ./admin/sudo/sudo.LFSBuild
 ./admin/sysstat/sysstat.LFSBuild
 ./admin/xdiskusage/xdiskusage.LFSBuild
+./BROKEN/cdrkit/cdrkit.LFSBuild
 ./BROKEN/conky/conky.LFSBuild
 ./BROKEN/gtkglext/gtkglext.LFSBuild
+./BROKEN/gtkpod/gtkpod.LFSBuild
 ./BROKEN/icedtea-sound/icedtea-sound.LFSBuild
 ./BROKEN/icedtea-web/icedtea-web.LFSBuild
+./BROKEN/libgksu/libgksu.LFSBuild
+./BROKEN/libgpod/libgpod.LFSBuild
+./BROKEN/pangox-compat/pangox-compat.LFSBuild
+./BROKEN/tolua++/tolua++.LFSBuild
 ./CLI/gocr/gocr.LFSBuild
+./deprecated/bootfiles/bootfiles.LFSBuild
+./deprecated/cling/cling.LFSBuild
+./deprecated/ConsoleKit/ConsoleKit.LFSBuild
 ./deprecated/gst-ffmpeg/gst-ffmpeg.LFSBuild
 ./deprecated/gst-plugins-bad/gst-plugins-bad.LFSBuild
 ./deprecated/gst-plugins-base/gst-plugins-base.LFSBuild
@@ -32,6 +41,7 @@
 ./desktop/aspell/aspell.LFSBuild
 ./desktop/ASpellGUI/ASpellGUI.LFSBuild
 ./desktop/babl/babl.LFSBuild
+./desktop/barrier/barrier.LFSBuild
 ./desktop/cairo-dock/cairo-dock-gtk3.LFSBuild
 ./desktop/cairo-dock/cairo-dock.LFSBuild
 ./desktop/cairo-dock-plugins/cairo-dock-plugins-gtk3.LFSBuild
@@ -53,6 +63,7 @@
 ./desktop/gkrellm/gkrellm.LFSBuild
 ./desktop/gmic/gmic.LFSBuild
 ./desktop/gnome-icon-theme/gnome-icon-theme.LFSBuild
+./desktop/google-chrome/google-chrome.LFSBuild
 ./desktop/grsync/grsync.LFSBuild
 ./desktop/gsmartcontrol/gsmartcontrol.LFSBuild
 ./desktop/icon-naming-utils/icon-naming-utils.LFSBuild
@@ -89,7 +100,6 @@
 ./devel/cdk/cdk.LFSBuild
 ./devel/cflow/cflow.LFSBuild
 ./devel/cgdb/cgdb.LFSBuild
-./devel/cling/cling.LFSBuild
 ./devel/cmake/cmake.LFSBuild
 ./devel/codeblocks/codeblocks.LFSBuild
 ./devel/crossguid/crossguid.LFSBuild
@@ -144,13 +154,12 @@
 ./devel/strace/strace.LFSBuild
 ./devel/subversion/subversion.LFSBuild
 ./devel/swig/swig.LFSBuild
-./devel/tcl/tcl.LFSBuild
 ./devel/tinycc/tinycc.LFSBuild
 ./devel/tk/tk.LFSBuild
-./devel/tolua++/tolua++.LFSBuild
 ./devel/vala/vala.LFSBuild
 ./devel/valgrind/valgrind.LFSBuild
-./devel/wxGTK/wxGTK.LFSBuild
+./devel/wxGTK/wxGTK2.LFSBuild
+./devel/wxGTK/wxGTK3.LFSBuild
 ./devel/wxWidgets/wxWidgets.LFSBuild
 ./devel/xdotool/xdotool.LFSBuild
 ./devel/xforms/xforms.LFSBuild
@@ -168,7 +177,6 @@
 ./gnome/gexiv2/gexiv2.LFSBuild
 ./gnome/gksu/gksu.LFSBuild
 ./gnome/gnome-doc-utils/gnome-doc-utils.LFSBuild
-./gnome/libgksu/libgksu.LFSBuild
 ./gnome/libgtksourceviewmm/libgtksourceviewmm.LFSBuild
 ./gnome/libgtop/libgtop.LFSBuild
 ./gnome/nemiver/nemiver.LFSBuild
@@ -242,12 +250,14 @@
 ./lfsdesktop/LFSApplications/LFSApplications.LFSBuild
 ./lfsdesktop/LFSDesktop/LFSDesktop.LFSBuild
 ./lfsdesktop/LFSDesktop-meta/LFSDesktop-meta.LFSBuild
+./lfsdesktop/LFSDesktop-meta/LFSDesktop-meta-min.LFSBuild
 ./lfsdesktop/LFSPanel/LFSPanel.LFSBuild
 ./lfsdesktop/LFSSetWallpaper/LFSSetWallpaper.LFSBuild
 ./lfsdesktop/LFSToolKit/LFSToolKit.LFSBuild
 ./lfsdesktop/LFSWManager/LFSWManager.LFSBuild
 ./libs/boost/boost.LFSBuild
 ./libs/bullet/bullet.LFSBuild
+./libs/c-ares/c-ares.LFSBuild
 ./libs/chmlib/chmlib.LFSBuild
 ./libs/clucene-core/clucene-core.LFSBuild
 ./libs/efl/efl.LFSBuild
@@ -275,8 +285,10 @@
 ./libs/libatomic_ops/libatomic_ops.LFSBuild
 ./libs/libburn/libburn.LFSBuild
 ./libs/libcaca/libcaca.LFSBuild
+./libs/libcanberra/libcanberra.LFSBuild
 ./libs/libconfig/libconfig.LFSBuild
 ./libs/libcroco/libcroco.LFSBuild
+./libs/libdaemon/libdaemon.LFSBuild
 ./libs/libdiscid/libdiscid.LFSBuild
 ./libs/libedit/libedit.LFSBuild
 ./libs/libepoxy/libepoxy.LFSBuild
@@ -288,7 +300,6 @@
 ./libs/libgcrypt/libgcrypt.LFSBuild
 ./libs/libglade/libglade.LFSBuild
 ./libs/libgpg-error/libgpg-error.LFSBuild
-./libs/libgpod/libgpod.LFSBuild
 ./libs/libgudev/libgudev.LFSBuild
 ./libs/libid3tag/libid3tag.LFSBuild
 ./libs/libidn2/libidn2.LFSBuild
@@ -329,7 +340,6 @@
 ./libs/openldap/openldap.LFSBuild
 ./libs/openmpi/openmpi.LFSBuild
 ./libs/opus/opus.LFSBuild
-./libs/pangox-compat/pangox-compat.LFSBuild
 ./libs/pcre2/pcre2.LFSBuild
 ./libs/pcre/pcre.LFSBuild
 ./libs/pixman/pixman.LFSBuild
@@ -340,6 +350,7 @@
 ./libs/SDL_ttf/SDL_ttf.LFSBuild
 ./libs/source-highlight-qt/source-highlight-qt.LFSBuild
 ./libs/source-highlight/source-highlight.LFSBuild
+./libs/talloc/talloc.LFSBuild
 ./libs/tinyxml2/tinyxml2.LFSBuild
 ./libs/tinyxml/tinyxml.LFSBuild
 ./libs/xapian/xapian.LFSBuild
@@ -357,7 +368,6 @@
 ./mm/avidemux/avidemux.LFSBuild
 ./mm/bchunk/bchunk.LFSBuild
 ./mm/cdrdao/cdrdao.LFSBuild
-./mm/cdrkit/cdrkit.LFSBuild
 ./mm/dvdauthor/dvdauthor.LFSBuild
 ./mm/dvdbackup/dvdbackup.LFSBuild
 ./mm/dvdrw-tools/dvdrw-tools.LFSBuild
@@ -381,7 +391,6 @@
 ./mm/gst-plugins-ugly/gst-plugins-ugly.LFSBuild
 ./mm/gstreamer1.0/gstreamer1.0.LFSBuild
 ./mm/gstreamer/gstreamer.LFSBuild
-./mm/gtkpod/gtkpod.LFSBuild
 ./mm/id3lib/id3lib.LFSBuild
 ./mm/kodi/kodi-krypton.LFSBuild
 ./mm/kodi/pi-kodi-krypton.LFSBuild
@@ -428,6 +437,7 @@
 ./net/apr/apr.LFSBuild
 ./net/apr-util/apr-util.LFSBuild
 ./net/aria2/aria2.LFSBuild
+./net/avahi/avahi.LFSBuild
 ./net/bind-utils/bind-utils.LFSBuild
 ./net/bridge-utils/bridge-utils.LFSBuild
 ./net/cifs-utils/cifs-utils.LFSBuild
@@ -455,7 +465,7 @@
 ./net/net-tools/net-tools.LFSBuild
 ./net/nfs-utils/nfs-utils.LFSBuild
 ./net/nmap/nmap.LFSBuild
-./net/node/node.LFSBuild
+./net/nodejs/nodejs.LFSBuild
 ./net/npapi-sdk/npapi-sdk.LFSBuild
 ./net/nss/nss.LFSBuild
 ./net/nullmailer/nullmailer.LFSBuild
@@ -477,6 +487,7 @@
 ./net/vidalia/vidalia.LFSBuild
 ./net/w3m/w3m.LFSBuild
 ./net/webkitgtk3/webkitgtk3.LFSBuild
+./net/webkitgtk4/webkitgtk.LFSBuild
 ./net/webkitgtk/webkitgtk.LFSBuild
 ./net/wget/wget.LFSBuild
 ./net/whois/whois.LFSBuild
@@ -486,6 +497,7 @@
 ./net/wpa-supplicant/wpa-supplicant.LFSBuild
 ./perl/Archive-Zip/Archive-Zip.LFSBuild
 ./perl/Audio-Taglib/Audio-Taglib.LFSBuild
+./perl/Encode-Locale/Encode-Locale.LFSBuild
 ./perl/File-BaseDir/File-BaseDir.LFSBuild
 ./perl/File-DesktopEntry/File-DesktopEntry.LFSBuild
 ./perl/File-MimeInfo/File-MimeInfo.LFSBuild
@@ -527,6 +539,7 @@
 ./python/lxml/lxml.LFSBuild
 ./python/Mako/Mako.LFSBuild
 ./python/MarkupSafe/MarkupSafe.LFSBuild
+./python/py3c/py3c.LFSBuild
 ./python/PyCairo/PyCairo.LFSBuild
 ./python/Pygments/Pygments.LFSBuild
 ./python/pygobject/pygobject2.LFSBuild
@@ -543,7 +556,6 @@
 ./python/PyYAML/PyYAML.LFSBuild
 ./python/sip/sip.LFSBuild
 ./python/six/six.LFSBuild
-./qt/avidemuxqt/avidemuxqt.LFSBuild
 ./qt/extra-cmake-modules/extra-cmake-modules.LFSBuild
 ./qt/falkon/falkon.LFSBuild
 ./qt/kguiaddons/kguiaddons.LFSBuild
@@ -564,11 +576,9 @@
 ./rpi/rpi-fonts/rpi-fonts.LFSBuild
 ./rpi/visualization-waveform/visualization-waveform.LFSBuild
 ./sys/acpid/acpid.LFSBuild
-./sys/bootfiles/bootfiles.LFSBuild
 ./sys/busybox/busybox.LFSBuild
 ./sys/CliMsg/CliMsg.LFSBuild
 ./sys/ConsoleKit2/consolekit2.LFSBuild
-./sys/ConsoleKit/ConsoleKit.LFSBuild
 ./sys/cpio/cpio.LFSBuild
 ./sys/dbus-glib/dbus-glib.LFSBuild
 ./sys/dosbox/dosbox.LFSBuild
@@ -619,10 +629,12 @@
 ./system/check/check.LFSBuild
 ./system/coreutils/coreutils.LFSBuild
 ./system/dbus/dbus.LFSBuild
+./system/dejagnu/dejagnu.LFSBuild
 ./system/diffutils/diffutils.LFSBuild
 ./system/e2fsprogs/e2fsprogs.LFSBuild
 ./system/eudev/eudev.LFSBuild
 ./system/expat/expat.LFSBuild
+./system/expect/expect.LFSBuild
 ./system/file/file.LFSBuild
 ./system/findutils/findutils.LFSBuild
 ./system/flex/flex.LFSBuild
@@ -678,17 +690,20 @@
 ./system/systemd/systemd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
+./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-systemd-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
 ./system/sysvinit/sysvinit.LFSBuild
 ./system/tar/tar.LFSBuild
+./system/tcl/tcl.LFSBuild
 ./system/texinfo/texinfo.LFSBuild
 ./system/util-linux/util-linux.LFSBuild
 ./system/vim/vim.LFSBuild
 ./system/xml-parser/xml-parser.LFSBuild
 ./system/xz/xz.LFSBuild
 ./system/zlib/zlib.LFSBuild
+./system/zstd/zstd.LFSBuild
 ./sys/terminus-font/terminus-font.LFSBuild
 ./sys/testdisk/testdisk.LFSBuild
 ./sys/udevil/udevil.LFSBuild
@@ -757,6 +772,7 @@
 ./xfce/xfwm4/xfwm4.LFSBuild
 ./xorg/compton/compton.LFSBuild
 ./xorg/elfutils/elfutils.LFSBuild
+./xorg/gdk-pixbuf-xlib/gdk-pixbuf-xlib.LFSBuild
 ./xorg/glu/glu.LFSBuild
 ./xorg/libdrm/libdrm.LFSBuild
 ./xorg/libva-intel-driver/libva-intel-driver.LFSBuild
