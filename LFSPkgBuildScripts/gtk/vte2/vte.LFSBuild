@@ -2,14 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gtk3-3.24.10 libxml2-2.9.9 pcre2-10.33"
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="gtk3-3.24.25 libxml2-2.9.10 pcre2-10.36"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="vte2"
 TARNAME="vte"
-VERSION="0.56.3"
+VERSION="0.62.3"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -19,16 +21,25 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/vte/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="-D_systemd=false"
+else
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --without-gnutls --enable-vala=no
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir build||true
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dfribidi=false ${SYSTEMDOPTS} -Ddocs=false ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
+		rm -v $PKG/etc/profile.d/vte.*||true
 	popd
 
 	checketc "$PKG"

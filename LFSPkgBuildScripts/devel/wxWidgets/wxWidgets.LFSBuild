@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="gstreamer-0.11.3 gst-plugins-base-0.11.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

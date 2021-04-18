@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="Apache-2.4.41 libxml2-2.9.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

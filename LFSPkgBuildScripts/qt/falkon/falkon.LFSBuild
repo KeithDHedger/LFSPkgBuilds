@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="qtwebengine-5.13.0 ki18n-5.61.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

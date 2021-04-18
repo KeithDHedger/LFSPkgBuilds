@@ -2,14 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Exo-0.12.8 Garcon-0.6.4 libwnck-3.32.0 libxfce4ui-4.14.1"
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="Exo-4.16.0 Garcon-4.16.1 libwnck-3.36.0 libxfce4ui-4.16.0 cairo-1.17.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-panel"
 TARNAME="$PKGNAME"
-VERSION="4.14.0"
+VERSION="4.16.2"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,14 +21,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-gtk-doc --enable-gtk3
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-introspection
 		make || exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

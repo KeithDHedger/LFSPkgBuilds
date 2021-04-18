@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="system-tools-backends-2.9.1 liboobs-2.91.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

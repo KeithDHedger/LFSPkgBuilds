@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="File-BaseDir-0.08 File-DesktopEntry-0.22 Encode-Locale-1.05"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

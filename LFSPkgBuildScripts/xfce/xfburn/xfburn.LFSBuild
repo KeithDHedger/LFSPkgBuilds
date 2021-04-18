@@ -2,14 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=" Exo-0.12.8 libburn-1.5.0 libxfce4ui-4.14.1 libisoburn-1.4.8 libisofs-1.5.0"
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS=" Exo-4.16.0 libburn-1.5.4 libxfce4ui-4.16.0 libisoburn-1.5.4 libisofs-1.5.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfburn"
 TARNAME="$PKGNAME"
-VERSION="0.5.5"
+VERSION="0.6.2"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"

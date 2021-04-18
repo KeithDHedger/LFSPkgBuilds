@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="xorg-libs-8.2 libXp-1.0.3 bullet3-2.83.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="OpenLDAP-2.4.4 OpenSSL-1.1.0 Cyrus-SASL-2.1.26"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

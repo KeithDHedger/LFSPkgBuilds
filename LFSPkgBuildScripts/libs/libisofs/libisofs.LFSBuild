@@ -2,9 +2,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 PKGNAME="libisofs"
 TARNAME="$PKGNAME"
-VERSION="1.5.0"
+VERSION="1.5.4"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -14,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://files.libburnia-project.org/releases/${TARBALL}" $SECTION
+gettar "https://files.libburnia-project.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

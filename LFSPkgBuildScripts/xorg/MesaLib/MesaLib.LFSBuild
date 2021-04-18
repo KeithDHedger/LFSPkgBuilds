@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="xorg-libs-10.1 libdrm-2.4.104 Mako-1.1.4 libvdpau-1.2 LLVM-11.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

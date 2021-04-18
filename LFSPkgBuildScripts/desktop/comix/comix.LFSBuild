@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="UnRar-6.0.3 rar-6.0.1 Imaging-1.1.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

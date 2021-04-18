@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="CMake-3.15.2 Graphviz-2.40.1 Python-2.7.16 Xapian-1.4.12 LLVM-8.0.1 git-2.23.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

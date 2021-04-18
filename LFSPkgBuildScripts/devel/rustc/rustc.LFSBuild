@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="cURL-7.75.0 CMake-3.19.5 libssh2-1.9.0 LLVM-11.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

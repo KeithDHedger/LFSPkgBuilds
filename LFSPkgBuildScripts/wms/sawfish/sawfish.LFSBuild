@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="Pango-1.40.14 rep-gtk-0.90.8.3 Which-2.21"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

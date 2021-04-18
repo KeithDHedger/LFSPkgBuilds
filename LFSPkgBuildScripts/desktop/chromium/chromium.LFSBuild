@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="alsa-lib-1.2.4 Cups-2.3.3 dbus-1.12.20 nodejs-14.16.0 Python-2.7.18 libgcrypt-1.9.2 libexif-0.6.22 git-2.30.1 pulseaudio-14.2 flac-1.3.3 harfbuzz-2.7.4 icu-68.2 libevent-2.1.12 openjpeg-2.4.0 libpng-1.6.37 nspr-4.29 xdg-utils-1.1.3 yasm-1.3.0 krb5-1.19.1 desktop-file-utils-0.26 File-BaseDir-0.08 usbutils-013 gtk3-3.24.25 opus-1.3.1"
 
 if ! lfspkg -B "$DEPENDS";then

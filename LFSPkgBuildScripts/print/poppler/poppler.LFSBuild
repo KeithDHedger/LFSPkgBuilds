@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="CMake-3.19.5 Fontconfig-2.13.1 gobject-introspection-1.66.1 Cairo-1.17.2 libjpeg-turbo-2.0.6 libpng-1.6.37 OpenJPEG-2.4.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

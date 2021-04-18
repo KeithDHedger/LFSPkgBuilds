@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="gtk3-3.24.25 startup-notification-0.12 gobject-introspection-1.66.1 gtk-doc-1.33.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

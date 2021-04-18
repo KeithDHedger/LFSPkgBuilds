@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 PKGNAME="Linux-PAM"
 TARNAME="$PKGNAME"
 VERSION="1.5.1"

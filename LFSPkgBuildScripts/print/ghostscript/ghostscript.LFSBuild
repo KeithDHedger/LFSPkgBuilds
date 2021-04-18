@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="FreeType-2.10.4 libjpeg-turbo-2.0.6 openjpeg-2.4.0 libpng-1.6.37 LibTIFF-4.2.0 lcms2-2.12 gtk3-3.24.25"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

@@ -4,6 +4,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 PKGNAME="wireless-tools"
 TARNAME="wireless_tools"
 VERSION="29"

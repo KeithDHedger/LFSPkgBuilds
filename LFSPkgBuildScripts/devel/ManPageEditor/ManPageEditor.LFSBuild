@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="GTK-2.24.33 aspell-0.60.8 shared-mime-info-2.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

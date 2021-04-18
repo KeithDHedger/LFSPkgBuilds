@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="gtksourceview-2.10.5 PyGObject-2.28.7 pygtk-2.24.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

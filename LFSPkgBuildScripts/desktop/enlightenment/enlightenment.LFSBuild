@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="efl-1.14.1 elementary-1.14.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

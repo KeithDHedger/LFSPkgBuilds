@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 mkdir -vp /etc/pkgoptions/
 echo "EXTRAOPTIONS=\"--disable-docviewer\"" >/etc/pkgoptions/KKEdit.options
 

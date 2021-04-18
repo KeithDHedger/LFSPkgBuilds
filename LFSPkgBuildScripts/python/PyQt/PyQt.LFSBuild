@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="Python-2.7.14 Qt5-5.10.1 sip-4.15.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 if ! lfspkg -B "$DEPENDS";then
 	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
 	exit 100

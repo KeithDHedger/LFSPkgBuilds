@@ -5,6 +5,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 PKGNAME="nano"
 TARNAME="$PKGNAME"
 VERSION="2.9.3"

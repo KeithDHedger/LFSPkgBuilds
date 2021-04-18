@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="mysql-5.6.16 luceneplus-3.0.7 OpenSSL-1.1.0 libtirpc-1.0.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

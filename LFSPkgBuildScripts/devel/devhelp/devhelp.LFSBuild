@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="gtk-doc-1.33.2 GConf-3.2.6 libunique-1.1.6 libwnck-3.36.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

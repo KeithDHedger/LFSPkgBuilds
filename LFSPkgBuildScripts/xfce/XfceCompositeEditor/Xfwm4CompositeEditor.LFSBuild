@@ -3,9 +3,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 PKGNAME="Xfwm4CompositeEditor"
 TARNAME="$PKGNAME"
-VERSION="0.2.1"
+VERSION="0.2.2"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"

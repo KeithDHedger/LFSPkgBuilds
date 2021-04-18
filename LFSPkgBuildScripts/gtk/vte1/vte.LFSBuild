@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="GTK-2.24.32 libglade-2.6.4 gobject-introspection-1.66.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

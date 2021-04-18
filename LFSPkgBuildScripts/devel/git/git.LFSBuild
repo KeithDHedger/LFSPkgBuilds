@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="curl-7.75.0 pcre2-10.36 Subversion-1.14.1 asciidoc-9.1.0 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

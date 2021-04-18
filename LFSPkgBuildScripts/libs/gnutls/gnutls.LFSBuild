@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="libunistring-0.9.10 Nettle-3.7.1 p11-kit-0.23.22 libtasn1-4.16.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

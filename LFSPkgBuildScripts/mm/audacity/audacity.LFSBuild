@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="wxgtk2-2.8.12 lame-3.100 libsndfile-1.0.31 soxr-0.1.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

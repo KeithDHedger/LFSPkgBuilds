@@ -2,14 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxfce4ui-4.14.1 libxfce4util-4.14.0 URI-1.76 gtk3-3.24.10"
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="libxfce4ui-4.16.0 libxfce4util-4.16.0 URI-5.07 gtk3-3.24.25 libxfce4util-4.16.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="exo"
 TARNAME="$PKGNAME"
-VERSION="0.12.8"
+VERSION="4.16.0"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,14 +21,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-gtk-doc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

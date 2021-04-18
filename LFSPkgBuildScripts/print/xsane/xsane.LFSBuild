@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="GTK-2.24.33 sane-backends-1.0.32"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

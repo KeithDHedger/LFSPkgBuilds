@@ -2,14 +2,16 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=" libnotify3-0.7.8 libxfce4ui-4.14.1 xfce4-panel-4.14.0"
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS=" libnotify3-0.7.9 libxfce4ui-4.16.0 xfce4-panel-4.16.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-notifyd"
 TARNAME="$PKGNAME"
-VERSION="0.4.4"
+VERSION="0.6.2"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -26,6 +28,10 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		if [ $USESYSTEMD -eq 0 ];then
+			sed -e "s/^systemd_user_in_files =.*/systemd_user_in_files =/" -i Makefile.in
+		fi
+
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="libglade-2.6.4 x-apps-10.1 GLU-9.0.1 gdk-pixbuf-2.42.2 gdk-pixbuf-xlib-3116"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

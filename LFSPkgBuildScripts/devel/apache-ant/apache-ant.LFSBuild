@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="OpenJDK-15.0.2 glib-2.66.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

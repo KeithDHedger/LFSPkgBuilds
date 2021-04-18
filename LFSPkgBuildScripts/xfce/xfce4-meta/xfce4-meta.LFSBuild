@@ -2,30 +2,32 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="gobject-introspection-1.66.1
 gtk-xfce-engine-3.2.0
-libxfce4util-4.14.0
-Xfconf-4.14.1
+libxfce4util-4.16.0
+Xfconf-4.16.0
 libxfcegui4-4.10.0
-libxfce4ui-4.10.0
-Exo-0.12.8
-Garcon-0.6.4
-xfce4-panel-4.14.0
-Thunar-1.8.9
-thunar-volman-0.9.5
-Tumbler-0.2.7
-xfce4-appfinder-4.14.0
-xfce4-power-manager-1.6.5
-xfce4-settings-4.14.1
-Xfdesktop-4.14.1
-Xfwm4-4.14.0
-xfce4-session-4.10.1
-xfce4-terminal-0.8.8
-Xfburn-0.5.5
-xfce4-notifyd-0.4.4
-xfce4-screenshooter-1.4.90.0
-Xfce-Theme-Manager-0.3.7
-Xfwm4CompositeEditor-0.2.1"
+libxfce4ui-4.16.0
+Exo-4.16.0
+Garcon-4.16.1
+xfce4-panel-4.16.2
+Thunar-4.16.6
+thunar-volman-4.16.0
+Tumbler-4.16.0
+xfce4-appfinder-4.16.1
+xfce4-power-manager-4.16.0
+xfce4-settings-4.16.0
+Xfdesktop-4.16.0
+Xfwm4-4.16.1
+xfce4-session-4.16.0
+xfce4-terminal-0.8.10
+Xfburn-0.6.2
+xfce4-notifyd-0.6.2
+xfce4-screenshooter-1.9.8
+Xfce-Theme-Manager-0.3.8
+Xfwm4CompositeEditor-0.2.2"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

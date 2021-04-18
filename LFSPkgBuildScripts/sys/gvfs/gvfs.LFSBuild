@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="dbus-1.12.20 glib-2.66.7 libusb-1.0.24 libsecret-0.20.4 libsoup-2.72.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

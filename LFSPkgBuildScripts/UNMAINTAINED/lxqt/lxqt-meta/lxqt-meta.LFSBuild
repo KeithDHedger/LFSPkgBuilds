@@ -3,6 +3,8 @@
 #©keithhedger Wed 26 Nov 14:59:48 GMT 2014 kdhedger68713@gmail.com
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 export NODOWNLOAD=1
 
 DEPENDS="qt5-5.8.0

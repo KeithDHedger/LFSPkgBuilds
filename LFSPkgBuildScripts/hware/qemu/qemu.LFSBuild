@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="glib-2.66.7 Python-2.7.16 SDL2-2.0.10 xorg-meta-9.0 nasm-2.14.02"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

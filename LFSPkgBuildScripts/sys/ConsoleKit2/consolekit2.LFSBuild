@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="dbus-glib-0.110 xorg-libs-10.1 Polkit-0.118 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

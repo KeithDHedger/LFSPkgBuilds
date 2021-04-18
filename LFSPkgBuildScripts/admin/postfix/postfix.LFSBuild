@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="Berkeley-DB-5.3.28 SQLite-3.34.1 cyrus-sasl-2.1.27"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

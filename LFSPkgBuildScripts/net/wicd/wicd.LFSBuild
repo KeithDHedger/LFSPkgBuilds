@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="Python-2.7.14 DBus-Python-1.2.6 Wireless-Tools-29 Net-tools-20101030 wpa-supplicant-2.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="alsa-lib-1.1.5 gst-plugins-base1.0-1.12.4 libupnp-1.8.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

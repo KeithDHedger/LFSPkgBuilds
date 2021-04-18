@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="Python-2.7.16 Cairo-1.16.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

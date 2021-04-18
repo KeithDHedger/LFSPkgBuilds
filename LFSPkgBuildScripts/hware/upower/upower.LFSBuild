@@ -2,7 +2,9 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="dbus-glib-0.110 Intltool-0.51.0 libusb-1.0.22 Polkit-0.113 gobject-introspection-1.66.1 libgudev-233"
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="dbus-glib-0.110 libusb-1.0.24 Polkit-0.118 gobject-introspection-1.66.1 libgudev-234"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://upower.freedesktop.org/releases/${TARBALL}" $SECTION
+gettar "https://upower.freedesktop.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

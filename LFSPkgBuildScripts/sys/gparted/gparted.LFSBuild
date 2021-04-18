@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="gtkmm-2.24.5 Intltool-0.51.0 parted-3.4 dosfstools-4.2 mtools-4.0.26"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 export NOCHANGEUSER=1
 export CHECKETC=0
 export CONFIGOPTIONS="--prefix=/usr --disable-debug --disable-nls"

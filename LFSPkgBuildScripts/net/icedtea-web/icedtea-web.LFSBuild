@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="NPAPI-SDK-0.27.2 OpenJDK-9.0.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

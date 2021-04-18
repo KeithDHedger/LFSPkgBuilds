@@ -2,6 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
 DEPENDS="NSPR-4.29 SQLite-3.34.1 p11-kit-0.23.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
