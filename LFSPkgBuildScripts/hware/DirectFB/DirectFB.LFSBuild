@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="DirectFB"
 TARNAME="$PKGNAME"
-VERSION="1.6.1"
+VERSION="1.7.7"
 BUILD=1
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -16,10 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://src.fedoraproject.org/repo/pkgs/directfb/${TARBALL}/641e8e999c017770da647f9b5b890906/${TARBALL}" $SECTION
-#https://web.archive.org/web/20150323120731/http://www.directfb.org/downloads/Core/DirectFB-1.7/DirectFB-1.7.0.tar.gz
-#gettar "https://web.archive.org/web/20150323120731/http://www.directfb.org/downloads/Core/DirectFB-1.7/DirectFB-1.7.0.tar.gz" $SECTION
-gettar "https://src.fedoraproject.org/repo/pkgs/directfb/DirectFB-1.6.1.tar.gz/76d3066e75664aa79204af545f2f3c65/DirectFB-1.6.1.tar.gz" $SECTION
+gettar "http://sources.buildroot.net/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
