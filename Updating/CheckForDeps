@@ -1,0 +1,30 @@
+#!/bin/bash -e
+
+#©keithhedger Mon 19 Apr 11:53:03 BST 2021 kdhedger68713@gmail.com
+
+SCRIPTPATH="$1"
+DEPS=$(grep "^DEPENDS=" "$SCRIPTPATH")
+DEPS=${DEPS:8:10000}
+DEPS=${DEPS//\"/}
+#echo $DEPS
+
+for arg in $DEPS
+	do
+		lfspkg -S "1 2 3 5" ${arg%-?*}|tr ":" "\n"
+		echo
+	done
+
+exit
+DEPS=$(echo ${DEPS}|sed 's/[[:digit:]]\.*[[:digit:]]*\.*//g;s/\-[[:space:]]/ /g;s/\-$//')
+
+echo $DEPS
+
+for arg in $DEPS
+	do
+		#lfspkg -S "1,2" $arg
+		lfspkg -S "1 2 3 5" $arg|tr ":" "\n"
+		echo
+	done
+
+exit
+lfspkg $(echo ${DEPS}|sed 's/[[:digit:]]\.*[[:digit:]]*\.*//g;s/\-[[:space:]]/ /g;s/\-$//')

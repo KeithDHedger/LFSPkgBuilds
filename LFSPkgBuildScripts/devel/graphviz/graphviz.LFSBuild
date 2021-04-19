@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gdk-pixbuf-2.38.1 libjpeg-turbo-2.0.2 libpng-1.6.37"
+DEPENDS="gdk-pixbuf-2.42.2 libjpeg-turbo-2.0.6 libpng-1.6.37 GTK-2.24.33 ghostscript-9.53.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="graphviz"
 TARNAME="$PKGNAME"
-VERSION="2.40.1"
+VERSION="2.44.1"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -21,16 +21,18 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://graphviz.gitlab.io/pub/graphviz/stable/SOURCES/${PKGNAME}.tar.gz" $SECTION ${TARBALL}
+gettar "https://www2.graphviz.org/Packages/stable/portable_source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-javaincludedir="$JAVA_HOME/include -I$JAVA_HOME/include/linux"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-php --with-javaincludedir="$JAVA_HOME/include -I$JAVA_HOME/include/linux"
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		ln -v -s $PKG/usr/share/graphviz/doc $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
 
 	checketc "$PKG"

@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.15.2 Graphviz-2.40.1 Python-2.7.16 Xapian-1.4.12 LLVM-8.0.1 git-2.23.0"
+DEPENDS="CMake-3.19.5 Graphviz-2.44.1 Python-2.7.18 Xapian-1.4.18 LLVM-11.1.0 git-2.30.1 Qt5-5.15.2 LLVM-11.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="doxygen"
 TARNAME="$PKGNAME"
-VERSION="1.8.16"
+VERSION="1.9.1"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -22,18 +22,16 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://doxygen.nl/files/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-# -Duse_libclang=ON
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		rm -rf build||true
 		mkdir -v build
 		cd build
-
-		cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -Dbuild_search=ON -Duse_libclang=OFF ..
+		cmake -G "Unix Makefiles" $CMAKEOPTIONS -Dbuild_search=ON -Duse_libclang=ON -Dbuild_wizard=ON ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/man/man1
