@@ -49,8 +49,8 @@ case $PIBUILD in
 		esac
 esac
 
-PIBUILD=0
-USESYSTEMD=0
+PIBUILD=${PIBUILD:-0}
+USESYSTEMD=${USESYSTEMD:-0}
 
 #set variables if possible
 if [ -f ./SystemData.local ];then
@@ -74,6 +74,7 @@ if [ $PIBUILD -eq 1 ];then
 	readWithDefault "PIBOOTDEV"  "Enter BOOT Partition For Pi"
 	readWithDefault "PIROOTDEV"  "Enter ROOT Partition For Pi"
 	readWithDefault "PIVERS"  "Enter Pi Model"
+	ROOTDEV="$PIROOTDEV"
 else
 	ROOTDEV=$(findmnt -no SOURCE $LFS)
 	readWithDefault "ROOTDEV"  "Enter Root Device"	
@@ -84,7 +85,7 @@ LFSVERSION=${LFSVERSION:-10.0}
 readWithDefault "LFSVERSION"  "Enter LFS Version"
 
 #Computer name
-LFSNAME=${LFSNAME:-"LFS"}
+LFSNAME=${LFSNAME:-"$(e2label "$ROOTDEV")"}
 readWithDefault "LFSNAME"  "Enter Hostname"
 
 #LFS init type either bbinit, sysvinit, sytemd or custom

@@ -17,11 +17,11 @@ apt-get install bison gawk m4 texinfo
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS
-LFSVERSION=9.0
+LFSVERSION=10.1
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
 BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
-KERNELVERSION=5.2.8
+KERNELVERSION=5.10.17
 USESYSTEMD=1
 
 export LFS
