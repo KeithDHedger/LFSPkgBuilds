@@ -6,7 +6,7 @@ LFSVERSION=10.1
 WHERETO=/mnt/LFS/LFSScripts
 
 LFSVERSION=systemd
-WHERETO=/mnt/LFS/LFSScripts
+WHERETO=/mnt/LFS/LFSScripts/SystemDBuild
 
 rm wget-list
 wget "http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list"

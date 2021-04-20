@@ -21,7 +21,7 @@ LFSVERSION=10.1
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
 BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
-KERNELVERSION=5.10.17
+KERNELVERSION=5.11.10
 USESYSTEMD=1
 
 export LFS
@@ -43,8 +43,9 @@ Own the files:
 [sudo] ln -sv LFSPkgBuilds/LFSScripts $LFS/LFSScripts
 
 3)
-#cd into the lfsscripts folder
-cd LFSScripts
+#cd into the SystemDBuild folder
+cd ${LFS}//LFSPkgBuilds/LFSScripts/SystemDBuild
+
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
