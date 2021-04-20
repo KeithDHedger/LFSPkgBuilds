@@ -17,12 +17,14 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/dvdbackup/${TARBALL}" $SECTION
+gettar "https://raw.githubusercontent.com/archlinux/svntogit-community/packages/dvdbackup/trunk/dvdbackup-dvdread-6.1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		patch -p0 -i ${SOURCEARCHIVES}/${SECTION}/dvdbackup-dvdread-6.1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

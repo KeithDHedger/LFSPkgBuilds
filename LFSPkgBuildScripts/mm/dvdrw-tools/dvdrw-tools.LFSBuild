@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libisoburn-1.4.8"
+DEPENDS="libisoburn-1.5.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -28,10 +28,11 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+#		sed -i '/stdlib/a #include <limits.h>' transport.hxx
+#		sed -i 's#mkisofs"#xorrisofs"#' growisofs.c
+#		sed -i 's#mkisofs#xorrisofs#;s#MKISOFS#XORRISOFS#' growisofs.1
+		sed -i '/stat.h/a #include <sys/sysmacros.h>' growisofs.c
 		sed -i '/stdlib/a #include <limits.h>' transport.hxx
-		sed -i 's#mkisofs"#xorrisofs"#' growisofs.c
-		sed -i 's#mkisofs#xorrisofs#;s#MKISOFS#XORRISOFS#' growisofs.1
-
 		make all rpl8 btcflash
 		make prefix=/usr
 		mkdir -vp $PKG/usr/bin $PKG/usr/man/man1
