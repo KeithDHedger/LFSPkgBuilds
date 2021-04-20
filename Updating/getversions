@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#©keithhedger Sat 27 Feb 14:43:26 GMT 2021 kdhedger68713@gmail.com
+
+LFSVERSION=10.1
+WHERETO=/mnt/LFS/LFSScripts
+
+LFSVERSION=systemd
+WHERETO=/mnt/LFS/LFSScripts
+
+rm wget-list
+wget "http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list"
+:>"${WHERETO}/PkgVersions"
+
+while read
+	do
+		case $REPLY in
+			*html*)
+				echo "ignoring $REPLY ..."
+				;;			
+			*.patch)
+				echo "ignoring $REPLY ..."
+				;;			
+			*tzdata*)
+				basename "${REPLY,,}"|sed 's/\([[:alpha:]]*\)\([[:digit:]]*\).*/\1_version=\2/' >> "${WHERETO}/PkgVersions"
+				basename "${REPLY,,}"|sed 's/.*[0-9]\(.\).*/tzdata_minor_rev=\1/' >> "${WHERETO}/PkgVersions"
+				basename "${REPLY,,}"|sed 's/\([[:alpha:]]*\)[[:digit:]]*..\(tar\..*\)*/\1_arctype=\2/' >> "${WHERETO}/PkgVersions"
+				;;			
+			*openssl*)
+				basename "${REPLY,,}"|sed 's/.\.tar\..*$//'|sed 's/\(.*\)-\(.*\)/\1_version=\2/' >> "${WHERETO}/PkgVersions"
+				echo $REPLY|sed 's|.*\(.\)\.tar.*|openssl_minor_rev=\1|' >> "${WHERETO}/PkgVersions"
+				basename "${REPLY,,}"|sed 's/\(.*\)-.*\(tar\..*\)/\1_arctype=\2/'|tr "-" "_" >> "${WHERETO}/PkgVersions"
+				;;
+			*expect*)
+				basename "${REPLY,,}"|sed 's/expect\([0-9.]*\)\.tar\..*/expect_version=\1/' >> "${WHERETO}/PkgVersions"
+				basename "${REPLY,,}"|sed 's/\([[:alpha:]]*\).*\.\(tar\..*\)/\1_arctype=\2/' >> "${WHERETO}/PkgVersions"
+				;;
+			*tcl*)
+				basename "${REPLY,,}"|sed 's/tcl\([0-9]*\)/tcl_version=\1/'|sed 's/-src.*//' >> "${WHERETO}/PkgVersions"
+				basename "${REPLY,,}"|sed 's/.*src\.\(tar\..*\)/tcl_arctype=\1/' >> "${WHERETO}/PkgVersions"
+				;;
+			*)
+				basename "${REPLY,,}"|sed 's/\.tar\..*$//'|sed 's/\(.*\)-\(.*\)/\1_version=\2/'|tr "-" "_" >> "${WHERETO}/PkgVersions"
+				basename "${REPLY,,}"|sed 's/\(.*\)-.*\(tar\..*\)/\1_arctype=\2/'|tr "-" "_" >> "${WHERETO}/PkgVersions"
+			;;
+		esac
+		
+	done < <(cat wget-list)
+
+cp wget-list "${WHERETO}"

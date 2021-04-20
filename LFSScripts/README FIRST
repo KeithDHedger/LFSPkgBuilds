@@ -1,0 +1,1 @@
+Depending on what init style you want to use you should follow the instructions in the relevent folder ( e.g. use instructions in SysVBuild to build a sysvinit version of LFS ).
