@@ -1,6 +1,6 @@
 # LFSPkgBuilds
 
-Mount a clean partion somewhere ( e.g. /mnt/LFS ).
+Mount a clean partion somewhere ( e.g. /mnt/LFS ).<br>
 CD into the mounted partition:
 cd /mnt/LFS
 Make sure you have rw perms:
