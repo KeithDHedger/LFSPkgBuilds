@@ -43,7 +43,6 @@ else
 	fi
 fi
 
-exit 100
 pushd $LFS
 	mkdir -vp dev proc sys lib${LIBDIRSUFFIX} opt media usr var bin boot etc tmp home run sbin mnt root srv
 
