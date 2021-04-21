@@ -1,10 +1,10 @@
 # LFSPkgBuilds
 
 Mount a clean partion somewhere ( e.g. /mnt/LFS ).<br>
-CD into the mounted partition:
-cd /mnt/LFS
-Make sure you have rw perms:
-sudo chown $USER .
+CD into the mounted partition:<br>
+cd /mnt/LFS<br>
+Make sure you have rw perms:<br>
+sudo chown $USER .<br>
 
 Checkout the code:
 git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
