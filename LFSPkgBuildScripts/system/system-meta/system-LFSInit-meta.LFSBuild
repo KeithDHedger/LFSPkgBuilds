@@ -13,7 +13,7 @@ export THISTTY
 export ANYVERSION=0
 export USESYSTEMD=0
 
-DEPENDS="linuxheaders-5.2.8
+DEPENDS="linuxheaders-4.9.9
 Man-pages-5.02
 Glibc-2.30
 Zlib-1.2.11

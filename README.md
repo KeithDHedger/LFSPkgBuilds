@@ -1,21 +1,21 @@
 # LFSPkgBuilds
-Build scripts for LFSPkg.
 
-Use in conjunction with LFSPkg.
+Mount a clean partion somewhere ( e.g. /mnt/LFS ).
+CD into the mounted partition:
+cd /mnt/LFS
+Make sure you have rw perms:
+sudo chown $USER .
 
-See LFSScripts/How to for a simple step by step guide to installing a complete LFS system/desktop
+Checkout the code:
+git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
+Or for a single branch:
+git clone https://github.com/KeithDHedger/LFSPkgBuilds.git --branch 10.1 --single-branch
 
-This is version 9.0 of the book.
+Depending on what init style you want to use you should first make a symlink from LFSPkgBuilds/LFSScripts/SysVBuild or LFSPkgBuilds/LFSScripts/SystemDBuild or LFSPkgBuilds/LFSScripts/LFSInitBuild or LFSPkgBuilds/LFSScripts/PiBuild to LFSScripts
 
-See the BuildScriptList.txt file for a complete list of build scripts, please feel free to submit new ones.
+E.G:
+ln -sfvn  LFSPkgBuilds/LFSScripts/SysVBuild LFSScripts
 
-The How To's have now been split into three:
+Do this first or nothing will work.
 
-Normal sysv etc LFS -> HowTo
-
-Raspberry Pi 4 -> HowTo-Pi4
-
-SystemD LFS -> HowTo-SystemD
-
-
-The Build tools scripts have likewise been changed.
+Follow the instructions in LFSScripts/HowTo

@@ -11,7 +11,7 @@ fi
 
 echo "LFS location:" $LFS
 echo "PIBUILD=$PIBUILD"
-echo "USESYSTEMD=$PIBUILD"
+echo "USESYSTEMD=$USESYSTEMD"
 
 if [ $PIBUILD -eq 1 ];then
 	echo "PIVERS=$PIVERS"

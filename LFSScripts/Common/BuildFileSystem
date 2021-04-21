@@ -2,6 +2,24 @@
 
 #©keithhedger Mon 2 Feb 12:38:29 GMT 2015 kdhedger68713@gmail.com
 
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+NORMAL='\e[0;0m'
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+readWithDefault ()
+{
+	local varname="$1"
+	local varcontents="${!varname}"
+	local message="$2"
+
+	read -e -p "$message [ ${varcontents} ] "
+	if [ "X$REPLY" != "X" ];then
+		eval "${varname}=$REPLY"
+	fi
+}
+
 if [ $UID -ne 0 ];then
 	echo "You MUST run this script as root ..."
 	exit 100
@@ -11,13 +29,42 @@ if [ -e ./SystemData ];then
 	. ./SystemData
 else
 	echo "No SystemData file found ..."
-	exit 0
+	exit 100
 fi
 
+if [[ -z $LFS ]];then
+	echo 'LFS NOT SET!!! Exiting ...'
+	exit 100
+else
+	readWithDefault "LFS" "LFS set to \"$LFS\""
+	if ! mountpoint $LFS;then
+		echo "LFS NOT Mounted, exiting ..."
+		exit 100
+	fi
+fi
+
+exit 100
 pushd $LFS
-	mkdir -v {dev,proc,sys}||true
+	mkdir -vp dev proc sys lib${LIBDIRSUFFIX} opt media usr var bin boot etc tmp home run sbin mnt root srv
+
 	mknod -m 600 dev/console c 5 1
 	mknod -m 666 dev/null c 1 3
+
+	pushd etc
+		mkdir -vp opt sysconfig
+		if [ "$USESYSTEMD" -eq 1 ];then
+			mkdir -vp systemd
+		fi
+	popd
+
+	mkdir -pv lib${LIBDIRSUFFIX}/firmware
+	mkdir -pv media/floppy media/cdrom
+	mkdir -pv usr/{,local/}{bin,include,lib${LIBDIRSUFFIX},sbin,src}
+	mkdir -pv usr/{,local/}share/{color,dict,doc,info,locale,man}
+	mkdir -pv usr/{,local/}share/{misc,terminfo,zoneinfo}
+	mkdir -pv usr/{,local/}share/man/man{1..8}
+	mkdir -pv var/{cache,local,log,mail,opt,spool}
+	mkdir -pv var/lib/{color,misc,locate}
 
 	mkdir -pv {bin,boot,etc/{sysconfig,profile.d},home,lib${LIBDIRSUFFIX}/firmware,mnt,opt,run}
 	mkdir -pv {media/{floppy,cdrom},sbin,srv,var}
@@ -30,35 +77,33 @@ pushd $LFS
 	mkdir -pv usr/{,local/}share/man/man{1..8}
 	for dir in usr usr/local
 		do
-			ln -sv share/{man,doc,info} $dir
+			ln -sfnv share/{man,doc,info} $dir
 		done
 
 	case $(uname -m) in
 		x86_64)
-			ln -sv lib${LIBDIRSUFFIX} lib
-			ln -sv lib${LIBDIRSUFFIX} usr/lib
+			ln -sfnv lib${LIBDIRSUFFIX} usr/local/lib
 			;;
 	esac
 
 	mkdir -vp run/shm
 	mkdir -v var/{log,mail,spool}
-	ln -sv /run var/run
-	ln -sv /run/lock var/lock
+	ln -sfnv /run var/run
+	ln -sfnv /run/lock var/lock
 	mkdir -pv var/{opt,cache,lib/{color,misc,locate},local}
 
-	ln -sv /tools/bin/{bash,cat,chmod,dd,echo,ln,mkdir,pwd,rm,stty,touch} bin
-	ln -sv /tools/bin/{env,install,perl,printf} usr/bin
-	ln -sv /tools/lib/libgcc_s.so{,.1} usr/lib
-	ln -sv /tools/lib/libstdc++.{a,so{,.6}} usr/lib
-	ln -sv bash bin/sh
-	ln -sv /proc/self/mounts etc/mtab
+	ln -sfnv /proc/self/mounts etc/mtab
 
 	cat > etc/passwd << "EOF"
 root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/bin/false
 daemon:x:6:6:Daemon User:/dev/null:/bin/false
 messagebus:x:18:18:D-Bus Message Daemon User:/var/run/dbus:/bin/false
-systemd-bus-proxy:x:72:72:systemd Bus Proxy:/:/bin/false
+EOF
+
+	if [ "$USESYSTEMD" -eq 1 ];then
+		cat >> etc/passwd << "EOF"
+	systemd-bus-proxy:x:72:72:systemd Bus Proxy:/:/bin/false
 systemd-journal-gateway:x:73:73:systemd Journal Gateway:/:/bin/false
 systemd-journal-remote:x:74:74:systemd Journal Remote:/:/bin/false
 systemd-journal-upload:x:75:75:systemd Journal Upload:/:/bin/false
@@ -66,6 +111,10 @@ systemd-network:x:76:76:systemd Network Management:/:/bin/false
 systemd-resolve:x:77:77:systemd Resolver:/:/bin/false
 systemd-timesync:x:78:78:systemd Time Synchronization:/:/bin/false
 systemd-coredump:x:79:79:systemd Core Dumper:/:/bin/false
+EOF
+	fi
+
+	cat >> etc/passwd << "EOF"
 nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
 EOF
 
@@ -87,10 +136,21 @@ utmp:x:13:
 usb:x:14:
 cdrom:x:15:
 adm:x:16:
+console:x:17
 messagebus:x:18:
-systemd-journal:x:23:
-input:x:24:
+cdrw:x:18
+news:x:19
+scanner:x:20
+wheel:x:21
+network:x:22
+plugdev:x:23
+users:x:24
+power:x:25
 mail:x:34:
+EOF
+
+	if [ "$USESYSTEMD" -eq 1 ];then
+		cat >> etc/group << "EOF"
 kvm:x:61:
 systemd-bus-proxy:x:72:
 systemd-journal-gateway:x:73:
@@ -100,19 +160,30 @@ systemd-network:x:76:
 systemd-resolve:x:77:
 systemd-timesync:x:78:
 systemd-coredump:x:79:
+uuidd:x:80:
+EOF
+	fi
+
+	cat >> etc/group << "EOF"
 wheel:x:97:
 nogroup:x:99:
 users:x:999:
 EOF
 
-	touch var/log/{btmp,lastlog,faillog,wtmp}
-	chgrp -v utmp var/log/lastlog
-	chmod -v 664  var/log/lastlog
-	chmod -v 600  var/log/btmp
-
-
-	mkdir -vp etc/systemd/network
-	cat > etc/systemd/network/10-eth-static.network << EOF
+	if [ "$USESYSTEMD" -eq 0 ];then
+		mkdir -vp etc/sysconfig
+		cat > etc/sysconfig/ifconfig.eth0 << EOF
+ONBOOT=yes
+IFACE=eth0
+SERVICE=ipv4-static
+IP=$IP
+GATEWAY=$GATEWAY
+PREFIX=24
+BROADCAST=${SUBNET}
+EOF
+	else
+		mkdir -vp etc/systemd/network
+		cat > etc/systemd/network/10-eth-static.network << EOF
 [Match]
 Name=eth0
 
@@ -122,6 +193,7 @@ Gateway=$GATEWAY
 DNS=8.8.8.8
 Domains=$LFSNAME
 EOF
+	fi
 
 	cat > etc/resolv.conf << EOF
 # Begin /etc/resolv.conf
@@ -140,16 +212,22 @@ $IP $LFSNAME $LFSNAME.local
 # End /etc/hosts (network card version)
 EOF
 
-	echo "$LFSNAME" > etc/hostname
+	echo "HOSTNAME=$LFSNAME" > etc/sysconfig/network
 
-	cat > etc/adjtime << EOF
-0.0 0 0.0
-0
-LOCAL
+	cat > etc/sysconfig/clock << "EOF"
+# Begin /etc/sysconfig/clock
+
+UTC=1
+
+# Set this to any options you might need to give to hwclock,
+# such as machine hardware clock type for Alphas.
+CLOCKPARAMS=
+
+# End /etc/sysconfig/clock
 EOF
 
-	cat > etc/vconsole.conf << EOF
-# Begin /etc/vconsole.conf
+	cat > etc/sysconfig/console << EOF
+# Begin /etc/sysconfig/console
 
 KEYMAP=$KEYBOARD
 #FONT="lat2a-16 -m 8859-2"
@@ -157,9 +235,6 @@ KEYMAP=$KEYBOARD
 # End /etc/sysconfig/console
 EOF
 
-	cat > etc/locale.conf << "EOF"
-LANG=$LANGUAGE
-EOF
 	cat > etc/profile << EOF
 # Begin /etc/profile
 
@@ -296,13 +371,41 @@ devtmpfs					/dev		devtmpfs	mode=0755,nosuid	0		0
 # End /etc/fstab
 EOF
 
-	echo $LFSVERSION > etc/os-release
+	cat > etc/inittab << "EOF"
+# Begin /etc/inittab
+
+id:3:initdefault:
+
+si::sysinit:/etc/rc.d/init.d/rc S
+
+l0:0:wait:/etc/rc.d/init.d/rc 0
+l1:S1:wait:/etc/rc.d/init.d/rc 1
+l2:2:wait:/etc/rc.d/init.d/rc 2
+l3:3:wait:/etc/rc.d/init.d/rc 3
+l4:4:wait:/etc/rc.d/init.d/rc 4
+l5:5:wait:/etc/rc.d/init.d/rc 5
+l6:6:wait:/etc/rc.d/init.d/rc 6
+
+ca:12345:ctrlaltdel:/sbin/shutdown -t1 -a -r now
+
+su:S016:once:/sbin/sulogin
+
+1:2345:respawn:/sbin/agetty --noclear tty1 9600
+2:2345:respawn:/sbin/agetty tty2 9600
+3:2345:respawn:/sbin/agetty tty3 9600
+4:2345:respawn:/sbin/agetty tty4 9600
+5:2345:respawn:/sbin/agetty tty5 9600
+6:2345:respawn:/sbin/agetty tty6 9600
+
+# End /etc/inittab
+EOF
+
+	echo $LFSVERSION > etc/lfs-release
 	cat > etc/lsb-release << EOF
-NAME="Linux From Scratch"
-VERSION="${LFSVERSION}-systemd"
-ID=lfs
-PRETTY_NAME="Linux From Scratch 9.0-systemd"
-VERSION_CODENAME="$LFSNAME"
+DISTRIB_ID="Linux From Scratch"
+DISTRIB_RELEASE="$LFSVERSION"
+DISTRIB_CODENAME="$LFSNAME"
+DISTRIB_DESCRIPTION="Linux From Scratch"
 EOF
 
 	cat > etc/shells << EOF
@@ -313,14 +416,6 @@ EOF
 
 # End /etc/shells
 EOF
-
-	mkdir -pv etc/systemd/system/getty@tty1.service.d
-
-	cat > etc/systemd/system/getty@tty1.service.d/noclear.conf << EOF
-[Service]
-TTYVTDisallocate=no
-EOF
-	ln -sfv /dev/null etc/systemd/system/tmp.mount
 
 	if [ ! -e etc/lfspkg.rc ];then
 		cat > etc/lfspkg.rc << EOF
@@ -336,7 +431,6 @@ CONFIGOPTIONS="--disable-option-checking --prefix=/usr --sysconfdir=/etc --libex
 MESONCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib\$LIBDIRSUFFIX --buildtype=release --default-library=shared"
 MAKEFLAGS=" -j4 "
 CHECKETC=0
-USESYSTEMD=1
 EOF
 	fi
 
@@ -347,20 +441,5 @@ EOF
 	chmod -v 600  var/log/btmp
 	chgrp -v utmp var/log/lastlog
 	chmod 777 tmp
-
-	mkdir -vp etc/ld.so.conf.d ||true
-	cat > etc/ld.so.conf << EOF
-# Begin /etc/ld.so.conf
-
-/lib${LIBDIRSUFFIX}
-/usr/lib${LIBDIRSUFFIX}
-/usr/local/lib
-/opt/lib
-
-include /etc/ld.so.conf.d/*.conf
-/usr/lib
-EOF
-
-
 popd
 

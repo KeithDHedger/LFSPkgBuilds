@@ -225,7 +225,7 @@ else
 	sed -ri 's/^VERSION="[0-9]+.[0-9]+.[0-9]+"/VERSION="'"${KERNELVERSION}"'"/' ${LFS}/${BUILDSCRIPTS}/kernel/firmware.LFSBuild
 fi
 
-cat > $LFS/LFSScripts/SystemData.local << EOF
+cat > ./SystemData.local << EOF
 
 LFS=$LFS
 PIBUILD=$PIBUILD
