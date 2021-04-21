@@ -9,11 +9,6 @@ apt-get update
 apt-get install bison gawk m4 texinfo
 #Also make sure /bin/sh points to /bin/bash
 
-#Get the build scripts and helper scripts from:
-#https://github.com/KeithDHedger/LFSPkgBuilds
-#either via git clone or downloading the zip file and unpacking it.
-#you should place the LFSPkgBuildScripts and LFSScripts folder in the root of what will be your new LFS eg /mnt/lfs/LFSPkgBuildScripts
-
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS
@@ -30,21 +25,14 @@ export SOURCEARCHIVES
 export BUILTPACKAGES
 export EXTFOLDER
 export KERNELVERSION
+export USESYSTEMD
 
-###RECOMMENDED####
-#or cd into the mounted partition wher you intend to build LFS:
-#LFS should point to your mounted LFS partition ( eg LFS=/mnt/LFS ).
-cd $LFS
-[sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
-
-Own the files ( If needed ):
+#Own the files ( If needed ):
 [sudo -E] chown -R $USER:$USER $LFS/LFSPkgBuilds
-[sudo -E] ln -sv LFSPkgBuilds/LFSPkgBuildScripts $LFS/LFSPkgBuildScripts
-[sudo -E] ln -sv LFSPkgBuilds/LFSScripts $LFS/LFSScripts
 
 3)
 #cd into the lfsscripts folder
-cd LFSScripts
+cd $LFS/LFSScripts
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:

@@ -1,0 +1,61 @@
+#!/bin/bash -e
+
+#©keithhedger Wed 21 Apr 13:48:45 BST 2021 kdhedger68713@gmail.com
+
+mkdir -vp etc/systemd/network
+cat > etc/systemd/network/10-eth-static.network << EOF
+[Match]
+Name=eth0
+
+[Network]
+Address=$IP
+Gateway=$GATEWAY
+DNS=8.8.8.8
+Domains=$LFSNAME
+EOF
+
+echo "$LFSNAME" > etc/hostname
+
+cat > etc/adjtime << EOF
+0.0 0 0.0
+0
+LOCAL
+EOF
+
+cat > etc/vconsole.conf << EOF
+# Begin /etc/vconsole.conf
+
+KEYMAP=$KEYBOARD
+#FONT="lat2a-16 -m 8859-2"
+
+# End /etc/vconsole.conf
+EOF
+
+cat > etc/locale.conf << "EOF"
+LANG=$LANGUAGE
+EOF
+
+echo $LFSVERSION > etc/os-release
+
+cat > etc/lsb-release << EOF
+NAME="Linux From Scratch"
+VERSION="${LFSVERSION}-systemd"
+ID=lfs
+PRETTY_NAME="Linux From Scratch 9.0-systemd"
+VERSION_CODENAME="$LFSNAME"
+EOF
+
+mkdir -pv etc/systemd/system/getty@tty1.service.d
+
+cat > etc/systemd/system/getty@tty1.service.d/noclear.conf << EOF
+[Service]
+TTYVTDisallocate=no
+EOF
+
+ln -sfv /dev/null etc/systemd/system/tmp.mount
+
+
+
+
+
+

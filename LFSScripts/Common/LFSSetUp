@@ -157,11 +157,11 @@ LANGUAGE=${LANGUAGE:-$LANG}
 readWithDefault "LANGUAGE"  "Enter Language"
 
 #network
-IP=${IP:-"192.168.1.1"$(echo $ROOTDEV|sed 's/^[a-zA-Z\/]*//')}
+IP=${IP:-"$(hostname -i|sed 's/\(.*\)\..*$/\1/')".$(echo $ROOTDEV|sed 's/^[a-zA-Z\/]*//')}
 readWithDefault "IP"  "Enter IP"
 
 #Set up the network
-GATEWAY=${GATEWAY:-"192.168.1.254"}
+GATEWAY=${GATEWAY:-"$(ip r | awk '/^def/{print $3}')"}
 readWithDefault "GATEWAY"  "Enter Gateway IP"
 
 SUBNET=${SUBNET:-"255.255.255.0"}
