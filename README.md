@@ -1,20 +1,20 @@
 # LFSPkgBuilds
 
-Mount a clean partion somewhere ( e.g. /mnt/LFS ).<br>
-CD into the mounted partition:<br>
-cd /mnt/LFS<br>
-Make sure you have rw perms:<br>
-sudo chown $USER .<br>
+Mount a clean partion somewhere ( e.g. /mnt/LFS ).
+CD into the mounted partition:
+cd /mnt/LFS
+Make sure you have rw perms:
+sudo chown $USER .
 
-Checkout the code:<br>
-git clone https://github.com/KeithDHedger/LFSPkgBuilds.git<br>
-Or for a single branch:<br>
-git clone https://github.com/KeithDHedger/LFSPkgBuilds.git --branch 10.1 --single-branch<br>
+Checkout the code:
+git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
+Or for a single branch:
+git clone https://github.com/KeithDHedger/LFSPkgBuilds.git --branch 10.1 --single-branch
 
-Depending on what init style you want to use you should first make a symlink from LFSPkgBuilds/LFSScripts/SysVBuild or LFSPkgBuilds/LFSScripts/SystemDBuild or LFSPkgBuilds/LFSScripts/LFSInitBuild or LFSPkgBuilds/LFSScripts/PiBuild to LFSScripts<br>
+Depending on what init style you want to use you should first make a symlink from LFSPkgBuilds/LFSScripts/SysVBuild or LFSPkgBuilds/LFSScripts/SystemDBuild or LFSPkgBuilds/LFSScripts/LFSInitBuild or LFSPkgBuilds/LFSScripts/PiBuild to LFSScripts
 
-E.G:<br>
-ln -sfvn  LFSPkgBuilds/LFSScripts/SysVBuild LFSScripts<br>
-ln -sfvn  LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts<br>
+E.G:
+ln -sfvn LFSPkgBuilds/LFSScripts/SysVBuild LFSScripts
+ln -sfvn LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
 
-Follow the instructions in LFSScripts/HowTo<br>
+Follow the instructions in LFSScripts/HowTo
