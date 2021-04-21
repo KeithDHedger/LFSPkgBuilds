@@ -1,7 +1,7 @@
 
 1)
 
-#It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/sda1 and /dev/sda2 as swap, alter as needed.
+#It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/sda1 and using /dev/sda2 as swap, alter as needed.
 #Use sudo where necessary to create links etc.
 
 #If compiling on raspberian you need to install some extra files like so:

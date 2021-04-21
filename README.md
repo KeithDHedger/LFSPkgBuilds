@@ -15,7 +15,6 @@ Depending on what init style you want to use you should first make a symlink fro
 
 E.G:
 ln -sfvn  LFSPkgBuilds/LFSScripts/SysVBuild LFSScripts
-
-Do this first or nothing will work.
+ln -sfvn  LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
 
 Follow the instructions in LFSScripts/HowTo
