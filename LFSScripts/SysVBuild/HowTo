@@ -31,8 +31,9 @@ export USESYSTEMD
 [sudo -E] chown -R $USER:$USER $LFS/LFSPkgBuilds
 
 3)
-#cd into the lfsscripts folder
+#cd into the LFSScripts folder
 cd $LFS/LFSScripts
+
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:

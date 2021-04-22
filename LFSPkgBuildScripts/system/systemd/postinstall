@@ -2,7 +2,10 @@
 
 #©keithhedger Tue 3 Feb 19:40:19 GMT 2015 kdhedger68713@gmail.com
 
-rm -f /usr/bin/xsltproc||true
 systemd-machine-id-setup
-rm -fv /usr/lib/lib{blkid,uuid,mount}.so*||true
-rm -f /usr/lib/tmpfiles.d/systemd-nologin.conf||true
+systemctl preset-all
+systemctl disable systemd-time-wait-sync.service
+
+#rm -f /usr/bin/xsltproc||true
+#rm -fv /usr/lib/lib{blkid,uuid,mount}.so*||true
+#rm -f /usr/lib/tmpfiles.d/systemd-nologin.conf||true

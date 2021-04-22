@@ -32,20 +32,13 @@ export BUILTPACKAGES
 export EXTFOLDER
 export KERNELVERSION
 export USESYSTEMD
-###RECOMMENDED####
-#or cd into the mounted partition wher you intend to build LFS:
-#LFS should point to your mounted LFS partition ( eg LFS=/mnt/LFS ).
-cd $LFS
-[sudo] git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
 
-Own the files:
-[sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds
-[sudo] ln -sv LFSPkgBuilds/LFSPkgBuildScripts $LFS/LFSPkgBuildScripts
-[sudo] ln -sv LFSPkgBuilds/LFSScripts $LFS/LFSScripts
+#Own the files ( If needed ):
+[sudo -E] chown -R $USER:$USER $LFS/LFSPkgBuilds
 
 3)
-#cd into the SystemDBuild folder
-cd ${LFS}//LFSPkgBuilds/LFSScripts/SystemDBuild
+#cd into the LFSScripts folder
+cd $LFS/LFSScripts
 
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
@@ -104,7 +97,6 @@ fi
 10)
 #You may/will have to re-own/set perms the various folders etc, so:
 [sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-#chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 
 11)
 #Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
@@ -150,7 +142,11 @@ lfspkg --setup
 #after installing the base system you will probably want to at least set check etc to 1.
 
 15)
-#Build main system:
+#Remake symlink
+cd /LFSPkgBuildScripts/system
+ln -snvf ../../../LFSScripts/PkgVersions PkgVersions
+
+#Build main system
 cd /LFSPkgBuildScripts/system/system-meta
 
 #LFSSetUp will have created a symlink to your desired init type so use:
@@ -180,35 +176,6 @@ Walk the dog
 #logout from temporary system:
 exit
 
-17)
-#optional strip etc see:
-#http://www.linuxfromscratch.org/lfs/view/stable/chapter08/strippingagain.html
-#Mostly not needed as the package manager does a strip before installing.
-cd $LFS
-save_lib="ld-2.33.so libc-2.33.so libpthread-2.33.so libthread_db-1.0.so"
-cd lib
-for LIB in $save_lib
-	do
-		sudo objcopy --only-keep-debug $LIB $LIB.dbg 
-		sudo strip --strip-unneeded $LIB
-		sudo objcopy --add-gnu-debuglink=$LIB.dbg $LIB 
-	done    
-
-save_usrlib="libquadmath.so.0.0.0 libstdc++.so.6.0.28 libitm.so.1.0.0 libatomic.so.1.2.0" 
-cd $LFS/usr/lib
-for LIB in $save_usrlib
-	do
-		sudo  objcopy --only-keep-debug $LIB $LIB.dbg
-		sudo strip --strip-unneeded $LIB
-		sudo  objcopy --add-gnu-debuglink=$LIB.dbg $LIB
-	done
-unset LIB save_lib save_usrlib
-
-cd $LFS
-sudo find usr/lib/ -type f -name "*.a" -exec strip --strip-debug {} ';'
-sudo find lib/ usr/lib/ -type f -name "*.so*" ! -name "*dbg" -exec strip --strip-unneeded {} ';'
-sudo find bin sbin usr/{bin,sbin,libexec} -type f -exec strip --strip-all {} ';'
-
 18)
 #Re-enter the chroot:
 cd $LFS/LFSScripts
@@ -229,7 +196,7 @@ lfspkg --setup
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
 
-#Optional copy the config for the running kernel, don't do this if running from bootcd, you may have to set KERNELVERSION.
+#Optional copy the config for the running kernel, don't do this if running from bootcd, you may have to set KERNELVERSION if you are doing this from chroot.
 #gunzip < /proc/config.gz > config-${KERNELVERSION}
 
 ./kernel.LFSBuild install

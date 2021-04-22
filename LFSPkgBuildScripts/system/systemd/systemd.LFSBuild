@@ -4,49 +4,40 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
+. ../PkgVersions
+
 PKGNAME="systemd"
 TARNAME="$PKGNAME"
-VERSION="241"
+VERSION=$systemd_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
-
+TARBALL="${TARNAME}-${VERSION}.$systemd_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 LANG=${LANG:-"en_GB"}
-UPDATEWITHPAM=${UPDATEWITHPAM:-0}
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-networkd_and_rdrand_fixes-1.patch
-		if [ $UPDATEWITHPAM -eq 1 ];then
-			sed -i '1506,1508 s/</>/' src/shared/seccomp-util.c
-			sed -i 's/GROUP="render", //' rules/50-udev-default.rules.in||true
-			mkdir -p build
-			cd build
-			CFLAGS+="-Wno-format-overflow" meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var -Dblkid=true -Dbuildtype=release -Ddefault-dnssec=no -Dfirstboot=false -Dinstall-tests=false -Dldconfig=false -Drootprefix= -Drootlibdir=/lib${LIBDIRSUFFIX} -Dsplit-usr=true -Dsysusers=false -Drpmmacrosdir=no -Db_lto=false -Dgnutls=false .. 
-		else
-			ln -sf /tools/bin/true /usr/bin/xsltproc
-			for file in /tools/lib/lib{blkid,mount,uuid}.so*
-				do
-					ln -sf $file /usr/lib/
-				done
-			tar -xf ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-man-pages-${VERSION}.tar.xz
-			sed -i 's/GROUP="render", //' rules/50-udev-default.rules.in
-			mkdir -p build
-			cd build
-			PKG_CONFIG_PATH="/usr/lib/pkgconfig:/tools/lib/pkgconfig" CFLAGS+="-Wno-format-overflow" meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var -Dblkid=true -Dbuildtype=release -Ddefault-dnssec=no -Dfirstboot=false -Dinstall-tests=false -Dkmod-path=/bin/kmod -Dldconfig=false -Dmount-path=/bin/mount -Drootprefix= -Drootlibdir=/lib -Dsplit-usr=true -Dsulogin-path=/sbin/sulogin -Dsysusers=false -Dumount-path=/bin/umount -Db_lto=false -Drpmmacrosdir=no ..
-		fi
-		ninja
-		DESTDIR=$PKG ninja install	
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-upstream_fixes-2.patch
+		sed '181,$ d' -i src/resolve/meson.build
+		sed -i 's/GROUP="render"/GROUP="video"/' rules.d/50-udev-default.rules.in
+		mkdir -p build
+		cd build
+		export LANG
+		meson --prefix=/usr --sysconfdir=/etc --localstatedir=/var -Dblkid=true -Dbuildtype=release -Ddefault-dnssec=no -Dfirstboot=false -Dinstall-tests=false -Dkmod-path=/bin/kmod -Dldconfig=false -Dmount-path=/bin/mount -Drootprefix= -Drootlibdir=/lib -Dsplit-usr=true -Dsulogin-path=/sbin/sulogin -Dsysusers=false -Dumount-path=/bin/umount -Db_lto=false -Drpmmacrosdir=no -Dhomed=false -Duserdb=false -Dman=false -Dmode=release -Ddocdir=/usr/share/doc/systemd-247 ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
+		mkdir -vp $PKG/usr/share/man
+		tar -xf ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-man-pages-${VERSION}-2.tar.xz --strip-components=1 -C $PKG/usr/share/man
+		rm -rf $PKG/usr/lib/pam.d
 	popd
 
 	checketc "$PKG"
