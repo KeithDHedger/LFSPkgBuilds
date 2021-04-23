@@ -1,3 +1,4 @@
+#SysVInit Version
 
 1)
 
@@ -64,10 +65,12 @@ cd /LFSScripts
 ./BuildTools2
 exit
 
-#Make sure you are no longer in the chroot.
+#Make sure you are no longer in the chroot. !IMPORTANT!
 
 8)
 cd $LFS
+[sudo] find usr/{lib,libexec} -name \*.la -delete
+[sudo] rm -rf usr/share/{info,man,doc}/*
 [sudo] strip --strip-debug usr/lib/*
 [sudo] strip --strip-unneeded usr/{,s}bin/*
 [sudo] strip --strip-unneeded tools/bin/*
@@ -75,7 +78,7 @@ cd $LFS
 #tar MUST be run as root to preserve permissions.
 #change ${HOME}/tools-${LFSVERSION}.tar.xz to suit.
 #make sure all virtual file systems etc are unmounted, including /LFSSourceArchives etc if you have mounted an extern drive there.
-[sudo -E] tar -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
+[sudo -E] tar -apcv -f ${HOME}/tools-${LFSVERSION}-SysV.tar.xz .
 
 9)
 #make sure you are back in the lfsscripts folder.
@@ -139,25 +142,15 @@ lfspkg --setup
 #after installing the base system you will probably want to at least set check etc to 1.
 
 15)
+#Remake a ( possibly ) broken symlink
+cd /LFSPkgBuildScripts/system
+ln -snvf ../../../LFSScripts/PkgVersions PkgVersions
+
 #Build main system:
 cd /LFSPkgBuildScripts/system/system-meta
 
 #LFSSetUp will have created a symlink to your desired init type so use:
 ./system-meta.LFSBuild install
-
-#Or if you have changed your mind you can install a different init system like so:
-
-#Use system-sysvinit-meta for standard sysvinit like so:
-./system-sysvinit-meta.LFSBuild install
-
-#Or use system-bbinit-meta.LFSBuildfor a busy box init system ( non standard ) like so:
-./system-bbinit-meta.LFSBuild install
-
-#Or for ##experimental## custom init system use:
-./system-LFSInit-meta.LFSBuild install
-
-#Or for rpi sysvinit system use:
-./system-pi-sysvinit-meta.LFSBuild install
 
 Wait for script to complete:
 ...

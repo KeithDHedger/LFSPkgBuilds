@@ -99,7 +99,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="system-meta"
-VERSION="9.0"
+VERSION="10.1"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
