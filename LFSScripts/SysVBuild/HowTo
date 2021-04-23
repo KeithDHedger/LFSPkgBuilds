@@ -162,35 +162,6 @@ Walk the dog
 #logout from temporary system:
 exit
 
-17)
-#optional strip etc see:
-#http://www.linuxfromscratch.org/lfs/view/stable/chapter08/strippingagain.html
-#Mostly not needed as the package manager does a strip before installing.
-cd $LFS
-save_lib="ld-2.33.so libc-2.33.so libpthread-2.33.so libthread_db-1.0.so"
-cd lib
-for LIB in $save_lib
-	do
-		sudo objcopy --only-keep-debug $LIB $LIB.dbg 
-		sudo strip --strip-unneeded $LIB
-		sudo objcopy --add-gnu-debuglink=$LIB.dbg $LIB 
-	done    
-
-save_usrlib="libquadmath.so.0.0.0 libstdc++.so.6.0.28 libitm.so.1.0.0 libatomic.so.1.2.0" 
-cd $LFS/usr/lib
-for LIB in $save_usrlib
-	do
-		sudo  objcopy --only-keep-debug $LIB $LIB.dbg
-		sudo strip --strip-unneeded $LIB
-		sudo  objcopy --add-gnu-debuglink=$LIB.dbg $LIB
-	done
-unset LIB save_lib save_usrlib
-
-cd $LFS
-sudo find usr/lib/ -type f -name "*.a" -exec strip --strip-debug {} ';'
-sudo find lib/ usr/lib/ -type f -name "*.so*" ! -name "*dbg" -exec strip --strip-unneeded {} ';'
-sudo find bin sbin usr/{bin,sbin,libexec} -type f -exec strip --strip-all {} ';'
-
 18)
 #Re-enter the chroot:
 cd $LFS/LFSScripts

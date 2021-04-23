@@ -28,8 +28,7 @@ for LIB in $save_lib; do
     objcopy --add-gnu-debuglink=$LIB.dbg $LIB 
 done    
 
-save_usrlib="libquadmath.so.0.0.0 libstdc++.so.6.0.28
-             libitm.so.1.0.0 libatomic.so.1.2.0" 
+save_usrlib="libquadmath.so.0.0.0 libstdc++.so.6.0.28 libitm.so.1.0.0 libatomic.so.1.2.0" 
 
 cd /usr/lib
 
