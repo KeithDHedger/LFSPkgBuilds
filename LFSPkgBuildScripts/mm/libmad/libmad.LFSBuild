@@ -17,7 +17,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/mad/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/libmad-0.15.1b-fixes-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/libmad-0.15.1b-fixes-1.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://archive.mozilla.org/pub/security/${PKGNAME}/releases/NSS_3_61_RTM/src/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${TARNAME}-${VERSION}-standalone-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${TARNAME}-${VERSION}-standalone-1.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

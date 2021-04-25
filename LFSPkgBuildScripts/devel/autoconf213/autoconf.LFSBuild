@@ -17,7 +17,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnu.org/gnu/autoconf/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${TARNAME}-${VERSION}-consolidated_fixes-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${TARNAME}/${TARNAME}-${VERSION}-consolidated_fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

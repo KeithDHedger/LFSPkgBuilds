@@ -6,15 +6,19 @@ mkdir -vp /tmp/patches
 rm /tmp/patches/*
 :>/tmp/patches/REJECTS
 :>/tmp/patches/OK
-cd /mnt/LFS/LFSPkgBuildScripts
+SCRIPTS=/mnt/LFS/LFSPkgBuilds/LFSPkgBuildScripts
+#SCRIPTS=/tmp/LFSPkgBuildScripts
+cd $SCRIPTS
+
 while read
 	do
+	#echo $REPLY
 		eval $(grep "PKGNAME=" "$REPLY")||true
 		eval $(grep "TARNAME=" "$REPLY")||true
 		eval $(grep "VERSION=" "$REPLY")||true
-		x=$(grep "^[[:space:]]*gettar.*linuxfromscratch.*\.patch" "$REPLY")
+		x=$(grep "^[[:space:]]*gettar.*linuxfromscratch.*\.patch" "$REPLY")||true
 		if [ "$x" != "" ];then
-			y=$(echo ${x/blfs/downloads}|sed -E 's@/\$\{*LFSVERSION\}*/|/10.1/|/7.5/|7.6/|/8.2/|/7.7/@/${PKGNAME}/@;s@http:@https:@')
+			y=$(echo ${x/\/blfs\///downloads/}|sed -E 's@/\$\{*LFSVERSION\}*/|/10.1/|/9.0/|/7.5/|7.6/|/8.2/|/7.7/@/${PKGNAME}/@;s@http:@https:@')
 			y="${y//\"}"
 			y="${y/\$SECTION/}"
 			final=$(eval echo ${y/gettar/})
@@ -24,11 +28,13 @@ while read
 					echo wget $final
 					echo "$REPLY $final" >> ./REJECTS
 				else
-					echo /mnt/LFS/LFSPkgBuildScripts/$REPLY >> ./OK
-					replace=$(echo ${x/blfs/downloads}|sed -E 's@/\$\{*LFSVERSION\}*/|/10.1/|/7.5/|7.6/|/8.2/|/7.7/@/${PKGNAME}/@;s@http:@https:@')
-					#sed -n "s@^[[:space:]]*gettar.*linuxfromscratch.*\.patch.*@$replace@p" /mnt/LFS/LFSPkgBuildScripts/$REPLY >> ./OK
-					sed -i "s@^[[:space:]]*gettar.*linuxfromscratch.*\.patch.*@$replace@p" /mnt/LFS/LFSPkgBuildScripts/$REPLY
+					echo $SCRIPTS/$REPLY >> ./OK
+					replace=$(echo ${x/\/blfs\///downloads/}|sed -E 's@/\$\{*LFSVERSION\}*/|/10.1/|/9.0/|/7.5/|7.6/|/8.2/|/7.7/@/${PKGNAME}/@;s@http:@https:@')
+					#show only
+					sed -n "s@^[[:space:]]*gettar.*linuxfromscratch.*\.patch.*@$replace@p" $SCRIPTS/$REPLY >> ./OK
+					#change in place
+					#sed -i "s@^[[:space:]]*gettar.*linuxfromscratch.*\.patch.*@$replace@" $SCRIPTS/$REPLY
 				fi
 			popd
 		fi
-	done < <(find -iname "*.LFSBuild")
+	done < <(find -iname "*.LFSBuild"|sort)

@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/libunique/1.1/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.6/${TARNAME}-${VERSION}-upstream_fixes-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads//${PKGNAME}/${TARNAME}-${VERSION}-upstream_fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

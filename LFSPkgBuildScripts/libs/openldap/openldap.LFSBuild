@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.openldap.org/software/download/OpenLDAP/openldap-release/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-consolidated-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-consolidated-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

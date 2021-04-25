@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.debian.org/debian/pool/main/h/heirloom-mailx/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-fixes-1.patch"  $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${TARNAME}/${TARNAME}-${VERSION}-fixes-1.patch"  $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

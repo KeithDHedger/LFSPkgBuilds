@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://cdn.mysql.com/Downloads/MySQL-5.6/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.5/${TARNAME}-${VERSION}-embedded_library_shared-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${TARNAME}-${VERSION}-embedded_library_shared-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://anduin.linuxfromscratch.org/sources/BLFS/conglomeration/epdfview/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/7.7/${PKGNAME}-${VERSION}-fixes-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

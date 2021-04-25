@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://0pointer.de/lennart/projects/libcanberra/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/10.1/${PKGNAME}-${VERSION}-wayland-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-wayland-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

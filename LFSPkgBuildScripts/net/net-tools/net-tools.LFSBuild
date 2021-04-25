@@ -17,7 +17,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://anduin.linuxfromscratch.org/sources/BLFS/svn/n/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

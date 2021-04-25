@@ -17,7 +17,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.nico.schottelius.org/software/gpm/archives/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-consolidated-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${TARNAME}-${VERSION}-consolidated-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

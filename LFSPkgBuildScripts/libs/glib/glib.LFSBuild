@@ -24,7 +24,7 @@ OPTIONS=${OPTIONS:-"-Ddoc=true -Dman=true -Dgtk_doc=true"}
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/glib/${VERSION%.?*}/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/10.1/${TARNAME}-${VERSION}-skip_warnings-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${TARNAME}-${VERSION}-skip_warnings-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

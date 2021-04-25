@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/docbook/xslt10-stylesheets/releases/download/release/${VERSION}/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${PKGNAME}-nons-${VERSION}-stack_fix-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-stack_fix-1.patch" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -30,7 +30,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-nons-${VERSION}-stack_fix-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-stack_fix-1.patch
 		install -v -m755 -d $PKG/usr/share/xml/docbook/xsl-stylesheets-nons-${VERSION}
 		cp -v -R VERSION assembly common eclipse epub epub3 extensions fo highlighting html htmlhelp images javahelp lib manpages params profiling roundtrip slides template tests tools webhelp website xhtml xhtml-1_1 xhtml5 $PKG/usr/share/xml/docbook/xsl-stylesheets-nons-${VERSION}
 		ln -s VERSION $PKG/usr/share/xml/docbook/xsl-stylesheets-nons-${VERSION}/VERSION.xsl
