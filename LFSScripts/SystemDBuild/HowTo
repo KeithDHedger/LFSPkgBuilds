@@ -227,6 +227,7 @@ EOF
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
 
+#BLFS optioanl extras
 #Install Xfce4
 cd /LFSPkgBuildScripts/xfce/xfce4-meta
 ./xfce4-meta.LFSBuild install
