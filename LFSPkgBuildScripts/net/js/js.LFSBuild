@@ -31,7 +31,7 @@ OPTIONS="--prefix=/usr --enable-readline --with-intl-api --with-system-zlib --wi
 checkforoptions
 
 pushd $COMPILEAT 2>/dev/null||true
-	#extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "firefox-${VERSION}"
 		export SHELL=/bin/bash
 		. /etc/profile

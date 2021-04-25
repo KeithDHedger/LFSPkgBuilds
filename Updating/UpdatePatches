@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#©keithhedger Sun 25 Apr 13:28:15 BST 2021 kdhedger68713@gmail.com
+
+mkdir -vp /tmp/patches
+rm /tmp/patches/*
+:>/tmp/patches/REJECTS
+:>/tmp/patches/OK
+cd /mnt/LFS/LFSPkgBuildScripts
+while read
+	do
+		eval $(grep "PKGNAME=" "$REPLY")||true
+		eval $(grep "TARNAME=" "$REPLY")||true
+		eval $(grep "VERSION=" "$REPLY")||true
+		x=$(grep "^[[:space:]]*gettar.*linuxfromscratch.*\.patch" "$REPLY")
+		if [ "$x" != "" ];then
+			y=$(echo ${x/blfs/downloads}|sed -E 's@/\$\{*LFSVERSION\}*/|/10.1/|/7.5/|7.6/|/8.2/|/7.7/@/${PKGNAME}/@;s@http:@https:@')
+			y="${y//\"}"
+			y="${y/\$SECTION/}"
+			final=$(eval echo ${y/gettar/})
+			pushd /tmp/patches
+				if ! wget  --timeout=1 --waitretry=0 --tries=2 --retry-connrefused "$final";then
+					echo "NO $REPLY ..."
+					echo wget $final
+					echo "$REPLY $final" >> ./REJECTS
+				else
+					echo /mnt/LFS/LFSPkgBuildScripts/$REPLY >> ./OK
+					replace=$(echo ${x/blfs/downloads}|sed -E 's@/\$\{*LFSVERSION\}*/|/10.1/|/7.5/|7.6/|/8.2/|/7.7/@/${PKGNAME}/@;s@http:@https:@')
+					#sed -n "s@^[[:space:]]*gettar.*linuxfromscratch.*\.patch.*@$replace@p" /mnt/LFS/LFSPkgBuildScripts/$REPLY >> ./OK
+					sed -i "s@^[[:space:]]*gettar.*linuxfromscratch.*\.patch.*@$replace@p" /mnt/LFS/LFSPkgBuildScripts/$REPLY
+				fi
+			popd
+		fi
+	done < <(find -iname "*.LFSBuild")

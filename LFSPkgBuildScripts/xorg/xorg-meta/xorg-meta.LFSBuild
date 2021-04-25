@@ -10,13 +10,12 @@ BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 
-export XORG_PREFIX="/usr"
-export XORG_CONFIG="--prefix=$XORG_PREFIX --sysconfdir=/etc --mandir=$XORG_PREFIX/share/man --localstatedir=/var --disable-static"
-export CHECKETC=0
+#export XORG_PREFIX="/usr"
+#export XORG_CONFIG="--prefix=$XORG_PREFIX --sysconfdir=/etc --mandir=$XORG_PREFIX/share/man --localstatedir=/var --disable-static"
+#export CHECKETC=0
 
 mkdir -vp ${SOURCEARCHIVES}/${SECTION}||true
 
-#HarfBuzz-2.7.4
 DEPENDS="util-macros-1.19.3
 proto-2020.1
 libXau-1.0.9

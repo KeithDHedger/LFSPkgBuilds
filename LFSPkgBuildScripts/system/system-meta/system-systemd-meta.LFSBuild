@@ -87,10 +87,10 @@ dbus
 Procps-ng
 Util-linux
 E2fsprogs
-Wget
-unzip
-GPM
-Links"
+Wget-1.21.1
+unzip-6.0
+GPM-1.20.7
+Links-2.21"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
