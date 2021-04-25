@@ -219,13 +219,18 @@ menuentry "GNU/Linux, Linux $LFSVERSION" {
 }
 EOF
 
-##all below here is for LFS9.0 needs updating to 10.1
 22)
 #Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
 #Build xorg:
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
 
+#BLFS optioanl extras
+#Install Xfce4
+cd /LFSPkgBuildScripts/xfce/xfce4-meta
+./xfce4-meta.LFSBuild install
+
+##all below here is for LFS9.0 needs updating to 10.1
 15)
 #Install documentation stuff
 #Also installs python via dependency
