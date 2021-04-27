@@ -81,7 +81,7 @@ else
 fi
 
 #LFS Version
-LFSVERSION=${LFSVERSION:-10.0}
+LFSVERSION=${LFSVERSION:-10.1}
 readWithDefault "LFSVERSION"  "Enter LFS Version"
 
 #Computer name

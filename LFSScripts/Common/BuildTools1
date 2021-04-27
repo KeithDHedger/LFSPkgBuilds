@@ -33,13 +33,6 @@ else
 	exit 100
 fi
 
-if [ -e ./PkgVersions ];then
-	. ./PkgVersions
-else
-	echo "No PkgVersions file found ..."
-	exit 100
-fi
-
 mkdir -vp "${LFS}${SOURCEARCHIVES}" "$LFS/${PKGARCHIVES}"|| true
 
 if ! mountpoint $LFS/${PKGARCHIVES} && ! mountpoint $LFS/${SOURCEARCHIVES} ;then
@@ -86,15 +79,24 @@ if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	if [ "$USESYSTEMD" -eq 1 ];then
 		wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/systemd/wget-list
 		wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/systemd/md5sums
+		./GetVersions
 	else
 		wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list
 		wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/$LFSVERSION/md5sums
+		./GetVersions
 	fi
 	mv md5sums $SYSTEMSOURCE
 	wget --no-check-certificate -i wget-list --no-check-certificate  -c -P $SYSTEMSOURCE||true
 
 #wget from the blfs book I prefer to make this as part of the main system
 	wget --no-check-certificate -c "$WGETTAR" -P $NETSOURCE
+fi
+
+if [ -e ./PkgVersions ];then
+	. ./PkgVersions
+else
+	echo "No PkgVersions file found ..."
+	exit 100
 fi
 
 cd "$SYSTEMSOURCE"
