@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xorg.freedesktop.org/releases/individual/proto/${TARBALL}" $SECTION
+gettar "https://xorg.freedesktop.org/releases/individual/proto/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
