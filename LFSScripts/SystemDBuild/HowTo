@@ -81,7 +81,7 @@ cd $LFS
 #tar MUST be run as root to preserve permissions.
 #change ${HOME}/tools-${LFSVERSION}.tar.xz to suit.
 #make sure all virtual file systems etc are unmounted, including /LFSSourceArchives etc if you have mounted an extern drive there.
-[sudo -E] tar -apcv -f ${HOME}/tools-${LFSVERSION}-SystemD.tar.xz .
+[sudo -E] tar --one-file-system --exclude="./LFSPkgBuilds" --exclude="./LFSScripts" --exclude="./LFSPkgBuildScripts" -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
 
 9)
 #make sure you are back in the lfsscripts folder.

@@ -78,7 +78,7 @@ cd $LFS
 #tar MUST be run as root to preserve permissions.
 #change ${HOME}/tools-${LFSVERSION}.tar.xz to suit.
 #make sure all virtual file systems etc are unmounted, including /LFSSourceArchives etc if you have mounted an extern drive there.
-[sudo -E] tar -apcv -f ${HOME}/tools-${LFSVERSION}-SysV.tar.xz .
+[sudo -E] tar --one-file-system --exclude="./LFSPkgBuilds" --exclude="./LFSScripts" --exclude="./LFSPkgBuildScripts" -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
 
 9)
 #make sure you are back in the lfsscripts folder.
@@ -95,8 +95,8 @@ fi
 
 10)
 #You may/will have to re-own/set perms the various folders etc, so:
-[sudo] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-#chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+[sudo -E ] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 
 11)
 #Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
@@ -165,7 +165,7 @@ exit
 18)
 #Re-enter the chroot:
 cd $LFS/LFSScripts
-[sudo] ./Chroot
+[sudo -E] ./Chroot
 
 19)
 #You MUST rebuild lfspkg after completeing the the basic system and removing the tools folder.
