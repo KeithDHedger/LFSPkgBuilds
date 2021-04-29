@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="dbus-glib-0.110 Python-2.7.14"
+DEPENDS="dbus-glib-0.110 Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="dbus-python"
 TARNAME="$PKGNAME"
-VERSION="1.2.6"
+VERSION="1.2.16"
 BUILD=${BUILD:-1}
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
@@ -30,14 +30,14 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir python2||true
 		pushd python2
-			PYTHON=/usr/bin/python ../configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+			PYTHON=/usr/bin/python ../configure ${CONFIGOPTIONS} --disable-documentation
 			make $MAKEFLAGS|| exit 100
 		popd
 		make -C python2 install DESTDIR=$PKG || exit 100
 
 		mkdir python3||true
 		pushd python3
-			PYTHON=/usr/bin/python3 ../configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+			PYTHON=/usr/bin/python3 ../configure ${CONFIGOPTIONS} --disable-documentation
 			make $MAKEFLAGS|| exit 100
 		popd
 		make -C python3 install DESTDIR=$PKG || exit 100

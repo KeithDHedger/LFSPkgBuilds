@@ -28,7 +28,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS -I/usr/include/tirpc" CXXFLAGS="$LFSFLAGS -I/usr/include/tirpc" LDFLAGS+=" -ltirpc" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-sqlite --with-lucene --rundir=/run --localstatedir=/var
+		CFLAGS="$LFSFLAGS -I/usr/include/tirpc" CXXFLAGS="$LFSFLAGS -I/usr/include/tirpc" LDFLAGS+=" -ltirpc" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-sqlite --with-lucene --with-rundir=/run --localstatedir=/var
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc/dovecot
