@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Boost-1.63.0 gtest-1.8.0"
+DEPENDS="Boost-1.75.0 gtest-1.10.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="luceneplus"
 TARNAME="rel"
-VERSION="3.0.7"
+VERSION="3.0.8"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

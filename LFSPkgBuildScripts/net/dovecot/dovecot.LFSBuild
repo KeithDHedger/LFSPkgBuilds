@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="mysql-5.6.16 luceneplus-3.0.7 OpenSSL-1.1.0 libtirpc-1.0.2"
+DEPENDS="sqlite-3.34.1 luceneplus-3.0.8 libtirpc-1.3.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="dovecot"
 TARNAME="$PKGNAME"
-VERSION="2.3.0"
+VERSION="2.3.13"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -21,19 +21,18 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.dovecot.org/releases/2.2/${TARBALL}" $SECTION
+gettar "https://www.dovecot.org/releases/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-mysql --with-lucene
+		CFLAGS="$LFSFLAGS -I/usr/include/tirpc" CXXFLAGS="$LFSFLAGS -I/usr/include/tirpc" LDFLAGS+=" -ltirpc" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-sqlite --with-lucene --rundir=/run --localstatedir=/var
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc/dovecot
 		cp -rv $PKG/usr/share/doc/${PKGNAME}-${VERSION}/example-config/* $PKG/etc/dovecot
-
 		sed -i '/^\!include / s/^/#/' $PKG/etc/dovecot/dovecot.conf
 
 		cat > $PKG/etc/dovecot/local.conf << "EOF"
