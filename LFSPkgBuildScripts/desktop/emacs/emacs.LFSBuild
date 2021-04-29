@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="emacs"
 TARNAME="$PKGNAME"
-VERSION="25.3"
+VERSION="27.1"
 BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -16,18 +16,18 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnu.org/pub/gnu/emacs/${TARBALL}" $SECTION
+gettar "https://ftp.gnu.org/pub/gnu/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gif=no --localstatedir=/var
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gif=no --localstatedir=/var --with-tiff --with-gnutls=no
 		make bootstrap
 		make $MAKEFLAGS||make|| exit 100
-		chown -v -R root:root $PKG/usr/share/emacs/24.4
 		make install DESTDIR=$PKG || exit 100
+		chown -v -R root:root $PKG/usr/share/${PKGNAME}/${VERSION}
 	popd
 
 	checketc "$PKG"
