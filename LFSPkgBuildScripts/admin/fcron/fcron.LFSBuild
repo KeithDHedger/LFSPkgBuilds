@@ -42,7 +42,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 
-		sed -i 's:/var/run/fcron.pid:/run/fcron.pid:' ${PKG}/lib${LIBDIRSUFFIX}/systemd/system/fcron.service
+		#sed -i 's:/var/run/fcron.pid:/run/fcron.pid:' ${PKG}/lib${LIBDIRSUFFIX}/systemd/system/fcron.service
 
 		cp -vp ${CWD}/run-parts $PKG/usr/bin
 		install -vdm754 $PKG/etc/cron.{hourly,daily,weekly,monthly}

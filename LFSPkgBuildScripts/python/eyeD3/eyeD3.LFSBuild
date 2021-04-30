@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="python-2.7.14"
+DEPENDS="python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="eyeD3"
 TARNAME="$PKGNAME"
-VERSION="0.8.7"
+VERSION="0.8.10"
 BUILD=1
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://eyed3.nicfit.net/releases/${TARBALL}" $SECTION
+gettar "https://eyed3.nicfit.net/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

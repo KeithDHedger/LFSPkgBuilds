@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gnutls-3.6.9"
+DEPENDS="gnutls-3.7.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
