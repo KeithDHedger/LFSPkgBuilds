@@ -32,7 +32,7 @@ useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u $UIDGIDPAIR fcron
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="--with-systemdsystemunitdir=no"
 else
-	SYSTEMDOPTS="--with-boot-install=no"
+	SYSTEMDOPTS=
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -42,7 +42,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 
-		#sed -i 's:/var/run/fcron.pid:/run/fcron.pid:' ${PKG}/lib${LIBDIRSUFFIX}/systemd/system/fcron.service
+		if [ $USESYSTEMD -eq 1 ];then
+			sed -i 's:/.*/run/fcron.pid:/run/fcron.pid:' ${PKG}/lib/systemd/system/fcron.service
+		fi
 
 		cp -vp ${CWD}/run-parts $PKG/usr/bin
 		install -vdm754 $PKG/etc/cron.{hourly,daily,weekly,monthly}
