@@ -7,19 +7,21 @@ if [ $USESYSTEMD -eq 1 ];then
 	systemctl enable fcron
 	systemctl start fcron
 	fcrontab -z -u systab
-fi
-
-if ! grep "cron.*" /etc/syslog.conf &>/dev/null;then
-	sed -i  '0,/^$/s||cron.* -/var/log/cron.log|' /etc/syslog.conf
 else
-	cat >> /etc/syslog.conf << "EOF"
+	if ! grep "cron.*" /etc/syslog.conf &>/dev/null;then
+		sed -i  '0,/^$/s||cron.* -/var/log/cron.log|' /etc/syslog.conf
+	else
+		cat >> /etc/syslog.conf << "EOF"
 # Begin fcron addition to /etc/syslog.conf
 
 cron.* -/var/log/cron.log
 
 # End fcron addition
 EOF
+	/etc/rc.d/init.d/sysklogd reload
+	fi
 fi
 
 fcrontab -z -u systab
-/etc/rc.d/init.d/sysklogd reload
+
+exit 0

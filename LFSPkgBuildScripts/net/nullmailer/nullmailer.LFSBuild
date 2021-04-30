@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gnutls-3.6.9"
+DEPENDS="gnutls-3.7.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -26,13 +26,13 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 UIDGIDPAIR=$(findnextpair "system")
-sudo groupadd -g $UIDGIDPAIR nullmail||true
-sudo useradd -c "Nullmailer user" -d /usr/var/spool/nullmailer -g nullmail -s /bin/false -u $UIDGIDPAIR nullmail||true
+groupadd -g $UIDGIDPAIR nullmail||true
+useradd -c "Nullmailer user" -d /usr/var/spool/nullmailer -g nullmail -s /bin/false -u $UIDGIDPAIR nullmail||true
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --enable-tls --prefix=/usr --sysconfdir=/etc --localstatedir=/usr/var
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-tls --localstatedir=/usr/var
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		make install-root DESTDIR=$PKG || exit 100
