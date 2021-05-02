@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="python-2.7.14 fuse-3.2.1"
+DEPENDS="python-2.7.18 fuse-3.10.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

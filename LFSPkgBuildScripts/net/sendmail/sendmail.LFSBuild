@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="OpenLDAP-2.4.4 OpenSSL-1.1.0 Cyrus-SASL-2.1.26"
+DEPENDS="OpenLDAP-2.4.57 Cyrus-SASL-2.1.27"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="sendmail"
 TARNAME="$PKGNAME"
-VERSION="8.15.2"
+VERSION="8.16.1"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"

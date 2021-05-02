@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="imlib2-1.4.10 libpng-1.6.34"
+DEPENDS="imlib2-1.7.1 libpng-1.6.37"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="feh"
 TARNAME="$PKGNAME"
-VERSION="3.1.1"
+VERSION="3.6.3"
 BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"

@@ -4,26 +4,24 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="ffmpeg-3.3.0 openjpeg-2.3.0 lame-3.100 faad2-2.8.8 faac-1.29.9.2"
+DEPENDS="ffmpeg-4.3.2 openjpeg-2.4.0 lame-3.100 faad2-2.10.0 faac-1.30"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="FreeRDP"
-TARNAME="$PKGNAME"
-VERSION="2.0.0"
-RELEASE="rc4"
+TARNAME="${PKGNAME,,}"
+VERSION="2.3.2"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}-${RELEASE}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/FreeRDP/FreeRDP/archive/${VERSION}-${RELEASE}/${TARBALL}" $SECTION
-
+gettar "https://github.com/${PKGNAME,,}/${PKGNAME,,}/releases/download/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -35,11 +33,10 @@ fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}-${RELEASE}"
+	pushd "${TARNAME}-${VERSION}"
 		mkdir build || true
 		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE $SYSTEMDOPTS -DWITH_WAYLAND=OFF -DCMAKE_BUILD_TYPE=Release -DWITH_JPEG=ON -DWITH_LAME=ON -DWITH_FAAD2=ON -DWITH_FAAC=ON -Wno-dev ..
-
+		cmake $CMAKEOPTIONS $SYSTEMDOPTS -DWITH_WAYLAND=OFF -DWITH_JPEG=ON -DWITH_LAME=ON -DWITH_FAAD2=ON -DWITH_FAAC=ON ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -66,5 +63,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}-${RELEASE}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
