@@ -6,24 +6,23 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="gftp"
 TARNAME="$PKGNAME"
-VERSION="2.6.0"
+VERSION="2.7.0"
 BUILD=1
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
+TARBALL="${TARNAME}-${VERSION}b.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/masneyb/${PKGNAME}/archive/master.zip" $SECTION "${TARBALL}"
+gettar "https://github.com/masneyb/${TARNAME}/releases/download/${VERSION}b/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-master"
-		./autogen.sh
+	pushd "${TARNAME}-${VERSION}b"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -51,5 +50,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-master"
+	rm -r "$PKG" "${TARNAME}-${VERSION}b"
 popd 2>/dev/null||true

@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="gocr"
 TARNAME="$PKGNAME"
-VERSION="0.50"
+VERSION="0.52"
 BUILD=1
 SECTION="CLI"
 SUFFIX="LFSPKG"
@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www-e.uni-magdeburg.de/jschulen/ocr/${TARBALL}" $SECTION
+gettar "https://www-e.uni-magdeburg.de/jschulen/ocr/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
