@@ -1,0 +1,101 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="gst-plugins-base-1.18.3 gst-plugins-bad-1.18.3 gtk3-3.24.25 icu-68.2 libsoup-2.72.0 MesaLib-20.3.4 Ruby-3.0.0 SQLite-3.34.1 Which-2.21 libwebp-1.2.0 libsecret-0.20.4 gtk-doc-1.33.2 libgcrypt-1.9.2 libgudev-234 openjpeg-2.4.0"
+
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="webkitgtk3"
+TARNAME="webkitgtk"
+VERSION="2.30.5"
+BUILD=${BUILD:-1}
+SECTION="NET"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		mkdir -vp build
+		cd build
+
+		cmake $CMAKEOPTIONS -DCMAKE_SKIP_RPATH=ON       \
+      -DPORT=GTK                  \
+      -DUSE_LIBHYPHEN=OFF         \
+      -DENABLE_MINIBROWSER=ON     \
+      -DUSE_WOFF2=OFF             \
+      -DUSE_WPE_RENDERER=OFF      \
+      -DUSE_SYSTEMD=OFF           \
+      -DENABLE_BUBBLEWRAP_SANDBOX=OFF \
+      -G Ninja ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
+
+#		patch -Np1 -i ${CWD}/js.patch||true
+#		patch -Np1 -i ${CWD}/webkitgtk-2.4.9-abs.patch||true
+#		patch -Np1 -i ${CWD}/enchant-2.x.patch||true
+#		patch -Np1 -i ${CWD}/pkgconfig-enchant-2.patch||true
+#
+#		autoreconf -ifv
+#		mkdir -p "build-gtk" "path" ||true
+#		PATH="$(pwd)/path:${PATH}"
+#		ln -rTsf "$(which python2)" "$(pwd)/path/python"
+#		cd "build-gtk"
+#
+#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS"
+#		CXXFLAGS+=" -fno-delete-null-pointer-checks"
+#		CFLAGS+=" -fno-delete-null-pointer-checks"
+#
+#		CFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess"
+#		CXXFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess -DUPRV_BLOCK_MACRO_BEGIN=\"\" -DUPRV_BLOCK_MACRO_END=\"\""
+#		export CFLAGS
+#		export CXXFLAGS
+#
+#		../configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=3.0 --libexecdir=/usr/lib${LIBDIRSUFFIX}/WebKitGTK --disable-geolocation --enable-introspection --disable-gtk-doc
+#		sed -i "s/ -shared / -Wl,-O1,--as-needed\0/g" "libtool"
+#		make $MAKEFLAGS||exit 100
+#		make install DESTDIR=$PKG || exit 100
+#		mkdir -p $PKG/usr/share/gtk-doc/html/
+#		cp -rv ../Documentation/webkitgtk/html $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
+	popd
+
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
+
+
+

@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="smartmontools-6.3 gtkmm3-3.22.2"
+DEPENDS="smartmontools-7.2 gtkmm3-3.24.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

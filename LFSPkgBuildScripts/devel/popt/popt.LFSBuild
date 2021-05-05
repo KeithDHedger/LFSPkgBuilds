@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="popt"
 TARNAME="$PKGNAME"
-VERSION="1.16"
+VERSION="1.18"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
+gettar "ftp://ftp.rpm.org/pub/rpm/${TARNAME}/releases/${TARNAME}-1.x/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
