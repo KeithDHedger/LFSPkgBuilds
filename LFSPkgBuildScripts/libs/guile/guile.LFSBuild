@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="GC-8.0.4 libffi-3.2.1 libunistring-0.9.10"
+DEPENDS="GC-8.0.4 libunistring-0.9.10"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="guile"
 TARNAME="$PKGNAME"
-VERSION="2.2.6"
+VERSION="3.0.5"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"

@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libidn2-2.0.5"
+DEPENDS="libidn2-2.3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="html-xml-utils"
 TARNAME="$PKGNAME"
-VERSION="7.7"
+VERSION="7.8"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"

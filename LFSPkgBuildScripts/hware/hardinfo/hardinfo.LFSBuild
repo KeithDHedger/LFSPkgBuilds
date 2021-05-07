@@ -16,14 +16,17 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://sourceforge.net/projects/hardinfo.berlios/files/${TARBALL}" $SECTION
+gettar "https://codeload.github.com/lpereira/${TARNAME}/zip/refs/heads/master" $SECTION ${TARNAME}-${VERSION}.zip
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}.zip"
+	pushd "${TARNAME}-master"
+		mkdir build
+		cd build
+		CFLAGS+=' -fcommon'
+		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -50,5 +53,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-master"
 popd 2>/dev/null||true

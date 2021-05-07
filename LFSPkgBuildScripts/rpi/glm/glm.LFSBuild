@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="glm"
 TARNAME="$PKGNAME"
-VERSION="0.9.9.5"
+VERSION="0.9.9.8"
 BUILD=1
 SECTION="RPI"
 SUFFIX="LFSPKG"
@@ -16,18 +16,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/g-truc/glm/archive/0.9.9.5/${TARBALL}" $SECTION
+gettar "https://github.com/g-truc/glm/archive/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build||true
-		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DGLM_TEST_ENABLE=ON -DGLM_TEST_ENABLE_CXX_11=ON -Wno-dev ..
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir -vp ${PKG}/usr/include ${PKG}/usr/share/doc
+		cp -r glm ${PKG}/usr/include/
+		cp -r doc ${PKG}/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
 
 	checketc "$PKG"

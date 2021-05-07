@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gtk-2.24.32 enchant-2.2.3 gtk3-3.22.28"
+DEPENDS="gtk-2.24.33 enchant-2.2.15 gtk3-2.2.15"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gtkspell"
 TARNAME="${PKGNAME}"
-VERSION="3.0.9"
+VERSION="3.0.10"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -28,11 +28,6 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}3-${VERSION}"
-#thanks to arch for this patch
-#https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/gtkspell3
-		patch -Np1 -i "$CWD/enchant-2.patch"
-		sed -e 's/enchant/enchant-2/g' -i configure.ac
-		autoreconf -vi
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-gtk2 --enable-gtk3 --disable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

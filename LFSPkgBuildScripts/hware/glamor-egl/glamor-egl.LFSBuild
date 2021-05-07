@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Xorg-Server-1.19.6"
+DEPENDS="Xorg-Server-1.20.10"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -12,49 +12,47 @@ LFSPanel-0.2.0
 LFSSetWallpaper-0.2.0
 CliMsg-0.1.1
 dbus-glib-0.110
-compton-9.0
+compton-10.1
 PyCairo-1.18.1
 PyGObject-2.28.7
 PyGTK-2.24.0
-URI-1.76
-printing-meta-9.0
+URI-5.07
+printing-meta-10.1
 vte1-0.28.2
 libnotify-0.5.2
 startup-notification-0.12
-NSPR-4.21
+NSPR-4.29
 zip-3.0
-JS-60.8.0
-Polkit-0.116
+JS-78.8.0
+Polkit-0.118
 UDisks-2.1.8
-transmission-2.94
-ConsoleKit2-1.0.2
+transmission-3.00
+ConsoleKit2-1.2.2
 gnome-icon-theme-3.12.0
-Sudo-1.8.27
+Sudo-1.9.5
 KKTerminal-0.1.1
-xfce4-screenshooter-1.7.9
-xfce4-terminal-0.6.3
+xfce4-screenshooter-1.9.8
+xfce4-terminal-0.8.10
 Xfce-Theme-Manager-0.3.8
 gtksourceview-2.10.5
 leafpad-0.8.18.1
-shared-mime-info-1.12
-OpenSSH-8.0
+shared-mime-info-2.1
+OpenSSH-8.4
 ntp-4.2.8
 xdg-utils-1.1.3
-desktop-file-utils-0.24
+desktop-file-utils-0.26
 gtkmm-2.24.5
-ImageMagick-7.0.9
-claws-mail-3.17.3
+ImageMagick-7.0.11.0
+claws-mail-3.99.0
 spacefm-1.0.6
-ManPageEditor-0.1.4
+ManPageEditor-0.1.5
 AspellGUI-0.0.9
-KKEdit-0.4.3
+KKEdit-0.4.6
 xarchiver-0.5.4
 ClipboardViewer-2.2.2
 GtkSu-0.1.6
-xscreensaver-5.38"
-
-
-#LibreOffice-6.3.0"
+xscreensaver-5.45
+libreoffice-7.1.0"
 
 #Thunderbird-52.6.0 -- broken
 
@@ -63,7 +61,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="LFSDesktop-meta"
-VERSION="8.2"
+VERSION="10.1"
 BUILD=1
 SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"
@@ -72,6 +70,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 rm -rf "$PKG" || true
+mkdir -p "$PKG"
 
 pushd "$PKG"
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
