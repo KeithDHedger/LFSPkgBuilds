@@ -4,12 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Python-2.7.14 pysetuptools-18.2"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="html2text"
+DPKGNAME="html2text"
 TARNAME="$PKGNAME"
 VERSION="3.200.3"
 BUILD=${BUILD:-1}
@@ -28,7 +23,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/$TARBALL" "zip"
 	pushd "${PKGNAME}-master"
-		python setup.py install --root=$PKG || exit 100
+		python3 setup.py install --root=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
