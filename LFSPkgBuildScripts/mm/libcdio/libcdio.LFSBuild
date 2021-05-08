@@ -32,11 +32,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		tar -xf ${SOURCEARCHIVES}/${SECTION}/"libcdio-paranoia-10.2+2.0.1.tar.bz2"
-		cd libcdio-paranoia-10.2+2.0.1
-		./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

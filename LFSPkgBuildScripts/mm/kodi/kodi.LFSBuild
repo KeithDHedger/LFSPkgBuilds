@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-20.3.4 giflib-5.2.1 libcdio-2.1.0 OpenJDK-15.0.2 rapidjson-1.1.0 sqlite-3.34.1 taglib-1.12 tinyxml-2.6.2 swig-4.0.2 mariadb-10.5.8 openssh-8.4 openldap-2.4.57 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.15.0"
+DEPENDS="MesaLib-20.3.4 giflib-5.2.1 libcdio-2.1.0 libcdio-paranoia-10.2 OpenJDK-15.0.2 rapidjson-1.1.0 sqlite-3.34.1 taglib-1.12 tinyxml-2.6.2 swig-4.0.2 mariadb-10.5.8 openssh-8.4 openldap-2.4.57 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.15.0"
 
 if ! lfspkg -B "$DEPENDS";then
 	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"

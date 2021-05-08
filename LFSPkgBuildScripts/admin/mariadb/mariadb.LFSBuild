@@ -21,9 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://downloads.mariadb.org/interstitial/${TARNAME}-${VERSION}/source/${TARBALL}" $SECTION
 gettar "https://downloads.mariadb.com/MariaDB/${TARNAME}-${VERSION}/source/${TARBALL}" ${SECTION}
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
