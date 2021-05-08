@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="iptables"
 TARNAME="$PKGNAME"
-VERSION="1.8.3"
+VERSION="1.8.7"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.netfilter.org/projects/iptables/files/${TARBALL}" $SECTION
+gettar "http://www.netfilter.org/projects/${TARNAME}/files/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -28,7 +28,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 100
 
 		ln -sfv ../../sbin/xtables-legacy-multi $PKG/usr/bin/iptables-xml
-		for file in ip4tc ip6tc ipq iptc xtables
+		mkdir -vp $PKG/lib${LIBDIRSUFFIX}||true
+		for file in ip4tc ip6tc ipq xtables
 			do
 				mv -v $PKG/usr/lib${LIBDIRSUFFIX}/lib${file}.so.* $PKG/lib${LIBDIRSUFFIX}
 				ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/lib${file}.so) $PKG/usr/lib${LIBDIRSUFFIX}/lib${file}.so

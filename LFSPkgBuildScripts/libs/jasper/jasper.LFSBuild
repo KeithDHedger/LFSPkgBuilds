@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="cmake-3.10.2"
+DEPENDS="cmake-3.19.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="jasper"
 TARNAME="$PKGNAME"
-VERSION="2.0.14"
+VERSION="2.0.25"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -21,16 +21,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.ece.uvic.ca/~frodo/jasper/software/${TARBALL}" $SECTION
+gettar "https://github.com/jasper-software/${TARNAME}/archive/version-${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
+	pushd "${TARNAME}-version-${VERSION}"
 		mkdir build||true
 		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE   -DCMAKE_SKIP_INSTALL_RPATH=YES -Wno-dev ..
+		cmake $CMAKEOPTIONS -DCMAKE_SKIP_INSTALL_RPATH=YES -DJAS_ENABLE_DOC=NO -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/${PKGNAME}-${VERSION} ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -57,5 +57,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-version-${VERSION}"
 popd 2>/dev/null||true

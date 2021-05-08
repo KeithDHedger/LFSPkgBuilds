@@ -11,18 +11,18 @@ fi
 
 PKGNAME="libcdio"
 TARNAME="$PKGNAME"
-VERSION="2.0.0"
+VERSION="2.1.0"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnu.org/gnu/libcdio/${TARBALL}" $SECTION
-gettar "http://ftp.gnu.org/gnu/libcdio/libcdio-paranoia-10.2+0.94+1.tar.bz2" $SECTION
+gettar "https://ftp.gnu.org/gnu/${TARNAME}/${TARBALL}" $SECTION
+gettar "https://ftp.gnu.org/gnu/libcdio/libcdio-paranoia-10.2+2.0.1.tar.bz2" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -30,6 +30,11 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		tar -xf ${SOURCEARCHIVES}/${SECTION}/"libcdio-paranoia-10.2+2.0.1.tar.bz2"
+		cd libcdio-paranoia-10.2+2.0.1
+		./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

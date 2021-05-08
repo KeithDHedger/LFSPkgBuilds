@@ -2,17 +2,21 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-17.3.4 giflib-5.1.4 libcdio-2.0.0 BinaryJDK-9.0.4 rapidjson-1.1.0 sqlite-3.22.0 taglib-2.66.7 tinyxml-2.6.2 swig-3.0.12 mariadb-10.2.13 openssh-7.4 openldap-2.4.45 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.14.0 pysqlite-2.8.3"
+DEPENDS="MesaLib-20.3.4 giflib-5.2.1 libcdio-2.1.0 OpenJDK-15.0.2 rapidjson-1.1.0 sqlite-3.34.1 taglib-1.12 tinyxml-2.6.2 swig-4.0.2 mariadb-10.5.8 openssh-8.4 openldap-2.4.57 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.15.0"
 
 if ! lfspkg -B "$DEPENDS";then
 	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
 	exit 100
 fi
 
-PKGNAME="kodi-krypton"
-TARNAME="Krypton"
-VERSION="17.6"
-#XVERSION="18.0"
+if ! python3 -c "help('modules');" 2>/dev/null| grep -qi _sqlite3;then
+	lfspkg -r python3||true
+	ANYVERSION=1 BUILD=3 lfspkg -B python3
+fi
+
+PKGNAME="kodi"
+TARNAME="Matrix"
+VERSION="19.0"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -22,7 +26,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/xbmc/xbmc/archive/${VERSION}-${TARNAME}/xbmc-${TARBALL}" $SECTION "${TARNAME}-${VERSION}.tar.gz"
+#gettar "https://github.com/xbmc/xbmc/archive/${VERSION}-${TARNAME}/xbmc-${TARBALL}" $SECTION "${TARNAME}-${VERSION}.tar.gz"
+gettar "https://github.com/xbmc/xbmc/archive/refs/tags/${TARBALL}"
 gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/kodi-texturepacker.patch" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/xbmc-Krypton-samba-4.0.patch" $SECTION
 rm -rf "$PKG" || true

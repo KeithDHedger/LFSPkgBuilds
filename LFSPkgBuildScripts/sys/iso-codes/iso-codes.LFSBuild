@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="iso-codes"
 TARNAME="$PKGNAME"
-VERSION="4.3"
+VERSION="4.5.0"
 BUILD=1
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/BLFS/iso-codes/${TARBALL}" $SECTION
+gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
