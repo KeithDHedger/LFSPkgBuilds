@@ -273,6 +273,7 @@
 ./libs/exiv2/exiv2.LFSBuild
 ./libs/fontconfig/fontconfig.LFSBuild
 ./libs/freetype/freetype.LFSBuild
+./libs/fstrcmp/fstrcmp.LFSBuild
 ./libs/gc/gc.LFSBuild
 ./libs/giflib/giflib.LFSBuild
 ./libs/glib/glib.LFSBuild
@@ -393,8 +394,8 @@
 ./mm/gstreamer/gstreamer.LFSBuild
 ./mm/id3lib/id3lib.LFSBuild
 ./mm/kodi/kodi.LFSBuild
-./mm/kodi/pi-kodi-krypton.LFSBuild
-./mm/kodi/pi-kodi.LFSBuild
+./mm/kodi/tbd/pi-kodi-krypton.LFSBuild
+./mm/kodi/tbd/pi-kodi.LFSBuild
 ./mm/lame/lame.LFSBuild
 ./mm/libass/libass.LFSBuild
 ./mm/libcdio/libcdio.LFSBuild
