@@ -44,7 +44,7 @@ pushd $LFS
 #This seems to be needed now as TERM=xterm screws up ncurses
 #Set TERM as dialog needs it
 	export TERM="xterm-color"
-	export DISPLAY=:1.0
+	export DISPLAY=:0.0
 	chroot "$LFS" /usr/bin/env -i HOME=/root DISPLAY="$DISPLAY" TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /bin/bash --login +h
 	rm ${LFS}/inchroot
 popd

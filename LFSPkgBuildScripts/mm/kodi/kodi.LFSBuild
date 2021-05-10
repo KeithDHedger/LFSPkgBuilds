@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions 
 
-DEPENDS="MesaLib-20.3.4 giflib-5.2.1 libcdio-2.1.0 libcdio-paranoia-10.2 OpenJDK-15.0.2 rapidjson-1.1.0 sqlite-3.34.1 taglib-1.12 tinyxml-2.6.2 swig-4.0.2 mariadb-10.5.8 openssh-8.4 openldap-2.4.57 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.15.0"
+DEPENDS="MesaLib-20.3.4 giflib-5.2.1 libcdio-2.1.0 libcdio-paranoia-10.2 OpenJDK-15.0.2 rapidjson-1.1.0 sqlite-3.34.1 taglib-1.12 tinyxml-2.6.2 swig-4.0.2 mariadb-10.5.8 openssh-8.4 openldap-2.4.57 fmt-3.0.1 crossguid-2.2 yajl-2.1.0 samba-4.5.5 libass-0.15.0 fstrcmp-0.7"
 
 if ! lfspkg -B "$DEPENDS";then
 	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
@@ -16,7 +16,7 @@ fi
 
 PKGNAME="kodi"
 TARNAME="Matrix"
-VERSION="19.0"
+VERSION="19.1"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -25,23 +25,67 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+_codename=Matrix
+_libdvdcss_version="1.4.2-Leia-Beta-5"
+_libdvdnav_version="6.0.0-Leia-Alpha-3"
+_libdvdread_version="6.0.0-Leia-Alpha-3"
+_ffmpeg_version="4.3.1-$_codename-Beta1"
+_fmt_version="6.1.2"
+_spdlog_version="1.5.0"
+_crossguid_version="8f399e8bd4"
+_flatbuffers_version="1.11.0"
+_libudfread_version="1.1.0"
+
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://github.com/xbmc/xbmc/archive/${VERSION}-${TARNAME}/xbmc-${TARBALL}" $SECTION "${TARNAME}-${VERSION}.tar.gz"
-gettar "https://github.com/xbmc/xbmc/archive/refs/tags/${TARBALL}"
-gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/kodi-texturepacker.patch" $SECTION
-gettar "https://slackbuilds.org/slackbuilds/14.2/multimedia/kodi/patches/xbmc-Krypton-samba-4.0.patch" $SECTION
+gettar "https://github.com/xbmc/xbmc/archive/refs/tags/v19.1.tar.gz" $SECTION "${TARNAME}-${VERSION}.tar.gz"
+gettar "https://github.com/xbmc/libdvdcss/archive/$_libdvdcss_version.tar.gz" ${SECTION}/kodideps libdvdcss-$_libdvdcss_version.tar.gz
+gettar "https://github.com/xbmc/libdvdnav/archive/$_libdvdnav_version.tar.gz" ${SECTION}/kodideps libdvdnav-$_libdvdnav_version.tar.gz
+gettar "https://github.com/xbmc/libdvdread/archive/$_libdvdread_version.tar.gz" ${SECTION}/kodideps libdvdread-$_libdvdread_version.tar.gz
+gettar "https://github.com/xbmc/FFmpeg/archive/$_ffmpeg_version.tar.gz" ${SECTION}/kodideps ffmpeg-$_ffmpeg_version.tar.gz
+gettar "http://mirrors.kodi.tv/build-deps/sources/fmt-$_fmt_version.tar.gz" ${SECTION}/kodideps 
+gettar "http://mirrors.kodi.tv/build-deps/sources/spdlog-$_spdlog_version.tar.gz" ${SECTION}/kodideps 
+gettar "http://mirrors.kodi.tv/build-deps/sources/crossguid-$_crossguid_version.tar.gz" ${SECTION}/kodideps 
+gettar "http://mirrors.kodi.tv/build-deps/sources/flatbuffers-$_flatbuffers_version.tar.gz" ${SECTION}/kodideps 
+gettar "http://mirrors.kodi.tv/build-deps/sources/libudfread-$_libudfread_version.tar.gz" ${SECTION}/kodideps 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}.tar.gz"
-	pushd "xbmc-${VERSION}-${TARNAME}"
+	pushd "xbmc-${VERSION}"
 		export PATH="$PATH:/opt/jdk/bin"
 		export JAVA_HOME=/opt/jdk
-		patch -Np0 -i ${SOURCEARCHIVES}/${SECTION}/kodi-texturepacker.patch
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/xbmc-Krypton-samba-4.0.patch
-		./bootstrap||exit 100
-		CFLAGS="${LFSFLAGS}" CXXFLAGS="${LFSFLAGS}" ./configure --prefix=/usr --disable-debug --disable-avahi --disable-webserver --disable-ssh --enable-optical-drive --disable-openmax --disable-tegra --disable-profiling --disable-mid --disable-airtunes --disable-dependency-tracking --disable-non-free --enable-gl --disable-vaapi --disable-pulse --enable-texturepacker --enable-alsa --enable-static=no --disable-vdpau
+
+		mkdir -vp buildx11
+		cd buildx11
+		cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+	    -DCMAKE_INSTALL_LIBDIR=/usr/lib64 \
+	    -DUSE_LTO=ON \
+	    -DENABLE_LDGOLD=OFF \
+	    -DENABLE_EVENTCLIENTS=ON \
+	    -DENABLE_INTERNAL_FFMPEG=ON \
+	    -DENABLE_INTERNAL_FMT=ON \
+	    -DENABLE_INTERNAL_SPDLOG=ON \
+	    -DENABLE_INTERNAL_CROSSGUID=ON \
+	    -DENABLE_INTERNAL_FLATBUFFERS=ON \
+	    -DENABLE_INTERNAL_UDFREAD=ON \
+	    -DENABLE_MYSQLCLIENT=ON \
+	    -DCORE_PLATFORM_NAME=x11 \
+	    -DCORE_SYSTEM_NAME=linux \
+	    -DCMAKE_HAVE_LIBC_PTHREAD=ON \
+	    -DAPP_RENDER_SYSTEM=gl \
+		-Dlibdvdcss_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/libdvdcss-$_libdvdcss_version.tar.gz" \
+	    -Dlibdvdnav_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/libdvdnav-$_libdvdnav_version.tar.gz" \
+	    -Dlibdvdread_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/libdvdread-$_libdvdread_version.tar.gz" \
+	    -DFFMPEG_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/ffmpeg-$_ffmpeg_version.tar.gz" \
+	    -DFMT_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/fmt-$_fmt_version.tar.gz" \
+	    -DSPDLOG_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/spdlog-$_spdlog_version.tar.gz" \
+	    -DCROSSGUID_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/crossguid-$_crossguid_version.tar.gz" \
+	    -DFLATBUFFERS_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/flatbuffers-$_flatbuffers_version.tar.gz" \
+	    -DUDFREAD_URL="${SOURCEARCHIVES}/${SECTION}/kodideps/libudfread-$_libudfread_version.tar.gz" \
+	    -DENABLE_VAAPI=OFF -Wno-dev ..
+
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -68,5 +112,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "xbmc-${VERSION}-${TARNAME}"
+	rm -r "$PKG" "xbmc-${VERSION}"
 popd 2>/dev/null||true

@@ -1,0 +1,2 @@
+http://fstrcmp.sourceforge.net/
+The fstrcmp project provides a library that is used to make fuzzy comparisons of strings and byte arrays, including multi-byte character strings.
