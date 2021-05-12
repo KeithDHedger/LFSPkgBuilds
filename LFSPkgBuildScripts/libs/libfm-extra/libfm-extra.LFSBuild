@@ -4,16 +4,16 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libevdev-1.11.0 mtdev-1.1.6"
+DEPENDS="glib-2.66.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="libinput"
-TARNAME="$PKGNAME"
-VERSION="1.17.1"
-BUILD=1
-SECTION="HWARE"
+PKGNAME="libfm-extra"
+TARNAME="libfm"
+VERSION="1.3.2"
+BUILD=${BUILD:-1}
+SECTION="LIBS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -21,18 +21,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.freedesktop.org/software/libinput/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/pcmanfm/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build
-		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dudev-dir=/lib/udev -Ddebug-gui=false -Dtests=false -Ddocumentation=false -Dlibwacom=false ..
-		ninja $MAKEFLAGS||ninja -j1||exit 100
-		DESTDIR=$PKG ninja install||exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-extra-only --with-gtk=no
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

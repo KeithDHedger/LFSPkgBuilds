@@ -4,35 +4,32 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libevdev-1.11.0 mtdev-1.1.6"
+DEPENDS="netsurf-buildsystem-1.9 netsurf-libhubbub-0.3.7"
 if ! lfspkg -B "$DEPENDS";then
+	echo -e "${RED}Can't build all dependencies, exiting ...${NORMAL}"
 	exit 100
 fi
 
-PKGNAME="libinput"
-TARNAME="$PKGNAME"
-VERSION="1.17.1"
+PKGNAME="netsurf-libnsfb"
+TARNAME="libnsfb"
+VERSION="0.2.1"
 BUILD=1
-SECTION="HWARE"
+SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}-src.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.freedesktop.org/software/libinput/${TARBALL}" $SECTION
+gettar "https://download.netsurf-browser.org/libs/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build
-		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dudev-dir=/lib/udev -Ddebug-gui=false -Dtests=false -Ddocumentation=false -Dlibwacom=false ..
-		ninja $MAKEFLAGS||ninja -j1||exit 100
-		DESTDIR=$PKG ninja install||exit 100
+		make INCLUDEDIR=include LIBDIR=lib PREFIX=/usr COMPONENT_TYPE=lib-shared DESTDIR=$PKG install || exit 100
 	popd
 
 	checketc "$PKG"

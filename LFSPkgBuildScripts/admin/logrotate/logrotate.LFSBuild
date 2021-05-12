@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="popt-1.16 fcron-3.2.1"
+DEPENDS="popt-1.18 fcron-3.2.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="logrotate"
 TARNAME="$PKGNAME"
-VERSION="3.15.0"
+VERSION="3.18.0"
 BUILD=1
 SECTION="ADMIN"
 SUFFIX="LFSPKG"

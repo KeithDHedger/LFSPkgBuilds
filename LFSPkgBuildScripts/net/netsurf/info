@@ -1,3 +1,33 @@
 NetSurf is a free, open source web browser. It is written in C and released under the GNU Public Licence version 2. NetSurf has its own layout and rendering engine entirely written from scratch. It is small and capable of handling many of the web standards in use today
 
 http://www.netsurf-browser.org/
+
+CSS parser and selection engine
+https://www.netsurf-browser.org/projects/libcss/
+
+String internment library with rapid string comparison
+https://github.com/archlinux/svntogit-community/blob/packages/libwapcaplet/trunk/PKGBUILD
+
+Library for building efficient parsers
+https://www.netsurf-browser.org/projects/libparserutils/
+
+The Netsurf buildsystem
+https://source.netsurf-browser.org/buildsystem.git
+
+Implementation of the W3C DOM
+https://www.netsurf-browser.org/projects/libdom/
+
+HTML5 compliant parsing library
+https://www.netsurf-browser.org/projects/hubbub/
+
+NetSurf Utilities
+https://source.netsurf-browser.org/libnsutils.git/
+
+Framebuffer abstraction library
+https://www.netsurf-browser.org/projects/libnsfb/
+
+C library for processing UTF-8 encoded Unicode strings
+https://github.com/JuliaStrings/utf8proc
+
+NetSurf JavaScript binding generator
+https://git.netsurf-browser.org/nsgenbind.git

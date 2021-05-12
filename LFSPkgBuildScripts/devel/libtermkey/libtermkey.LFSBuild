@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.leonerd.org.uk/code/libtermkey/${TARBALL}" $SECTION
+gettar "http://www.leonerd.org.uk/code/${TARNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
