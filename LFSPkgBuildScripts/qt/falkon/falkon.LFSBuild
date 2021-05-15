@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="qtwebengine-5.13.0 ki18n-5.61.0"
+DEPENDS="extra-cmake-modules-5.79.0 qt5-5.15.2 qtwebengine-5.15.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,9 +19,9 @@ TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
+
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.kde.org/stable/falkon/${VERSION%.?*}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 echo "$PKG"
 mkdir -p "$PKG"
@@ -30,9 +30,11 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		rm -rf po/
+		sed -i '/#include <QSettings>/a#include <QFile>' src/plugins/VerticalTabs/verticaltabsplugin.cpp
+		sed -i '/#include <QPainter>/a #include <QPainterPath>' src/lib/tools/qztools.cpp
 		mkdir build||true
 		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -DBUILD_TESTING=OFF -Wno-dev ..
+		cmake $CMAKEOPTIONS -DBUILD_TESTING=OFF -Wno-dev ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

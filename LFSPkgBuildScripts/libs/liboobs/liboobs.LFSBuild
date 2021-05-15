@@ -21,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.acc.umu.se/pub/GNOME/sources/liboobs/3.0/${TARBALL}" $SECTION
+gettar "http://ftp.acc.umu.se/pub/GNOME/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

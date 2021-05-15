@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.acc.umu.se/pub/GNOME/sources/system-tools-backends/2.10/${TARBALL}" $SECTION
+gettar "http://ftp.acc.umu.se/pub/GNOME/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

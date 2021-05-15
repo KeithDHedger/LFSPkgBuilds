@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="libmtp"
 TARNAME="$PKGNAME"
-VERSION="1.1.14"
+VERSION="1.1.18"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sourceforge.net/project/libmtp/libmtp/1.1.14/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/project/libmtp/libmtp/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
