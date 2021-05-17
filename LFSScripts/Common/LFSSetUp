@@ -35,7 +35,7 @@ readWithDefault ()
 case $PIBUILD in
 	1)
 		LIBDIRSUFFIX=""
-		PIKERNELVERSION=4.19.y
+		PIKERNELVERSION=5.10.y
 		PIVERS=${PIVERS:-4}
 		;;
 	*)
@@ -85,7 +85,7 @@ LFSVERSION=${LFSVERSION:-10.1}
 readWithDefault "LFSVERSION"  "Enter LFS Version"
 
 #Computer name
-LFSNAME=${LFSNAME:-"$(e2label "$ROOTDEV")"}
+LFSNAME=${LFSNAME:-"$(/sbin/e2label "$ROOTDEV")"}
 readWithDefault "LFSNAME"  "Enter Hostname"
 
 #LFS init type either bbinit, sysvinit, sytemd or custom
@@ -147,10 +147,7 @@ readWithDefault "ROOTFSTYPE"  "Enter Root FS Type"
 #Variable below this line are computed and probably don't need changing, but feel free.
 #computed stuff
 
-#ROOTDEV=$(findmnt -no SOURCE $LFS)
-#readWithDefault "ROOTDEV"  "Enter Root Device"
-
-SWAP=${SWAP:-$(blkid|grep swap|tail -n1|awk -F: '{print $1}')}
+SWAP=${SWAP:-$(/sbin/blkid|grep swap|tail -n1|awk -F: '{print $1}')}
 readWithDefault "SWAP"  "Enter Swap Device Or Path To Swapfile"
 
 LANGUAGE=${LANGUAGE:-$LANG}
@@ -190,7 +187,11 @@ echo "SOURCEARCHIVES=$SOURCEARCHIVES"
 echo "PKGARCHIVES=$PKGARCHIVES"
 echo "EXTFOLDER=$EXTFOLDER"
 echo "COMPILEAT=$COMPILEAT"
-echo "KERNELVERSION=$KERNELVERSION"
+if [ $PIBUILD -eq 1 ];then
+	echo "PIKERNELVERSION=$PIKERNELVERSION"
+else
+	echo "KERNELVERSION=$KERNELVERSION"
+fi
 echo "KEYBOARD=$KEYBOARD"
 echo "ROOTFSTYPE=$ROOTFSTYPE"
 echo "ROOTDEV=$ROOTDEV"
@@ -232,6 +233,7 @@ PIBUILD=$PIBUILD
 PIVERS=$PIVERS
 PIBOOTDEV=$PIBOOTDEV
 PIROOTDEV=$PIROOTDEV
+PIKERNELVERSION=$PIKERNELVERSION
 LFSNAME=$LFSNAME
 LFSVERSION=$LFSVERSION
 KERNELVERSION=$KERNELVERSION

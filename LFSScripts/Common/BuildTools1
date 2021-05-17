@@ -19,7 +19,6 @@
 #
 #Version 10.1
 
-
 RED='\e[1;31m'
 GREEN='\e[1;32m'
 NORMAL='\e[0;0m'
@@ -66,14 +65,21 @@ WGETTAR="https://ftp.gnu.org/gnu/wget/wget-$WGET_version.tar.gz"
 set +h
 umask 022
 LC_ALL=POSIX
-LFS_TGT=$(uname -m)-lfs-linux-gnu
+case $(uname -m) in
+	armv*)
+		LFS_TGT=$(uname -m)-lfs-linux-gnueabihf
+		;;
+	*)
+		LFS_TGT=$(uname -m)-lfs-linux-gnu
+		;;
+esac
 PATH=/usr/bin
 if [ ! -L /bin ];then
 	PATH=/bin:$PATH
 fi
 PATH=$LFS/tools/bin:$PATH
 export LFS LC_ALL LFS_TGT PATH
-export MAKEFLAGS=${MAKEFLAGS:-'-j4'}
+export MAKEFLAGS=${MAKEFLAGS:-'-j$(($(nproc)-1))'}
 
 if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	if [ "$USESYSTEMD" -eq 1 ];then
@@ -108,6 +114,17 @@ if [ ! -e ${SYSTEMSOURCE}/gotsystem ];then
 		echo "All files check ..."
 		touch "${SYSTEMSOURCE}/gotsystem"
 	fi
+
+	if [ "$PIBUILD" -eq 1 ];then
+		wget --continue https://intestinate.com/pilfs/scripts/pilfs-bootscripts-20190902.tar.xz
+		wget --continue https://github.com/raspberrypi/linux/archive/rpi-5.10.y.tar.gz
+		wget --continue https://github.com/raspberrypi/firmware/archive/master.tar.gz
+		wget --continue https://github.com/raspberrypi/rpi-eeprom/archive/v2020.09.03-138a1.tar.gz
+		wget --continue https://intestinate.com/pilfs/patches/gcc-9.1.0-rpi1-cpu-default.patch
+		wget --continue https://intestinate.com/pilfs/patches/gcc-9.1.0-rpi2-cpu-default.patch
+		wget --continue https://intestinate.com/pilfs/patches/gcc-9.1.0-rpi3-cpu-default.patch
+		wget --continue https://intestinate.com/pilfs/patches/gcc-9.1.0-rpi4-cpu-default.patch
+	fi
 fi
 
 TOOLNUM=$(cat ${SYSTEMSOURCE}/toolnum 2>/dev/null||true)
@@ -126,6 +143,7 @@ do
 			VERSION=$binutils_version
 			tar -xvf ${NAME}-${VERSION}.$binutils_arctype
 			pushd ${NAME}-${VERSION}
+				rm -rf build
 				mkdir -v build
 				cd build
 				../configure --prefix=$LFS/tools --with-sysroot=$LFS --target=$LFS_TGT --disable-nls --disable-werror
@@ -143,18 +161,8 @@ do
 			tar -xvf ${NAME}-${VERSION}.$gcc_arctype
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
-					armv6l)
-						patch -Np1 -i ../gcc-9.1.0-rpi1-cpu-default.patch
-						;;
-					armv7l)
-						case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
-							a02082|a22082|a32082)
-								patch -Np1 -i ../gcc-9.1.0-rpi3-cpu-default.patch
-								;;
-							*)
-								patch -Np1 -i ../gcc-9.1.0-rpi2-cpu-default.patch
-								;;
-						esac
+					armv*)
+						patch -Np1 -i ../gcc-9.1.0-rpi$PIVERS-cpu-default.patch
 						;;
 					x86_64)
 						sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
@@ -168,10 +176,11 @@ do
 				tar -zxf ../mpc-${mpc_version}.$mpc_arctype
 				mv -v mpc-$mpc_version mpc
 
+				rm -rf build
 				mkdir -v build
 				cd build
 				../configure --target=$LFS_TGT --prefix=$LFS/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --enable-initfini-array --disable-nls --disable-shared --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
-				make $MAKEFLAGS||make
+				make -j1
 				make install
 				cd ..
 				cat gcc/limitx.h gcc/glimits.h gcc/limity.h > $(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/install-tools/include/limits.h
@@ -182,8 +191,15 @@ do
 
 		3)
 #TODO rpi odd version string
-			NAME=linux
-			VERSION=$linux_version
+			if [ "$PIBUILD" -eq 1 ];then
+#	wget https://github.com/raspberrypi/linux/archive/rpi-5.10.y.tar.gz
+				NAME=rpi
+				VERSION=$PIKERNELVERSION
+				linux_arctype=tar.gz
+			else
+				NAME=linux
+				VERSION=$linux_version
+			fi
 			(mkdir ${NAME}-${VERSION}||true;tar -C ${NAME}-${VERSION} -xvf ${NAME}-${VERSION}.$linux_arctype --strip-components=1)
 			pushd ${NAME}-${VERSION}
 				make mrproper
@@ -201,14 +217,28 @@ do
 			VERSION=$glibc_version
 			tar -xvf ${NAME}-${VERSION}.$glibc_arctype
 			pushd ${NAME}-${VERSION}
-				ln -sfv ld-linux-x86-64.so.2 $LFS/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
+				case $(uname -m) in
+#					armv*)
+#						ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
+#					;;
+					i?86)
+						ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
+						;;
+					x86_64)
+						ln -sfv ld-linux-x86-64.so.2 $LFS/lib${LIBDIRSUFFIX}/ld-lsb-x86-64.so.3
+					;;
+				esac
 				patch -Np1 -i ../${NAME}-${VERSION}-fhs-1.patch
+				rm -rf build
 				mkdir -v build
 				cd build
 				../configure --prefix=/usr --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=3.2 --with-headers=$LFS/usr/include libc_cv_slibdir=/lib
 				make $MAKEFLAGS||make -j1|| exit 100
 				make DESTDIR=$LFS install
 			popd
+			if [ "$PIBUILD" -eq 1 ];then
+				ln -sv ld-2.33.so $LFS/tools/lib/ld-linux.so.3
+			fi
 			rm -rf ${NAME}-${VERSION}
 			echo 'int main(){}' > dummy.c
 			$LFS_TGT-gcc dummy.c
@@ -225,6 +255,7 @@ do
 			VERSION=$gcc_version
 			tar -xvf ${NAME}-${VERSION}.$gcc_arctype
 			pushd ${NAME}-${VERSION}
+				rm -rf build
 				mkdir -pv build
 				cd build
 				../libstdc++-v3/configure --host=$LFS_TGT --build=$(../config.guess) --prefix=/usr --disable-multilib --disable-nls --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/${VERSION}
@@ -256,6 +287,7 @@ do
 			tar -xvf  ${NAME}-${VERSION}.$ncurses_arctype
 			pushd  ${NAME}-${VERSION}
 				sed -i s/mawk// configure
+				rm -rf build
 				mkdir build
 				pushd build
 					../configure
@@ -327,6 +359,7 @@ do
 			VERSION=$file_version
 			tar -xvf ${NAME}-${VERSION}.$file_arctype
 			pushd ${NAME}-${VERSION}
+				rm -rf build
 				mkdir build
 				pushd build
 					../configure --disable-bzlib --disable-libseccomp --disable-xzlib --disable-zlib
@@ -475,9 +508,15 @@ do
 			VERSION=$binutils_version
 			tar -xvf ${NAME}-${VERSION}.$binutils_arctype
 			pushd ${NAME}-${VERSION}
+				if [ "$PIBUILD" -eq 1];then
+					BFDOPT="dis"
+				else
+					BFDOPT="en"
+				fi
+				rm -rf build
 				mkdir -v build
 				cd build
-				../configure --prefix=/usr --build=$(../config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --enable-64-bit-bfd
+				../configure --prefix=/usr --build=$(../config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --${BFDOPT}able-64-bit-bfd
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 				install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib
@@ -493,18 +532,11 @@ do
 			tar -xvf ${NAME}-${VERSION}.$gcc_arctype
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
-					armv6l)
-						patch -Np1 -i ../gcc-9.1.0-rpi1-cpu-default.patch
+					armv*)
+						patch -Np1 -i ../gcc-9.1.0-rpi$PIVERS-cpu-default.patch
 						;;
-					armv7l)
-						case $(sed -n '/^Revision/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo) in
-							a02082|a22082|a32082)
-								patch -Np1 -i ../gcc-9.1.0-rpi3-cpu-default.patch
-								;;
-							*)
-								patch -Np1 -i ../gcc-9.1.0-rpi2-cpu-default.patch
-								;;
-						esac
+					x86_64)
+						sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
 						;;
 				esac
 
@@ -520,12 +552,13 @@ do
 						sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
 						;;
 				esac
+				rm -rf build
 				mkdir -v build
 				cd build
 				mkdir -pv $LFS_TGT/libgcc
 				ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
 				../configure --build=$(../config.guess) --host=$LFS_TGT --prefix=/usr CC_FOR_TARGET=${LFS_TGT}-gcc --with-build-sysroot=$LFS --enable-initfini-array --disable-nls --disable-multilib --disable-decimal-float --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
-				make $MAKEFLAGS||make
+				make -j1
 				make DESTDIR=$LFS install
 				ln -sfnv gcc $LFS/usr/bin/cc
 			popd

@@ -8,18 +8,22 @@ Instructions for Raspberry Pi 4 !ONLY!
 #Use sudo where necessary to create links etc.
 #It will be assumed that your LFS partition is mounted on /mnt/LFS, using /dev/mmcblk0p11 <--- You MUST set this correctly!
 
+
+#If compiling on raspberian you need to install some extra files like so:
+apt-get update
+apt-get install bison gawk m4 texinfo
+#Also make sure /bin/sh points to /bin/bash
+
 LFS=/mnt/LFS
-LFSVERSION=9.0
+LFSVERSION=10.1
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
 PKGARCHIVES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
-KERNELVERSION=4.19
+PIKERNELVERSION=5.10.y
 PIVERS=4
 PIBUILD=1
 PIBOOTDEV=/dev/mmcblk0p10
 PIROOTDEV=/dev/mmcblk0p11
-#While building tools
-COMPILEAT=$LFS/$SOURCEARCHIVES
 
 export LFS
 export LFSVERSION
@@ -31,46 +35,17 @@ export PIVERS
 export PIBUILD
 export PIBOOTDEV
 export PIROOTDEV
-export COMPILEAT
 
-sudo mount /dev/mmcblk0p11 $LFS
-sudo mkdir -vp $SOURCEARCHIVES $PKGARCHIVES
-
-#If compiling on raspberian you need to install some extra files like so:
-apt-get update
-apt-get install bison gawk m4 texinfo
-#Also make sure /bin/sh points to /bin/bash
-
-#Get the build scripts and helper scripts from:
-#https://github.com/KeithDHedger/LFSPkgBuilds
-#either via git clone or downloading the zip file and unpacking it.
-#you should place the LFSPkgBuildScripts and LFSScripts folder in the root of what will be your new LFS eg ${LFS}/LFSPkgBuildScripts
+#Own the files ( If needed ):
+[sudo -E] chown -R $USER:$USER $LFS/LFSPkgBuilds
 
 2)
-###RECOMMENDED####
-#or cd into the mounted partition wher you intend to build LFS:
-#LFS should point to your mounted LFS partition ( eg LFS=/mnt/LFS ).
-cd $LFS
-sudo git clone https://github.com/KeithDHedger/LFSPkgBuilds.git
-
-Own the files:
-sudo chown -R $USER:$USER LFSPkgBuilds
-sudo ln -sv LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts
-sudo ln -sv LFSPkgBuilds/LFSScripts LFSScripts
-
 #If you want a swap file set up for later do:
-#set count to the size of the swapfile needed.
-
 sudo dd if=/dev/zero of=swapfile bs=1M count=512
 sudo chmod 600 swapfile
 sudo mkswap swapfile
 sudo swapon -v swapfile
-
-#If you are mounting a network folder over SOURCEARCHIVES & PKGARCHIVES (reccomened to save room ) you may want to set where the actual compilation takes place.
-#You will need to compile in a place that can set linux permissions so an smb mount would be no good for compiling as some files need to have specific permissions.
-#This is usually at $LFS/$SOURCEARCHIVES, compiling over a network is slow so you can use a local compile instead, eg:
-COMPILEAT=$LFS/tmp
-export COMPILEAT
+#set count to the size of the swapfile needed.
 
 3)
 #cd into the lfsscripts folder
@@ -85,7 +60,9 @@ sudo -E ./LFSSetUp
 
 4)
 #Run BuildTools script:
-./BuildTools-Pi
+#make sure normal user owns $LFS ( if you are using a dedicated user change $USER if needed ).
+[sudo -E] chown $USER $LFS
+./BuildTools1
 
 4.5)
 #Mount bind external folder if set and if not already mounted.
@@ -99,41 +76,50 @@ fi
 
 5)
 #Run BuildFileSystem script:
-sudo ./BuildFileSystem
-
-5.2)
-#You may/will have to re-own/set perms the various folders etc, so:
-sudo chown -R $USER:$USER $LFS/LFSPkgBuilds
-#If these are not network mounts then
-sudo chown -R $USER:$USER $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-sudo chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-
-5.5)
-#Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
-mkdir $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
-cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
-ln -sv ../SYSTEM/linux-$KERNELVERSION.tar.xz .
-
-5.6)
-#get the package manager archive via the host system:
-cd $LFS/LFSPkgBuildScripts/admin/LFSPkg
-wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/master.zip" -O LFSPkg.zip
-unzip LFSPkg.zip
+[sudo -E] ./BuildFileSystem
 
 6)
-#Change back to $LFS/LFSScripts folder.
-cd $LFS/LFSScripts
-
-#If you are building over ssh you may want to start a screen session that you can come back to later, if you haven't already.
-screen
-
-#Chroot into temporary system:
-#make sure the /tools link on the host is valid
-#I necessary do:
-#sudo ln -sv $LFS/tools/ /tools
-sudo ./Chroot system
+#Enter chroot
+[sudo] ./Chroot
 
 7)
+#finish building tempory tools.
+cd /LFSScripts
+./BuildTools2
+exit
+
+8)
+cd $LFS
+[sudo] find usr/{lib,libexec} -name \*.la -delete
+[sudo] rm -rf usr/share/{info,man,doc}/*
+[sudo] strip --strip-debug usr/lib/*
+[sudo] strip --strip-unneeded usr/{,s}bin/*
+[sudo] strip --strip-unneeded tools/bin/*
+
+#tar MUST be run as root to preserve permissions.
+#change ${HOME}/tools-${LFSVERSION}.tar.xz to suit.
+#make sure all virtual file systems etc are unmounted, including /LFSSourceArchives etc if you have mounted an extern drive there.
+#If you did NOT bind an external disk to /LFSSourceArchives, you may want to add --exclude="./LFSSourceArchives" to the tar command below, ( no real need to include the source archives into the tools archive ).
+[sudo -E] tar --one-file-system --exclude="./LFSPkgBuilds" --exclude="./LFSScripts" --exclude="./LFSPkgBuildScripts" -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
+
+9)
+#make sure you are back in the lfsscripts folder.
+cd $LFS/LFSScripts
+
+#Mount bind external folder if set and if not already mounted.
+. ./SystemData
+mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
+mkdir -vp ${LFS}/${PKGARCHIVES}||true
+if [ "X$EXTFOLDER" != "X" ];then
+	sudo mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
+	sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+fi
+
+10)
+#You may/will have to re-own/set perms the various folders etc, so:
+[sudo -E ] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+
 #You should now be in the chroot
 #First install lfspkg:
 cd /LFSPkgBuildScripts/admin/LFSPkg

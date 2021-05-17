@@ -111,9 +111,9 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 #Set this to your blank boot partition, if NOT set boot files are not copied.
-PIBOOTDEV="/dev/mmcblk0p8"
-PIROOTDEV="/dev/mmcblk0p9"
-ROOTFSTYPE="ext2"
+PIBOOTDEV="/dev/mmcblk0p10"
+PIROOTDEV="/dev/mmcblk0p7"
+ROOTFSTYPE="ext4"
 KERNELVERSION="4.19.y"
 
 PKG="${OUTPUT}/${PKGNAME}"
