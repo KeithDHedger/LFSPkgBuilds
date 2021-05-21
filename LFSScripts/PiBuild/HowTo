@@ -120,40 +120,59 @@ fi
 [sudo -E ] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 
+11)
+#Create a link from downloaded linux tarball to /LFSSourceArchives/$LFSVERSION/KERNEL to prevent re-downloading source tarball.
+mkdir  $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
+cd $LFS/LFSSourceArchives/$LFSVERSION/KERNEL
+ln -snfv ../SYSTEM/rpi-$PIKERNELVERSION.tar.gz .
+
+12)
+#get the package manager archive via the host system:
+cd $LFS/LFSPkgBuildScripts/admin/LFSPkg
+wget -c --no-check-certificate "https://github.com/KeithDHedger/LFSPkg/archive/master.zip" -O LFSPkg.zip
+unzip LFSPkg.zip
+
+13)
+#Change back to $LFS/LFSScripts folder.
+cd $LFS/LFSScripts
+
+#If you are building over ssh you may want to start a screen session that you can come back to later.
+screen
+
+#Chroot into temporary system:
+[sudo -E] ./Chroot
+
+14)
 #You should now be in the chroot
 #First install lfspkg:
 cd /LFSPkgBuildScripts/admin/LFSPkg
 BOOTSTRAP=1 ./LFSPkg.LFSBuild install
+#If you are asked whether to replace files etc You should reply 'R' to keep the settings created by the LFSSetup script.
 
 #As part of the LFSSetUp script $LFS/etc/lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
-#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
-#At this point wget/openssl is not installed so you will get a load of complaints from lfspkg, ignore them as lfspkg will be reinstalled later with the main system.
+#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
+#At this point wget/openssl is not installed so you will get a load of complaints from lfspkg about no wget etc, ignore them as lfspkg will be reinstalled later with the main system.
 
 #You should run lfspkg --setup to create the lfspkg.rc file ( in /etc )
+#Rc files are sourced from /etc/lfspkg.rc
 #lfspkg --setup can be run again later if you need/want to change source/build folders etc.
 #For building the main system you should probably set the configure options config files in /etc and log options.
 lfspkg --setup
 
-8)
+#You shoud probably set log file to 1, and check etc to 0 when installing the base system.
+#You can rerun lfspkg --setup at any time to tweak the settings.
+#after installing the base system you will probably want to at least set check etc to 1.
+
+15)
+#Remake a ( possibly ) broken symlink
+cd /LFSPkgBuildScripts/system
+ln -snvf ../../../LFSScripts/PkgVersions PkgVersions
+
 #Build main system:
 cd /LFSPkgBuildScripts/system/system-meta
 
 #LFSSetUp will have created a symlink to your desired init type so use:
 ./system-meta.LFSBuild install
-
-#Or if you have changed your mind you can install a different init system like so:
-
-#Use system-sysvinit-meta for standard sysvinit like so:
-./system-sysvinit-meta.LFSBuild install
-
-#Or use system-bbinit-meta.LFSBuildfor a busy box init system ( non standard ) like so:
-./system-bbinit-meta.LFSBuild install
-
-#Or for ##experimental## custom init system use:
-./system-LFSInit-meta.LFSBuild install
-
-#Or for rpi sysvinit system use:
-./system-pi-sysvinit-meta.LFSBuild install
 
 Wait for script to complete:
 ...
@@ -161,22 +180,16 @@ Have coffee
 Walk the dog
 ...
 
-9)
+16)
 #logout from temporary system:
 exit
 
-10)
-#Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
-sudo rm /tools
-#Remove the tools folder from your LFS install disk:
-sudo rm -rf $LFS/tools
-
-11)
-#Change back to $LFS/LFSScripts folder and re-enter the chroot ( this time and subsequent times don't use the 'system' argument to Chroot ):
+18)
+#Re-enter the chroot:
 cd $LFS/LFSScripts
-sudo ./Chroot
+[sudo -E] ./Chroot
 
-12)
+19)
 #You MUST rebuild lfspkg after completeing the the basic system and removing the tools folder.
 #Use same process as 2)/7) EXCEPT do NOT use BOOTSTRAP=1
 #If you have set any vairiable in /etc/lfspkg.rc then reply 'R' ( without the quotes ) when asked about replacing files in /etc.
@@ -184,8 +197,8 @@ sudo ./Chroot
 
 cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild
-
-#You may/probably want to run sudo lfspkg --setup to set up the full /etc/lfspkg.rc file
+#rerun setup if needed, ( probably best to set "Check /etc For Possible Config File Clashes" to 1 now.
+lfspkg --setup
 
 13)
 #No point in compiling your own kernel on pi so prebuilt one is used.
@@ -199,13 +212,57 @@ sed -i '1s/^/country=GB\n/' /etc/sysconfig/wpa_supplicant-wifi0.conf
 
 cd /LFSPkgBuildScripts/HelperScripts/
 #dialog program not yet installed so use:
-./InstallService-NoDialog wpa
+./InstallService wpa
 
-#Don't forget to set up /etc/sysconfig/ifconfig.wifi0 if nessasary ( a default is created based on /LFSSourceArchives/9.0/SYSTEM/SystemData.local ).
+#Don't forget to set up /etc/sysconfig/ifconfig.wifi0 if nessasary ( a default is created based on /LFSSourceArchives/10.1/SYSTEM/SystemData.local ).
 #Disable eth0
 mv  /etc/sysconfig/ifconfig.eth0 /etc/sysconfig/XXifconfig.eth0XX
 
-#Openssh and the sshd init script is installed by the system-meta package.
+#Openssh and the sshd init script is installed by the system-meta package the init scripts for ntpd and gpm are also installed.
+
+14)
+#Optional - Add your shiny new LFS to the NOOBS boot menu.
+#If you have installed LFS onto a spare partition on your NOOBS card you can easily add LFS to the boot menu like so:
+
+#IMPORTANT! before changing ANY files that may affect your pi booting up MAKe A COPY!!!
+#First locate and mount the SETTINGS partition ( usually /dev/mmcblk0p5 ), the blkid command can take several seconds to complete.
+sudo blkid
+
+#In my case the SETTINGS partition is /dev/mmcblk0p5 mounted on /media/keithhedger/SETTINGS, change the mount point to suit yourself.
+#You can either mount the partition manually or via your filemanager either way you will probably need root perms to make alterations.
+#You can also use extended attribute like so:
+sudo setfacl -bRm u:${USER}:rwx /media/keithhedger/SETTINGS
+
+#Create a LFS folder and add a nice image, the image should be apng image and no bigger than about 48x48:
+cd /media/keithhedger/SETTINGS
+mkdir -vp os/LFS
+#Change image path to suit.
+cp ~/Desktop/LFSTux.png os/LFS
+
+#Backup menu file then open in text editor.
+cp installed_os.json installed_os.json.BAK
+
+#Scroll to bottom and change the last '}' to '},' ( without quotes ).
+#Then insert the following between '},' and ']'
+
+ {
+  "bootable" : true,
+  "description" : "LFS System",
+  "icon" : "/settings/os/LFS/LFSTux.png",
+  "name" : "LFSKodi",
+  "partitions" : [
+"/dev/mmcblk0p10"
+  ],
+  "release_date" : "2018-03-04",
+  "supported_models" : [
+"Pi 4"
+  ]
+ }
+
+#Change the description to suit, image path to suit, change the release-date to suit and change supported models to suit.
+#Most important! change the boot partition to your newly created LFS boot partition, in this example it is /dev/mmcblk0p10 as set at the beginning of the HowTo.
+
+#Save and exit unmount as needed and reboot.
 
 #########################
 # If you have trouble ssh'ing into the 'real' LFS system you may need to manually set the date if the ntpd server takes too long, eg:
@@ -217,8 +274,9 @@ ntpdate -s time.nist.gov
 cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
 
-14)
-#The following are optional but useful
+15)
+#The following are optional but useful.
+#Not all are tested yet on Pi4.
 #Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
 #Build xorg ( experimental at the moment ):
 cd /LFSPkgBuildScripts/xorg/xorg-meta/

@@ -30,6 +30,9 @@ case "$ARCH" in
 	x86_64)
 		ABI=64
 		;;
+	armv*)
+		ABI=32
+		;;
 esac
 
 pushd $COMPILEAT 2>/dev/null||true

@@ -32,10 +32,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -v build||true
 		cd build
 		../configure $CONFIGOPTIONS LD=ld --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
-		make $MAKEFLAGS||make|| exit 100
+		make -j1||make -j1
 		make install DESTDIR="$PKG" || exit 100
 		rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/gcc/$(gcc -dumpmachine)/${VERSION}/include-fixed/bits/||true
-		chown -v -R root:root ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/*linux-gnu/${VERSION}/include{,-fixed}
+		chown -v -R root:root ${PKG}/usr/lib${LIBDIRSUFFIX}/gcc/*linux-gnu*/${VERSION}/include{,-fixed}
 		mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib${LIBDIRSUFFIX} $PKG/usr/lib${LIBDIRSUFFIX}/bfd-plugins
 		ln -sfv ../usr/bin/cpp $PKG/lib${LIBDIRSUFFIX}
 		ln -sfv gcc $PKG/usr/bin/cc

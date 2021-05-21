@@ -19,6 +19,11 @@
 #
 #Version 10.1
 
+#Sanitize env
+
+[ ! -e /etc/bash.bashrc ] || sudo -p "Enter admin PW to move /etc/bash.bashrc aside : " mv -v /etc/bash.bashrc /etc/bash.bashrc.NOUSE
+[ "$HOME" != "" ] && exec -c /usr/bin/env -i USER=$USER TERM="$TERM" $0
+
 RED='\e[1;31m'
 GREEN='\e[1;32m'
 NORMAL='\e[0;0m'
@@ -78,9 +83,12 @@ if [ ! -L /bin ];then
 	PATH=/bin:$PATH
 fi
 PATH=$LFS/tools/bin:$PATH
-export LFS LC_ALL LFS_TGT PATH
-export MAKEFLAGS=${MAKEFLAGS:-'-j$(($(nproc)-1))'}
+CONFIG_SITE=$LFS/usr/share/config.site
+MAKEFLAGS="-j$(($(nproc)-1))"
 
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+
+env
 if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	if [ "$USESYSTEMD" -eq 1 ];then
 		wget --no-check-certificate http://www.linuxfromscratch.org/lfs/view/systemd/wget-list
@@ -118,7 +126,8 @@ if [ ! -e ${SYSTEMSOURCE}/gotsystem ];then
 	if [ "$PIBUILD" -eq 1 ];then
 		wget --continue https://intestinate.com/pilfs/scripts/pilfs-bootscripts-20190902.tar.xz
 		wget --continue https://github.com/raspberrypi/linux/archive/rpi-5.10.y.tar.gz
-		wget --continue https://github.com/raspberrypi/firmware/archive/master.tar.gz
+		wget --continue https://github.com/raspberrypi/firmware/archive/master.tar.gz -O firmware-master-5.10.tar.gz
+		wget --no-check-certificate -c https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz -O firmware-RPI-blobs.tar.gz
 		wget --continue https://github.com/raspberrypi/rpi-eeprom/archive/v2020.09.03-138a1.tar.gz
 		wget --continue https://intestinate.com/pilfs/patches/gcc-9.1.0-rpi1-cpu-default.patch
 		wget --continue https://intestinate.com/pilfs/patches/gcc-9.1.0-rpi2-cpu-default.patch
@@ -218,9 +227,6 @@ do
 			tar -xvf ${NAME}-${VERSION}.$glibc_arctype
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
-#					armv*)
-#						ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
-#					;;
 					i?86)
 						ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
 						;;
@@ -508,15 +514,10 @@ do
 			VERSION=$binutils_version
 			tar -xvf ${NAME}-${VERSION}.$binutils_arctype
 			pushd ${NAME}-${VERSION}
-				if [ "$PIBUILD" -eq 1];then
-					BFDOPT="dis"
-				else
-					BFDOPT="en"
-				fi
 				rm -rf build
 				mkdir -v build
 				cd build
-				../configure --prefix=/usr --build=$(../config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --${BFDOPT}able-64-bit-bfd
+				../configure --prefix=/usr --build=$(../config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --enable-64-bit-bfd
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 				install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib

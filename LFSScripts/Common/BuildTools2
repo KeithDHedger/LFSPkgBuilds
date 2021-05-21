@@ -37,7 +37,7 @@ else
 	exit 100
 fi
 
-export MAKEFLAGS=${MAKEFLAGS:-"-j$(($(nproc)-1))"}
+MAKEFLAGS=${MAKEFLAGS:-"-j$(($(nproc)-1))"}
 
 SYSTEMSOURCE="${SOURCEARCHIVES}/SYSTEM"
 NETSOURCE="${SOURCEARCHIVES}/NET"
@@ -66,7 +66,7 @@ do
 				mkdir -pv build
 				cd build
 				../libstdc++-v3/configure CXXFLAGS="-g -O2 -D_GNU_SOURCE" --prefix=/usr --disable-multilib --disable-nls --host=$HOSTIS --disable-libstdcxx-pch
-				make
+				make $MAKEFLAGS||make -j1
 				make install
 			popd
 			rm -rf ${NAME}-${VERSION}

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 . /usr/share/LFSPkg/LFSFunctions
 
@@ -6,116 +6,108 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 export NOCHANGEUSER=1
 export CHECKETC=0
-export CONFIGOPTIONS="--prefix=/usr --disable-debug --disable-nls"
+export CONFIGOPTIONS=${CONFIGOPTIONS:-"--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib --disable-debug --disable-nls --disable-static"}
+
 THISTTY=$(tty)
 export THISTTY
-export LFSVERSION
-export BUILDSCRIPTS
-export OUTPUT
-export SOURCEARCHIVES
-export PKGARCHIVES
-export COMPILEAT
-export SCRIPTLOG
-export MAKEFLAGS
-export NOLOADCONFIG=1
 export ANYVERSION=1
 export USESYSTEMD=0
 
-DEPENDS="pi-linuxheaders-4.19
-Man-pages-5.02
-Glibc-2.30
-Zlib-1.2.11
-File-5.37
-Readline-8.0
-M4-1.4.18
-Bc-2.1.3
-Binutils-2.32
-GMP-6.1.2
-MPFR-4.0.2
-MPC-1.1.0
-Shadow-4.7
-GCC-9.2.0
-Bzip2-1.0.8
-Pkg-config-0.29.2
-Ncurses-6.1
-attr-2.4.48
-acl-2.2.53
-libcap-2.27
-Sed-4.7
-Psmisc-23.2
-Iana-Etc-2.30
-Bison-3.4.1
-Flex-2.6.4
-Grep-3.3
-Bash-5.0
-Libtool-2.4.6
-GDBM-1.18.1
-gperf-3.1
-Expat-2.2.7
-Inetutils-1.9.4
-Perl-5.30.0
-XML-Parser-2.44
-intltool-0.51.0
-Autoconf-2.69
-Automake-1.16.1
-xz-5.2.4
-Kmod-26
-Gettext-0.20.1
-Libelf-0.177
-Libffi-3.2.1
-OpenSSL-1.1.1
-python3-3.7.4
-Ninja-1.9.0
-Meson-0.51.1
-Coreutils-8.31
-Check-0.12.0
-Diffutils-3.7
-Gawk-5.0.1
-Findutils-4.6.0
-Groff-1.22.4
-Less-551
-Gzip-1.10
-IPRoute2-5.2.0
-Kbd-2.2.0
-Libpipeline-1.5.1
-Make-4.2.1
-Patch-2.7.6
-Man-DB-2.8.6.1
-Tar-1.32
-Texinfo-6.6
-Vim-8.1.1846
-Procps-ng-3.3.15
-Util-linux-2.34
-E2fsprogs-1.45.3
-Sysklogd-1.5.1
-Sysvinit-2.95
-Wget-1.20.3
-unzip-6.0
-lfs-bootscripts-20190524
-eudev-3.2.8
-Wget-1.20.3
+. ../PkgVersions
+
+. ${SOURCEARCHIVES}/SYSTEM/SystemData.local
+
+DEPENDS="Man-pages
+Iana-Etc
+Glibc
+Zlib
+Bzip2
+xz
+zstd
+File
+Readline
+M4
+Bc
+Flex
+tcl
+expect
+dejagnu
+Binutils
+GMP
+MPFR
+MPC
+attr
+acl
+libcap
+Shadow
+GCC
+Pkg-config
+Ncurses
+Sed
+Psmisc
+Gettext
+Bison
+Grep
+Bash
+Libtool
+GDBM
+gperf
+Expat
+Inetutils
+Perl
+XML-Parser
+intltool
+Autoconf
+Automake
+Kmod
+Libelf
+Libffi
+OpenSSL
+python3
+Ninja
+Meson
+Coreutils
+Check
+Diffutils
+Gawk
+Findutils
+Groff
+GRUB
+Less
+Gzip
+IPRoute2
+Kbd
+Libpipeline
+Make
+Patch
+Man-DB
+Tar
+Texinfo
+Vim
+eudev
+Procps-ng
+Util-linux
+E2fsprogs
+Sysklogd
+Sysvinit
+lfs-bootscripts
+Wget-1.21.1
 unzip-6.0
 GPM-1.20.7
+Links-2.21
 ntp-4.2.8
-openssh-8.0
-Links-2.19
-pilfs-bootscripts-20190902"
+openssh
+pilfs-bootscripts"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="system-meta"
-VERSION="9.0"
+VERSION="10.1"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-#Set this to your blank boot partition, if NOT set boot files are not copied.
-PIBOOTDEV="/dev/mmcblk0p10"
-PIROOTDEV="/dev/mmcblk0p7"
-ROOTFSTYPE="ext4"
-KERNELVERSION="4.19.y"
-
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -125,7 +117,7 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	mkdir -vp ${PKG}/opt ${PKG}/etc/ld.so.conf.d ${PKG}/lib/firmware
-	tar -xvf ${SOURCEARCHIVES}/${SECTION}/firmware-$KERNELVERSION.tar.xz
+	tar -xvf ${SOURCEARCHIVES}/${SECTION}/firmware-master-${PIKERNELVERSION%.?*}.tar.gz
 	cp -rv firmware-master/hardfp/opt/vc ${PKG}/opt
 	echo "/opt/vc/lib" >> ${PKG}/etc/ld.so.conf.d/broadcom.conf
 	cp -rv firmware-master/modules ${PKG}/lib
@@ -144,7 +136,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	fi
 
 	pushd "${BUILDSCRIPTS}/HelperScripts"
-		./InstallService-NoDialog "ntpd sshd gpm"
+		./InstallService "ntpd sshd gpm"
 	popd
 
 	mkdir -vp $PKG/lib/udev/rules.d
