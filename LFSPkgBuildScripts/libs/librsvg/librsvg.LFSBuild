@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gdk-pixbuf-2.42.2 Pango-1.48.2 cairo-1.17.2 gobject-introspection-1.66.1 gtk-doc-1.33.2 Rust-1.47.0 vala-0.50.3"
+DEPENDS="gdk-pixbuf-2.42.2 Pango-1.48.2 cairo-1.17.2 gobject-introspection-1.66.1 gtk-doc-1.33.2 rustc-1.47.0 vala-0.50.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

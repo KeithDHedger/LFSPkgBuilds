@@ -39,9 +39,8 @@ pushd $COMPILEAT 2>/dev/null||true
 			cd build
 			DRI_DRIVERS="r100,r200,nouveau"
 			GALLIUM_DRV="vc4,v3d,kmsro,swrast"
-			PLATFORMS="x11,surfaceless,drm"
+			PLATFORMS="x11"
 			meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX \
-			-Dbuildtype=release \
 			-Ddri-drivers=$DRI_DRIVERS \
 			-Dgallium-drivers=$GALLIUM_DRV \
 			-Dgallium-nine=false \

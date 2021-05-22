@@ -9,16 +9,32 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="rust"
-TARNAME="$PKGNAME"
+PKGNAME="rustc"
+TARNAME="rust"
 VERSION="1.47.0"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}-$ARCH-unknown-linux-gnu.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
+
+case $ARCH in
+	armv7*)
+		TUPLE=armv7-unknown-linux-gnueabihf
+		;;
+	x86_64)
+		TUPLE=$ARCH-unknown-linux-gnu
+		;;
+	i*86)
+		TUPLE=$ARCH-unknown-linux-gnu
+		;;
+	*)
+		echo "CPU not supported yet ..."
+		exit 100
+		;;
+esac
+TARBALL="${TARNAME}-${VERSION}-$TUPLE.tar.gz"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://static.rust-lang.org/dist/${TARBALL}" $SECTION
@@ -27,7 +43,7 @@ mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}-$ARCH-unknown-linux-gnu"
+	pushd "${TARNAME}-${VERSION}-$TUPLE"
 		./install.sh --destdir=$PKG --prefix=/opt/rust
 	popd
 
@@ -53,5 +69,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}-$ARCH-unknown-linux-gnu"
+	rm -r "$PKG" "${TARNAME}-${VERSION}-$TUPLE"
 popd 2>/dev/null||true
