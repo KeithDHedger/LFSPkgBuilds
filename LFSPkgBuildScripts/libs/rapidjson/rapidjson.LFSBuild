@@ -27,7 +27,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		find -name CMakeLists.txt | xargs sed -e 's|-Werror||' -i
 		mkdir build||true
 		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE ..
+		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

@@ -10,7 +10,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="js"
-VERSION="78.8.0"
+VERSION="78.10.1"
 TARNAME="firefox-${VERSION}esr.source"
 BUILD=${BUILD:-1}
 SECTION="NET"
@@ -22,17 +22,48 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://archive.mozilla.org/pub/firefox/releases/${VERSION}esr/source/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-OPTIONS="--prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc"
+if [ "$PIBUILD" -eq 1 ];then
+	OPTIONS="--prefix=/usr
+    --disable-debug
+    --disable-debug-symbols
+    --disable-jemalloc
+    --disable-strip
+    --enable-hardening
+    --disable-lto
+    --enable-optimize
+    --enable-readline
+    --enable-release
+    --disable-rust-simd
+    --enable-shared-js
+    --enable-tests
+    --with-intl-api
+    --with-system-zlib
+    --with-system-icu"
 
-checkforoptions
+#can't compile on rpi 4 with clang TBF
+	export CC='gcc'
+	export CXX='g++'
+	export AR=ar
+	export NM=nm
+	export RANLIB=ranlib
+else
+	OPTIONS="--prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc"
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "firefox-${VERSION}"
+		if [ "$PIBUILD" -eq 1 ];then
+#thx to archarm for patches
+			patch -p1 -i "${CWD}/arm.patch"||true
+# Post-78 fixes to fix LTO with LLVM 11
+			patch -Np1 -i "${CWD}//0001-Fixes-for-LTO-PGO-support.patch"||true
+# Fix build with Rust 1.48
+			patch -Np1 -i "${CWD}/0002-Bug-1667736-Update-packed_simd-to-compile-on-Rust-1.patch"||true
+		fi
 		export SHELL=/bin/bash
 		. /etc/profile
 		. /etc/profile.d/rustc.sh
