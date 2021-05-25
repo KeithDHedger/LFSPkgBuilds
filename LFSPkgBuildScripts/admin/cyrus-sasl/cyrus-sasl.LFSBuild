@@ -4,11 +4,6 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="OpenSSL-1.1.1"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="cyrus-sasl"
 TARNAME="$PKGNAME"
 VERSION="2.1.27"
@@ -23,7 +18,6 @@ CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/cyrusimap/cyrus-sasl/releases/download/${PKGNAME}-${VERSION}/${TARBALL}" $SECTION
 gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-doc_fixes-1.patch" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

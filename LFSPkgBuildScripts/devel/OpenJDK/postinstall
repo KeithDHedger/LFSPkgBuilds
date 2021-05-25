@@ -2,10 +2,10 @@
 
 #©keithhedger Wed 18 Feb 12:28:04 GMT 2015 kdhedger68713@gmail.com
 
-JDKVERSION="15.0.2+7"
+#JDKVERSION="15.0.2+7"
 
-rm -f /opt/jdk
-(cd /opt;ln -sv jdk-${JDKVERSION} jdk)
+#rm -f /opt/jdk
+#(cd /opt;ln -sv jdk-${JDKVERSION} jdk)
 
 mkdir -vp /usr/share/applications||true
 cat > /usr/share/applications/openjdk-9-java.desktop << "EOF"

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#©keithhedger Wed 18 Feb 12:28:04 GMT 2015 kdhedger68713@gmail.com
+
+lfspkg -r BinaryJDK||true
+
+exit 0
