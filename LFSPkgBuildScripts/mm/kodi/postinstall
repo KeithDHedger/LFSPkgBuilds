@@ -1,0 +1,19 @@
+#!/bin/bash
+
+. /usr/share/LFSPkg/LFSFunctions
+
+. /LFSScripts/SystemData.local
+
+if [ "$PIBUILD" -eq 1 ];then
+	if ! mountpoint /boot &>/dev/null;then
+		mkdir /boot||true
+		mount $PIBOOTDEV /boot||true
+	fi
+	cp ${SOURCEARCHIVES}/MM/kodi.config.txt /boot
+	if [ -f "/boot/config.txt" ];then
+		if ! grep -q 'include kodi.config.txt' "/boot/config.txt";then
+			echo -e "[all]\ninclude kodi.config.txt\n" >> /boot/config.txt
+		fi
+	fi
+fi
+

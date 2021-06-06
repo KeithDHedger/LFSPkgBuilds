@@ -4,7 +4,6 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-
 PKGNAME="fstrcmp"
 TARNAME="$PKGNAME"
 VERSION="0.7"
@@ -24,6 +23,13 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}.D001"
+#don't want/need pdf doc
+#if you must have it install LFSPkgBuildScripts/print/ghostscript/ghostscript.LFSBuild first
+		if ! which ps2pdf &>/dev/null;then
+			echo -e '#!/bin/bash\ntouch "$2"\nexit 0\n' > ps2pdf
+			chmod +x ps2pdf
+			PATH=".:${PATH}"
+		fi
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

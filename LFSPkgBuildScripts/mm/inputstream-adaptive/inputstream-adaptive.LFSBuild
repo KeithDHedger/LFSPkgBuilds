@@ -4,37 +4,38 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="harfbuzz-2.7.4 FreeType-2.10.4 FriBidi-1.0.9 Fontconfig-2.13.1 NASM-2.15.05"
+DEPENDS="kodi-19.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="libass"
-TARNAME="$PKGNAME"
-VERSION="0.15.0"
-BUILD=${BUILD:-1}
+PKGNAME="inputstream-adaptive"
+TARNAME="Matrix"
+VERSION="2.6.16"
+BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${PKGNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
-OPTIONS=${OPTIONS:-""}
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/libass/${PKGNAME}/releases/download/${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/xbmc/inputstream.adaptive/archive/refs/tags/${VERSION}-${TARNAME}.tar.gz" $SECTION ${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} ${OPTIONS}
+	pushd "inputstream.adaptive-${VERSION}-${TARNAME}"
+		mkdir build || true
+		cd  build
+		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -56,5 +57,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
-popd 2>/dev/null
+	rm -r "$PKG" "inputstream.adaptive-${VERSION}-${TARNAME}"
+popd 2>/dev/null||true
