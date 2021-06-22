@@ -21,8 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://dl.bintray.com/boostorg/release/${VERSION}/source/${TARBALL}" $SECTION
-
+gettar "https://boostorg.jfrog.io/artifactory/main/release/${VERSION}/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
