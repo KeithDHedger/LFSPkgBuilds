@@ -1,0 +1,31 @@
+https://github.com/KeithDHedger/CursesToolKit
+CursesToolKit
+Curses based general gadget toolkit
+
+Library for creating general purpose curses based gadgets.
+Written entirely in c++.
+
+Gadgets available:
+Buttons.
+Text box ( scrollable).
+Menubar and menuitems.
+Input box.
+Edit box.
+Source code edit box.
+List box.
+Check box.
+Label.
+Frame buffer image.
+File Chooser.
+
+Convenience functions:
+Entry dialog.
+Query dialog.
+Save file dialog.
+Open file dialog.
+Open folder dialog.
+About dialog.
+
+Main application class including event handlers etc.
+
+Loads to do yet, see the examples for a taster.
