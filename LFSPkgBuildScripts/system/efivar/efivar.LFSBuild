@@ -4,36 +4,37 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="p11-kit-0.23.22"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="make-ca"
+PKGNAME="efivar"
 TARNAME="$PKGNAME"
-VERSION="1.7"
-BUILD=${BUILD:-1}
-SECTION="DEVEL"
+VERSION="37"
+BUILD=1
+SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/rhboot/efivar/releases/download/37/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/11.0/efivar-37-gcc_9-1.patch" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/lfs-book/make-ca/releases/download/v${VERSION}/${TARBALL}" $SECTION
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local||true
-		ln -sfv /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.crt
-		ln -sfv /etc/pki/tls/certs/ca-bundle.crt $PKG/etc/ssl/ca-bundle.crt
-		make install DESTDIR=$PKG
+		patch -Np1 -i "${SOURCEARCHIVES}/${SECTION}//efivar-37-gcc_9-1.patch"
+		make CFLAGS="-O2 -Wno-stringop-truncation" || exit 100
+		make install DESTDIR=$PKG LIBDIR=/usr/lib${LIBDIRSUFFIX} || exit 100
 	popd
 
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -55,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${PKGNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
