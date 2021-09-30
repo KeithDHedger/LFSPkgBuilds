@@ -23,7 +23,7 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/djlucas/make-ca/releases/download/v${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/lfs-book/make-ca/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

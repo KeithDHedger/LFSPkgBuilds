@@ -30,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${PKGNAME,,}-${TARNAME}-${VERSION}"
 		mkdir build || true
 		cd  build
-		cmake $CMAKEINSTALLPREFIX $CMAKELIBDIRSUFFIX $CMAKEUSEQT5 $CMAKEPREFIXPATH $CMAKEBUILDTYPE -Wno-dev ..
+		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -59,3 +59,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${PKGNAME,,}-${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

@@ -5,12 +5,9 @@
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 DEPENDS="make-ca-1.7 alsa-lib-1.2.4 giflib-5.2.1 cpio-2.13 Cups-2.3.3 UnZip-6.0 Wget-1.20.3 Which-2.21 xorg-libs-10.1 Zip-3.0 libjpeg-turbo-2.0.6"
+
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
-fi
-
-if ! which java &>/dev/null;then
-	ANYVERSION=1 lfspkg -B "BinaryJDK"||exit 100
 fi
 
 PKGNAME="OpenJDK"
@@ -26,6 +23,10 @@ CWD=$(pwd)
 TARROOTPKGNAME="jdk15u"
 TARROOTPKGSUBVERSION="+7"
 
+if ! which java &>/dev/null;then
+	ANYVERSION=1 lfspkg -B "BinaryJDK"||exit 100
+fi
+
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/${TARNAME}/${TARROOTPKGNAME}/archive/jdk-${VERSION}-ga.tar.gz" $SECTION
 rm -rf "$PKG" || true
@@ -40,6 +41,7 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}-ga.tar.gz"
 	pushd "${TARROOTPKGNAME}-jdk-${VERSION}-ga"
+		. /etc/profile
 		. /etc/profile.d/openjdk.sh
 		PATH="${PATH}:/opt/jdk/bin"
 		unset JAVA_HOME
@@ -82,4 +84,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARROOTPKGNAME}-jdk-${VERSION}-ga"
 popd 2>/dev/null||true
+
+
+
 

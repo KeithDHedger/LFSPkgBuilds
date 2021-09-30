@@ -44,7 +44,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			tar -xvf data.tar.xz
 			cp -rf usr/lib/jvm/bellsoft-java14-full-arm32-vfp-hflt/* $PKG/opt/${PKGNAME}
 		else
-			tar  --strip-components=1 -xvf "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}${TARSUFFIX}" -C ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}
+			tar  --strip-components=1 -xvf "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}${TARSUFFIX}"
 			mv -v * $PKG/opt/${PKGNAME}
 		fi
 		ln -snfv ${PKGNAME} $PKG/opt/jdk
@@ -75,3 +75,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${SOURCEARCHIVES}/${PKGNAME}"
 popd 2>/dev/null||true
+
+

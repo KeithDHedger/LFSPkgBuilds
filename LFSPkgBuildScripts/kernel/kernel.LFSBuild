@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
+#Copy the config for the running kernel if needed
+#gunzip < /proc/config.gz > $(pwd)/config-$linux_version
+
 . /usr/share/LFSPkg/LFSFunctions
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
@@ -13,7 +16,7 @@ BUILD=${BUILD:-1}
 SECTION="KERNEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$linux_arctype"
-KERNELCONFIG=$(pwd)/config-${VERSION}
+KERNELCONFIG=${KERNELCONFIG:-$(pwd)/config-$linux_version}
 KERNELSOURCEDIR="${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}_${BUILD}"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
@@ -21,9 +24,6 @@ DOWHAT=${1:-"build"}
 mkdir -vp ${KERNELSOURCEDIR}||true
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
-#Copy the config for the running kernel if needed
-#gunzip < /proc/config.gz > ${KERNELCONFIG}
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.kernel.org/pub/linux/kernel/v5.x/${TARBALL}" ${SECTION} ${TARBALL}
@@ -33,8 +33,9 @@ pushd "${KERNELSOURCEDIR}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/boot $PKG/usr/src||true
 		make mrproper
-		cp $KERNELCONFIG .config
+		cp "$KERNELCONFIG" .config
 		make menuconfig|| exit 100
+		#make mod2yesconfig|| exit 100
 		make $MAKEFLAGS bzImage||make bzImage||exit 100
 		make $MAKEFLAGS modules||make modules||exit 100
 		make modules_install INSTALL_MOD_PATH=$PKG INSTALL_PATH=$PKG

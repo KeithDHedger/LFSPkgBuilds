@@ -1,0 +1,2 @@
+http://www.linuxfromscratch.org/blfs/view/svn/postlfs/efibootmgr.html
+The efibootmgr package provides tools and libraries to manipulate EFI variables.

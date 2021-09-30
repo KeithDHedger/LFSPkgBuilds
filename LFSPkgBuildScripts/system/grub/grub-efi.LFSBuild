@@ -4,41 +4,45 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="GTK-2.24.33"
+DEPENDS="efibootmgr-17 FreeType-2.10.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="GtkSu"
-TARNAME="$PKGNAME"
-VERSION="0.1.6"
+PKGNAME="grub-efi"
+TARNAME="grub"
+VERSION=2.06
 BUILD=${BUILD:-1}
-SECTION="ADMIN"
+SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/GtkSu/archive/master.zip" $SECTION ${TARBALL}
+gettar "https://ftp.gnu.org/gnu/grub/${TARBALL}" $SECTION
+gettar "https://unifoundry.com/pub/unifont/unifont-13.0.06/font-builds/unifont-13.0.06.pcf.gz" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${PKGNAME}-master"
-		./autogen.sh
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-ktsuss-link
-		make
+	pushd "${TARNAME}-${VERSION}"
+		mkdir -pv $PKG/usr/share/fonts/unifont
+		gunzip -c ${SOURCEARCHIVES}/${SECTION}/unifont-13.0.06.pcf.gz > $PKG/usr/share/fonts/unifont/unifont.pcf
+		unset {C,CPP,CXX,LD}FLAGS
+		./configure --prefix=/usr --sysconfdir=/etc --disable-efiemu --enable-grub-mkfont --with-platform=efi --disable-werror
+		make -j1 || exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/bash-completion/completions
+		mv -v $PKG/etc/bash_completion.d/grub $PKG/usr/share/bash-completion/completions
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		find | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd
 
@@ -57,5 +61,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${PKGNAME}-master"
+	rm -r "$PKG" "${TARNAME}-${VERSION}${MINORVERSION}"
 popd 2>/dev/null||true

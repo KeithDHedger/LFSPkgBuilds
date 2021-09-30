@@ -24,8 +24,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		python setup.py build
-		python setup.py install --optimize=1 --root=$PKG --prefix=/usr || exit 100
+		python3 setup.py build
+		python3 setup.py install --optimize=1 --root=$PKG --prefix=/usr || exit 100
 		for f in $PKG/usr/bin/rst*.py
 			do
 				ln -svf $(basename $f) $PKG/usr/bin/$(basename $f .py)
