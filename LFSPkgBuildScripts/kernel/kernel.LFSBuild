@@ -16,7 +16,8 @@ BUILD=${BUILD:-1}
 SECTION="KERNEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$linux_arctype"
-KERNELCONFIG=${KERNELCONFIG:-$(pwd)/config-$linux_version}
+#KERNELCONFIG=${KERNELCONFIG:-"$(pwd)/config-${linux_version}-${BUILD}"}
+KERNELCONFIG=${KERNELCONFIG:-"/LFSPkgBuildScripts/configs/kernel/config-${linux_version}-${BUILD}"}
 KERNELSOURCEDIR="${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}_${BUILD}"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
@@ -43,14 +44,14 @@ pushd "${KERNELSOURCEDIR}"
 		ARCH=${ARCH:-$(uname -m)}
 		case $ARCH in
 			i*86)
-				cp -v arch/x86/boot/bzImage $PKG/boot/vmlinuz-$VERSION
+				cp -v arch/x86/boot/bzImage $PKG/boot/vmlinuz-${VERSION}-${BUILD}
 				;;
 			x86_64)
-				cp -v arch/x86_64/boot/bzImage $PKG/boot/vmlinuz-$VERSION
+				cp -v arch/x86_64/boot/bzImage $PKG/boot/vmlinuz-${VERSION}-${BUILD}
 				;;
 		esac
-		cp -v .config $PKG/boot/config-$VERSION
-		cp -v System.map $PKG/boot/System.map-$VERSION
+		cp -v .config $PKG/boot/config-${VERSION}-${BUILD}
+		cp -v System.map $PKG/boot/System.map-${VERSION}-${BUILD}
 
 		install -d $PKG/usr/share/doc/${TARNAME}-${VERSION}
 		cp -r Documentation/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
@@ -87,6 +88,7 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG"
+
 
 
 

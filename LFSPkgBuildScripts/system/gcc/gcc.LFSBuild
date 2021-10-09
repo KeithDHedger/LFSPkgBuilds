@@ -31,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		mkdir -v build||true
 		cd build
-		../configure --prefix=/usr  LD=ld --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib
+		../configure --prefix=/usr  LD=ld --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib  --enable-install-libiberty
 		make||true
 		make install DESTDIR="$PKG" || exit 100
 		rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/gcc/$(gcc -dumpmachine)/${VERSION}/include-fixed/bits/||true

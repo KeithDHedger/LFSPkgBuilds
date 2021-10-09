@@ -24,8 +24,10 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip" "zip"
 	pushd "${TARNAME}-master"
-		patch -Np0 -i ${CWD}/pkgdriver.patch
+		cp ${CWD}/Makefile .
+		#patch -Np0 -i ${CWD}/pkgdriver.patch
 		make $MAKEFLAGS||make|| exit 100
+		mkdir -vp $PKG/lib/modules/$(uname -r )/kernel/drivers/net/wireless/
 		make install DESTDIR=$PKG || exit 100
 	popd
 

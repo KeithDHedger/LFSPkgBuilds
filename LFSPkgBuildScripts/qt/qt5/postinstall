@@ -4,7 +4,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-QT5DIR=${QT5DIR:-/usr}
+QT5DIR=${QT5DIR:-/usr/lib${LIBDIRSUFFIX}/qt5}
 
 cat > /etc/profile.d/qt5.sh << EOF
 # Begin /etc/profile.d/qt5.sh

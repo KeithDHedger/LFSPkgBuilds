@@ -1,0 +1,3 @@
+config-rockpix-5.10.17-1 - config for Rock Pi X no internal wifi
+
+configs/kernel/config-rockpix-5.10.17-2 - config for Rock Pi X with internal wifi
