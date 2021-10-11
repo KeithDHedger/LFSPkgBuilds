@@ -76,7 +76,7 @@ addGroups ()
 	upreply=${REPLY^^}
 
 	if [ "$upreply" = "Y" ];then
-		XTRAGROUPS="$(sed -n '4,999p' /etc/group| awk -F: '{print $1}'|tr "\n" ",")"
+		XTRAGROUPS="$(sed -n '4,999p' /etc/group|sed '/^[[:space:]]*$/d'| awk -F: '{print $1}'|tr "\n" ",")"
 		XTRAGROUPS=${XTRAGROUPS%*,}
 	else
 		XTRAGROUPS="audio,cdrom,floppy,plugdev,video,usb,tty,users"
