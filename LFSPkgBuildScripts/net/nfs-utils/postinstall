@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+#©keithhedger Mon 11 Oct 15:39:14 BST 2021 kdhedger68713@gmail.com
+
+cat > /etc/sysconfig/nfs-server << "EOF"
+PORT="2049"
+PROCESSES="8"
+KILLDELAY="10"
+EOF
