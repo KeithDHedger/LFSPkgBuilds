@@ -27,6 +27,7 @@ gettar "https://github.com/lfs-book/make-ca/releases/download/v${VERSION}/${TARB
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	chown -R root:root "${TARNAME}-${VERSION}" #//TODO//
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local||true
 		ln -sfv /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.crt
@@ -55,5 +56,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${PKGNAME}-${VERSION}"
+	rm -rf "$PKG" "${PKGNAME}-${VERSION}"
 popd 2>/dev/null||true

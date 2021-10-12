@@ -17,7 +17,7 @@ SUFFIX="LFSPKG"
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
-rm -rf "$PKG" || true
+rm -rf "$PKG"
 mkdir -p "$PKG"
 CWD=$(pwd)
 
@@ -78,6 +78,7 @@ EOF
 		do
 			packagedir=${package%.tar.bz2}
 			tar -xf $package || exit 100
+			chown -R root:root "$packagedir"
 			pushd $packagedir
 				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 100
 				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 100
@@ -89,7 +90,7 @@ EOF
 				esac
 
 			popd
-			rm -r $packagedir
+			rm -rf "$packagedir"
 		done
 		install -v -d -m755 $PKG/usr/share/fonts
 		ln -svfn $XORG_PREFIX/share/fonts/X11/OTF $PKG/usr/share/fonts/X11-OTF
@@ -118,5 +119,5 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG"
+	rm -rf "$PKG"
 popd 2>/dev/null||true

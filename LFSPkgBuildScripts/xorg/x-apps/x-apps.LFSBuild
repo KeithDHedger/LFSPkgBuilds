@@ -82,7 +82,8 @@ EOF
 		for package in $(grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}')
 		do
 			packagedir=${package%.tar.?z*}
-			tar -xf $package || exit
+			tar -xf $package || exit 100
+			chown -R root:root "$packagedir"
 			pushd $packagedir
 				case $packagedir in
 					luit-[0-9]* )
@@ -92,7 +93,7 @@ EOF
 				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 100
 				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 100
 			popd
-			rm -r $packagedir
+			rm -rf "$packagedir"
 		done
 		rm -f ${PKG}${XORG_PREFIX}/bin/xkeystone||true
 	popd
@@ -119,5 +120,5 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG"
+	rm -rf "$PKG"
 popd 2>/dev/null||true

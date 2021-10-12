@@ -75,6 +75,7 @@ EOF
 		do
 			packagedir=${package%.tar.bz2}
 			tar -xf $package || exit 100
+			chown -R root:root "$packagedir"
 			pushd $packagedir
 				case $packagedir in
 					libICE*)
@@ -96,7 +97,7 @@ EOF
 				find -L /usr/lib${LIBDIRSUFFIX} -iname "*.la" -exec rm '{}' \;
 				##not sure I like this !!!!
 			popd
-			rm -r $packagedir
+			rm -rf "$packagedir"||true
 		done
 	popd
 
@@ -122,5 +123,5 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG"
+	rm -rf "$PKG"
 popd 2>/dev/null||true

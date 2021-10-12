@@ -38,16 +38,16 @@ else
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
-#	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}.src"
-#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$CLANGTARBALL" -C tools
-#		mv tools/clang-${VERSION}.src tools/clang
-#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL" -C projects
-#		mv projects/compiler-rt-${VERSION}.src projects/compiler-rt
-#
-#		grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
-#
-#		mkdir build || true
+		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$CLANGTARBALL" -C tools
+		mv tools/clang-${VERSION}.src tools/clang
+		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL" -C projects
+		mv projects/compiler-rt-${VERSION}.src projects/compiler-rt
+
+		grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
+
+		mkdir build || true
 		pushd build
 			CC=gcc CXX=g++ cmake -DCMAKE_INSTALL_PREFIX=/usr -DLLVM_ENABLE_FFI=ON -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_LLVM_DYLIB=ON  -DLLVM_LINK_LLVM_DYLIB=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_TARGETS_TO_BUILD="$TARGETS" -DLLVM_BINUTILS_INCDIR=/usr/include -Wno-dev -G Ninja ..
 			ninja $MAKEFLAGS||ninja -j1||exit 100
