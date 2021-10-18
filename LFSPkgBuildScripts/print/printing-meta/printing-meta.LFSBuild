@@ -4,7 +4,8 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Cups-2.3.3
+DEPENDS="DejaVu-font-2.37
+Cups-2.3.3
 ghostscript-9.53.3
 cups-filters-1.28.7
 Gutenprint-5.3.3

@@ -4,16 +4,11 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libglade-2.6.4 x-apps-10.1 GLU-9.0.1 gdk-pixbuf-2.42.2 gdk-pixbuf-xlib-3116"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="xscreensaver"
+PKGNAME="terminus-font"
 TARNAME="$PKGNAME"
-VERSION="6.02"
-BUILD=${BUILD:-1}
-SECTION="XORG"
+VERSION="4.40"
+BUILD=1
+SECTION="FONTS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -21,25 +16,19 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.jwz.org/xscreensaver/${TARBALL}" $SECTION
+gettar "http://downloads.sourceforge.net/project/terminus-font/terminus-font-4.40/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-#dont re enable splash screen if app is to old
-#see also the authors comments in driver/prefs.c -> decrepit_p and please honer his request to not distribute this app with the warning removed.
-		#sed -i '0,/if (whine)/s/if (whine)/if(FALSE)/' driver/splash.c
-		sed -i 's/\(make_splash_dialog.*\)/\/\*\1\*\//' driver/xscreensaver.c
-		sed -i 's/-lsystemd/-lelogind/' driver/Makefile.in
-
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gtk --with-setuid-hacks --libexecdir=/usr/lib$LIBDIRSUFFIX
-		make $MAKEFLAGS||make|| exit 100
-		make install_prefix=$PKG install-strip || exit 100
+		./configure ${CONFIGOPTIONS} --psfdir=/usr/share/consolefonts
+		make psf
+		make install-psf DESTDIR=$PKG
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

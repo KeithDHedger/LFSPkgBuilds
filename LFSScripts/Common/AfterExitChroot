@@ -10,11 +10,12 @@ else
 fi
 
 #this is optional see the Chroot script and the how to.
-if [ "X$EXTFOLDER" != "X" ];then
-	umount ${LFS}/${SOURCEARCHIVES} ||true
-	umount ${LFS}/${PKGARCHIVES} ||true
+if [[ $MOUNTEXTFOLDERS -eq 1 ]];then
+	if [ "X$EXTFOLDER" != "X" ];then
+		umount ${LFS}/${SOURCEARCHIVES} ||true
+		umount ${LFS}/${PKGARCHIVES} ||true
+	fi
 fi
-
 umount ${LFS}/run||true
 umount ${LFS}/dev/pts||true
 umount -lf ${LFS}/dev ||true  

@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.19.5 Graphviz-2.44.1 Python-2.7.18 Xapian-1.4.18 LLVM-11.1.0 git-2.30.1 Qt5-5.15.2 LLVM-11.1.0"
+DEPENDS="CMake-3.19.5 git-2.30.1 Graphviz-2.44.1 Python-2.7.18 Xapian-1.4.18 LLVM-11.1.0 git-2.30.1 Qt5-5.15.2 LLVM-11.1.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

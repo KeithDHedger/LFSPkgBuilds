@@ -29,7 +29,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure $CONFIGOPTIONS --with-apache-libexecdir --with-lz4=internal --with-utf8proc=internal
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure $CONFIGOPTIONS --with-apache-libexecdir --with-lz4=internal --with-utf8proc=internal --enable-javahl
 		make $MAKEFLAGS||make|| exit 100
 		make javahl
 		make swig-pl

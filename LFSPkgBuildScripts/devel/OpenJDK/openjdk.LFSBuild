@@ -23,8 +23,11 @@ CWD=$(pwd)
 TARROOTPKGNAME="jdk15u"
 TARROOTPKGSUBVERSION="+7"
 
-if ! which java &>/dev/null;then
-	ANYVERSION=1 lfspkg -B "BinaryJDK"||exit 100
+RESULT=$(which java 2>&1|grep 'no java')||true
+if [ "X$RESULT" != "X" ];then
+	if ! lfspkg -B "BinaryJDK-${VERSION}";then
+		exit 100
+	fi
 fi
 
 scriptLog "${PKGNAME}-${VERSION}"
@@ -42,7 +45,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/jdk-${VERSION}-ga.tar.gz"
 	pushd "${TARROOTPKGNAME}-jdk-${VERSION}-ga"
 		. /etc/profile
-		. /etc/profile.d/openjdk.sh
 		PATH="${PATH}:/opt/jdk/bin"
 		unset JAVA_HOME
 		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="7" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/pki/tls/java/cacerts --with-jvm-variants=$_variants --with-jobs=$(($(nproc)-1))

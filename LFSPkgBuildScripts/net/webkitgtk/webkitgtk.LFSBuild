@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gst-plugins-base-1.18.3 gst-plugins-bad-1.18.3  GTK-2.24.33 icu-68.2 libgudev-234 libsoup-2.72.0 MesaLib-20.3.4 Ruby-3.0.0 SQLite-3.34.10 Which-2.21 libwebp-1.2.0 libsecret-0.20.4 gtk-doc-1.33.2 libgcrypt-1.9.2 libnotify3-0.7.9"
+DEPENDS="gst-plugins-base-1.18.3 gst-plugins-bad-1.18.3  GTK-2.24.33 icu-68.2 libgudev-234 libsoup-2.72.0 MesaLib-20.3.4 Ruby-3.0.0 SQLite-3.34.10 Which-2.21 libwebp-1.2.0 libsecret-0.20.4 gtk-doc-1.33.2 libgcrypt-1.9.2 libnotify3-0.7.9 enchant-2.2.15"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

@@ -18,12 +18,13 @@ PyGObject-2.28.7
 PyGTK-2.24.0
 URI-5.07
 printing-meta-10.1
+mm-meta-10.1
 vte1-0.28.2
 libnotify-0.5.2
 startup-notification-0.12
 NSPR-4.29
 zip-3.0
-JS-78.8.0
+JS-78.10.1
 Polkit-0.118
 UDisks-2.1.8
 transmission-3.00
@@ -37,10 +38,11 @@ Xfce-Theme-Manager-0.3.8
 gtksourceview-2.10.5
 leafpad-0.8.18.1
 shared-mime-info-2.1
-OpenSSH-8.4
+OpenSSH-8.6
 ntp-4.2.8
 xdg-utils-1.1.3
 desktop-file-utils-0.26
+Gimp-2.10.22
 gtkmm-2.24.5
 ImageMagick-7.0.11.0
 claws-mail-3.99.0
@@ -48,13 +50,11 @@ spacefm-1.0.6
 ManPageEditor-0.1.5
 AspellGUI-0.0.9
 KKEdit-0.4.6
-xarchiver-0.5.4
+xarchiver-0.5.4.17
 ClipboardViewer-2.2.2
 GtkSu-0.1.6
-xscreensaver-5.45
+xscreensaver-6.02
 libreoffice-7.1.0"
-
-#Thunderbird-52.6.0 -- broken
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

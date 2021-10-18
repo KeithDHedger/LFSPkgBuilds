@@ -52,4 +52,6 @@ ln -sfv /etc/pki/tls/java/cacerts /opt/jdk/lib/security/cacerts
 #cd /opt/jdk
 #bin/keytool -list -cacerts
 
+mandb -c /opt/jdk/man
+
 exit 0

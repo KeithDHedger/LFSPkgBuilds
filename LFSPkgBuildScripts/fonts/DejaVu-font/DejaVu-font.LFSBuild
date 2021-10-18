@@ -4,37 +4,33 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="ogmtools-1.5 lsdvd-0.17"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="dvdauthor"
-TARNAME="$PKGNAME"
-VERSION="0.7.2"
-BUILD=${BUILD:-1}
-SECTION="MM"
+PKGNAME="DejaVu-font"
+TARNAME="dejavu"
+VERSION="2.37"
+BUILD=1
+SECTION="FONTS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-fonts-ttf-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "sourceforge.net/projects/${PKGNAME}/files/${TARBALL}" $SECTION
+gettar "https://jztkft.dl.sourceforge.net/project/${TARNAME}/${TARNAME}/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "$PKGNAME"
-		patch -Np1 -i $CWD/${PKGNAME}-${VERSION}-imagemagick7.patch
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+	pushd "${TARNAME}-fonts-ttf-${VERSION}"
+		mkdir -vp ${PKG}/usr/share/fontconfig/conf.avail ${PKG}/usr/share/fonts/TTF
+		cp fontconfig/* ${PKG}/usr/share/fontconfig/conf.avail
+		cp ttf/* ${PKG}/usr/share/fonts/TTF
+		chmod 644 ${PKG}/usr/share/fonts/TTF/*
+		chmod 644 ${PKG}/usr/share/fontconfig/conf.avail/*
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -56,5 +52,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "$PKGNAME"
-popd 2>/dev/null
+	rm -r "$PKG" "${TARNAME}-fonts-ttf-${VERSION}"
+popd 2>/dev/null||true

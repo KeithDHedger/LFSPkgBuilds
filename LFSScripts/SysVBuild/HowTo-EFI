@@ -273,7 +273,7 @@ cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
 
-#BLFS optioanl extras
+#BLFS optional extras
 
 #wifi
 #Install wireless tools

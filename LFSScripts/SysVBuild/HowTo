@@ -198,6 +198,7 @@ cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
 
 21)
+#Non-EFI
 #Optional install of grub, see here:
 #http://www.linuxfromscratch.org/lfs/view/stable/chapter08/grub.html
 
@@ -220,21 +221,137 @@ menuentry "GNU/Linux, Linux $LFSVERSION" {
 }
 EOF
 
+#If building for EFI boot.
+#See also here:
+#https://www.linuxfromscratch.org/blfs/view/stable/postlfs/grub-setup.html
+#First uninstall grub.
+lfspkg -r grub
+#Make a distro folder.
+#/boot/efi should be your hosts mount efi partition as bound earlier.
+mkdir -vp /boot/efi/EFI/$LFSNAME
+#Reinstall grub for EFI.
+cd /LFSPkgBuildScripts/system/grub
+./grub-efi.LFSBuild install
+
+#Make sure efivars is mounted.
+mountpoint /sys/firmware/efi/efivars || mount -v -t efivarfs efivarfs /sys/firmware/efi/efivars
+
+#Make the efi partition(s) available at boot.
+cat >> /etc/fstab << EOF
+$(findmnt --noheadings --output SOURCE  /boot/efi) /boot/efi vfat defaults 0 1
+efivarfs /sys/firmware/efi/efivars efivarfs defaults 0 0
+EOF
+
+#Install grub to efi.
+grub-install --bootloader-id=$LFSNAME --recheck
+
+#Check if wanted.
+efibootmgr
+
+#Create basic grub config.
+#(hd0,3) and /dev/mmcblk0p3 should be replaced to match your configuration.
+#hd0 = first internal disk, 3 = 3rd partition.
+
+cat > /boot/grub/grub.cfg << EOF
+# Begin /boot/grub/grub.cfg
+set default=0
+set timeout=30
+
+insmod part_gpt
+insmod ext2
+#Change to suit
+set root=(hd0,3)
+
+if loadfont /boot/grub/fonts/unicode.pf2; then
+  set gfxmode=auto
+  insmod all_video
+  terminal_output gfxterm
+fi
+
+menuentry "GNU/Linux, Linux $KERNELVERSION" {
+  linux   /boot/vmlinuz-$KERNELVERSION root=/dev/mmcblk0p3 ro
+}
+
+menuentry "Firmware Setup" {
+  fwsetup
+}
+EOF
+grub-mkfont -o /boot/grub/unicode.pf2  /usr/share/fonts/unifont/unifont.pcf
+cp /boot/grub/unicode.pf2 /boot/grub/fonts
+
 22)
 #Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
 #Build xorg:
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
 
-#BLFS optioanl extras
-#Install Xfce4
-cd /LFSPkgBuildScripts/xfce/xfce4-meta
-./xfce4-meta.LFSBuild install
+#BLFS optional extras
+#You should mix and match to suit your own needs this is just what I do for a full desktop
 
-##all below here is for LFS9.0 needs updating to 10.1
-15)
+#wifi
+#Install wireless tools
+cd /LFSPkgBuildScripts/net/wireless-tools
+./wireless-tools.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/wpa-supplicant
+./wpa-supplicant.LFSBuild install
+
+#Install a binary jdk, this is circular dependency for openjdk and set up jdk environment ( assumes jdk is in /opt change to suit ).
+cat > /etc/profile.d/openjdk.sh << "EOF"
+# Begin /etc/profile.d/openjdk.sh
+
+# Set JAVA_HOME directory
+JAVA_HOME=/opt/jdk
+
+# Adjust PATH
+pathappend $JAVA_HOME/bin
+
+# Add to MANPATH
+pathappend $JAVA_HOME/man MANPATH
+
+# Auto Java CLASSPATH: Copy jar files to, or create symlinks in, the
+# /usr/share/java directory. Note that having gcj jars with OpenJDK 8
+# may lead to errors.
+
+AUTO_CLASSPATH_DIR=/usr/share/java
+
+pathprepend . CLASSPATH
+
+for dir in `find ${AUTO_CLASSPATH_DIR} -type d 2>/dev/null`; do
+    pathappend $dir CLASSPATH
+done
+
+for jar in `find ${AUTO_CLASSPATH_DIR} -name "*.jar" 2>/dev/null`; do
+    pathappend $jar CLASSPATH
+done
+
+export JAVA_HOME
+unset AUTO_CLASSPATH_DIR dir jar
+
+# End /etc/profile.d/openjdk.sh
+EOF
+
+mkdir -vp /etc/sudoers.d/
+cat > /etc/sudoers.d/java << "EOF"
+Defaults env_keep += JAVA_HOME
+Defaults env_keep += CLASSPATH
+EOF
+
+#Only do this the first time.
+cat >> /etc/man_db.conf << "EOF"
+# Begin Java addition
+MANDATORY_MANPATH     /opt/jdk/man
+MANPATH_MAP           /opt/jdk/bin     /opt/jdk/man
+MANDB_MAP             /opt/jdk/man     /var/cache/man/jdk
+# End Java addition
+EOF
+
+mkdir -vp /var/cache/man
+
+cd /LFSPkgBuildScripts/devel/binaryjdk
+./binaryjdk.LFSBuild install
+
 #Install documentation stuff
-#Also installs python via dependency
 #Loads of apps need these for building documentation so might as well install now.
 cd /LFSPkgBuildScripts/devel/gtk-doc
 ./gtk-doc.LFSBuild install
@@ -242,7 +359,6 @@ cd /LFSPkgBuildScripts/devel/gtk-doc
 cd /LFSPkgBuildScripts/devel/doxygen
 ./doxygen.LFSBuild install
 
-16)
 #Install cups and gtk.
 #Gtk2 has a 'soft' dependency on cups so best to buils cups first.
 cd /LFSPkgBuildScripts/print/cups
@@ -251,28 +367,25 @@ cd /LFSPkgBuildScripts/print/cups
 cd /LFSPkgBuildScripts/gtk/gtk
 ./gtk.LFSBuild install
 
-#xsane frontends and xsane require gimp installed first to build the plugin
-cd /LFSPkgBuildScripts/desktop/gimp
-./gimp.LFSBuild install
-
-#rest of printing stuff
-cd /LFSPkgBuildScripts/print/printing-meta
-./printing-meta.LFSBuild install
-
-16.5)
-#multi media
-cd /LFSPkgBuildScripts/mm/mm-meta
-./mm-meta.LFSBuild install
-
-17)
 #Development stuff
 cd /LFSPkgBuildScripts/devel/development-meta
 ./development-meta.LFSBuild install
 
-18)
+#xsane frontends and xsane require gimp installed first to build the plugin
+cd /LFSPkgBuildScripts/desktop/gimp
+./gimp.LFSBuild install
+
+#The rest of the printing stuff
+cd /LFSPkgBuildScripts/print/printing-meta
+./printing-meta.LFSBuild install
+
+#Multi media
+cd /LFSPkgBuildScripts/mm/mm-meta
+./mm-meta.LFSBuild install
+
 #The big one! build a complete desktop
-#this meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!
-#this is for an xfce4 desktop.
+#This meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!
+#This is for an xfce4 desktop.
 cd /LFSPkgBuildScripts/desktop/desktop-meta
 ./desktop-meta.LFSBuild install
 
@@ -280,14 +393,41 @@ cd /LFSPkgBuildScripts/desktop/desktop-meta
 cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
 ./LFSDesktop-meta.LFSBuild install
 
-19)
+#Or just xfce4
+cd /LFSPkgBuildScripts/xfce/xfce4-meta
+./xfce4-meta.LFSBuild install
+
 #Extra odd stuff
-#Chromium
+#Browsers
+#Chromium chromium takes a LOT of resouces to build, so I would suggest the oficial chrome build.
 cd /LFSPkgBuildScripts/desktop/chromium
-./chromium.LFSBuild install
-#falkon
+
+#Chrome binary
+#NOTE this is an x86_64 ONLY package from the 'official' chrome deb.
+cd /LFSPkgBuildScripts/desktop/google-chrome
+./google-chrome.LFSBuild install
+
+#Falkon
 cd /LFSPkgBuildScripts/qt/falkon/
 ./falkon.LFSBuild install
+
+-------------------------
+
+<<<<<<<<<<<<<<
+##all below here is for LFS9.0 needs updating to 10.1
+15)
+
+
+<<<<<<<<<<<<<<<<<<<
+16)
+
+
+16.5)
+
+17)
+18)
+
+19)
 
 #Cairo-dock-plugins pulls in cairo-dock as a dependency
 cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins

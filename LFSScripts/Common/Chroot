@@ -14,6 +14,9 @@ else
 	exit 0
 fi
 
+MOUNTEXTFOLDERS=${MOUNTEXTFOLDERS:-1}
+export MOUNTEXTFOLDERS
+
 pushd $LFS
 	mount -v --bind /dev dev
 	mount -v --bind /dev/pts $LFS/dev/pts
@@ -33,10 +36,12 @@ pushd $LFS
 	mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
 	mkdir -vp ${LFS}/${PKGARCHIVES}||true
 
-	if ! mountpoint $LFS/${PKGARCHIVES} && ! mountpoint $LFS/${SOURCEARCHIVES} ;then
-		if [ "X$EXTFOLDER" != "X" ];then
-			sudo mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
-			sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+	if [[ $MOUNTEXTFOLDERS -eq 1 ]];then
+		if ! mountpoint $LFS/${PKGARCHIVES} && ! mountpoint $LFS/${SOURCEARCHIVES} ;then
+			if [ "X$EXTFOLDER" != "X" ];then
+				sudo mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
+				sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+			fi
 		fi
 	fi
 

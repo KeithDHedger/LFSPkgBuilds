@@ -80,21 +80,22 @@ EOF
 		fi
 
 		for package in $(grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}')
-		do
-			packagedir=${package%.tar.?z*}
-			tar -xf $package || exit 100
-			chown -R root:root "$packagedir"
-			pushd $packagedir
-				case $packagedir in
-					luit-[0-9]* )
-						sed -i -e "/D_XOPEN/s/5/6/" configure
-						;;
-				esac
-				CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 100
-				make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 100
-			popd
-			rm -rf "$packagedir"
-		done
+			do
+				packagedir=${package%.tar.?z*}
+				pushd /tmp
+					tar --no-same-owner -xf ${SOURCEARCHIVES}/${SECTION}/x-apps/$package || exit 100
+					pushd $packagedir
+						case $packagedir in
+							luit-[0-9]* )
+								sed -i -e "/D_XOPEN/s/5/6/" configure
+								;;
+						esac
+						CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG || exit 100
+						make install DESTDIR="$PKG"||make install DESTDIR="$PKG" || exit 100
+					popd
+					rm -rf "$packagedir"
+				popd
+			done
 		rm -f ${PKG}${XORG_PREFIX}/bin/xkeystone||true
 	popd
 

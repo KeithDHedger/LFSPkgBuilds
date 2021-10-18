@@ -31,23 +31,25 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	#extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		find -type f -name "*.pr[io]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
+	#	find -type f -name "*.pr[io]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
 #possible fix for SOME setups use with discrection
 #		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-background_rendering_fix-1.patch
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-ICU68-2.patch
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-glibc233-1.patch
+	#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-ICU68-2.patch
+	#	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-glibc233-1.patch
 
-		sed -e '/link_pulseaudio/s/false/true/' -i src/3rdparty/chromium/media/media_options.gni
-		sed -i 's/NINJAJOBS/NINJA_JOBS/' src/core/gn_run.pro
-		if [ -e ${QT5DIR}/libQt5WebEngineCore.so ];then
-			mv -v ${QT5DIR}/libQt5WebEngineCore.so{,.old}
-		fi
-		mkdir build||true
+	#	sed -e '/link_pulseaudio/s/false/true/' -i src/3rdparty/chromium/media/media_options.gni
+	#	sed -i 's/NINJAJOBS/NINJA_JOBS/' src/core/gn_run.pro
+	#	if [ -e ${QT5DIR}/libQt5WebEngineCore.so ];then
+	#		mv -v ${QT5DIR}/libQt5WebEngineCore.so{,.old}
+	#	fi
+	#	mkdir build||true
 		cd  build
-		export NINJA_JOBS="-j3"
-		qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker -webengine-icu
+		#help to prevent running out of resouces if you have lots of memory/cores comment out the next two lines
+		export NINJA_JOBS="-j1"
+		MAKEFLAGS="-j1"
+	#	qmake .. --  -proprietary-codecs  -system-ffmpeg -webp -spellchecker -webengine-icu
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
 		find ${PKG}${QT5PREFIX}/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;

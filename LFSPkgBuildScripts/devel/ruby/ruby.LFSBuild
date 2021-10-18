@@ -31,6 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-shared
 		make $MAKEFLAGS||make|| exit 100
+	#######
 		make capi|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
