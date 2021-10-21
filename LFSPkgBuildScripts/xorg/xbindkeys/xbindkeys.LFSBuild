@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="guile-2.2.6 xvkbd-3.8"
+DEPENDS="guile-2.2.7 xvkbd-4.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xbindkeys"
 TARNAME="$PKGNAME"
-VERSION="1.8.6"
+VERSION="1.8.7"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"

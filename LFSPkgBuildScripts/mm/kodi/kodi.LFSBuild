@@ -18,7 +18,7 @@ fi
 
 PKGNAME="kodi"
 TARNAME="Matrix"
-VERSION="19.1"
+VERSION="19.2"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -43,7 +43,7 @@ if [ "$PIBUILD" -eq 1 ];then
 	_commit=f955df92d4e5d2a290261c3d29e87059b1443db7
 	gettar "https://github.com/graysky2/xbmc/archive/$_commit.tar.gz" $SECTION "${TARNAME}-${VERSION}.tar.gz"
 else
-	gettar "https://github.com/xbmc/xbmc/archive/refs/tags/19.1-${TARNAME}.tar.gz" $SECTION "${TARNAME}-${VERSION}.tar.gz"
+	gettar "https://github.com/xbmc/xbmc/archive/refs/tags/${VERSION}-${TARNAME}.tar.gz" $SECTION "${TARNAME}-${VERSION}.tar.gz"
 fi
 gettar "https://github.com/xbmc/libdvdcss/archive/$_libdvdcss_version.tar.gz" ${SECTION}/kodideps libdvdcss-$_libdvdcss_version.tar.gz
 gettar "https://github.com/xbmc/libdvdnav/archive/$_libdvdnav_version.tar.gz" ${SECTION}/kodideps libdvdnav-$_libdvdnav_version.tar.gz
@@ -57,8 +57,10 @@ gettar "http://mirrors.kodi.tv/build-deps/sources/libudfread-$_libudfread_versio
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
-#create input gtroup
-groupadd -g $(findnextgid system) -r input || true
+#create input group
+if [[ "X$(getent group input)" != "X" ]];then
+	groupadd -g $(findnextgid system) -r input || true
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	if [ "$PIBUILD" -eq 1 ];then
@@ -124,7 +126,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			cmake \
 				-DCMAKE_INSTALL_PREFIX=/usr \
 				-DCMAKE_INSTALL_LIBDIR=/usr/lib${LIBDIRSUFFIX} \
-				-DUSE_LTO=ON \
+				-DUSE_LTO=OFF \
 				-DENABLE_LDGOLD=OFF \
 				-DENABLE_EVENTCLIENTS=ON \
 				-DENABLE_INTERNAL_FFMPEG=ON \
@@ -134,7 +136,7 @@ pushd $COMPILEAT 2>/dev/null||true
 				-DENABLE_INTERNAL_FLATBUFFERS=ON \
 				-DENABLE_INTERNAL_UDFREAD=ON \
 				-DENABLE_MYSQLCLIENT=ON \
-				-DCORE_PLATFORM_NAME=x11 \
+				-DCORE_PLATFORM_NAME="gbm x11" \
 				-DCORE_SYSTEM_NAME=linux \
 				-DCMAKE_HAVE_LIBC_PTHREAD=ON \
 				-DAPP_RENDER_SYSTEM=gl \

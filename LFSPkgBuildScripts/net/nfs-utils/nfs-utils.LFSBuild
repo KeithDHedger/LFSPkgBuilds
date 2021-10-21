@@ -34,6 +34,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -vp $PKG/var/lib/nfs||true
 		chmod u+w,go+r $PKG/sbin/mount.nfs
 		chown nobody.nogroup $PKG/var/lib/nfs
+		mkdir -vp ${PKG}/sbin
+		ln -sv /usr/sbin/rpc.statd ${PKG}/sbin/rpc.statd
 	popd
 
 	checketc "$PKG"

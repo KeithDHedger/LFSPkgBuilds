@@ -34,7 +34,6 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#patch -Np0 -i $CWD/patch-source3__libads__kerberos_keytab.patch
 		echo "^samba4.rpc.echo.*on.*ncacn_np.*with.*object.*nt4_dc" >> selftest/knownfail
 		CFLAGS="-I/usr/include/tirpc $LFSFLAGS" LDFLAGS="-ltirpc" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --with-piddir=/run/samba --with-pammodulesdir=/lib/security --enable-fhs --without-ad-dc $SYSTEMDOPTS --enable-selftest
 

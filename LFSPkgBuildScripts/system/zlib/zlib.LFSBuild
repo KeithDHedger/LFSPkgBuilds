@@ -31,7 +31,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -p $PKG/lib||true
 		mv -v $PKG/usr/lib/libz.so.* $PKG/lib
 		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libz.so) $PKG/usr/lib/libz.so
-		rm -fv $PKG/usr/lib/libz.a
+		mv -v $PKG/usr/lib/libz.a $PKG/lib
+		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libz.a) $PKG/usr/lib/libz.a
 	popd
 
 	checketc "$PKG"
@@ -58,3 +59,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="xorg-libs-10.1 xorg-cf-files-1.0.6"
+DEPENDS="xorg-libs-10.1 xorg-cf-files-1.0.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

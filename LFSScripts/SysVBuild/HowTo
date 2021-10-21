@@ -411,42 +411,9 @@ cd /LFSPkgBuildScripts/desktop/google-chrome
 cd /LFSPkgBuildScripts/qt/falkon/
 ./falkon.LFSBuild install
 
--------------------------
-
-<<<<<<<<<<<<<<
-##all below here is for LFS9.0 needs updating to 10.1
-15)
-
-
-<<<<<<<<<<<<<<<<<<<
-16)
-
-
-16.5)
-
-17)
-18)
-
-19)
-
 #Cairo-dock-plugins pulls in cairo-dock as a dependency
 cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins
 ./cairo-dock-plugins.LFSBuild install
-
-#Qemu builds both static and dynamically linked versions
-cd /LFSPkgBuildScripts/hware/qemu
-./qemu.LFSBuild install
-
-#Seamonkey for web dev
-cd /LFSPkgBuildScripts/net/seamonkey
-./seamonkey.LFSBuild install
-
-#Icedtea-web BROKEN
-#cd /LFSPkgBuildScripts/net/icedtea-web
-#./icedtea-web.LFSBuild install
-#For pulse audio
-#cd /LFSPkgBuildScripts/net/icedtea-sound
-#./icedtea-sound.LFSBuild install
 
 #Samba
 cd /LFSPkgBuildScripts/net/samba
@@ -462,12 +429,25 @@ cd /LFSPkgBuildScripts/net/davfs2
 cd /LFSPkgBuildScripts/net/curlftpfs
 ./curlftpfs.LFSBuild install
 
+#Qemu builds both static and dynamically linked versions
+cd /LFSPkgBuildScripts/hware/qemu
+./qemu.LFSBuild install
+
+#Seamonkey for web dev
+cd /LFSPkgBuildScripts/net/seamonkey
+./seamonkey.LFSBuild install
+
+#If you are building in chroot you will pobably have to rerun the postinstall script for this package AFTER booting to the 'real' system.
+cd /LFSPkgBuildScripts/admin/mariadb
+./mariadb.LFSBuild install
+
+#Add users
+cd /LFSPkgBuildScripts/HelperScripts/
+./UsersAndGroups YOURUSERNAME
+
 #System admin/security stuff
 cd /LFSPkgBuildScripts/admin/logrotate
 ./logrotate.LFSBuild install
-
-cd /LFSPkgBuildScripts/admin/fcron
-./fcron.LFSBuild install
 
 cd /LFSPkgBuildScripts/net/iptables
 ./iptables.LFSBuild install
@@ -475,24 +455,12 @@ cd /LFSPkgBuildScripts/net/iptables
 cd /LFSPkgBuildScripts/net/fail2ban
 ./fail2ban.LFSBuild install
 
-
-#TODO
-cd /LFSPkgBuildScripts/qt/qt-creator
-./qt-creator.LFSBuild install
-
-#If you are building in chroot you will pobably have to rerun the postinstall script for this package AFTER booting to the 'real' system.
-cd /LFSPkgBuildScripts/admin/mariadb
-./mariadb.LFSBuild install
-
 #Odd stuff
 cd /LFSPkgBuildScripts/xorg/xbindkeys
 ./xbindkeys.LFSBuild install
 
-cd /LFSPkgBuildScripts/net/libcddb
-./libcddb.LFSBuild install
-
-cd /LFSPkgBuildScripts/desktop/epdfview
-./epdfview.LFSBuild install
+cd /LFSPkgBuildScripts/qt/qt-creator
+./qt-creator.LFSBuild install
 
 #Conky is getting increasingly tied to gnome and difficult ( impossible! )to build.
 #cd /LFSPkgBuildScripts/desktop/conky
@@ -503,9 +471,16 @@ cd /LFSPkgBuildScripts/desktop/gkrellm
 ./gkrellm.LFSBuild install
 
 
-#Add users
-cd /LFSPkgBuildScripts/HelperScripts/
-./UsersAndGroups YOURUSERNAME
+
+#TODO
+
+cd /LFSPkgBuildScripts/net/libcddb
+./libcddb.LFSBuild install
+
+cd /LFSPkgBuildScripts/desktop/epdfview
+./epdfview.LFSBuild install
+
+
 
 
 
