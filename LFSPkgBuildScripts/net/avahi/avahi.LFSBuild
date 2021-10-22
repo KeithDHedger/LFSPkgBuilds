@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/lathiat/avahi/releases/download/v0.8/${TARBALL}" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/avahi-0.8-ipv6_race_condition_fix-1.patch"
+gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/avahi-0.8-ipv6_race_condition_fix-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -33,7 +33,7 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ../avahi-0.8-ipv6_race_condition_fix-1.patch	
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/avahi-0.8-ipv6_race_condition_fix-1.patch	
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-libevent --disable-mono --disable-monodoc --disable-python --disable-qt3 --disable-qt4 --enable-core-docs --with-distro=none --enable-compat-libdns_sd $SYSTEMDOPTS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
