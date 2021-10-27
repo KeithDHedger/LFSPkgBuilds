@@ -29,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${TARNAME}-${VERSION}
 		sed -i 's/python /python3 /' qtdeclarative/qtdeclarative.pro qtdeclarative/src/3rdparty/masm/masm.pri
-		export QT5PREFIX=/usr
+		export QT5PREFIX=${QT5PREFIX:-/usr}
 		export QT5BINDIR=$QT5PREFIX/bin
 		export QT5LIBS=${QT5PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
 		export QT5INCLUDES=${QT5PREFIX}/include/${PKGNAME}

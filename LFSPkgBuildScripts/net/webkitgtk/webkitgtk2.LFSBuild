@@ -2,13 +2,13 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base-1.18.3 gtk3-3.24.25 icu-68.2 libsoup-2.72.0 MesaLib-20.3.4 Ruby-3.0.0 SQLite-3.34.1 Which-2.21 libwebp-1.2.0 libsecret-0.20.4 GTK-Doc-1.33.2 libgcrypt-1.9.2"
+DEPENDS="gst-plugins-base-1.18.3 gtk-2.24.33 icu-68.2 libsoup-2.72.0 MesaLib-20.3.4 Ruby-3.0.0 SQLite-3.34.1 Which-2.21 libwebp-1.2.0 libsecret-0.20.4 GTK-Doc-1.33.2 libgcrypt-1.9.2"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="webkitgtk3"
+PKGNAME="webkitgtk2"
 TARNAME="webkitgtk"
 VERSION="2.4.11"
 BUILD=${BUILD:-1}
@@ -43,24 +43,22 @@ pushd $COMPILEAT 2>/dev/null||true
 		export CFLAGS
 		export CXXFLAGS
 
-		./configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=3.0 --disable-geolocation --enable-introspection --docdir=/usr/doc/${PKGNAME}-${VERSION} --disable-gtk-doc
+		./configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=2.0 --disable-geolocation --enable-introspection --docdir=/usr/doc/${PKGNAME}-${VERSION} --disable-gtk-doc
 
-		if ! make Programs_DumpRenderTree_LDFLAGS="-no-fast-install -no-install -lfontconfig" $MAKEFLAGS;then
 # create hpp files because gcc doesn't see it, only searches for .h files
-			pushd DerivedSources/WebCore/
-				for i in *.h
-					do
-						if [ ! -f "${i}pp" ];then
-							ln -vs "$i" "${i}pp"
-						fi
-					done
-			popd
+		pushd DerivedSources/WebCore/
+			for i in *.h
+				do
+					if [ ! -f "${i}pp" ];then
+						ln -s "$i" "${i}pp"
+					fi
+				done
+		popd
 
-			pushd Source/WebCore/platform/text/
-				find -iname "*.h" -exec sed -i 's/\bTRUE\b/true/g;s/\bFALSE\b/false/g' '{}' \;
-				find -iname "*.cpp" -exec sed -i 's/\bTRUE\b/true/g;s/\bFALSE\b/false/g' '{}' \;
-			popd
-		fi
+		pushd Source/WebCore/platform/text/
+			find -iname "*.h" -exec sed -i 's/\bTRUE\b/true/g;s/\bFALSE\b/false/g' '{}' \;
+			find -iname "*.cpp" -exec sed -i 's/\bTRUE\b/true/g;s/\bFALSE\b/false/g' '{}' \;
+		popd
 
 		make Programs_DumpRenderTree_LDFLAGS="-no-fast-install -no-install -lfontconfig" $MAKEFLAGS||exit 100
 		make install DESTDIR=$PKG || exit 100

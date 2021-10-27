@@ -10,6 +10,14 @@ apt-get update
 apt-get install bison gawk m4 texinfo
 #Also make sure /bin/sh points to /bin/bash
 
+#This step is optional.
+#Some scripts can include user options so copy the LFSPkgBuildScripts/pkgoptions to a /etc like so:
+sudo mkdir -vp /etc/pkgoptions
+#Make sure you can edit the files:
+sudo chmod 777 /etc/pkgoptions
+sudo chmod 666 /etc/pkgoptions/*
+cp LFSPkgBuildScripts/pkgoptions/* /etc/pkgoptions
+
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS

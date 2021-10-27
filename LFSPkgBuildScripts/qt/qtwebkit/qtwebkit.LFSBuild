@@ -22,24 +22,36 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 
-gettar "https://github.com/qt/qtwebkit/archive/v${VERSION}-alpha3.tar.gz" $SECTION ${TARBALL}
+gettar "https://github.com/qt/qtwebkit/archive/v${VERSION}-alpha4.tar.gz" $SECTION ${TARBALL}
+gettar "https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/qt5-webkit/trunk/glib-2.68.patch" $SECTION
+gettar "https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/qt5-webkit/trunk/icu68.patch" $SECTION
+gettar "https://github.com/qtwebkit/qtwebkit/commit/78360c01.patch" $SECTION qt5-webkit-python-3.9.patch
+gettar "https://github.com/qtwebkit/qtwebkit/commit/d92b11fe.patch" $SECTION qt5-webkit-bison-3.7.patch
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}-alpha3"
+	pushd "${TARNAME}-${VERSION}-alpha4"
 		SAVEPATH=$PATH
 		export PATH=$PWD/bin:$PATH
 
 		mkdir build||true
+		patch -p0 -i ${SOURCEARCHIVES}/${SECTION}/icu68.patch # Fix build with ICU 68.x
+		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/glib-2.68.patch # https://github.com/qtwebkit/qtwebkit/issues/1057
+		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/qt5-webkit-python-3.9.patch # Fix build with python 3.9
+		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/qt5-webkit-bison-3.7.patch # Fix build with bison 3.7
+
 		cd  build
-		qmake ../WebKit.pro
-		make $MAKEFLAGS||make|| exit 100
-		make install INSTALL_ROOT=$PKG || exit 100
-		find ${PKG}/$QT5DIR/pkgconfig -name "*.pc" -exec perl -pi -e "s, -L$PWD/?\S+,,g" {} \;
-		find ${PKG}/$QT5DIR/ -name qt_lib_bootstrap_private.pri -exec sed -i -e "s:$PWD/qtbase:/$QT5DIR/lib/:g" {} \;
-		find ${PKG}/$QT5DIR/ -name \*.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+		cmake $CMAKEOPTIONS -DCMAKE_CXX_FLAGS="${CXXFLAGS} -DNDEBUG" -DPORT=Qt -DENABLE_TOOLS=OFF -DUSE_LIBHYPHEN=OFF ..
+		cmake --build . --config Release --parallel 2 #Change to suit your machine
+		DESTDIR=$PKG cmake --install .
+
+		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
+		pushd $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
+			ln -sv ../qt5/pkgconfig/*.pc .
+		popd
+
 		export PATH=$SAVEPATH
 		unset SAVEPATH
 	popd

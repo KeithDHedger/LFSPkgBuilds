@@ -16,16 +16,14 @@ BUILD=${BUILD:-2}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://xorg.freedesktop.org/archive/individual/xserver/${TARBALL}" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="--disable-systemd --disable-systemd-logind"

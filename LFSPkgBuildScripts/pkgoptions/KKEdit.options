@@ -1,6 +1,6 @@
 
 if [ $PIBUILD -ne 1 ];then
-	DEPENDS="webkitgtk-2.4.11"
+	DEPENDS="webkitgtk-2.30.5"
 	if ! lfspkg -B "$DEPENDS";then
 		exit 100
 	fi

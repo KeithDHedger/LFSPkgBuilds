@@ -14,6 +14,14 @@ apt-get update
 apt-get install bison gawk m4 texinfo
 #Also make sure /bin/sh points to /bin/bash
 
+#This step is optional.
+#Some scripts can include user options so copy the LFSPkgBuildScripts/pkgoptions to a /etc like so:
+sudo mkdir -vp /etc/pkgoptions
+#Make sure you can edit the files:
+sudo chmod 777 /etc/pkgoptions
+sudo chmod 666 /etc/pkgoptions/*
+cp LFSPkgBuildScripts/pkgoptions/* /etc/pkgoptions
+
 LFS=/mnt/LFS
 LFSVERSION=10.1
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
@@ -48,45 +56,40 @@ sudo swapon -v swapfile
 #set count to the size of the swapfile needed.
 
 3)
-#cd into the lfsscripts folder
+#cd into the LFSScripts folder
 cd $LFS/LFSScripts
+
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
-sudo -E ./LFSSetUp
+[sudo -E] ./LFSSetUp
 
 #To check config:
 ./ShowSystemData
 
+#You can rerun LFSSetUp if needed.
+
 4)
-#Run BuildTools script:
 #make sure normal user owns $LFS ( if you are using a dedicated user change $USER if needed ).
 [sudo -E] chown $USER $LFS
+#Run BuildTools script:
 ./BuildTools1
-
-4.5)
-#Mount bind external folder if set and if not already mounted.
-. ./SystemData
-mkdir -vp ${LFS}/${SOURCEARCHIVES}||true
-mkdir -vp ${LFS}/${PKGARCHIVES}||true
-if [ "X$EXTFOLDER" != "X" ];then
-	sudo mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
-	sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
-fi
 
 5)
 #Run BuildFileSystem script:
-[sudo -E] ./BuildFileSystem
+[sudo -E ] ./BuildFileSystem
 
 6)
 #Enter chroot
 [sudo] ./Chroot
+cd /LFSScripts
 
 7)
 #finish building tempory tools.
-cd /LFSScripts
 ./BuildTools2
 exit
+
+#Make sure you are no longer in the chroot. !IMPORTANT!
 
 8)
 cd $LFS
@@ -274,21 +277,145 @@ ntpdate -s time.nist.gov
 cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
 
-15)
-#The following are optional but useful.
-#Not all are tested yet on Pi4.
+22)
 #Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
-#Build xorg ( experimental at the moment ):
+#Build xorg:
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install
+
+#BLFS optional extras
+#You should mix and match to suit your own needs this is just what I do for a full desktop
+
+#wifi
+#Install wireless tools
+cd /LFSPkgBuildScripts/net/wireless-tools
+./wireless-tools.LFSBuild install
+
+cd /LFSPkgBuildScripts/net/wpa-supplicant
+./wpa-supplicant.LFSBuild install
+
+#Install a binary jdk, this is circular dependency for openjdk and set up jdk environment ( assumes jdk is in /opt change to suit ).
+cat > /etc/profile.d/openjdk.sh << "EOF"
+# Begin /etc/profile.d/openjdk.sh
+
+# Set JAVA_HOME directory
+JAVA_HOME=/opt/jdk
+
+# Adjust PATH
+pathappend $JAVA_HOME/bin
+
+# Add to MANPATH
+pathappend $JAVA_HOME/man MANPATH
+
+# Auto Java CLASSPATH: Copy jar files to, or create symlinks in, the
+# /usr/share/java directory. Note that having gcj jars with OpenJDK 8
+# may lead to errors.
+
+AUTO_CLASSPATH_DIR=/usr/share/java
+
+pathprepend . CLASSPATH
+
+for dir in `find ${AUTO_CLASSPATH_DIR} -type d 2>/dev/null`; do
+    pathappend $dir CLASSPATH
+done
+
+for jar in `find ${AUTO_CLASSPATH_DIR} -name "*.jar" 2>/dev/null`; do
+    pathappend $jar CLASSPATH
+done
+
+export JAVA_HOME
+unset AUTO_CLASSPATH_DIR dir jar
+
+# End /etc/profile.d/openjdk.sh
+EOF
+
+mkdir -vp /etc/sudoers.d/
+cat > /etc/sudoers.d/java << "EOF"
+Defaults env_keep += JAVA_HOME
+Defaults env_keep += CLASSPATH
+EOF
+
+#Only do this the first time.
+cat >> /etc/man_db.conf << "EOF"
+# Begin Java addition
+MANDATORY_MANPATH     /opt/jdk/man
+MANPATH_MAP           /opt/jdk/bin     /opt/jdk/man
+MANDB_MAP             /opt/jdk/man     /var/cache/man/jdk
+# End Java addition
+EOF
+
+mkdir -vp /var/cache/man
+
+cd /LFSPkgBuildScripts/devel/binaryjdk
+./binaryjdk.LFSBuild install
+
+#Install documentation stuff
+#Loads of apps need these for building documentation so might as well install now.
+cd /LFSPkgBuildScripts/devel/gtk-doc
+./gtk-doc.LFSBuild install
+
+cd /LFSPkgBuildScripts/devel/doxygen
+./doxygen.LFSBuild install
+
+#Install cups and gtk.
+#Gtk2 has a 'soft' dependency on cups so best to buils cups first.
+cd /LFSPkgBuildScripts/print/cups
+./cups.LFSBuild install
+
+cd /LFSPkgBuildScripts/gtk/gtk
+./gtk.LFSBuild install
+
+#Development stuff
+cd /LFSPkgBuildScripts/devel/development-meta
+./development-meta.LFSBuild install
+
+#xsane frontends and xsane require gimp installed first to build the plugin
+cd /LFSPkgBuildScripts/desktop/gimp
+./gimp.LFSBuild install
+
+#The rest of the printing stuff
+cd /LFSPkgBuildScripts/print/printing-meta
+./printing-meta.LFSBuild install
+
+#Multi media
+cd /LFSPkgBuildScripts/mm/mm-meta
+./mm-meta.LFSBuild install
+
+#The big one! build a complete desktop
+#This meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!
+#This is for an xfce4 desktop.
+cd /LFSPkgBuildScripts/desktop/desktop-meta
+./desktop-meta.LFSBuild install
+
+#Or for an LFSDesktop
+cd /LFSPkgBuildScripts/lfsdesktop/LFSDesktop-meta
+./LFSDesktop-meta.LFSBuild install
+
+#Or just xfce4
+cd /LFSPkgBuildScripts/xfce/xfce4-meta
+./xfce4-meta.LFSBuild install
+
+#Extra odd stuff
+#Browsers
+#Chromium chromium takes a LOT of resouces to build, so I would suggest the oficial chrome build.
+cd /LFSPkgBuildScripts/desktop/chromium
+
+#Chrome binary
+#NOTE this is an x86_64 ONLY package from the 'official' chrome deb.
+cd /LFSPkgBuildScripts/desktop/google-chrome
+./google-chrome.LFSBuild install
+
+#Falkon
+cd /LFSPkgBuildScripts/qt/falkon/
+./falkon.LFSBuild install
+
+#Cairo-dock-plugins pulls in cairo-dock as a dependency
+cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins
+./cairo-dock-plugins.LFSBuild install
 
 #Samba
 cd /LFSPkgBuildScripts/net/samba
 ./samba.LFSBuild install
-
-#nfs
-cd /LFSPkgBuildScripts/net/nfs-utils
-./nfs-utils.LFSBuild install
 
 #Fuse and stuff
 cd /LFSPkgBuildScripts/net/sshfs
@@ -300,12 +427,25 @@ cd /LFSPkgBuildScripts/net/davfs2
 cd /LFSPkgBuildScripts/net/curlftpfs
 ./curlftpfs.LFSBuild install
 
+#Qemu builds both static and dynamically linked versions
+cd /LFSPkgBuildScripts/hware/qemu
+./qemu.LFSBuild install
+
+#Seamonkey for web dev
+cd /LFSPkgBuildScripts/net/seamonkey
+./seamonkey.LFSBuild install
+
+#If you are building in chroot you will pobably have to rerun the postinstall script for this package AFTER booting to the 'real' system.
+cd /LFSPkgBuildScripts/admin/mariadb
+./mariadb.LFSBuild install
+
+#Add users
+cd /LFSPkgBuildScripts/HelperScripts/
+./UsersAndGroups YOURUSERNAME
+
 #System admin/security stuff
 cd /LFSPkgBuildScripts/admin/logrotate
 ./logrotate.LFSBuild install
-
-cd /LFSPkgBuildScripts/admin/fcron
-./fcron.LFSBuild install
 
 cd /LFSPkgBuildScripts/net/iptables
 ./iptables.LFSBuild install
@@ -313,21 +453,28 @@ cd /LFSPkgBuildScripts/net/iptables
 cd /LFSPkgBuildScripts/net/fail2ban
 ./fail2ban.LFSBuild install
 
-#If you are building in chroot you will pobably have to rerun the postinstall script for this package AFTER booting to the 'real' system.
-cd /LFSPkgBuildScripts/admin/mariadb
-./mariadb.LFSBuild install
+#Odd stuff
+cd /LFSPkgBuildScripts/xorg/xbindkeys
+./xbindkeys.LFSBuild install
 
-#Kodi
-#Install needed deps
-cd /LFSPkgBuildScripts/mm/kodi
-./pi-kodi-mindeps
-#Add users
-cd /LFSPkgBuildScripts/HelperScripts/
-./UsersAndGroups YOURUSERNAME
+cd /LFSPkgBuildScripts/qt/qt-creator
+./qt-creator.LFSBuild install
 
-#Add services
-cd /LFSPkgBuildScripts/HelperScripts/
-#Select from list, install/uninstall
-./InstallService-NoDialog 
-#Auto install
-./InstallService-NoDialog "ntpd sshd gpm"
+#Conky is getting increasingly tied to gnome and difficult ( impossible! )to build.
+#cd /LFSPkgBuildScripts/desktop/conky
+#./conky.LFSBuild install
+
+#Try an alternative!
+cd /LFSPkgBuildScripts/desktop/gkrellm
+./gkrellm.LFSBuild install
+
+
+
+#TODO
+
+cd /LFSPkgBuildScripts/net/libcddb
+./libcddb.LFSBuild install
+
+cd /LFSPkgBuildScripts/desktop/epdfview
+./epdfview.LFSBuild install
+
