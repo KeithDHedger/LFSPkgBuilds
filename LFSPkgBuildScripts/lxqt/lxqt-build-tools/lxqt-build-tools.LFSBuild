@@ -11,7 +11,7 @@ fi
 
 PKGNAME="lxqt-build-tools"
 TARNAME="$PKGNAME"
-VERSION="0.9.0"
+VERSION="0.10.0"
 BUILD=1
 SECTION="LXQT"
 SUFFIX="LFSPKG"
@@ -22,6 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/lxde/lxqt-build-tools/releases/download/${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
