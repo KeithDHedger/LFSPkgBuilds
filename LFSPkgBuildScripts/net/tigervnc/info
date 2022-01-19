@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/xsoft/tigervnc.html
+Tigervnc is an advanced VNC (Virtual Network Computing) implementation.
+It allows creation of an Xorg server not tied to a physical console and also provides a client for viewing of the remote graphical desktop.
