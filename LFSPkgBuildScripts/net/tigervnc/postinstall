@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+#©keithhedger Wed 19 Jan 20:41:19 GMT 2022 kdhedger68713@gmail.com
+
+sed -i 's/pam_systemd.so/pam_elogind.so/' /etc/pam.d/tigervnc
