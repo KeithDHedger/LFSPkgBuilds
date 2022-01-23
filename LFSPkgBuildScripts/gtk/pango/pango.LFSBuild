@@ -11,7 +11,7 @@ fi
 
 PKGNAME="pango"
 TARNAME="$PKGNAME"
-VERSION="1.48.2"
+VERSION="1.50.3"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -34,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build || true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dgtk_doc=true ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} --buildtype=release --wrap-mode=nofallback ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

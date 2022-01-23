@@ -40,6 +40,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		#Thanks to AUR for these patches
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/spacefm-Fix-GCC-10-build.patch
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/spacefm-glibc-2.28-compatibility.patch
+		patch -Np0 -i "$CWD/hyphen.patch"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gtk2 $VIDEO_THUMBNAIL_FLAG
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

@@ -1,0 +1,14 @@
+*** src/ptk/ptk-text-renderer.c	2018-03-04 16:04:33.000000000 +0000
+--- src/ptk/ptk-text-renderer.c.mine	2022-01-23 15:59:19.000000000 +0000
+***************
+*** 812,817 ****
+--- 812,820 ----
+          pango_layout_set_width ( layout, celltext->wrap_width * PANGO_SCALE );
+          pango_layout_set_wrap ( layout, celltext->wrap_mode );
+  
++ 		pango_attr_list_insert (attr_list, pango_attr_insert_hyphens_new (FALSE));
++ 		pango_layout_set_attributes (layout, attr_list);       
++ 
+          if ( pango_layout_get_line_count ( layout ) == 1 )
+          {
+              pango_layout_set_width ( layout, -1 );
