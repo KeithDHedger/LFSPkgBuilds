@@ -53,9 +53,11 @@ pushd "${KERNELSOURCEDIR}"
 		cp -v .config $PKG/boot/config-${VERSION}-${BUILD}
 		cp -v System.map $PKG/boot/System.map-${VERSION}-${BUILD}
 
-		install -d $PKG/usr/share/doc/${TARNAME}-${VERSION}
-		cp -r Documentation/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
+		install -d $PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}
+		cp -r Documentation/* $PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}
 
+		mv ${PKG}/lib/modules/${VERSION} ${PKG}/lib/modules/${VERSION}-${BUILD}
+		ln -sv /lib/modules/${VERSION}-${BUILD} ${PKG}/lib/modules/${VERSION}
 		chown -R 0:0 .
 		make clean
 		make prepare
