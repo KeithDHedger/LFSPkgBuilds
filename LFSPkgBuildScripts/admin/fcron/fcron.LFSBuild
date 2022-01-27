@@ -55,6 +55,10 @@ pushd $COMPILEAT 2>/dev/null||true
 &bootrun 22 4 * * 0 root run-parts /etc/cron.weekly
 &bootrun 42 4 1 * * root run-parts /etc/cron.monthly
 EOF
+		mkdir -pv $PKG/etc/pam.d
+		install -Dm644 files/fcron.pam $PKG/etc/pam.d/fcron
+		install -Dm644 files/fcrontab.pam $PKG/etc/pam.d/fcrontab
+		rm -rvf $PKG/etc/pam.conf
 	popd
 
 	checketc "$PKG"
