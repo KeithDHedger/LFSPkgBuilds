@@ -19,7 +19,9 @@ TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://archive.apache.org/dist/httpd/${TARBALL}" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/downloads/${TARNAME}/${TARNAME}-${VERSION}-blfs_layout-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/downloads/${TARNAME}/${TARNAME}-${VERSION}-blf's_layout-1.patch" $SECTION
+
+gettar "http://www.linuxfromscratch.org/patches/blfs/10.1/httpd-2.4.46-blfs_layout-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -73,3 +75,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

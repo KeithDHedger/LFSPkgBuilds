@@ -30,9 +30,15 @@ groupadd -g $UIDGIDPAIR nullmail||true
 useradd -c "Nullmailer user" -d /usr/var/spool/nullmailer -g nullmail -s /bin/false -u $UIDGIDPAIR nullmail||true
 
 pushd $COMPILEAT 2>/dev/null||true
+rm -rf  "${TARNAME}-${VERSION}"
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		#echo CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure  --prefix=/usr --sysconfdir=/etc --libdir=/usr/lib64 --enable-gtk-doc --disable-debug --disable-nls --disable-static --enable-tls  --localstatedir=/usr/var
+		 #    CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure  --prefix=/usr --sysconfdir=/etc --libdir=/usr/lib64 --enable-gtk-doc --disable-debug --disable-nls --disable-static --enable-tls  --localstatedir=/usr/var
+		#echo CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-tls --localstatedir=/usr/var
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-tls --localstatedir=/usr/var
+		#CC=distc ./configure  --enable-tls --localstatedir=/usr/var
+		
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		make install-root DESTDIR=$PKG || exit 100
