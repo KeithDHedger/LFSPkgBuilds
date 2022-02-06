@@ -16,14 +16,19 @@ BUILD=${BUILD:-1}
 SECTION="KERNEL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$linux_arctype"
+#various places for ckernel configs
 #KERNELCONFIG=${KERNELCONFIG:-"$(pwd)/config-${linux_version}-${BUILD}"}
-KERNELCONFIG=${KERNELCONFIG:-"/LFSPkgBuildScripts/configs/kernel/config-${linux_version}-${BUILD}"}
+#KERNELCONFIG=${KERNELCONFIG:-"/LFSPkgBuildScripts/configs/kernel/config-${linux_version}-${BUILD}"}
+#KERNELCONFIG=${KERNELCONFIG:-"$(pwd)/allyesconfig"}
+#use config from running kernel -- CAUTION
+gunzip < /proc/config.gz > config-${VERSION}
+KERNELCONFIG=${KERNELCONFIG:-"config-${VERSION}"}
 KERNELSOURCEDIR="${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}_${BUILD}"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 
 mkdir -vp ${KERNELSOURCEDIR}||true
-rm -rf "$PKG" || true
+#rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 scriptLog "${PKGNAME}-${VERSION}"
@@ -32,16 +37,15 @@ gettar "https://www.kernel.org/pub/linux/kernel/v5.x/${TARBALL}" ${SECTION} ${TA
 pushd "${KERNELSOURCEDIR}"
 	(mkdir "${TARNAME}-${VERSION}"||true;tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
-		mkdir -vp $PKG/boot $PKG/usr/src||true
 		make mrproper
 		cp "$KERNELCONFIG" .config
 		make menuconfig|| exit 100
-		#make mod2yesconfig|| exit 100
 		make $MAKEFLAGS bzImage||make bzImage||exit 100
 		make $MAKEFLAGS modules||make modules||exit 100
 		make modules_install INSTALL_MOD_PATH=$PKG INSTALL_PATH=$PKG
 
 		ARCH=${ARCH:-$(uname -m)}
+		mkdir -vp $PKG/boot
 		case $ARCH in
 			i*86)
 				cp -v arch/x86/boot/bzImage $PKG/boot/vmlinuz-${VERSION}-${BUILD}
@@ -57,18 +61,21 @@ pushd "${KERNELSOURCEDIR}"
 		cp -r Documentation/* $PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}
 
 		mv ${PKG}/lib/modules/${VERSION} ${PKG}/lib/modules/${VERSION}-${BUILD}
-		ln -sv /lib/modules/${VERSION}-${BUILD} ${PKG}/lib/modules/${VERSION}
+		ln -sv ${VERSION}-${BUILD} ${PKG}/lib/modules/${VERSION}
 		chown -R 0:0 .
 		make clean
 		make prepare
-		rm .version
-		cd /usr/src
-		ln -sfv ${KERNELSOURCEDIR}/${TARNAME}-${VERSION} ${TARNAME}-${VERSION}
+		rm .version ||true
 	popd
 popd
 
 checketc "$PKG"
 packageclean "$PKG" "$CWD"
+
+export BUILD
+export KERNELVERSION=$VERSION
+export KERNELSOURCEDIR
+export TARNAME
 
 pushd "$PKG"
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

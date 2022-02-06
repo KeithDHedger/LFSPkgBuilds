@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #©keithhedger Wed 4 Feb 13:38:52 GMT 2015 kdhedger68713@gmail.com
 
@@ -13,4 +13,15 @@ install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 
 # End /etc/modprobe.d/usb.conf
 EOF
+
+pushd /boot
+	 ln -sfv vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz-${KERNELVERSION}
+	 ln -sfv vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz
+	 ln -sfv System.map-${KERNELVERSION}-${BUILD} System.map-${KERNELVERSION}
+	 ln -sfv config-${KERNELVERSION}-${BUILD} config-${KERNELVERSION}
+popd
+
+cd /usr/src
+ln -sfv ${KERNELSOURCEDIR}/${TARNAME}-${KERNELVERSION} ${TARNAME}-${KERNELVERSION}
+echo ln -sfv ${KERNELSOURCEDIR}/${TARNAME}-${KERNELVERSION} ${TARNAME}-${KERNELVERSION} >/tmp/xxxlog
 
