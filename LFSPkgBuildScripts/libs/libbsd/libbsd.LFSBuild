@@ -4,19 +4,19 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-PKGNAME="netcat"
-TARNAME="netcat-openbsd"
-VERSION="1.217"
+PKGNAME="libbsd"
+TARNAME="$PKGNAME"
+VERSION="0.10.0"
 BUILD=1
-SECTION="NET"
+SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}-1.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/duncan-roe/netcat-openbsd/archive/1.217-1/netcat-openbsd-1.217-1.tar.gz" $SECTION
+gettar "https://libbsd.freedesktop.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -26,12 +26,10 @@ fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}-1"
-		make CFLAGS="$LFSFLAGS -DNETCAT_VERSION=\"\\\"$VERSION\\\"\"" $MAKEFLAGS||make -DNETCAT_VERSION=\"\\\"$VERSION\\\"\"|| exit 100
-		mkdir -vp $PKG/usr/bin $PKG/usr/man/man1/
-		install -s -m 0755 nc $PKG/usr/bin/netcat
-		ln -s netcat $PKG/usr/bin/nc
-		cp nc.1 $PKG/usr/man/man1/
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
@@ -56,5 +54,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}-1"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

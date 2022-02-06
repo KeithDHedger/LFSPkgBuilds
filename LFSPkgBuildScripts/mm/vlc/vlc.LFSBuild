@@ -11,7 +11,7 @@ fi
 
 PKGNAME="vlc"
 TARNAME="$PKGNAME"
-VERSION="3.0.8"
+VERSION="3.0.12"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -21,17 +21,17 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.videolan.org/vlc/3.0.8/${TARBALL}" $SECTION
+gettar "https://download.videolan.org/vlc/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/vlc_demux.h/a #define LUA_COMPAT_APIINTCASTS' modules/lua/vlc.h
-		sed -i '/LIBSSH2_VERSION_NUM/s/10801/10900/' modules/access/sftp.c
-
-		BUILDCC=gcc CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-opencv --disable-vpx
+		export LUAC=/usr/bin/luac5.2
+		export LUA_LIBS="$(pkg-config --libs lua52)"
+		export CFLAGS="$LFSFLAGS $(pkg-config --cflags lua52)"
+		BUILDCC=gcc CXXFLAGS="$CFLAGS" ./configure ${CONFIGOPTIONS} --disable-opencv --disable-vpx
 		make $MAKEFLAGS||make|| exit 100
 		make docdir=/usr/share/doc/${PKGNAME}-${VERSION} install DESTDIR=$PKG || exit 100
 	popd
