@@ -4,8 +4,8 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-PKGNAME="lua"
-TARNAME="$PKGNAME"
+PKGNAME="lua524"
+TARNAME="lua"
 VERSION="5.2.4"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
@@ -66,3 +66,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

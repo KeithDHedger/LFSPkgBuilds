@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="dbus-1.12.4 fbset-2.1 rpi-fonts-0.1.0"
+DEPENDS="dbus-1.12.4 fbset-2.1 rpi-fonts-0.1.0 alsa-utils-1.2.4 ffmpeg-4.3.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -28,9 +28,19 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" "zip"
 	pushd "${TARNAME}-master"
-		make $MAKEFLAGS ffmpeg||make|| exit 100
-		INCLUDES="-I$CWD " make $MAKEFLAGS||make|| exit 100
-		cp -rvp omxplayer-dist/* $PKG
+		sed -i '/include Makefile.include/d' Makefile
+		sed -i 's:INCLUDES+=*:&-I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux -I/usr/include/freetype2 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include :' Makefile
+		sed -i 's:LDFLAGS+=*:&-L/opt/vc/lib :' Makefile
+		sed -i 's/$(STRIP)/strip/' Makefile
+		sed -i '/cp -P ffmpeg_compiled/d' Makefile
+
+		make $MAKEFLAGS||make|| exit 100
+		mkdir -vp $PKG/usr/share/fonts/truetype/freefont
+		mkdir -vp $PKG/usr/bin $PKG/usr/share/man/man1
+
+		cp -v omxplayer.bin $PKG/usr/bin
+		cp -v omxplayer.1 $PKG/usr/share/man/man1
+		cp -v fonts/FreeSans* $PKG/usr/share/fonts/truetype/freefont
 	popd
 
 	checketc "$PKG"

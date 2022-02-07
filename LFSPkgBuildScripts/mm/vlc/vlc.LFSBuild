@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="alsa-lib-1.1.9 FFmpeg-4.2 liba52-0.7.4 libgcrypt-1.8.5 libmad-0.15.1 Lua-5.3.5"
+DEPENDS="alsa-lib-1.1.9 FFmpeg-4.3.2 liba52-0.7.4 libgcrypt-1.8.5 libmad-0.15.1 lua524-5.2.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -60,3 +60,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

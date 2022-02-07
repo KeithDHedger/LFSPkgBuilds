@@ -11,14 +11,15 @@ fi
 
 PKGNAME="libvdpau"
 TARNAME="$PKGNAME"
-VERSION="1.2"
+VERSION="1.4"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://gitlab.freedesktop.org/vdpau/${PKGNAME}/uploads/14b620084c027d546fa0b3f083b800c6/${TARBALL}" $SECTION
+#gettar "https://gitlab.freedesktop.org/vdpau/${PKGNAME}/uploads/14b620084c027d546fa0b3f083b800c6/${TARBALL}" $SECTION
+gettar "https://gitlab.freedesktop.org/vdpau/${PKGNAME}/-/archive/1.4/${TARBALL}" $SECTION
 PKG="${OUTPUT}/${PKGNAME}"
 
 DOWHAT=${1:-"build"}
@@ -29,9 +30,11 @@ CWD=$(pwd)
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-		make $MAKEFLAGS||make || exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir build ||true
+		cd build
+		meson --prefix=$XORG_PREFIX ..
+		ninja
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc $PKG
