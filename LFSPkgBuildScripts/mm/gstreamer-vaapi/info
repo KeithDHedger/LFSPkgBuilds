@@ -1,0 +1,2 @@
+https://www.linuxfromscratch.org/blfs/view/stable/multimedia/gstreamer10-vaapi.html
+The gstreamer-vaapi package contains a gstreamer plugin for hardware accelerated video decode/encode for the prevailing coding standards today (MPEG-2, MPEG-4 ASP/H.263, MPEG-4 AVC/H.264, and VC-1/VMW3).
