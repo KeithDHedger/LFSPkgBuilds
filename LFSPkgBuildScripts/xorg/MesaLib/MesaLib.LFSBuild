@@ -80,7 +80,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	popd
 	
 	checketc $PKG
-	packageclean "$PKG"
+	packageclean "$PKG" "$CWD"
 	
 	pushd "$PKG"
 		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
