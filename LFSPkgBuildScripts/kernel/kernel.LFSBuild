@@ -21,14 +21,15 @@ TARBALL="${TARNAME}-${VERSION}.$linux_arctype"
 #KERNELCONFIG=${KERNELCONFIG:-"/LFSPkgBuildScripts/configs/kernel/config-${linux_version}-${BUILD}"}
 #KERNELCONFIG=${KERNELCONFIG:-"$(pwd)/allyesconfig"}
 #use config from running kernel -- CAUTION
-gunzip < /proc/config.gz > config-${VERSION}
-KERNELCONFIG=${KERNELCONFIG:-"config-${VERSION}"}
+mkdir -vp ${TMP}
+gunzip < /proc/config.gz > "${TMP}/config-${VERSION}"
+KERNELCONFIG=${KERNELCONFIG:-"${TMP}/config-${VERSION}"}
 KERNELSOURCEDIR="${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}_${BUILD}"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 
 mkdir -vp ${KERNELSOURCEDIR}||true
-#rm -rf "$PKG" || true
+rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 scriptLog "${PKGNAME}-${VERSION}"
@@ -59,7 +60,9 @@ pushd "${KERNELSOURCEDIR}"
 
 		install -d $PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}
 		cp -r Documentation/* $PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}
-
+		if [ "X$EXTRAINFO" !="X" ];then 
+			echo -e "$EXTRAINFO" > "$PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}/ExtraBuildInfo"
+		fi
 		mv ${PKG}/lib/modules/${VERSION} ${PKG}/lib/modules/${VERSION}-${BUILD}
 		ln -sv ${VERSION}-${BUILD} ${PKG}/lib/modules/${VERSION}
 		chown -R 0:0 .
