@@ -60,7 +60,7 @@ pushd "${KERNELSOURCEDIR}"
 
 		install -d $PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}
 		cp -r Documentation/* $PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}
-		if [ "X$EXTRAINFO" !="X" ];then 
+		if [ "X$EXTRAINFO" != "X" ];then 
 			echo -e "$EXTRAINFO" > "$PKG/usr/share/doc/${TARNAME}-${VERSION}-${BUILD}/ExtraBuildInfo"
 		fi
 		mv ${PKG}/lib/modules/${VERSION} ${PKG}/lib/modules/${VERSION}-${BUILD}
