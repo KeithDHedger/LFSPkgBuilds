@@ -4,37 +4,37 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="qt5-5.15.2"
+DEPENDS="alsa-lib-1.2.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="SimulIDE"
+PKGNAME="alsa-plugins"
 TARNAME="$PKGNAME"
-VERSION="0.4.15"
+VERSION="1.2.2"
 BUILD=1
-SECTION="DEVEL"
+SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="$PKGNAME.zip"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://codeload.github.com/SimulIDE/SimulIDE/zip/refs/heads/master" $SECTION $TARBALL
+gettar "https://www.alsa-project.org/files/pub/plugins/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-master"
-		mkdir build || true
-		cd  build
-		qmake ..
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
-		cd release/SimulIDE*
-		install -D -m644 ${CWD}/simulide.desktop "${PKG}/usr/share/applications/SimulIDE.desktop"
-		cp -r ./* "${PKG}/usr"
+		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"
@@ -59,5 +59,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-master"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
