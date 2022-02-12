@@ -46,7 +46,7 @@ pushd "${KERNELSOURCEDIR}"
 		make modules_install INSTALL_MOD_PATH=$PKG INSTALL_PATH=$PKG
 
 		ARCH=${ARCH:-$(uname -m)}
-		mkdir -vp $PKG/boot
+		mkdir -vp $PKG/boot $PKG/usr/src
 		case $ARCH in
 			i*86)
 				cp -v arch/x86/boot/bzImage $PKG/boot/vmlinuz-${VERSION}-${BUILD}
@@ -65,6 +65,17 @@ pushd "${KERNELSOURCEDIR}"
 		fi
 		mv ${PKG}/lib/modules/${VERSION} ${PKG}/lib/modules/${VERSION}-${BUILD}
 		ln -sv ${VERSION}-${BUILD} ${PKG}/lib/modules/${VERSION}
+
+		pushd $PKG/boot
+	 		ln -sfv vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz-${KERNELVERSION}
+			ln -sfv vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz
+			ln -sfv System.map-${KERNELVERSION}-${BUILD} System.map-${KERNELVERSION}
+			ln -sfv config-${KERNELVERSION}-${BUILD} config-${KERNELVERSION}
+		popd
+
+		cd $PKG/usr/src
+		ln -sfv ${KERNELSOURCEDIR}/${TARNAME}-${KERNELVERSION} ${TARNAME}-${KERNELVERSION}
+
 		chown -R 0:0 .
 		make clean
 		make prepare
@@ -74,12 +85,12 @@ popd
 
 checketc "$PKG"
 packageclean "$PKG" "$CWD"
-
-export BUILD
-export KERNELVERSION=$VERSION
-export KERNELSOURCEDIR
-export TARNAME
-
+#
+#export BUILD
+#export KERNELVERSION=$VERSION
+#export KERNELSOURCEDIR
+#export TARNAME
+#
 pushd "$PKG"
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
