@@ -67,14 +67,15 @@ pushd "${KERNELSOURCEDIR}"
 		ln -sv ${VERSION}-${BUILD} ${PKG}/lib/modules/${VERSION}
 
 		pushd $PKG/boot
-	 		ln -sfv vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz-${KERNELVERSION}
-			ln -sfv vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz
-			ln -sfv System.map-${KERNELVERSION}-${BUILD} System.map-${KERNELVERSION}
-			ln -sfv config-${KERNELVERSION}-${BUILD} config-${KERNELVERSION}
+	 		ln -sfv vmlinuz-${VERSION}-${BUILD} vmlinuz-${VERSION}
+			ln -sfv vmlinuz-${VERSION}-${BUILD} vmlinuz
+			ln -sfv System.map-${VERSION}-${BUILD} System.map-${VERSION}
+			ln -sfv config-${VERSION}-${BUILD} config-${VERSION}
 		popd
 
-		cd $PKG/usr/src
-		ln -sfv ${KERNELSOURCEDIR}/${TARNAME}-${KERNELVERSION} ${TARNAME}-${KERNELVERSION}
+		pushd $PKG/usr/src
+			ln -sfv ${KERNELSOURCEDIR}/${TARNAME}-${VERSION} ${TARNAME}-${VERSION}
+		popd
 
 		chown -R 0:0 .
 		make clean
@@ -111,6 +112,7 @@ case $DOWHAT in
 esac
 
 rm -r "$PKG"
+
 
 
 

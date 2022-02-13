@@ -1,0 +1,14 @@
+#!/bin/bash
+
+BUILD=$1
+KERNELVERSION=${2:-"5.10.17"}
+
+ln -svf config-${KERNELVERSION}-${BUILD} config-${KERNELVERSION}
+ln -svf System.map-${KERNELVERSION}-${BUILD} System.map-${KERNELVERSION}
+ln -svf vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz-${KERNELVERSION}
+ln -svf vmlinuz-${KERNELVERSION}-${BUILD} vmlinuz
+cd /lib/modules
+rm ${KERNELVERSION}
+ln -svf ${KERNELVERSION}-${BUILD} ${KERNELVERSION}
+
+
