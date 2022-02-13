@@ -86,12 +86,7 @@ popd
 
 checketc "$PKG"
 packageclean "$PKG" "$CWD"
-#
-#export BUILD
-#export KERNELVERSION=$VERSION
-#export KERNELSOURCEDIR
-#export TARNAME
-#
+
 pushd "$PKG"
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd
