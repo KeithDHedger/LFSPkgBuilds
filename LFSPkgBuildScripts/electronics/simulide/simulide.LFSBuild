@@ -13,7 +13,7 @@ PKGNAME="SimulIDE"
 TARNAME="simulide"
 VERSION="0.4.15"
 BUILD=1
-SECTION="DEVEL"
+SECTION="ELECTRONICS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}_${VERSION}-SR9_Sources.zip"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -21,7 +21,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://codeload.github.com/SimulIDE/SimulIDE/zip/refs/heads/master" $SECTION
 gettar "https://launchpad.net/simulide/${VERSION}/${VERSION}-stable/+download/$TARBALL"  $SECTION 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -32,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		cd build_XX
 		qmake
 		make $MAKEFLAGS||make|| exit 100
-		cd release/SimulIDE*
+		cd executables/SimulIDE*
 		install -D -m644 ${CWD}/simulide.desktop "${PKG}/usr/share/applications/SimulIDE.desktop"
 		cp -r ./* "${PKG}/usr"
 	popd

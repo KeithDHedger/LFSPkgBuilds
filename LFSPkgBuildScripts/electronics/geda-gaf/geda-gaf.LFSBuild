@@ -1,0 +1,71 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="gtk-2.24.33"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="geda-gaf"
+TARNAME="$PKGNAME"
+VERSION="1.10.2"
+BUILD=1
+SECTION="ELECTRONICS"
+SUFFIX="LFSPKG"
+TARBALL="${PKGNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+#gettar "https://codeload.github.com/rlutz/geda-gaf/zip/refs/heads/master" $SECTION $TARBALL
+gettar "https://launchpad.net/geda/stable-${VERSION%.?*}/${VERSION}/+download/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		sed -i 's|^.*<fam.h>|//&|' gschem/src/gschem_change_notification.c
+		sed -i 's| enum FAMCodes | int |' gschem/src/gschem_change_notification.c
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-update-xdg-database --without-libfam
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		sed -i 's/Exec=gattrib %F/Exec=gattrib/g' "$PKG/usr/share/applications/geda-gattrib.desktop"
+		sed -i 's/Exec=gschem %F/Exec=gschem/g' "$PKG/usr/share/applications/geda-gschem.desktop"
+		sed -i 's+/usr/bin/env python+/usr/bin/env python2+' "$PKG/usr/bin/garchive"
+		sed -i 's+/usr/bin/python+/usr/bin/python2+' "$PKG/usr/bin/tragesym"
+		sed -i 's+/usr/bin/python+/usr/bin/python2+' "$PKG/usr/share/doc/$PKGNAME/examples/lightning_detector/bom"
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

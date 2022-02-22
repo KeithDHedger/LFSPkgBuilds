@@ -35,22 +35,14 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
 		sed -i "s/MOZ_MAKE_FLAGS=\"-j1\"/MOZ_MAKE_FLAGS=\"$MAKEFLAGS\"/" mozconfig
 
-		#grep -rl -- '-Werror=format' | xargs sed -i 's/error=format/no-&/'
-		#sed -i -e '/pid_t gettid/,+3 s@^@//@' mozilla/tools/profiler/core/platform.h
+		export CC=gcc CXX=g++
+		./mach configure
+		./mach build
+		DESTDIR="$PKG" INSTALL_SDK=  ./mach install
 
-export CC=gcc CXX=g++
-./mach configure
-./mach build
-DESTDIR="$PKG" INSTALL_SDK=  ./mach install
-
-rm -rf "$PKG"/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/{dictionaries,hyphenation}
-ln -s /usr/share/hunspell "$PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/dictionaries"
-ln -s /usr/share/hyphen "$PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/hyphenation"
-
-		#SHELL=/bin/sh CC=gcc CXX=g++ make -f client.mk || exit 100
-		#SHELL=/bin/sh CC=gcc CXX=g++ make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 100
-		#SHELL=/bin/sh make $MAKEFLAGS -f client.mk || exit 100
-		#SHELL=/bin/sh make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 100
+		rm -rf "$PKG"/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/{dictionaries,hyphenation}
+		ln -s /usr/share/hunspell "$PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/dictionaries"
+		ln -s /usr/share/hyphen "$PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/hyphenation"
 
 		chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}||true
 		mkdir -vp $PKG/usr/share/man/man1  $PKG/usr/share/{applications,pixmaps}|| true
@@ -85,5 +77,5 @@ ln -s /usr/share/hyphen "$PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/hyphenation"
 			exit 1
 	esac
 
-	#rm -r "$PKG" ${TARNAME}-${VERSION}
+	rm -r "$PKG" ${TARNAME}-${VERSION}
 popd 2>/dev/null||true
