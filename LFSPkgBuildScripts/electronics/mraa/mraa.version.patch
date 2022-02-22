@@ -1,0 +1,39 @@
+*** include/version.h	2022-02-01 17:03:02.216930556 +0000
+--- include/version.h.mine	2022-02-01 17:06:24.294855263 +0000
+***************
+*** 5,19 ****
+   * SPDX-License-Identifier: MIT
+   */
+  
+  #pragma once
+  
+  #ifdef __cplusplus
+  extern "C" {
+  #endif
+  
+! const char* gVERSION;
+! const char* gVERSION_SHORT;
+  
+  #ifdef __cplusplus
+  }
+  #endif
+--- 5,23 ----
+   * SPDX-License-Identifier: MIT
+   */
+  
++ #ifndef _GVERSION_
++ #define _GVERSION_
++ 
+  #pragma once
+  
+  #ifdef __cplusplus
+  extern "C" {
+  #endif
+  
+! extern const char* gVERSION;
+! extern const char* gVERSION_SHORT;
+  
+  #ifdef __cplusplus
+  }
+  #endif
++ #endif
