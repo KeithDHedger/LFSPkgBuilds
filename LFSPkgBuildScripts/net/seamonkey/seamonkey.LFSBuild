@@ -13,7 +13,7 @@ fi
 
 PKGNAME="seamonkey"
 TARNAME="$PKGNAME"
-VERSION="2.53.6"
+VERSION="2.53.9"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -33,14 +33,26 @@ pushd $COMPILEAT 2>/dev/null||true
 		cp ${CWD}/seamonkey.mozconfig ./mozconfig
 		#set the lib suffix in the config file
 		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
+		sed -i "s/MOZ_MAKE_FLAGS=\"-j1\"/MOZ_MAKE_FLAGS=\"$MAKEFLAGS\"/" mozconfig
 
-		grep -rl -- '-Werror=format' | xargs sed -i 's/error=format/no-&/'
-		sed -i -e '/pid_t gettid/,+3 s@^@//@' mozilla/tools/profiler/core/platform.h
+		#grep -rl -- '-Werror=format' | xargs sed -i 's/error=format/no-&/'
+		#sed -i -e '/pid_t gettid/,+3 s@^@//@' mozilla/tools/profiler/core/platform.h
 
-		SHELL=/bin/sh CC=gcc CXX=g++ make -f client.mk || exit 100
-		SHELL=/bin/sh CC=gcc CXX=g++ make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 100
+export CC=gcc CXX=g++
+./mach configure
+./mach build
+DESTDIR="$PKG" INSTALL_SDK=  ./mach install
 
-		chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}-${VERSION}||true
+rm -rf "$PKG"/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/{dictionaries,hyphenation}
+ln -s /usr/share/hunspell "$PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/dictionaries"
+ln -s /usr/share/hyphen "$PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/hyphenation"
+
+		#SHELL=/bin/sh CC=gcc CXX=g++ make -f client.mk || exit 100
+		#SHELL=/bin/sh CC=gcc CXX=g++ make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 100
+		#SHELL=/bin/sh make $MAKEFLAGS -f client.mk || exit 100
+		#SHELL=/bin/sh make -f client.mk install INSTALL_SDK= DESTDIR=$PKG  || exit 100
+
+		chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}||true
 		mkdir -vp $PKG/usr/share/man/man1  $PKG/usr/share/{applications,pixmaps}|| true
 		cp -v $(find -name seamonkey.1 | head -n1) $PKG/usr/share/man/man1
 
@@ -73,5 +85,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" ${TARNAME}-${VERSION}
+	#rm -r "$PKG" ${TARNAME}-${VERSION}
 popd 2>/dev/null||true
