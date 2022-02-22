@@ -167,6 +167,7 @@
 ./devel/yaml/yaml.LFSBuild
 ./devel/yasm/yasm.LFSBuild
 ./electronics/diylc/diylc.LFSBuild
+./electronics/easy_spice/easy_spice.LFSBuild
 ./electronics/geda-gaf/geda-gaf.LFSBuild
 ./electronics/mraa/mraa.LFSBuild
 ./electronics/ngspice/ngspice.LFSBuild

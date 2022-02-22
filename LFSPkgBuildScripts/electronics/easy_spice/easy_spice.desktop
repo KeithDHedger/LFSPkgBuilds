@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Easy Spice
+Comment=A Simple Frontend for SPICE
+Exec=easy_spice
+Icon=easy_spice
+Terminal=false
+Type=Application
+Categories=Electronics
