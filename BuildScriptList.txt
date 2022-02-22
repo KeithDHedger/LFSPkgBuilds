@@ -124,6 +124,7 @@
 ./devel/lesstif/lesstif.LFSBuild
 ./devel/libtasn1/libtasn1.LFSBuild
 ./devel/libtermkey/libtermkey.LFSBuild
+./devel/lua524/lua524.LFSBuild
 ./devel/lua/lua.LFSBuild
 ./devel/make-ca/make-ca.LFSBuild
 ./devel/makedepend/makedepend.LFSBuild
@@ -165,6 +166,11 @@
 ./devel/yad/yad.LFSBuild
 ./devel/yaml/yaml.LFSBuild
 ./devel/yasm/yasm.LFSBuild
+./electronics/diylc/diylc.LFSBuild
+./electronics/geda-gaf/geda-gaf.LFSBuild
+./electronics/mraa/mraa.LFSBuild
+./electronics/ngspice/ngspice.LFSBuild
+./electronics/simulide/simulide.LFSBuild
 ./fonts/DejaVu-font/DejaVu-font.LFSBuild
 ./fonts/liberation-font/liberation.LFSBuild
 ./fonts/rpi-fonts/rpi-fonts.LFSBuild
@@ -209,6 +215,7 @@
 ./gtk/vte1/vte.LFSBuild
 ./gtk/vte290/vte.LFSBuild
 ./gtk/vte2/vte.LFSBuild
+./hware/alsa-ucm-conf/alsa-ucm-conf.LFSBuild
 ./hware/bluez/bluez.LFSBuild
 ./hware/DirectFB/DirectFB.LFSBuild
 ./hware/DirectFB/pi-DirectFB.LFSBuild
@@ -283,6 +290,7 @@
 ./libs/krb5/krb5.LFSBuild
 ./libs/libarchive/libarchive.LFSBuild
 ./libs/libatomic_ops/libatomic_ops.LFSBuild
+./libs/libbsd/libbsd.LFSBuild
 ./libs/libburn/libburn.LFSBuild
 ./libs/libcaca/libcaca.LFSBuild
 ./libs/libcanberra/libcanberra.LFSBuild
@@ -363,8 +371,11 @@
 ./managers/lxdm/lxdm.LFSBuild
 ./managers/xdm/xdm.LFSBuild
 ./mm/a52dec/a52dec.LFSBuild
+./mm/alsa-firmware/alsa-firmware.LFSBuild
 ./mm/alsa-lib/alsa-lib.LFSBuild
 ./mm/alsa-oss/alsa-oss.LFSBuild
+./mm/alsa-plugins/alsa-plugins.LFSBuild
+./mm/alsa-tools/alsa-tools.LFSBuild
 ./mm/alsa-utils/alsa-utils.LFSBuild
 ./mm/audacity/audacity.LFSBuild
 ./mm/avidemux/avidemux.LFSBuild
@@ -387,6 +398,7 @@
 ./mm/gst-plugins-good/gst-plugins-good.LFSBuild
 ./mm/gst-plugins-ugly/gst-plugins-ugly.LFSBuild
 ./mm/gstreamer/gstreamer.LFSBuild
+./mm/gstreamer-vaapi/gstreamer-vaapi.LFSBuild
 ./mm/id3lib/id3lib.LFSBuild
 ./mm/inputstream-adaptive/inputstream-adaptive.LFSBuild
 ./mm/kodi/kodi.LFSBuild
