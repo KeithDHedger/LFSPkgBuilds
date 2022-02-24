@@ -1,0 +1,73 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="OpenJDK-15.0.2"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="CircuitSimulator"
+TARNAME="linux"
+VERSION="1.2.2"
+BUILD=1
+SECTION="ELECTRONICS"
+SUFFIX="LFSPKG"
+TARBALL="linux"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+if [[ $ARCH = *64* ]];then
+	TARBALL="${TARNAME}-x64.tar.xz"
+	OUTTARBALL="${PKGNAME}-x64.tar.xz"
+else
+	TARBALL="${TARNAME}-x32.tar.xz"
+	OUTTARBALL="${PKGNAME}-x32.tar.xz"
+fi
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/SEVA77/circuitjs1/releases/download/${VERSION}/${TARBALL}" $SECTION $OUTTARBALL
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
+pushd $COMPILEAT 2>/dev/null||true
+	mkdir -vp ${PKG}/opt ${PKG}/usr/share/applications ${PKG}/usr/share/pixmaps
+	cd ${PKG}/opt
+	tar -xvf ${SOURCEARCHIVES}/${SECTION}/$OUTTARBALL
+	mv linux* ${PKGNAME}
+	pushd ${PKGNAME}
+		mv ./icon.png ${PKG}/usr/share/pixmaps/${PKGNAME}.png
+		mv ./CircuitSimulator.desktop ${PKG}/usr/share/applications
+		sed -i 's/Icon=system-run/Icon=CircuitSimulator.png/' ${PKG}/usr/share/applications/CircuitSimulator.desktop
+		sed -i 's@Exec=.*@Exec=/opt/CircuitSimulator/CircuitSimulator@' ${PKG}/usr/share/applications/CircuitSimulator.desktop
+		sed -i 's@Categories=.*@Categories=Electronics@' ${PKG}/usr/share/applications/CircuitSimulator.desktop
+	popd
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG"
+popd 2>/dev/null||true
