@@ -166,6 +166,8 @@
 ./devel/yad/yad.LFSBuild
 ./devel/yaml/yaml.LFSBuild
 ./devel/yasm/yasm.LFSBuild
+./electronics/circuitjs1/circuitjs1.LFSBuild
+./electronics/CircuitSimulator/CircuitSimulator.LFSBuild
 ./electronics/diylc/diylc.LFSBuild
 ./electronics/easy_spice/easy_spice.LFSBuild
 ./electronics/geda-gaf/geda-gaf.LFSBuild
