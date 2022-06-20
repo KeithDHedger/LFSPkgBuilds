@@ -4,14 +4,15 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="python-2.7.16 alsa-lib-1.1.9 gtk3-3.24.10 GTK-2.24.32 Zip-3.0 UnZip-6.0 libevent-2.1.11 NSPR-4.21 NSS-3.45 SQLite-3.29.0 yasm-1.3.0 Autoconf213-2.13 LLVM-8.0.1 rustc-1.47.0 cbindgen-0.9.0 node-9.5.0"
+DEPENDS="Autoconf-2.13 Cbindgen-0.17.0 dbus-glib-0.110 GTK3-3.24.25 GTK-2.24.33 LLVM-11.1.0 alsa-lib-1.2.4 nodejs-14.16.0 Python3-3.9.2 startup-notification-0.12 Zip-3.0 UnZip-6.0 yasm-1.3.0 ICU-68.2 libevent-2.1.12 NASM-2.15.05 NSPR-4.29 NSS-3.61"
+
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="thunderbird"
 TARNAME="$PKGNAME"
-VERSION="68.0"
+VERSION="78.8.0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -25,19 +26,21 @@ gettar "https://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${VERSION}/
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+mountpoint -q /dev/shm || sudo mount -t tmpfs devshm /dev/shm
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"||true
 	pushd ${PKGNAME}-${VERSION}
 		cp $CWD/mozconfig.thunderbird mozconfig
-		#set the lib suffix in the config file
+#		#set the lib suffix in the config file
 		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
-		sed -i -e '/#!\[deny(missing_docs)\]/d' servo/components/style/lib.rs
-		sed -i -e 's/#!\[deny(unsafe_code, missing_docs)\]/#!\[deny(unsafe_code)\]/g' servo/components/style_traits/lib.rs
-		sed -i -e '/pid_t gettid/s@^@//@' tools/profiler/core/platform.h
+#		#set make flags
+		sed -i "s/MOZ_MAKE_FLAGS=\"-j.*\"/MOZ_MAKE_FLAGS=\"${MAKEFLAGS:-J1}\"/" mozconfig
 
-		SHELL=/bin/sh ./mach build|| exit 100
-		SHELL=/bin/sh DESTDIR=$PKG ./mach install || exit 100
-		chown -R 0:0 $PKG/usr/lib${LIBDIRSUFFIX}/${PKGNAME}
+		export CC=gcc CXX=g++
+		./mach configure|| exit 100
+		./mach build|| exit 100
+		DESTDIR=$PKG ./mach install || exit 100
 
 		mkdir -pv $PKG/usr/share/applications $PKG/usr/share/pixmaps
 		ln -sfv ../lib${LIBDIRSUFFIX}/${PKGNAME}/${PKGNAME} $PKG/usr/bin

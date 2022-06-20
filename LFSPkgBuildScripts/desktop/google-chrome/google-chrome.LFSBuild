@@ -12,7 +12,7 @@ fi
 PKGNAME="google-chrome"
 TARNAME="$PKGNAME"
 VERSION="10.1"
-BUILD=1
+BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
 TARBALL="google-chrome-stable_current_amd64.deb"
@@ -63,3 +63,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "debtmp"
 popd 2>/dev/null||true
+
