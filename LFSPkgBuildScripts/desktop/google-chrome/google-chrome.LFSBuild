@@ -21,7 +21,10 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
+export FORCEDOWNLOAD=1
 gettar "https://dl.google.com/linux/direct/${TARBALL}" $SECTION
+unset FORCEDOWNLOAD
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -1,0 +1,3 @@
+python-webencodings (Character encoding for the web)
+webencodings is a Python implementation of the WHATWG Encoding
+standard.

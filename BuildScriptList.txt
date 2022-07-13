@@ -560,6 +560,7 @@
 ./python/eyeD3/eyeD3.LFSBuild
 ./python/funcsigs/funcsigs.LFSBuild
 ./python/html2text/html2text.LFSBuild
+./python/html5lib/html5lib.LFSBuild
 ./python/Imaging/Imaging.LFSBuild
 ./python/lxml/lxml.LFSBuild
 ./python/Mako/Mako.LFSBuild
@@ -575,6 +576,7 @@
 ./python/PyQt/PyQt.LFSBuild
 ./python/python-dateutil/python-dateutil.LFSBuild
 ./python/Python/Python.LFSBuild
+./python/python-webencodings/python-webencodings.LFSBuild
 ./python/python-xrandr/python-xrandr.LFSBuild
 ./python/PyYAML/PyYAML.LFSBuild
 ./python/sip/sip.LFSBuild
@@ -589,6 +591,7 @@
 ./qt/qt5ct/qt5ct.LFSBuild
 ./qt/qt5-docs/qt5-docs.LFSBuild
 ./qt/qt5/qt5.LFSBuild
+./qt/qt6/qt6.LFSBuild
 ./qt/qt-creator/qt-creator.LFSBuild
 ./qt/qterminal/qterminal.LFSBuild
 ./qt/qtermwidget/qtermwidget.LFSBuild
@@ -630,6 +633,7 @@
 ./sys/mtools/mtools.LFSBuild
 ./sys/nano/nano.LFSBuild
 ./sys/notification-daemon/notification-daemon.LFSBuild
+./sys/ntfsprogs/ntfsprogs.LFSBuild
 ./sys/ntp/ntp.LFSBuild
 ./sys/openssh/openssh.LFSBuild
 ./sys/p7zip/p7zip.LFSBuild

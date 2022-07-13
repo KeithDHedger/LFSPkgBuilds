@@ -11,7 +11,7 @@ fi
 
 PKGNAME="cups"
 TARNAME="$PKGNAME"
-VERSION="2.3.3"
+VERSION="2.4.1"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -23,7 +23,9 @@ CWD=$(pwd)
 ./preinstall||true
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/apple/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
+#gettar "https://github.com/apple/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/OpenPrinting/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -24,7 +24,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --enable-shared --with-system-expat --with-system-ffi --with-ensurepip=yes
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CXX="/usr/bin/g++" ./configure --prefix=/usr --with-ensurepip=yes --enable-shared --with-system-expat --with-system-ffi
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}/html
