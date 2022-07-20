@@ -23,7 +23,6 @@ CWD=$(pwd)
 ./preinstall||true
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://github.com/apple/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
 gettar "https://github.com/OpenPrinting/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true

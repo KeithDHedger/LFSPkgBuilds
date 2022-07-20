@@ -60,6 +60,7 @@
 ./desktop/google-chrome/google-chrome.LFSBuild
 ./desktop/grsync/grsync.LFSBuild
 ./desktop/gsmartcontrol/gsmartcontrol.LFSBuild
+./desktop/gv/gv.LFSBuild
 ./desktop/icon-naming-utils/icon-naming-utils.LFSBuild
 ./desktop/ImageMagick/ImageMagick.LFSBuild
 ./desktop/KKEdit/KKEdit.LFSBuild
@@ -80,6 +81,7 @@
 ./desktop/xarchiver/xarchiver.LFSBuild
 ./desktop/xcalc/xcalc.LFSBuild
 ./desktop/xdg-utils/xdg-utils.LFSBuild
+./desktop/xpdf/xpdf.LFSBuild
 ./desktop/xulrunner/xulrunner.LFSBuild
 ./devel/abs/abs.LFSBuild
 ./devel/amtk/amtk.LFSBuild
@@ -538,6 +540,7 @@
 ./print/colord/colord.LFSBuild
 ./print/cups/cups.LFSBuild
 ./print/cups-filters/cups-filters.LFSBuild
+./print/cups-pdf/cups-pdf.LFSBuild
 ./print/ghostscript/ghostscript.LFSBuild
 ./print/gutenprint/gutenprint.LFSBuild
 ./print/hplip/hplip.LFSBuild
