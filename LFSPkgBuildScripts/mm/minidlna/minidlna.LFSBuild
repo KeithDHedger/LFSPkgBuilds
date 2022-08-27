@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="ffmpeg-4.2 libexif-0.6.21 libvorbis-1.3.6"
+DEPENDS="ffmpeg-4.3.2 libexif-0.6.21 libvorbis-1.3.6 libid3tag-0.15.1 libexif-0.6.22"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="minidlna"
 TARNAME="$PKGNAME"
-VERSION="1.2.1"
+VERSION="1.3.0"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -21,14 +21,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://netcologne.dl.sourceforge.net/project/minidlna/minidlna/1.2.1/${TARBALL}" $SECTION
+gettar "http://downloads.sourceforge.net/minidlna/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --disable-tivo --disable-netgear --disable-readynas ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		install -Dm644 minidlna.conf ${PKG}/etc/minidlna.conf
