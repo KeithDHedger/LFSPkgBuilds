@@ -4,36 +4,36 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Cups-2.3.3 glib-2.66.7 ghostscript-9.53.3 lcms2-2.12 MuPDF-1.18.0 Poppler-21.02.0 Qpdf-8.4.2"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="cups-filters"
+PKGNAME="ntfsprogs"
 TARNAME="$PKGNAME"
-VERSION="1.28.12"
-BUILD=${BUILD:-1}
-SECTION="PRINT"
+VERSION="2021.8.22"
+BUILD=1
+SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tgz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.openprinting.org/download/cups-filters/${TARBALL}" $SECTION
+gettar "https://tuxera.com/opensource/ntfs-3g_${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --without-rcdir --with-gs-path=/usr/bin/gs --with-pdftops-path=/usr/bin/gs --disable-avahi
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/ntfs-3g_${TARBALL}"
+	pushd "ntfs-3g_${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-fuse=internal --enable-ntfsprogs
+		mkdir -vp ${PKG}/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -55,6 +55,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "ntfs-3g_${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
 

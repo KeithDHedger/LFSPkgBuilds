@@ -4,36 +4,48 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Cups-2.3.3 glib-2.66.7 ghostscript-9.53.3 lcms2-2.12 MuPDF-1.18.0 Poppler-21.02.0 Qpdf-8.4.2"
+DEPENDS="cups-2.4.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="cups-filters"
+PKGNAME="cups-pdf"
 TARNAME="$PKGNAME"
-VERSION="1.28.12"
-BUILD=${BUILD:-1}
-SECTION="PRINT"
+VERSION="3.0.1"
+BUILD=1
+SECTION="TMP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}_${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.openprinting.org/download/cups-filters/${TARBALL}" $SECTION
+gettar "https://www.cups-pdf.de/src/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --without-rcdir --with-gs-path=/usr/bin/gs --with-pdftops-path=/usr/bin/gs --disable-avahi
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		patch -p1 -i ${CWD}/remove-deprecated-ghostscript-setpdfwrite-operator.diff
+		mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/cups/backend
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" gcc -s -lcups -o $PKG/usr/lib${LIBDIRSUFFIX}/cups/backend/$PKGNAME src/cups-pdf.c
+		chmod 0700 $PKG/usr/lib${LIBDIRSUFFIX}/cups/backend/$PKGNAME
+
+		mkdir -p $PKG/etc/cups
+		cat extra/${PKGNAME}.conf > $PKG/etc/cups/${PKGNAME}.conf.new
+
+		mkdir -p $PKG/usr/share/cups/model
+		cp -a extra/CUPS-PDF_opt.ppd $PKG/usr/share/cups/model/CUPS-PDF.ppd
+		cp -a extra/CUPS-PDF_noopt.ppd $PKG/usr/share/cups/model/CUPS-PDF_noopt.ppd
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
@@ -57,4 +69,3 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
-

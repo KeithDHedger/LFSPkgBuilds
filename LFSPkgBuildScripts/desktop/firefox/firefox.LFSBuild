@@ -9,13 +9,6 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-if ! python3 -c "help('modules');" 2>/dev/null| grep -qi _sqlite3;then
-	lfspkg -r python3||true
-	ANYVERSION=1 BUILD=2 lfspkg -B python3
-fi
-
-mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm||exit 100
-
 PKGNAME="firefox"
 TARNAME="$PKGNAME"
 VERSION="78.8.0"
@@ -33,6 +26,13 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://archive.mozilla.org/pub/${PKGNAME}/releases/${VERSION}esr/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm||exit 100
+if ! python3 -c "help('modules');" 2>/dev/null| grep -qi _sqlite3;then
+	lfspkg -r python3||true
+	ANYVERSION=1 BUILD=2 lfspkg -B python3
+fi
+
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
