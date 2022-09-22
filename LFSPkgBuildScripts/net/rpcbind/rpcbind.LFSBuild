@@ -35,12 +35,9 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-vulnerability_fixes-1.patch
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/usr/sbin --with-rpcuser=root --enable-warmstarts $SYSTEMDOPTS
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --bindir=/sbin --sbindir=/sbin --with-rpcuser=root --enable-warmstarts $SYSTEMDOPTS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/etc $PKG/sbin|| true
-		#fix sysv script from blfs bootscripts
-		ln -sv /usr/sbin/rpcbind $PKG/sbin/rpcbind
 	popd
 
 	checketc "$PKG"
@@ -67,3 +64,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

@@ -16,3 +16,4 @@ LFSPkgBuildScripts/kernel/config*
 Updating/uplist
 HOLD
 LFSPkgBuildScripts/testing
+LFSPkgBuildScripts/admin/LFSPkg/master.zip

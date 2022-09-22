@@ -11,7 +11,7 @@ fi
 
 PKGNAME="libarchive"
 TARNAME="$PKGNAME"
-VERSION="3.5.1"
+VERSION="3.6.1"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/libarchive/libarchive/releases/download/${VERSION}/${TARBALL}" $SECTION
+gettar "https://github.com/libarchive/libarchive/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -29,6 +29,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed '/linux\/fs\.h/d' -i libarchive/archive_read_disk_posix.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -58,3 +59,6 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+
+

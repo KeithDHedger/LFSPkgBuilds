@@ -28,14 +28,14 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --sbindir=/usr/sbin --without-tcp-wrappers --disable-nfsv4 --disable-gss --disable-ipv6
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --sbindir=/sbin --without-tcp-wrappers --disable-nfsv4 --disable-gss --disable-ipv6
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/var/lib/nfs||true
 		chmod u+w,go+r $PKG/sbin/mount.nfs
 		chown nobody.nogroup $PKG/var/lib/nfs
 		mkdir -vp ${PKG}/sbin
-		ln -sv /usr/sbin/rpc.statd ${PKG}/sbin/rpc.statd
+		#ln -sv /usr/sbin/rpc.statd ${PKG}/sbin/rpc.statd
 	popd
 
 	checketc "$PKG"
@@ -62,3 +62,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+

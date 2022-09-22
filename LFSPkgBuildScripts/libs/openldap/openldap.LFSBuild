@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Cyrus-SASL-2.1.27 openssl-1.1.1"
+DEPENDS="Cyrus-SASL-2.1.27"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -73,3 +73,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
