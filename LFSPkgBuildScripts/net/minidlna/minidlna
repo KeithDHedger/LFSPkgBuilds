@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+#©K. D. Hedger. Thu  4 Jun 12:07:44 BST 2020 keithdhedger@gmail.com
+#
+#This file (minidlna) is part of minidlna.
+#
+#minidlna is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#at your option) any later version.
+#
+#minidlna is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with minidlna.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+. /etc/init.d/init-functions
+
+PIDFILE=/var/run/minidlna/minidlna.pid
+case "${1}" in
+	start)
+		:>/var/log/minidlna.log
+		MOUNTRESULT="OK"
+		prettyMsgStart "Starting DLNA Server ..."
+		if ! minidlnad -v; then
+			prettyMsgResult "FAIL"
+			exit 2
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	stop)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Stopping DLNA Server ..."
+		kill -9 $(cat $PIDFILE) &>/dev/null
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	restart)
+		MOUNTRESULT="OK"
+		kill -9 $(cat $PIDFILE) &>/dev/null
+		if ! minidlnad -v; then
+			prettyMsgResult "FAIL"
+			exit 2
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	reload)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Reloading DLNA Server ..."
+		kill -9 $(cat $PIDFILE) &>/dev/null
+		if ! minidlnad -r -v; then
+			prettyMsgResult "FAIL"
+			exit 2
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+
+	rebuild)
+		MOUNTRESULT="OK"
+		prettyMsgStart "Rebuilding DLNA Server ..."
+		kill -9 $(cat $PIDFILE) &>/dev/null
+		if ! minidlnad -R -v; then
+			prettyMsgResult "FAIL"
+			exit 2
+		fi
+		prettyMsgResult $MOUNTRESULT
+		;;
+	*)
+		echo "Usage: ${0} {start|stop|restart|reload|rebuild}"
+		exit 1
+		;;
+esac
+
+exit 0
