@@ -1,0 +1,2 @@
+https://packages.debian.org/bullseye/exfat-fuse
+fuse-exfat is a read and write driver implementing the extended file allocation table as a filesystem in userspace. A mounthelper is provided unter the name mount.exfat-fuse.
