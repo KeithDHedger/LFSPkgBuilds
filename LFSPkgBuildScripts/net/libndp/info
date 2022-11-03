@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/basicnet/libndp.html
+The libndp package provides a wrapper for IPv6 Neighbor Discovery Protocol.
+It also provides a tool named ndptool for sending and receiving NDP messages.

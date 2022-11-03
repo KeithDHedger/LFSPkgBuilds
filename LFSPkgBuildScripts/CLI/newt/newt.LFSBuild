@@ -4,44 +4,38 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="net-tools-20101030"
+DEPENDS="popt-1.18 slang-2.3.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="openvpn"
+PKGNAME="newt"
 TARNAME="$PKGNAME"
-VERSION="2.4.8"
+VERSION="0.52.21"
 BUILD=1
-SECTION="NET"
+SECTION="CLI"
 SUFFIX="LFSPKG"
-TARBALL="v${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/OpenVPN/openvpn/archive/$TARBALL" $SECTION "${TARNAME}-${VERSION}.tar.gz"
+gettar "https://releases.pagure.org/newt/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.tar.gz"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		autoreconf -i
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-lzo --enable-iproute2 --disable-plugin-auth-pam
+		sed -e 's/^LIBNEWT =/#&/' -e '/install -m 644 $(LIBNEWT)/ s/^/#/' -e 's/$(LIBNEWT)/$(LIBNEWTSONAME)/g' -i Makefile.in
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gpm-support --with-python=python3.9
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		mkdir -vp $PKG/etc/openvpn/{certs,keys}||true
-		mkdir -vp $PKG/usr/share/doc/$PKGNAME-$VERSION/sample-config-files $PKG/usr/share/doc/$PKGNAME-$VERSION/sample-scripts||true
-
-		cp $CWD/README.TXT $PKG/etc/openvpn
-		cp -a $CWD/slackware.conf $PKG/usr/share/doc/$PKGNAME-$VERSION/sample-config-files
-		cp -rv sample/sample-config-files $PKG/usr/share/doc/$PKGNAME-$VERSION
-		cp -rv sample/sample-scripts $PKG/usr/share/doc/$PKGNAME-$VERSION
-
-		ln -svf /usr/share/doc/$PKGNAME-$VERSION/sample-config-files $PKG/etc/openvpn
-		ln -svf /usr/share/doc/$PKGNAME-$VERSION/sample-scripts $PKG/etc/openvpn
 	popd
 
 	checketc "$PKG"

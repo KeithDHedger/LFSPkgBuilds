@@ -1,0 +1,14 @@
+#!/bin/bash
+#©keithhedger Thu  3 Nov 12:18:27 GMT 2022
+
+. /usr/share/LFSPkg/LFSFunctions
+
+cat >> /etc/NetworkManager/NetworkManager.conf << "EOF"
+[main]
+plugins=keyfile
+EOF
+
+cat > /etc/NetworkManager/conf.d/no-dns-update.conf << "EOF"
+[main]
+dns=none
+EOF

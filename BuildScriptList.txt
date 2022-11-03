@@ -34,6 +34,8 @@
 ./BROKEN/tolua++/tolua++.LFSBuild
 ./CLI/gocr/gocr.LFSBuild
 ./CLI/KKEditCLI/KKEditCLI.LFSBuild
+./CLI/NetworkManager/NetworkManager.LFSBuild
+./CLI/newt/newt.LFSBuild
 ./desktop/aspell/aspell.LFSBuild
 ./desktop/ASpellGUI/ASpellGUI.LFSBuild
 ./desktop/babl/babl.LFSBuild
@@ -472,6 +474,7 @@
 ./net/js/js.LFSBuild
 ./net/libcddb/libcddb.LFSBuild
 ./net/libmicrohttpd/libmicrohttpd.LFSBuild
+./net/libndp/libndp.LFSBuild
 ./net/libpsl/libpsl.LFSBuild
 ./net/libsoup/libsoup.LFSBuild
 ./net/mailx/mailx.LFSBuild

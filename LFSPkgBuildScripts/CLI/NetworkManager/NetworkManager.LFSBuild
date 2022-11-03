@@ -1,0 +1,77 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="libndp-1.8 newt-0.52.21"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="NetworkManager"
+TARNAME="$PKGNAME"
+VERSION="1.38.4"
+BUILD=1
+SECTION="CLI"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.gnome.org/sources/NetworkManager/1.38/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+#
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		grep -rl '^#!.*python$' | xargs sed -i '1s/python/&3/'
+		mkdir build || true
+		cd build
+		CFLAGS="$LFSFLAGS -O2 -fPIC" CXXFLAGS="$LFSFLAGS -O2 -fPIC" meson ${MESONCONFIGOPTIONS} -Dlibaudit=no              \
+		-Dlibpsl=false \
+		-Dnmtui=true \
+		-Dovs=false \
+		-Dppp=false \
+		-Dselinux=false \
+		-Dmodem_manager=false \
+		-Dsystemdsystemunitdir=no \
+		-Dsystemd_journal=false \
+		-Dsession_tracking=no \
+		-Dqt=false \
+		..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
