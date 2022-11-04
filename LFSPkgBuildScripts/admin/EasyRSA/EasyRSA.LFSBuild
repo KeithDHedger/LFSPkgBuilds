@@ -1,0 +1,63 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+PKGNAME="EasyRSA"
+TARNAME="$PKGNAME"
+VERSION="3.1.1"
+BUILD=1
+SECTION="ADMIN"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tgz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/OpenVPN/easy-rsa/releases/download/v${VERSION}/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		install -D -m0755 easyrsa "${PKG}"/usr/bin/easyrsa
+		install -D -m0644 openssl-easyrsa.cnf "${PKG}"/etc/easy-rsa/openssl-easyrsa.cnf
+		install -D -m0644 vars.example "${PKG}"/etc/easy-rsa/vars
+		install -d -m0755 "${PKG}"/etc/easy-rsa/x509-types/
+		install -m0644 x509-types/* "${PKG}"/etc/easy-rsa/x509-types/
+		install -d -m0755  "${PKG}"/usr/share/doc/easy-rsa/
+		install -m0644 doc/* ChangeLog "${PKG}"/usr/share/doc/easy-rsa/
+		install -D -m0644 COPYING.md "${PKG}"/usr/share/licenses/easy-rsa/COPYING
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

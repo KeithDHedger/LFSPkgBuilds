@@ -1,0 +1,7 @@
+easyrsa (CLI utility for managing a PKI CA)
+EasyRSA is a CLI utility to build and manage a PKI CA.
+Initially part of the OpenVPN project (www.openvpn.net), now
+maintained by the community.
+Further instructions for version 3 usage at:
+https://community.openvpn.net/openvpn/wiki/EasyRSA3-OpenVPN-Howto
+Homepage: https://github.com/OpenVPN/easy-rsa
