@@ -3,6 +3,7 @@
 ./admin/clamav/clamav.LFSBuild
 ./admin/conspy/conspy.LFSBuild
 ./admin/cyrus-sasl/cyrus-sasl.LFSBuild
+./admin/EasyRSA/EasyRSA.LFSBuild
 ./admin/fcron/fcron.LFSBuild
 ./admin/GConf/GConf.LFSBuild
 ./admin/GtkSu/GtkSu.LFSBuild
@@ -118,6 +119,7 @@
 ./devel/fmt/fmt.LFSBuild
 ./devel/gdb/gdb.LFSBuild
 ./devel/git/git.LFSBuild
+./devel/go/go.LFSBuild
 ./devel/graphviz/graphviz.LFSBuild
 ./devel/gtest/gtest.LFSBuild
 ./devel/gtkdialog/gtkdialog.LFSBuild
