@@ -37,7 +37,7 @@ pushd $COMPILEAT 2>/dev/null||true
 				patch -p1 --verbose < debian/patches/$patch||true
 			done < debian/patches/series
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gc --with-ssl--enable-image="x11,fb" --enable-keymap="w3m" --with-imagelib="gtk2 gdk-pixbuf2 imlib2" --with-termlib="terminfo ncurses" --disable-w3mmailer --enable-gopher --enable-unicode --enable-m17n
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gc --with-ssl --enable-image="x11,fb" --enable-keymap="w3m" --with-imagelib="gtk2 gdk-pixbuf2 imlib2" --with-termlib="terminfo ncurses" --disable-w3mmailer --enable-gopher --enable-unicode --enable-m17n
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 
