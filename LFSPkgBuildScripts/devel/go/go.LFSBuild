@@ -1,0 +1,97 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+if [ ! "X$ARCH" = "Xx86_64" ];then
+	echo "Only x86_64 supported, sorry ..."
+	exit 100
+fi
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+PKGNAME="go"
+TARNAME="$PKGNAME"
+VERSION="1.19.3"
+BUILD=1
+SECTION="DEVEL"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}${VERSION}.src.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://go.dev/dl/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+#binary bootstrap
+gettar "https://dl.google.com/go/go${VERSION}.linux-amd64.tar.gz" $SECTION
+
+pushd $COMPILEAT 2>/dev/null||true
+	mkdir -vp /tmp/gobootstrap||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd /tmp/gobootstrap
+		tar -xvf ${SOURCEARCHIVES}/${SECTION}/go1.19.3.linux-amd64.tar.gz
+	popd
+
+	pushd "${TARNAME}"
+		export GOARCH=amd64
+		export GOAMD64=v1 # make sure we're building for the right x86-64 version
+		export GOROOT_FINAL=/usr/lib${LIBDIRSUFFIX}/$PKGNAME
+		export GOROOT_BOOTSTRAP=/tmp/gobootstrap/$PKGNAME
+		pushd src
+			./make.bash -v
+		popd
+
+		install -d "$PKG/usr/bin" "$PKG/usr/lib${LIBDIRSUFFIX}/$PKGNAME" "$PKG/usr/share/doc/$PKGNAME" "$PKG/usr/lib${LIBDIRSUFFIX}/$PKGNAME/pkg/linux_amd64_"{dynlink,race}
+
+		cp -va bin pkg src lib misc api test "$PKG/usr/lib${LIBDIRSUFFIX}/go"
+		# We can't strip all binaries and libraries,
+		# as that also strips some testdata directories and breaks the tests.
+		# Just strip the packaged binaries as a compromise.
+		strip $STRIP_BINARIES "$PKG/usr/lib${LIBDIRSUFFIX}/go"{/bin/*,/pkg/tool/*/*}
+
+		cp -r doc/* "$PKG/usr/share/doc/$PKGNAME"
+
+		ln -sf /usr/lib${LIBDIRSUFFIX}/$PKGNAME/bin/$PKGNAME "$PKG/usr/bin/$PKGNAME"
+		ln -sf /usr/lib${LIBDIRSUFFIX}/$PKGNAME/bin/gofmt "$PKG/usr/bin/gofmt"
+		ln -sf /usr/share/doc/$PKGNAME "$PKG/usr/lib${LIBDIRSUFFIX}/$PKGNAME/doc"
+
+		install -Dm644 VERSION "$PKG/usr/lib${LIBDIRSUFFIX}/go/VERSION"
+
+		rm -rf "$PKG/usr/lib${LIBDIRSUFFIX}/$PKGNAME/pkg/bootstrap" "$PKG/usr/lib${LIBDIRSUFFIX}/$PKGNAME/pkg/tool/*/api"
+
+		# TODO: Figure out if really needed
+		rm -rf "$PKG/usr/lib${LIBDIRSUFFIX}/$PKGNAME/pkg/obj/go-build"
+
+		install -Dm644 LICENSE "$PKG/usr/share/licenses/$PKGNAME/LICENSE"
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}" "/tmp/gobootstrap"
+popd 2>/dev/null||true
