@@ -11,7 +11,7 @@ fi
 
 PKGNAME="kguiaddons"
 TARNAME="$PKGNAME"
-VERSION="5.82.0"
+VERSION="5.95.0"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -59,3 +59,4 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
