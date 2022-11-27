@@ -514,6 +514,7 @@
 ./net/sendmail/sendmail.LFSBuild
 ./net/skype/skype.LFSBuild
 ./net/socat/socat.LFSBuild
+./net/speedtest-cli/speedtest-cli.LFSBuild
 ./net/sshfs/sshfs.LFSBuild
 ./net/surfraw/surfraw.LFSBuild
 ./net/tcpdump/tcpdump.LFSBuild
