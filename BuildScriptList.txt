@@ -33,6 +33,7 @@
 ./BROKEN/libgpod/libgpod.LFSBuild
 ./BROKEN/pangox-compat/pangox-compat.LFSBuild
 ./BROKEN/tolua++/tolua++.LFSBuild
+./CLI/epeg/epeg.LFSBuild
 ./CLI/gocr/gocr.LFSBuild
 ./CLI/KKEditCLI/KKEditCLI.LFSBuild
 ./CLI/NetworkManager/NetworkManager.LFSBuild
@@ -158,6 +159,7 @@
 ./devel/strace/strace.LFSBuild
 ./devel/subversion/subversion.LFSBuild
 ./devel/swig/swig.LFSBuild
+./devel/tidy/tidy.LFSBuild
 ./devel/tinycc/tinycc.LFSBuild
 ./devel/tk/tk.LFSBuild
 ./devel/vala/vala.LFSBuild
