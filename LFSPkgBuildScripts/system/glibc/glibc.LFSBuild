@@ -38,11 +38,17 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -pv $PKG/usr/lib/locale $PKG/lib${LIBDIRSUFFIX}||true
 	popd
 
+#Save an unstripped version of glibc for debugging ( valgrind for instance needs this )
+	cp ${PKG}/lib${LIBDIRSUFFIX}/ld-${VERSION}.so /tmp/ld-${VERSION}.so.DEBUG
+	cp ${PKG}/lib${LIBDIRSUFFIX}/libc-${VERSION}.so /tmp/libc-${VERSION}.so.DEBUG
+
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
-#Save an unstripped version of glibc for debugging ( valgrind for instance needs this )
+#Put back an unstripped version of glibc for debugging ( valgrind for instance needs this )
 #To use the debug version just change the symlink  '/lib64/ld-linux-x86-64.so.2' to point to the debug version
-	cp ${PKG}/lib${LIBDIRSUFFIX}/ld-${VERSION}.so ${PKG}/lib${LIBDIRSUFFIX}/ld-${VERSION}.so.DEBUG
+#To use the debug version just change the symlink  '/lib64/libc.so.6' to point to the debug version
+	mv /tmp/ld-${VERSION}.so.DEBUG ${PKG}/lib${LIBDIRSUFFIX}
+	mv /tmp/libc-${VERSION}.so.DEBUG ${PKG}/lib${LIBDIRSUFFIX}
 
 	pushd "$PKG"
 		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
