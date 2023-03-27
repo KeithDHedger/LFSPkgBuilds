@@ -4,11 +4,16 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-PKGNAME="podofo"
+DEPENDS="perl-5.26.1 libwww-perl-6.67"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="SOAP-Lite"
 TARNAME="$PKGNAME"
-VERSION="0.9.5"
+VERSION="1.27"
 BUILD=1
-SECTION="LIBS"
+SECTION="PERL"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -16,23 +21,18 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/podofo/${TARBALL}" $SECTION
-#gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/podofo/podofo-0.9.4_build.patch" $SECTION
+gettar "https://search.cpan.org/CPAN/authors/id/P/PH/PHRED/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i 's|share/man|man|' CMakeLists.txt
-		#patch -p1 -i ${SOURCEARCHIVES}/$SECTION/podofo-0.9.4_build.patch
-
-		mkdir build
-		cd build
-		cmake -G "Unix Makefiles" \
-			-DCMAKE_INSTALL_PREFIX=/usr \
-			-DCMAKE_CXX_FLAGS:STRING="$LFSFLAGS" -DCMAKE_C_FLAGS:STRING="$LFSFLAGS" -DPODOFO_BUILD_STATIC:BOOL=FALSE -DPODOFO_BUILD_SHARED:BOOL=TRUE -DPODOFO_USE_VISIBILITY:BOOL=1 -DCMAKE_CXX_STANDARD:STRING=11 -DWANT_BOOST:BOOL=1 -DLIB_SUFFIX:STRING="$LIBDIRSUFFIX" -DCMAKE_BUILD_TYPE=Release ..
-
+		PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
