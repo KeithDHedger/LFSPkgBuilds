@@ -21,3 +21,6 @@ For convienience you may want to also make a symlink to the HowTo, EG:<br>
 ln -sfvn LFSScripts/HowTo-EFI HowTo
 
 Follow the instructions in LFSScripts/HowTo
+
+BUGS etc.
+kdhedger68713@gmail.com

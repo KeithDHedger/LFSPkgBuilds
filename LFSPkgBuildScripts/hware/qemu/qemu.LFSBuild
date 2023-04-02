@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="glib-2.66.7 SDL2-2.0.14 xorg-meta-10.1 nasm-2.15.05"
+DEPENDS="glib-2.66.7 nasm-2.15.05"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qemu"
 TARNAME="$PKGNAME"
-VERSION="5.2.0"
+VERSION="7.2.0"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -21,19 +21,21 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.qemu-project.org/${TARBALL}" $SECTION
+#gettar "http://download.qemu-project.org/${TARBALL}" $SECTION
+gettar "https://download.qemu.org/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i "/LDFLAGS_NOPIE/d" configure pc-bios/optionrom/Makefile
+		#sed -i "/LDFLAGS_NOPIE/d" configure pc-bios/optionrom/Makefile
 
 		mkdir -vp build
 		cd	build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/libexec --disable-guest-agent --disable-strip --disable-werror --disable-gcrypt --disable-debug-info --disable-debug-tcg --disable-docs --disable-tcg-interpreter --enable-attr --disable-brlapi --disable-linux-aio --disable-bzip2 --disable-cap-ng --disable-curl --disable-fdt --disable-glusterfs --disable-gnutls --disable-nettle --disable-gtk --disable-rdma --disable-libiscsi --disable-vnc-jpeg --disable-lzo --disable-libnfs --disable-numa --disable-opengl --disable-vnc-png --disable-rbd --disable-vnc-sasl --disable-sdl --disable-seccomp --disable-smartcard --disable-snappy --disable-spice --disable-libusb --disable-usb-redir --disable-vde --disable-vhost-net --disable-virglrenderer --disable-virtfs --disable-vnc --disable-vte --disable-xen --disable-xen-pci-passthrough --disable-xfsctl --disable-system --disable-blobs --disable-tools --static --python=python3
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --libexecdir=/usr/libexec --disable-guest-agent --disable-strip --disable-werror --disable-gcrypt --disable-debug-info --disable-debug-tcg --disable-docs --disable-tcg-interpreter --enable-attr --disable-brlapi --disable-linux-aio --disable-bzip2 --disable-cap-ng --disable-curl --disable-fdt --disable-glusterfs --disable-gnutls --disable-nettle --disable-gtk --disable-rdma --disable-libiscsi --disable-vnc-jpeg --disable-lzo --disable-libnfs --disable-numa --disable-opengl --disable-rbd --disable-vnc-sasl --disable-sdl --disable-seccomp --disable-smartcard --disable-snappy --disable-spice --disable-libusb --disable-usb-redir --disable-vde --disable-vhost-net --disable-virglrenderer --disable-virtfs --disable-vnc --disable-vte --disable-xen --disable-xen-pci-passthrough --disable-system --disable-blobs --disable-tools --static --python=python3
 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
