@@ -23,35 +23,35 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-MAKEFLAGS=" -j2 "
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${CWD}/js.patch
-		patch -Np1 -i ${CWD}/webkitgtk-2.4.9-abs.patch
-		patch -Np1 -i ${CWD}/enchant-2.x.patch
-		patch -Np1 -i ${CWD}/pkgconfig-enchant-2.patch
-		autoreconf -ifv
 
 		mkdir -p "build-gtk" "path" ||true
 		PATH="$(pwd)/path:${PATH}"
 		ln -rTsf "$(which python2)" "$(pwd)/path/python"
-		cd "build-gtk"
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS"
-		CXXFLAGS+=" -fno-delete-null-pointer-checks"
-		CFLAGS+=" -fno-delete-null-pointer-checks"
+		checkforoptions
 
-		CFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess"
-		CXXFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess -DUPRV_BLOCK_MACRO_BEGIN=\"\" -DUPRV_BLOCK_MACRO_END=\"\""
-		export CFLAGS
-		export CXXFLAGS
+		#slightly faster?
+		export LD=ld.gold
+		#webkit webkitmarshal not always built on pi4, go figure!
+		touch ./Source/WebKit/gtk/webkitmarshal.list
+		error_count=0
+		until make $MAKEFLAGS
+			do
+				if (( $((error_count++)) > 6 ));then
+					echo "Too Many Errors"
+					echo "Last Chance ..."
+					touch ./Source/WebKit/gtk/webkitmarshal.list
+					make -j1||exit 100
+					break
+				fi
+			done
+		unset error_count
 
-		../configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=2.0 --libexecdir=/usr/lib${LIBDIRSUFFIX}/WebKitGTK --disable-geolocation --enable-introspection --enable-gtk-doc
-		sed -i "s/ -shared / -Wl,-O1,--as-needed\0/g" "libtool"
-		make $MAKEFLAGS||exit 100
-		make install DESTDIR=$PKG || exit 100
+		make -j1 install DESTDIR=$PKG || exit 100
 		mkdir -p $PKG/usr/share/gtk-doc/html/
 		cp -rv ../Documentation/webkitgtk/html $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
 	popd
@@ -80,3 +80,21 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

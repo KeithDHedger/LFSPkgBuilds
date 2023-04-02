@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Exo-0.10.2 libxfce4ui-4.10.0 startup-notification-0.12 libgudev-231"
+DEPENDS="Exo-0.12.8 libxfce4ui-4.14.1 startup-notification-0.12 libgudev-233 libnotify3-0.7.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="thunar-volman"
 TARNAME="$PKGNAME"
-VERSION="0.8.0"
+VERSION="0.9.5"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/thunar-volman/0.8/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

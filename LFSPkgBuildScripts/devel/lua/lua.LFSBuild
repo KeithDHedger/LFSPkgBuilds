@@ -4,7 +4,7 @@
 
 PKGNAME="lua"
 TARNAME="$PKGNAME"
-VERSION="5.3.4"
+VERSION="5.3.5"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -14,7 +14,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 gettar "http://www.lua.org/ftp/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/8.2/${TARNAME}-${VERSION}-shared_library-1.patch" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/9.0/${TARNAME}-${VERSION}-shared_library-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

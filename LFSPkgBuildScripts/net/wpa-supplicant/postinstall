@@ -4,8 +4,6 @@
 
 update-desktop-database 2>/dev/null || true
 
-USESYSTEMD=1
-
 if [ $USESYSTEMD -eq 0 ];then
 	cat > /etc/sysconfig/ifconfig.wifi0 << EOF
 ONBOOT="yes"

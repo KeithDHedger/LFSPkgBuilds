@@ -1,19 +1,23 @@
 ./admin/at/at.LFSBuild
 ./admin/berkeley-db/berkeley-db.LFSBuild
 ./admin/clamav/clamav.LFSBuild
+./admin/conspy/conspy.LFSBuild
 ./admin/cyrus-sasl/cyrus-sasl.LFSBuild
 ./admin/fcron/fcron.LFSBuild
 ./admin/GConf/GConf.LFSBuild
 ./admin/GtkSu/GtkSu.LFSBuild
 ./admin/LFSPkg/LFSPkg.LFSBuild
+./admin/Linux-PAM/Linux-PAM.LFSBuild
 ./admin/logrotate/logrotate.LFSBuild
 ./admin/mariadb/mariadb.LFSBuild
 ./admin/mysql/mysql.LFSBuild
+./admin/ncdu/ncdu.LFSBuild
 ./admin/postfix/postfix.LFSBuild
 ./admin/rpm/rpm.LFSBuild
 ./admin/screen/screen.LFSBuild
 ./admin/sudo/sudo.LFSBuild
 ./admin/sysstat/sysstat.LFSBuild
+./admin/xdiskusage/xdiskusage.LFSBuild
 ./BROKEN/conky/conky.LFSBuild
 ./BROKEN/gtkglext/gtkglext.LFSBuild
 ./BROKEN/icedtea-sound/icedtea-sound.LFSBuild
@@ -44,6 +48,7 @@
 ./desktop/feh/feh.LFSBuild
 ./desktop/firefox/firefox.LFSBuild
 ./desktop/gegl/gegl.LFSBuild
+./desktop/gftp/gftp.LFSBuild
 ./desktop/gimp/gimp.LFSBuild
 ./desktop/gkrellm/gkrellm.LFSBuild
 ./desktop/gmic/gmic.LFSBuild
@@ -169,6 +174,7 @@
 ./gnome/nemiver/nemiver.LFSBuild
 ./gnome/polkit-gnome/polkit-gnome.LFSBuild
 ./gnome/system-tools-backends/system-tools-backends.LFSBuild
+./gtk/adwaita-icon-theme/adwaita-icon-theme.LFSBuild
 ./gtk/atk/atk.LFSBuild
 ./gtk/atkmm/atkmm.LFSBuild
 ./gtk/at-spi2-atk/at-spi2-atk.LFSBuild
@@ -199,6 +205,7 @@
 ./hware/DirectFB/pi-DirectFB.LFSBuild
 ./hware/glamor-egl/glamor-egl.LFSBuild
 ./hware/hardinfo/hardinfo.LFSBuild
+./hware/hdparm/hdparm.LFSBuild
 ./hware/hwinfo/hwinfo.LFSBuild
 ./hware/libaio/libaio.LFSBuild
 ./hware/libatasmart/libatasmart.LFSBuild
@@ -208,6 +215,7 @@
 ./hware/libinput/libinput.LFSBuild
 ./hware/libusb-compat/libusb-compat.LFSBuild
 ./hware/libusb/libusb.LFSBuild
+./hware/libxklavier/libxklavier.LFSBuild
 ./hware/lm-sensors/lm-sensors.LFSBuild
 ./hware/lshw/lshw.LFSBuild
 ./hware/lvm2/lvm2.LFSBuild
@@ -337,6 +345,10 @@
 ./libs/xapian/xapian.LFSBuild
 ./libs/yajl/yajl.LFSBuild
 ./lxqt/lxqt-build-tools/lxqt-build-tools.LFSBuild
+./managers/lightdm-gtk-greeter/lightdm-gtk-greeter.LFSBuild
+./managers/lightdm/lightdm.LFSBuild
+./managers/lxdm/lxdm.LFSBuild
+./managers/xdm/xdm.LFSBuild
 ./mm/a52dec/a52dec.LFSBuild
 ./mm/alsa-lib/alsa-lib.LFSBuild
 ./mm/alsa-oss/alsa-oss.LFSBuild
@@ -408,6 +420,7 @@
 ./mm/speex/speex.LFSBuild
 ./mm/taglib/taglib.LFSBuild
 ./mm/twolame/twolame.LFSBuild
+./mm/vlc/vlc.LFSBuild
 ./mm/x264/x264.LFSBuild
 ./mm/xvid/xvid.LFSBuild
 ./mm/youtube-dl/youtube-dl.LFSBuild
@@ -455,6 +468,7 @@
 ./net/samba/samba.LFSBuild
 ./net/seamonkey/seamonkey.LFSBuild
 ./net/sendmail/sendmail.LFSBuild
+./net/skype/skype.LFSBuild
 ./net/socat/socat.LFSBuild
 ./net/sshfs/sshfs.LFSBuild
 ./net/surfraw/surfraw.LFSBuild
@@ -476,6 +490,7 @@
 ./perl/File-DesktopEntry/File-DesktopEntry.LFSBuild
 ./perl/File-MimeInfo/File-MimeInfo.LFSBuild
 ./perl/HTML-Parser/HTML-Parser.LFSBuild
+./perl/Image-ExifTool/Image-ExifTool.LFSBuild
 ./perl/Module-Build/Module-Build.LFSBuild
 ./perl/Switch/Switch.LFSBuild
 ./perl/UI-Dialog/UI-Dialog.LFSBuild
@@ -569,9 +584,12 @@
 ./sys/gvfs/gvfs.LFSBuild
 ./sys/htop/htop.LFSBuild
 ./sys/icu/icu.LFSBuild
+./sys/iso-codes/iso-codes.LFSBuild
 ./sys/itstool/itstool.LFSBuild
+./sys/libnotify/libnotify3.LFSBuild
 ./sys/libnotify/libnotify.LFSBuild
 ./sys/linux-vt-setcolors/linux-vt-setcolors.LFSBuild
+./sys/LSB-Tools/LSB-Tools.LFSBuild
 ./sys/lsof/lsof.LFSBuild
 ./sys/mbox/mbox.LFSBuild
 ./sys/most/most.LFSBuild
@@ -586,7 +604,9 @@
 ./sys/rar/rar.LFSBuild
 ./sys/recode/recode.LFSBuild
 ./sys/sqlite/sqlite.LFSBuild
+./sys/squashfs-tools/squashfs-tools.LFSBuild
 ./sys/startup-notification/startup-notification.LFSBuild
+./sys/syslinux/syslinux.LFSBuild
 ./system/acl/acl.LFSBuild
 ./system/attr/attr.LFSBuild
 ./system/autoconf/autoconf.LFSBuild
@@ -658,7 +678,6 @@
 ./system/systemd/systemd.LFSBuild
 ./system/system-meta/system-bbinit-meta.LFSBuild
 ./system/system-meta/system-LFSInit-meta.LFSBuild
-./system/system-meta/system-meta.LFSBuild
 ./system/system-meta/system-pi-sysvinit-meta.LFSBuild
 ./system/system-meta/system-systemd-meta.LFSBuild
 ./system/system-meta/system-sysvinit-meta.LFSBuild
@@ -743,6 +762,7 @@
 ./xorg/libva-intel-driver/libva-intel-driver.LFSBuild
 ./xorg/libva/libva.LFSBuild
 ./xorg/libvdpau/libvdpau.LFSBuild
+./xorg/LibVNCServer/LibVNCServer.LFSBuild
 ./xorg/libXau/libXau.LFSBuild
 ./xorg/libxcb/libxcb.LFSBuild
 ./xorg/libXdmcp/libXdmcp.LFSBuild
@@ -756,6 +776,7 @@
 ./xorg/proto/proto.LFSBuild
 ./xorg/twm/twm.LFSBuild
 ./xorg/util-macros/util-macros.LFSBuild
+./xorg/x11vnc/x11vnc.LFSBuild
 ./xorg/x-apps/x-apps.LFSBuild
 ./xorg/xbindkeys/xbindkeys.LFSBuild
 ./xorg/xbitmaps/xbitmaps.LFSBuild

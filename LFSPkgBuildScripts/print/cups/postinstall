@@ -2,7 +2,13 @@
 
 #©keithhedger Wed 11 Feb 20:38:05 GMT 2015 kdhedger68713@gmail.com
 
+. /usr/share/LFSPkg/LFSFunctions
+
 echo "ServerName /var/run/cups/cups.sock" > /etc/cups/client.conf||true
 gtk-update-icon-cache||true
+
+if [ $USESYSTEMD -eq 1 ];then
+	systemctl enable org.cups.cupsd
+fi
 
 exit 0

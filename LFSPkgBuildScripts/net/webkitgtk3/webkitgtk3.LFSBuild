@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="gst-plugins-base-1.16.0 GTK-2.24.32 icu-64.2 libsoup-2.66.2 MesaLib-19.1.4 Ruby-2.6.4 SQLite-3.29.0 Which-2.21 libwebp-1.0.3 libsecret-0.18.8 GTK-Doc-1.32 libgcrypt-1.8.5"
+DEPENDS="gst-plugins-base-1.16.0 gtk3-3.24.10 icu-64.2 libsoup-2.66.2 MesaLib-19.1.4 Ruby-2.6.4 SQLite-3.29.0 Which-2.21 libwebp-1.0.3 libsecret-0.18.8 GTK-Doc-1.32 libgcrypt-1.8.5"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -10,7 +10,7 @@ fi
 
 PKGNAME="webkitgtk3"
 TARNAME="webkitgtk"
-VERSION="2.26.2"
+VERSION="2.4.11"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -21,25 +21,38 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://webkitgtk.org/releases/${TARBALL}" $SECTION
-#gettar "https://slackbuilds.org/slackbuilds/14.2/libraries/webkitgtk/${TARNAME}-2.4.9-abs.patch" $SECTION
-gettar "https://git.archlinux.org/svntogit/packages.git/tree/trunk/icu65.patch?h=packages/webkit2gtk" $SECTION icu65.patch
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/icu65.patch||true
-		mkdir build||true
-		cd build
-		CFLAGS="$LFSFLAGS -Wno-expansion-to-defined" CXXFLAGS="$LFSFLAGS -Wno-expansion-to-defined" cmake -DCMAKE_BUILD_TYPE=Release  \
-      -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_SKIP_RPATH=ON -DPORT=GTK -DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX} -DUSE_LIBHYPHEN=OFF -DENABLE_BUBBLEWRAP_SANDBOX=OFF -DENABLE_MINIBROWSER=ON -DUSE_WOFF2=OFF -Wno-dev -G Ninja ..
-		ninja $MAKEFLAGS||ninja -j1||exit 100
-		DESTDIR=$PKG ninja install
+		patch -Np1 -i ${CWD}/js.patch||true
+		patch -Np1 -i ${CWD}/webkitgtk-2.4.9-abs.patch||true
+		patch -Np1 -i ${CWD}/enchant-2.x.patch||true
+		patch -Np1 -i ${CWD}/pkgconfig-enchant-2.patch||true
 
-		install -vdm755 $PKG/usr/share/gtk-doc/html/webkit{2,dom}gtk-4.0
-		install -vm644  ../Documentation/webkit2gtk-4.0/html/* $PKG/usr/share/gtk-doc/html/webkit2gtk-4.0
-		install -vm644  ../Documentation/webkitdomgtk-4.0/html/* $PKG/usr/share/gtk-doc/html/webkitdomgtk-4.0
+		autoreconf -ifv
+		mkdir -p "build-gtk" "path" ||true
+		PATH="$(pwd)/path:${PATH}"
+		ln -rTsf "$(which python2)" "$(pwd)/path/python"
+		cd "build-gtk"
+
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS"
+		CXXFLAGS+=" -fno-delete-null-pointer-checks"
+		CFLAGS+=" -fno-delete-null-pointer-checks"
+
+		CFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess"
+		CXXFLAGS+=" -Wno-expansion-to-defined -Wno-class-memaccess -DUPRV_BLOCK_MACRO_BEGIN=\"\" -DUPRV_BLOCK_MACRO_END=\"\""
+		export CFLAGS
+		export CXXFLAGS
+
+		../configure ${CONFIGOPTIONS} --disable-webkit2 --with-gtk=3.0 --libexecdir=/usr/lib${LIBDIRSUFFIX}/WebKitGTK --disable-geolocation --enable-introspection --disable-gtk-doc
+		sed -i "s/ -shared / -Wl,-O1,--as-needed\0/g" "libtool"
+		make $MAKEFLAGS||exit 100
+		make install DESTDIR=$PKG || exit 100
+		mkdir -p $PKG/usr/share/gtk-doc/html/
+		cp -rv ../Documentation/webkitgtk/html $PKG/usr/share/gtk-doc/html/${PKGNAME}-${VERSION}
 	popd
 
 	checketc $PKG
@@ -66,3 +79,6 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+
+

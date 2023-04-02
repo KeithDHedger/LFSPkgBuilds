@@ -1,0 +1,2 @@
+https://github.com/LibVNC/x11vnc/
+VNC is a set of programs using the RFB (Remote Frame Buffer) protocol. They are designed to "export" a frame buffer via net: you set up a server and can connect to it via VNC viewers. If the server supports WebSockets (which LibVNCServer does), you can also connect using an in-browser VNC viewer like noVNC.

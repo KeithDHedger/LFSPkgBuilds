@@ -26,7 +26,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -e "/wpath.logrotate\|wpath.systemd/d" -e "/detection failed/ a\                self.init=\'init\/default\/wicd\'" -i setup.py 
+		if [$USESYSTEMD -eq 0 ];then
+			sed -e "/wpath.logrotate\|wpath.systemd/d" -e "/detection failed/ a\                self.init=\'init\/default\/wicd\'" -i setup.py 
+		fi
 		rm po/*.po
 		python setup.py configure --no-install-kde --no-install-acpi --no-install-pmutils --no-install-init --no-install-gnome-shell-extensions --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		LANG=C python setup.py install --root=$PKG || exit 100

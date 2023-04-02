@@ -9,7 +9,7 @@ fi
 
 PKGNAME="tumbler"
 TARNAME="$PKGNAME"
-VERSION="0.1.30"
+VERSION="0.2.7"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/tumbler/0.1/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

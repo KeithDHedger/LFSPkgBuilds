@@ -103,12 +103,12 @@ screen
 cd /LFSPkgBuildScripts/admin/LFSPkg
 BOOTSTRAP=1 ./LFSPkg.LFSBuild install
 
-#As part of the LFSSetUp script $LFS/root/.lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
-#Set $LFS/etc/lfspkg.rc or $LFS/root/.lfspkg.rc (preferred) variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
+#As part of the LFSSetUp script $LFS/etc/lfspkg.rc has been created to contain basic info needed by lfspkg, review and change if needed.
+#Set $LFS/etc/lfspkg.rc variables, make sure the SOURCEARCHIVES points to the same place as $SOURCEARCHIVES from #SystemData.local as that's where the main LFS system source files are, you can do this either from in the chroot environment or from the host with root permissions.
 #At this point wget/openssl is not installed so you will get a load of complaints from lfspkg, ignore them as lfspkg will be reinstalled later with the main system.
 
-#You should run lfspkg --setup to create the lfspkg.rc file ( in ~ (/root) )
-#Rc files are sourced from /etc/lfspkg.rc then ~/.lfspkg.rc.
+#You should run lfspkg --setup to create the lfspkg.rc file ( in /etc )
+#Rc files are sourced from /etc/lfspkg.rc
 #lfspkg --setup can be run again later if you need/want to change source/build folders etc.
 #For building the main system you should probably set the configure options config files in /etc and log options.
 lfspkg --setup
@@ -144,16 +144,9 @@ Walk the dog
 #logout from temporary system:
 exit
 
-9.2)
-#lfspkg now creates an unprivileged user for certain actions eg extracting tarballs.
-#$LFS/LFSPkgBuilds should now have the group set to lfspkguser, and perms set to 775, if you want your normal user to have access just add yourself to the lfspkguser group.
-#You will have to re-own/set perms the various folders etc, so:
-[sudo] chown -R $USER:lfspkguser $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-chmod -R 775 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
-
 10)
 #Remove tools folder link from host and if you want to save tools archive for futre use move/copy the ${LFS}/tools-${LFSVERSION}.tar.gz somewhere safe:
-sudo rm /tools
+[sudo] sudo rm /tools
 #Remove the tools folder from your LFS install disk:
 [sudo] rm -rf $LFS/tools
 
@@ -171,8 +164,6 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild install
 
 13)
-#No point in compiling your own kernel on pi so prebuilt one is used, so skip this bit on pi.
-
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel
 
@@ -181,7 +172,6 @@ cd /LFSPkgBuildScripts/kernel
 
 ./kernel.LFSBuild install
 
-#Again on pi skip this bit as firmware is installed by the pi-system-meta package.
 #You may prefer to manually copy all firmware modules from the host sytem from /lib/firmware to your new LFS system.
 #Or use the firmware build script to install all the latest firmware from https://git.kernel.org/ eg Whilst still in the kernel build folder:
 ./firmware.LFSBuild install
@@ -192,7 +182,6 @@ cd /LFSPkgBuildScripts/hware/RTL88x2BU-Linux-Driver
 ./RTL88x2BU-Linux-Driver.LFSBuild install
 
 13.5)
-#No grub on pi
 #Optional install of grub, see here:
 #http://www.linuxfromscratch.org/lfs/view/stable/chapter08/grub.html
 

@@ -2,8 +2,8 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-PKGNAME="icu4c"
-TARNAME="$PKGNAME"
+PKGNAME="icu"
+TARNAME="${PKGNAME}4c"
 VERSION="64.2"
 BUILD=${BUILD:-1}
 SECTION="SYS"

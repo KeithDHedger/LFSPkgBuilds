@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="Exo-0.10.2 libxfce4ui-4.10.0 libexif-0.6.21 "
+DEPENDS="Exo-0.12.8 libxfce4ui-4.14.1 libexif-0.6.21 gnome-icon-theme-3.12.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="Thunar"
-TARNAME="$PKGNAME"
-VERSION="1.6.3"
+PKGNAME="thunar"
+TARNAME="Thunar"
+VERSION="1.8.9"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/xfce/thunar/1.6/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/xfce/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -24,6 +24,10 @@ gettar "http://ftp.gnome.org/pub/gnome/teams/releng/tarballs-needing-help/${TARN
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+OPTIONS="--prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc"
+
+checkforoptions
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
@@ -31,7 +35,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir mozjs-build||true
 		cd mozjs-build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure --prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure $OPTIONS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -60,3 +64,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+
+
+

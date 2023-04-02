@@ -1,0 +1,2 @@
+http://conspy.sourceforge.net/
+It is rather like VNC, but where VNC takes control of a GUI conspy takes control of a text mode virtual console. Unlike VNC, conspy does not require a server to be installed prior to being used.

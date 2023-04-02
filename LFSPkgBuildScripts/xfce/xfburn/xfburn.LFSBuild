@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS=" Exo-0.10.2 libxfce4util-4.10.1 libisoburn-1.4.8"
+DEPENDS=" Exo-0.12.8 libburn-1.5.0 libxfce4ui-4.14.1 libisoburn-1.4.8 libisofs-1.5.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfburn"
 TARNAME="$PKGNAME"
-VERSION="0.5.2"
+VERSION="0.5.5"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/apps/xfburn/0.5/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

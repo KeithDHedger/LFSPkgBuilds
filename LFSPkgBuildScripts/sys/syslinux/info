@@ -1,0 +1,12 @@
+https://mirrors.slackware.com/slackware/slackware-current/source/a/syslinux/
+
+SYSLINUX/PXELINUX/ISOLINUX boot loaders)
+
+SYSLINUX is a boot loader for the Linux operating system which
+operates off an MS-DOS/Windows FAT filesystem. This is used by the
+Slackware makebootdisk script to create system boot floppies.
+
+Also included are PXELINUX and ISOLINUX, boot loaders for booting from
+a network server or CD-ROM.
+
+SYSLINUX, PXELINUX, and ISOLINUX were written by H. Peter Anvin.

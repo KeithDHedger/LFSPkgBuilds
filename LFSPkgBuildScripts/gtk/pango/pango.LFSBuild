@@ -18,6 +18,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+if [ "$(lfspkg -S 5 Fontconfig)" == false ];then
+	lfspkg -B "fontconfig-2.13.1"
+fi
+
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/pango/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true

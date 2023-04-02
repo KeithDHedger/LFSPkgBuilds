@@ -1,0 +1,57 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="squashfs-tools"
+TARNAME="squashfs"
+VERSION="4.4"
+BUILD=1
+SECTION="SYS"
+SUFFIX="LFSPKG"
+TARBALL="${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+#gettar "http://downloads.sourceforge.net/project/squashfs/squashfs/squashfs4.2/${TARBALL}" $SECTION
+gettar "https://github.com/plougher/${PKGNAME}/archive/${VERSION}.tar.gz" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${PKGNAME}-${VERSION}/${PKGNAME}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" make GZIP_SUPPORT="1" XZ_SUPPORT="1"  COMP_DEFAULT="xz"|| exit 100
+		install -Dm755 mksquashfs "$PKG"/usr/bin/mksquashfs
+		install -m755 unsquashfs "$PKG"/usr/bin/unsquashfs
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${PKGNAME}-${VERSION}"
+popd 2>/dev/null||true

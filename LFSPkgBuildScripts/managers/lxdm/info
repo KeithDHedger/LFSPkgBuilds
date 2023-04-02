@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/x/lxdm.html
+The LXDM is a lightweight Display Manager for the LXDE desktop.
+It can also be used as an alternative to other Display Managers such as GNOME's GDM or LightDM.

@@ -1,0 +1,66 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="skype"
+TARNAME="skypeforlinux"
+VERSION="8.63.0.76"
+BUILD=1
+SECTION="NET"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-64.deb"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+case "$ARCH" in
+	"x86_64")
+		:
+		;;
+	*)
+		echo "skype only works on mainstream 64 bit systems, sorry :("
+		echo "Exiting ..."
+		exit 100
+		;;
+esac
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://repo.skype.com/latest/skypeforlinux-64.deb" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+pushd $COMPILEAT 2>/dev/null||true
+	mkdir -p skype
+	pushd skype
+		ar x ${SOURCEARCHIVES}/${SECTION}/${TARBALL}||exit 100
+		tar -xvf data.tar.xz
+		cp -rvp usr $PKG
+		cd ${PKG}/usr/bin
+		ln -sv skypeforlinux skype
+		chmod +4755 ${PKG}/usr/share/skypeforlinux/chrome-sandbox||exit 100
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "skype"
+popd 2>/dev/null||true

@@ -9,7 +9,7 @@ fi
 
 PKGNAME="xorg-server"
 TARNAME="$PKGNAME"
-VERSION="1.20.5"
+VERSION="1.20.6"
 BUILD=${BUILD:-2}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -25,10 +25,14 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 CWD=$(pwd)
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--disable-systemd"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --enable-glamor --enable-install-setuid --enable-suid-wrapper --disable-systemd-logind --with-xkb-output=/var/lib/xkb --enable-dmx --enable-kdrive
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --enable-glamor --enable-install-setuid --enable-suid-wrapper $SYSTEMDOPTS --with-xkb-output=/var/lib/xkb --enable-dmx --enable-kdrive
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 		chmod u+s ${PKG}/$XORG_PREFIX/libexec/Xorg

@@ -7,9 +7,9 @@ if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="mesalib"
+PKGNAME="MesaLib"
 TARNAME="mesa"
-VERSION="20.0.7"
+VERSION="20.1.10"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -20,19 +20,48 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://mesa.freedesktop.org/archive/${TARBALL}" $SECTION
+gettar "http://www.linuxfromscratch.org/patches/blfs/10.0/mesa-20.1.5-add_xdemos-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		patch -p1 -i ${CWD}/0001-Rip-out-VC4-forced-NEON.patch
+		patch -Np1 -i "${SOURCEARCHIVES}/${SECTION}/mesa-20.1.5-add_xdemos-1.patch"
+		GALLIUM="r300,r600,radeonsi,freedreno,nouveau,swrast,virgl,zink,etnaviv,kmsro,lima,panfrost,tegra,v3d,vc4"
+		MESON_OPT="-D asm=false"
+		rm -rf build||true
 		mkdir build||true
 		if [[ $PIBUILD -eq 1 ]];then
 			cd build
-			DRI_DRIVERS=
-			GALLIUM_DRV="vc4,v3d,kmsro"
+			DRI_DRIVERS="r100,r200,nouveau"
+			GALLIUM_DRV="vc4,v3d,kmsro,swrast"
 			PLATFORMS="x11,surfaceless,drm"
-			meson --prefix=/usr -Dglx=disabled -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false  -Dvalgrind=false -Dplatforms=$PLATFORMS -Dopengl=true -Dgles2=true -Dgles1=true -Dgbm=true -Dglx-direct=true -Dllvm=true ..
+			meson --prefix=/usr \
+			-Dbuildtype=release \
+			-Ddri-drivers=$DRI_DRIVERS \
+			-Dgallium-drivers=$GALLIUM_DRV \
+			-Dgallium-nine=false \
+			-Dvalgrind=false \
+			-Dplatforms=$PLATFORMS \
+			-Dopengl=true \
+			-Dgles2=true \
+			-Dgles1=true \
+			-Dgbm=true \
+			-Dglx-direct=true \
+			-Dllvm=true \
+			-Degl=true \
+			-Dglx=dri \
+			-Dvulkan-drivers="auto" \
+			-Ddri3=true \
+			-Dgallium-extra-hud=true \
+			-Dgallium-xa=false \
+			-Dgallium-xvmc=false \
+			-Dlibunwind=false \
+			-Dosmesa=gallium \
+			-Dshared-glapi=true \
+    		$MESON_OPT ..
 		else
 			cd build
 			DRI_DRIVERS="i965,nouveau"
@@ -41,7 +70,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			meson --prefix=$XORG_PREFIX -Dbuildtype=release -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false -Dplatforms=$PLATFORMS ..
 		fi
 
-		ninja $MAKEFLAGS||ninja -j1||exit 100
+		ninja -j3||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 		install -v -dm755 $PKG/usr/share/doc/${TARNAME}-${VERSION}
 		cp -rfv ../docs/* $PKG/usr/share/doc/${TARNAME}-${VERSION}
@@ -72,4 +101,6 @@ pushd $COMPILEAT 2>/dev/null||true
 	
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+
 

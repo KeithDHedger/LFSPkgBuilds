@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#©keithhedger Thu 3 Dec 12:26:07 GMT 2015 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+if [ ${USESYSTEMD:-0} -eq 1 ];then
+	systemctl enable upower
+fi

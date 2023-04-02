@@ -1,0 +1,64 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+PKGNAME="Linux-PAM"
+TARNAME="$PKGNAME"
+VERSION="1.3.1"
+BUILD=1
+SECTION="ADMIN"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/linux-pam/linux-pam/releases/download/v1.3.1/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-securedir=/lib${LIBDIRSUFFIX}/security --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-regenerate-docu
+		make $MAKEFLAGS||make|| exit 100
+		install -v -m755 -d ${PKG}/etc/pam.d
+		make install DESTDIR=$PKG || exit 100
+		chmod -v 4755 ${PKG}/sbin/unix_chkpwd
+
+		for file in pam pam_misc pamc
+			do
+				mv -v ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so.* ${PKG}/lib${LIBDIRSUFFIX}
+				ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so) ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so
+			done
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

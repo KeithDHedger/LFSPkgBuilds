@@ -2,7 +2,7 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="smartmontools-6.3"
+DEPENDS="smartmontools-6.3 gtkmm3-3.22.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -19,8 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://datapacket.dl.sourceforge.net/project/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
-
+gettar "https://sourceforge.net/projects/${PKGNAME}/files/${VERSION}//${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

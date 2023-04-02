@@ -2,14 +2,14 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-DEPENDS="libxfce4ui-4.10.0 vte1-0.28.2"
+DEPENDS="libxfce4ui-4.14.1 vte2-0.56.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-terminal"
 TARNAME="$PKGNAME"
-VERSION="0.6.3"
+VERSION="0.8.8"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -19,7 +19,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/apps/xfce4-terminal/0.6/${TARBALL}" $SECTION
+gettar "http://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

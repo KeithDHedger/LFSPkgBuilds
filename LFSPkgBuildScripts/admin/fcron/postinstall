@@ -3,6 +3,12 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+if [ $USESYSTEMD -eq 1 ];then
+	systemctl enable fcron
+	systemctl start fcron
+	fcrontab -z -u systab
+fi
+
 if ! grep "cron.*" /etc/syslog.conf &>/dev/null;then
 	sed -i  '0,/^$/s||cron.* -/var/log/cron.log|' /etc/syslog.conf
 else

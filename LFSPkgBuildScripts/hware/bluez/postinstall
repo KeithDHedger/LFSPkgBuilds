@@ -3,6 +3,11 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
+if [ $USESYSTEMD -eq 1 ];then
+	systemctl enable bluetooth
+	systemctl enable --global obex
+fi
+
 if [ "$PIBUILD" = "1" ];then
 	cat > /etc/bluetooth/uart.conf << "EOF"
 # Start uart.conf

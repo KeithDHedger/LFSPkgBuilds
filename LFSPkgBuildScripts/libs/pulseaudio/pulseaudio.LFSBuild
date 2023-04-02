@@ -24,6 +24,10 @@ gettar "https://www.freedesktop.org/software/${PKGNAME}/releases/${TARBALL}" $SE
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--with-systemduserunitdir=no"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
@@ -32,7 +36,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i "s:use-case.h:alsa/use-case.h:" src/modules/alsa/alsa-ucm.h
 		
 		NOCONFIGURE=1 ./bootstrap.sh
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath --with-systemduserunitdir=no --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules --enable-nls
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-bluez4 --disable-bluez5 --disable-rpath $SYSTEMDOPTS --with-module-dir=/usr/lib${LIBDIRSUFFIX}/pulse/modules --enable-nls
 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

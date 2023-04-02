@@ -8,7 +8,7 @@ PKGNAME="wireless-tools"
 TARNAME="wireless_tools"
 VERSION="29"
 BUILD=${BUILD:-1}
-SECTION="HWARE"
+SECTION="NET"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}.${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -28,7 +28,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fix_iwlist_scanning-1.patch
 		make $MAKEFLAGS||make|| exit 100
 		mkdir -vp $PKG/usr/share
-		make $MAKEFLAGS DESTDIR=$PKG PREFIX=/usr INSTALL_MAN=/usr/share/man install || exit 100
+		make $MAKEFLAGS PREFIX=${PKG}/usr INSTALL_MAN=${PKG}/usr/share/man install || exit 100
 	popd
 
 	checketc $PKG
