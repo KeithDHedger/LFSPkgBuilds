@@ -1,0 +1,197 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="xorg-libs-10.1 alsa-lib-1.2.4 DBus-1.12.20 MesaLib-20.3.4 libxkbcommon-1.0.3 xcb-util-image-0.4.0 xcb-util-keysyms-0.4.0 xcb-util-renderutil-0.3.9 xcb-util-wm-0.4.1 pulseaudio-14.2 pciutils-3.7.0 NSS-3.61 ffmpeg-6.0 gstreamer-vaapi-1.22.3"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="qt6"
+TARNAME="qt-everywhere-src"
+VERSION="6.5.1"
+BUILD=${BUILD:-1}
+SECTION="QT"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+NINJAJOBS=$(echo $MAKEFLAGS|sed 's/-j\(.*\)/\1/')
+export NINJAJOBS
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd ${TARNAME}-${VERSION}
+		pushd qtbase
+			patch -Np1 -i ${CWD}/qt6-base-cflags.patch
+			patch -Np1 -i ${CWD}/qt6-base-nostrip.patch
+		popd
+		export QT6PREFIX=${QT6PREFIX:-"/opt/qt6"}
+		export QT6DIR=${QT6DIR:-${QT6PREFIX}}
+		export QT6LIBS=${QT6PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
+		export QT6BINDIR=${QT6LIBS}/bin
+		export QT6INCLUDES=${QT6PREFIX}/include/${PKGNAME}
+		export QT6DATA=${QT6PREFIX}/share/${PKGNAME}
+		export QT6DOCS=${QT6PREFIX}/share/doc/${PKGNAME}
+		export QT6TRANSLATIONS=${QT6PREFIX}/share/${PKGNAME}/translations
+		export QT6EXAMPLES=${QT6PREFIX}/share/doc/${PKGNAME}/examples
+		export QT6IMPORTS=${QT6LIBS}/imports
+		export QT6PLUGINS=${QT6LIBS}/plugins
+
+		cmake --parallel $NINJAJOBS -B build -S $(pwd)\
+		-G Ninja\
+		-DCMAKE_INSTALL_PREFIX=$QT6PREFIX\
+		-DCMAKE_BUILD_TYPE=Release\
+		-DINSTALL_BINDIR=${QT6BINDIR}\
+		-DINSTALL_PUBLICBINDIR=${QT6PREFIX}/bin\
+		-DINSTALL_LIBEXECDIR=${QT6LIBS}\
+		-DINSTALL_DOCDIR=$QT6DOCS\
+		-DINSTALL_ARCHDATADIR=$QT6LIBS\
+		-DINSTALL_DATADIR=$QT6DATA\
+		-DINSTALL_INCLUDEDIR=$QT6INCLUDES\
+		-DINSTALL_MKSPECSDIR=${QT6LIBS}/mkspecs\
+		-DCMAKE_PREFIX_PATH=${QT6LIBS}/cmake\
+		-DQT_BUILD_EXAMPLES=ON\
+		-DINSTALL_EXAMPLESDIR=$QT6EXAMPLES\
+		-DQT_FEATURE_journald=OFF\
+		-DQT_FEATURE_openssl_linked=ON\
+		-DQT_FEATURE_system_sqlite=ON\
+		-DQT_FEATURE_system_xcb_xinput=ON\
+		-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON\
+		-DBUILD_qtwayland=OFF\
+		-DBUILD_qtwebengine=OFF\
+		-Wno-dev
+
+		export MAKEFLAGS
+		export PATH
+
+		cmake --build build|| exit 100
+		DESTDIR="$PKG" cmake --install build|| exit 100
+		
+		install -v -dm755 $PKG/usr/share/pixmaps/ $PKG/usr/share/applications $PKG/etc/profile.d
+		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/assistant/assistant/images/assistant-128.png $PKG/usr/share/pixmaps/assistant-qt6.png
+		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/designer/src/designer/images/designer.png $PKG/usr/share/pixmaps/designer-qt6.png
+		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/linguist/linguist/images/icons/linguist-128-32.png $PKG/usr/share/pixmaps/linguist-qt6.png
+		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png $PKG/usr/share/pixmaps/qdbusviewer-qt6.png
+		install -dm755 $PKG/usr/share/applications
+
+#qt6 does not yet build/install pc files
+#pathappend $PKGCONFIGPATH PKG_CONFIG_PATH
+#		mkdir -vp $PKG/$QT6PREFIX/lib${LIBDIRSUFFIX}/qt6/pkgconfig
+#		pushd $PKG/$QT6PREFIX/lib${LIBDIRSUFFIX}/pkgconfig
+#			ln -sv ../qt6/pkgconfig/*.pc .
+#		popd
+
+		mkdir -p ${PKG}/${QT6PREFIX}/bin-qt6
+		pushd $PKG/${QT6PREFIX}/bin-qt6
+			while read file
+				do
+					ln -sv $file .
+				done < <(cat "${COMPILEAT}/${TARNAME}-${VERSION}/build/install_manifest.txt"|sed -n '/\/bin\//p')
+		popd
+	popd
+
+	mkdir -vp ${PKG}/etc/profile.d/
+	cat > ${PKG}/etc/profile.d/qt6.sh << EOF
+# Begin /etc/profile.d/qt6.sh
+QT6DIR=${QT6DIR}
+QT6PREFIX=${QT6PREFIX}
+QT6BINDIR=${QT6PREFIX}/bin-qt6
+export QT6DIR
+export QT6PREFIX
+export QT6BINDIR
+
+pathappend \${QT6BINDIR}
+#qt6 does not yet build/install pc files
+#pathappend $PKGCONFIGPATH PKG_CONFIG_PATH
+
+# End /etc/profile.d/qt6.sh
+EOF
+	chmod +x ${PKG}/etc/profile.d/qt6.sh
+
+	mkdir -vp ${PKG}/usr/share/applications ${PKG}/etc/profile.d/||true
+	cat > ${PKG}/usr/share/applications/assistant-qt6.desktop << EOF
+[Desktop Entry]
+Name=qt6 Assistant 
+Comment=Shows qt6 documentation and examples
+Exec=assistant
+Icon=assistant-qt6.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Documentation;
+EOF
+
+	cat > ${PKG}/usr/share/applications/designer-qt6.desktop << EOF
+[Desktop Entry]
+Name=qt6 Designer
+GenericName=Interface Designer
+Comment=Design GUIs for qt6 applications
+Exec=designer
+Icon=designer-qt6.png
+MimeType=application/x-designer;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+EOF
+
+	cat > ${PKG}/usr/share/applications/linguist-qt6.desktop << EOF
+[Desktop Entry]
+Name=qt6 Linguist
+Comment=Add translations to qt6 applications
+Exec=linguist
+Icon=linguist-qt6.png
+MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+EOF
+
+	cat > ${PKG}/usr/share/applications/qdbusviewer-qt6.desktop << EOF
+[Desktop Entry]
+Name=qt6 QDbusViewer 
+GenericName=D-Bus Debugger
+Comment=Debug D-Bus applications
+Exec=qdbusviewer
+Icon=qdbusviewer-qt6.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Debugger;
+EOF
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	#rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true

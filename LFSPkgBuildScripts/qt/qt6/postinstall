@@ -1,0 +1,27 @@
+#!/bin/bash -e
+
+#©keithhedger Thu 19 Feb 13:05:33 GMT 2015 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+QT6PREFIX=${QT6PREFIX:-/usr}
+QT6DIR=${QT6DIR:-$QT6PREFIX/lib${LIBDIRSUFFIX}/qt6}
+PKGCONFIGPATH=$QT6PREFIX/lib${LIBDIRSUFFIX}/qt6/pkgconfig
+
+if [ ! "$(grep -i "${QT6DIR}" /etc/ld.so.conf)" ];then
+	echo "${QT6DIR}" >> /etc/ld.so.conf
+	ldconfig||true
+fi
+
+mkdir -vp /etc/pango ||true
+/usr/bin/gdk-pixbuf-query-loaders --update-cache||true
+fc-cache -f||true
+gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/hicolor||true
+gtk-update-icon-cache --ignore-theme-index --force /usr/share/icons/gnome||true
+update-mime-database /usr/share/mime||true
+mkdir -vp /var/cache/man/fsstnd||true
+mandb -c||true
+
+
+
+

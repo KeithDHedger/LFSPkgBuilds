@@ -11,7 +11,7 @@ fi
 
 PKGNAME="libva"
 TARNAME="$PKGNAME"
-VERSION="1.7.3"
+VERSION="2.18.0"
 BUILD=1
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.freedesktop.org/software/vaapi/releases/libva/${TARBALL}" $SECTION
+gettar "https://github.com/intel/libva/releases/download/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

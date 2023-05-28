@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gstreamer-1.18.3 gst-plugins-base-1.18.3 gst-plugins-bad-1.18.3 libva-1.7.3"
+DEPENDS="meson-0.62 gstreamer-1.22.3 gst-plugins-base-1.22.3 gst-plugins-bad-1.22.3 libva-2.18.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gstreamer-vaapi"
 TARNAME="$PKGNAME"
-VERSION="1.18.4"
+VERSION="1.22.3"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -34,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build || true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dwith_wayland=no ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS}  -Dwayland=disabled ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

@@ -90,6 +90,7 @@
 ./devel/abs/abs.LFSBuild
 ./devel/amtk/amtk.LFSBuild
 ./devel/apache-ant/apache-ant.LFSBuild
+./devel/aqemu/aqemu.LFSBuild
 ./devel/asciidoc/asciidoc.LFSBuild
 ./devel/astyle/astyle.LFSBuild
 ./devel/autobook/autobook.LFSBuild
@@ -541,8 +542,10 @@
 ./perl/File-MimeInfo/File-MimeInfo.LFSBuild
 ./perl/HTML-Parser/HTML-Parser.LFSBuild
 ./perl/Image-ExifTool/Image-ExifTool.LFSBuild
+./perl/libwww-perl/libwww-perl.LFSBuild
 ./perl/Module-Build/Module-Build.LFSBuild
 ./perl/Parse-Yapp/Parse-Yapp.LFSBuild
+./perl/SOAP-Lite/SOAP-Lite.LFSBuild
 ./perl/Switch/Switch.LFSBuild
 ./perl/UI-Dialog/UI-Dialog.LFSBuild
 ./perl/URI/URI.LFSBuild
@@ -746,6 +749,7 @@
 ./system/tar/tar.LFSBuild
 ./system/tcl/tcl.LFSBuild
 ./system/texinfo/texinfo.LFSBuild
+./system-upgrades/meson-upgrade.LFSBuild
 ./system/util-linux/util-linux.LFSBuild
 ./system/vim/vim.LFSBuild
 ./system/xml-parser/xml-parser.LFSBuild
@@ -816,6 +820,7 @@
 ./xfce/XfceThemeManager/Xfce-Theme-Manager.LFSBuild
 ./xfce/xfconf/xfconf.LFSBuild
 ./xfce/xfdesktop/xfdesktop.LFSBuild
+./xfce/xfwm4-themes/xfwm4-themes.LFSBuild
 ./xfce/xfwm4/xfwm4.LFSBuild
 ./xorg/compton/compton.LFSBuild
 ./xorg/elfutils/elfutils.LFSBuild

@@ -11,7 +11,7 @@ fi
 
 PKGNAME="ffmpeg"
 TARNAME="$PKGNAME"
-VERSION="4.3.2"
+VERSION="6.0"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -26,10 +26,11 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	#extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's/-lflite"/-lflite -lasound"/' configure
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-avresample --enable-shared --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --enable-version3 --enable-nonfree --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-openssl --enable-libass --enable-gpl --enable-libfreetype --enable-libopus --enable-libx264 --enable-libx265
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --shlibdir=/usr/lib${LIBDIRSUFFIX} --enable-shared --enable-version3 --enable-nonfree --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-openssl --enable-libass --enable-gpl --enable-libfreetype --enable-libopus --enable-libx264 --enable-libx265
+
 		make $MAKEFLAGS||make|| exit 100
 		gcc tools/qt-faststart.c -o tools/qt-faststart
 		make install DESTDIR=$PKG || exit 100
