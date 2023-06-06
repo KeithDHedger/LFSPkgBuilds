@@ -11,7 +11,7 @@ VERSION=$linux_version
 BUILD=${BUILD:-1}
 SECTION="KERNEL"
 SUFFIX="LFSPKG"
-TARBALL="${PKGNAME}-master.tar.gz"
+TARBALL="${PKGNAME}-main.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -20,10 +20,11 @@ rm -rf "$PKG" || true
 mkdir -vp "${PKG}/lib${LIBDIRSUFFIX}"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/${TARBALL}" $SECTION
-
+#	    https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20230515.tar.gz
 pushd "${PKG}"
 	NOCHANGEUSER=1 extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	mv linux-firmware-master lib${LIBDIRSUFFIX}/firmware
+	#mv linux-firmware-master lib${LIBDIRSUFFIX}/firmware
+	mv linux-firmware-main lib${LIBDIRSUFFIX}/firmware
 	rm -rf lib${LIBDIRSUFFIX}/firmware/carl9170fw||true
 	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 popd

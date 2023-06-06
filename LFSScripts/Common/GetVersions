@@ -6,7 +6,7 @@ NORMAL='\e[0;0m'
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-LFSVERSION=${LFSVERSION:-"10.1"}
+LFSVERSION=${LFSVERSION:-"11.3"}
 
 rm wget-list||true
 wget "https://www.linuxfromscratch.org/lfs/view/$LFSVERSION/wget-list"

@@ -24,10 +24,16 @@ if [ $USESYSTEMD -eq 0 ];then
 	:
 fi
 
+if [ "X$USEGTK" = "X" ];then
+	WITHGTK="--with-gtk"
+else
+	WITHGTK=""
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gtk
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} $WITHGTK
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp ${PKG}/usr/lib${LIBDIRSUFFIX}/distcc

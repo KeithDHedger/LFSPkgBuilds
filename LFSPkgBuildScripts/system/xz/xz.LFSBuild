@@ -29,10 +29,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 
-		mkdir -vp $PKG/bin $PKG/lib${LIBDIRSUFFIX}||true
-		mv -v $PKG/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $PKG/bin
-		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so.* $PKG/lib${LIBDIRSUFFIX}
-		ln -svf ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so) $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so
+		#mkdir -vp $PKG/bin $PKG/lib${LIBDIRSUFFIX}||true
+		#mv -v $PKG/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $PKG/bin
+		#mv -v $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so.* $PKG/lib${LIBDIRSUFFIX}
+		#ln -svf ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so) $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so
 	popd
 
 	checketc "$PKG"

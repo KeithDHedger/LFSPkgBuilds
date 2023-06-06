@@ -52,16 +52,18 @@ GDBM
 gperf
 Expat
 Inetutils
+Less
 Perl
 XML-Parser
 intltool
 Autoconf
 Automake
+OpenSSL
 Kmod
 Libelf
 Libffi
-OpenSSL
 python3
+Wheel
 Ninja
 Meson
 Coreutils
@@ -71,28 +73,27 @@ Gawk
 Findutils
 Groff
 GRUB
-Less
 Gzip
 IPRoute2
 Kbd
 Libpipeline
 Make
 Patch
-Man-DB
 Tar
 Texinfo
 Vim
 eudev
+Man-DB
 Procps-ng
 Util-linux
 E2fsprogs
 Sysklogd
 Sysvinit
 lfs-bootscripts
-Wget-1.21.1
+Wget-1.21.3
 unzip-6.0
 GPM-1.20.7
-Links-2.21"
+Links-2.28"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

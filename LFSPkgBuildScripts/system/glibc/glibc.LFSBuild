@@ -26,12 +26,16 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fhs-1.patch
+		sed '/width -=/s/workend - string/number_length/' -i stdio-common/vfprintf-process-arg.c
 		mkdir -v build || true
 		cd build
-			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --disable-werror --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}
+		echo "rootsbindir=/usr/sbin" > configparms
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --disable-werror --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make
 		touch /etc/ld.so.conf
+		sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 		make install DESTDIR="$PKG" || exit 100
+		sed '/RTLDLIST=/s@/usr@@g' -i $PKG/usr/bin/ldd
 		mkdir -p "$PKG/etc/"||true
 		cp -v ../nscd/nscd.conf $PKG/etc/nscd.conf
 		mkdir -pv $PKG/var/cache/nscd||true
@@ -39,16 +43,26 @@ pushd $COMPILEAT 2>/dev/null||true
 	popd
 
 #Save an unstripped version of glibc for debugging ( valgrind for instance needs this )
+	realldname=$(basename $(ls -1 ${PKG}/lib${LIBDIRSUFFIX}/ld-*))
+	reallibcname=$(basename $(ls -1 ${PKG}/lib${LIBDIRSUFFIX}/libc.so*))
+	mv ${PKG}/lib${LIBDIRSUFFIX}/ld-* ${PKG}/lib${LIBDIRSUFFIX}/ld-${VERSION}.so
+	mv ${PKG}/lib${LIBDIRSUFFIX}/libc.so* ${PKG}/lib${LIBDIRSUFFIX}/libc-${VERSION}.so
+
 	cp ${PKG}/lib${LIBDIRSUFFIX}/ld-${VERSION}.so /tmp/ld-${VERSION}.so.DEBUG
 	cp ${PKG}/lib${LIBDIRSUFFIX}/libc-${VERSION}.so /tmp/libc-${VERSION}.so.DEBUG
 
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
+
 #Put back an unstripped version of glibc for debugging ( valgrind for instance needs this )
 #To use the debug version just change the symlink  '/lib64/ld-linux-x86-64.so.2' to point to the debug version
 #To use the debug version just change the symlink  '/lib64/libc.so.6' to point to the debug version
 	mv /tmp/ld-${VERSION}.so.DEBUG ${PKG}/lib${LIBDIRSUFFIX}
 	mv /tmp/libc-${VERSION}.so.DEBUG ${PKG}/lib${LIBDIRSUFFIX}
+	pushd "${PKG}/lib${LIBDIRSUFFIX}"
+		ln -sv ld-${VERSION}.so $realldname
+		ln -sv libc-${VERSION}.so $reallibcname
+	popd
 
 	pushd "$PKG"
 		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m

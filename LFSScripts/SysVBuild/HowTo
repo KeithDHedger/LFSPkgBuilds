@@ -21,7 +21,7 @@ cp LFSPkgBuildScripts/pkgoptions/* /etc/pkgoptions
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS
-LFSVERSION=10.1
+LFSVERSION=11.3
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
 BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
@@ -73,20 +73,16 @@ cd /LFSScripts
 ./BuildTools2
 exit
 
+
 #Make sure you are no longer in the chroot. !IMPORTANT!
 
 8)
-cd $LFS
-[sudo] find usr/{lib,libexec} -name \*.la -delete
-[sudo] rm -rf usr/share/{info,man,doc}/*
-[sudo] strip --strip-debug usr/lib/*
-[sudo] strip --strip-unneeded usr/{,s}bin/*
-[sudo] strip --strip-unneeded tools/bin/*
-
 #tar MUST be run as root to preserve permissions.
 #change ${HOME}/tools-${LFSVERSION}.tar.xz to suit.
 #make sure all virtual file systems etc are unmounted, including /LFSSourceArchives etc if you have mounted an extern drive there.
 #If you did NOT bind an external disk to /LFSSourceArchives, you may want to add --exclude="./LFSSourceArchives" to the tar command below, ( no real need to include the source archives into the tools archive ).
+
+cd $LFS
 [sudo -E] tar --one-file-system --exclude="./LFSPkgBuilds" --exclude="./LFSScripts" --exclude="./LFSPkgBuildScripts" -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
 
 9)

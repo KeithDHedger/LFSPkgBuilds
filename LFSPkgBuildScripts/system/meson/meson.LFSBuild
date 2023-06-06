@@ -26,12 +26,13 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		python3 setup.py build
 		python3 setup.py install --root=$PKG
+		install -vDm644 data/shell-completions/bash/meson $PKG/usr/share/bash-completion/completions/meson
+		install -vDm644 data/shell-completions/zsh/_meson $PKG/usr/share/zsh/site-functions/_meson
 	popd
 
 	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
-	cp ./preinstall ./postinstall ./info "$PKG" &>/dev/null || true
 	pushd "$PKG"
 		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
 	popd

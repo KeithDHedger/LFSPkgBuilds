@@ -6,13 +6,13 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 . ../PkgVersions
 
-PKGNAME="e2fsprogs"
+PKGNAME="wheel"
 TARNAME="$PKGNAME"
-VERSION=$e2fsprogs_version
+VERSION=$wheel_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.$e2fsprogs_arctype"
+TARBALL="${TARNAME}-${VERSION}.$wheel_arctype"
 
 PKG="${OUTPUT}/${PKGNAME}"
 
@@ -25,17 +25,8 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir -v build||true
-		cd build
-		#CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --bindir=/bin --with-root-prefix="" --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck
-		make $MAKEFLAGS||make|| exit
-		make install DESTDIR="$PKG" || exit
-		make install-libs DESTDIR="$PKG" || exit
-		#chmod -v u+w $PKG/usr/lib${LIBDIRSUFFIX}/{libcom_err,libe2p,libext2fs,libss}.a
-		rm -fv $PKG/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
-		gunzip -v $PKG/usr/share/info/libext2fs.info.gz
-		install-info --dir-file=/usr/share/info/dir $PKG/usr/share/info/libext2fs.info
+		python setup.py install --root=$PKG
+		python setup.py install --root=$PKG
 	popd
 
 	checketc "$PKG"

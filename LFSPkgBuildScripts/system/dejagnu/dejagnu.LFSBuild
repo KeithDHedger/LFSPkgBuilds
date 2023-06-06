@@ -25,9 +25,11 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		./configure $CONFIGOPTIONS
-		makeinfo --html --no-split -o doc/dejagnu.html doc/dejagnu.texi
-		makeinfo --plaintext -o doc/dejagnu.txt  doc/dejagnu.texi
+		mkdir -v build||true
+		cd build
+		../configure $CONFIGOPTIONS
+		makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
+		makeinfo --plaintext -o doc/dejagnu.txt ../doc/dejagnu.texi
 		make install DESTDIR=$PKG || exit 100
 		install -v -dm755 $PKG/usr/share/doc/${TARNAME}-${VERSION}
 		install -v -m644 doc/dejagnu.{html,txt} $PKG/usr/share/doc/${TARNAME}-${VERSION}

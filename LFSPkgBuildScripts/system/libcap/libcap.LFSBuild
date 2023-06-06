@@ -25,14 +25,13 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		make clean
-		sed -i '/install -m.*STACAPLIBNAME/d' libcap/Makefile
+		sed -i '/install -m.*STA/d' libcap/Makefile
 		make prefix=/usr lib=lib${LIBDIRSUFFIX} $MAKEFLAGS||make prefix=/usr lib=lib${LIBDIRSUFFIX}|| exit 100
 		make prefix=/usr lib=lib${LIBDIRSUFFIX} PKGCONFIGDIR=/usr/lib${LIBDIRSUFFIX}/pkgconfig install DESTDIR=$PKG || exit 100
-		mkdir -vp  $PKG/lib${LIBDIRSUFFIX} $PKG/usr/lib${LIBDIRSUFFIX}||true
-		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so.* $PKG/lib${LIBDIRSUFFIX}
-		ln -sfv ../../lib${LIBDIRSUFFIX}/libcap.so.2 $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so
-		chmod -v 755 $PKG/lib${LIBDIRSUFFIX}/libcap.so.${VERSION}
+		#mkdir -vp  $PKG/lib${LIBDIRSUFFIX} $PKG/usr/lib${LIBDIRSUFFIX}||true
+		#mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so.* $PKG/lib${LIBDIRSUFFIX}
+		#ln -sfv ../../lib${LIBDIRSUFFIX}/libcap.so.2 $PKG/usr/lib${LIBDIRSUFFIX}/libcap.so
+		#chmod -v 755 $PKG/lib${LIBDIRSUFFIX}/libcap.so.${VERSION}
 	popd
 
 	checketc "$PKG"

@@ -24,14 +24,13 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --mandir=/usr/share/man --with-shared --without-normal --without-debug --enable-widec --enable-pc-files
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --mandir=/usr/share/man --with-shared --without-normal --with-cxx-shared --without-debug --enable-widec --enable-pc-files --with-pkg-config-libdir=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/lib${LIBDIRSUFFIX}  $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig|| true
 
-		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so.6* $PKG/lib${LIBDIRSUFFIX}
-		ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so) $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so
+		#mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so.6* $PKG/lib${LIBDIRSUFFIX}
+		#ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so) $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so
 		for lib in ncurses form panel menu
 			do
 				rm -vf $PKG/usr/lib${LIBDIRSUFFIX}/lib${lib}.so

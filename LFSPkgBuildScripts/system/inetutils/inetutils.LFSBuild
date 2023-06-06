@@ -25,11 +25,10 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		./configure $CONFIGOPTIONS --localstatedir=/var --disable-logger --disable-whois --disable-servers --disable-rcp --disable-rexec --disable-rlogin --disable-rsh
+		./configure $CONFIGOPTIONS --bindir=/usr/bin --localstatedir=/var --disable-logger --disable-whois --disable-servers --disable-rcp --disable-rexec --disable-rlogin --disable-rsh
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/bin $PKG/sbin||true
-		mv -v $PKG/usr/bin/{hostname,ping,ping6,traceroute} $PKG/bin
 		mv -v $PKG/usr/bin/ifconfig $PKG/sbin
 	popd
 

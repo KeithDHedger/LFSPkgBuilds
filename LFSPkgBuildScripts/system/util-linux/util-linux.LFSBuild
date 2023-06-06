@@ -39,7 +39,9 @@ pushd $COMPILEAT 2>/dev/null||true
 #			rm -vf /usr/include/{blkid,libmount,uuid}||true
 		fi
 		mkdir -pv $PKG/var/lib/hwclock
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --disable-gtk-doc ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python $SYSTEMDOPTS $BUILDSTATIC runstatedir=/run
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --disable-gtk-doc ADJTIME_PATH=/var/lib/hwclock/adjtime --bindir=/bin --libdir=/lib${LIBDIRSUFFIX} --sbindir=/sbin --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python --docdir=/usr/share/doc/${PKGNAME}-${VERSION}  $SYSTEMDOPTS $BUILDSTATIC
+		#CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --disable-gtk-doc ADJTIME_PATH=/var/lib/hwclock/adjtime --bindir=/usr/bin --libdir=/usr/lib${LIBDIRSUFFIX} --sbindir=/usr/sbin --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python --docdir=/usr/share/doc/${PKGNAME}-${VERSION}  $SYSTEMDOPTS $BUILDSTATIC
+# runstatedir=/run
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		if [ "X$ENABLESTATIC" != "X" ];then

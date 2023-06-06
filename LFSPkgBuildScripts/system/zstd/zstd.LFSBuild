@@ -29,8 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 100
 		make install prefix=$PKG/usr || exit 100
 		rm -v $PKG/usr/lib/libzstd.a
-		mv -v $PKG/usr/lib/libzstd.so.* /lib
-		ln -sfv ../../lib/$(readlink $PKG/usr/lib/libzstd.so) $PKG/usr/lib/libzstd.so
+		#mv -v $PKG/usr/lib/libzstd.so.* /lib
+		#ln -sfv ../../lib/$(readlink $PKG/usr/lib/libzstd.so) $PKG/usr/lib/libzstd.so
 	popd
 
 	checketc "$PKG"

@@ -33,10 +33,10 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.kernel.org/pub/linux/kernel/v5.x/${TARBALL}" ${SECTION} ${TARBALL}
+#gettar "https://www.kernel.org/pub/linux/kernel/v5.x/${TARBALL}" ${SECTION} ${TARBALL}
 
 pushd "${KERNELSOURCEDIR}"
-	(mkdir "${TARNAME}-${VERSION}"||true;tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
+	(mkdir -vp "${TARNAME}-${VERSION}"||true;tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
 		make mrproper
 		cp "$KERNELCONFIG" .config

@@ -26,11 +26,12 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-i18n-1.patch
-		sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
+		#sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
 		autoreconf -fiv
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" FORCE_UNSAFE_CONFIGURE=1 ./configure $CONFIGOPTIONS --enable-no-install-program=kill,uptime
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
+
 		mkdir -vp $PKG/bin $PKG/usr/sbin $PKG/usr/share/man/man8
 		mv -v $PKG/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $PKG/bin
 		mv -v $PKG/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $PKG/bin
@@ -39,6 +40,13 @@ pushd $COMPILEAT 2>/dev/null||true
 		mv -v $PKG/usr/share/man/man1/chroot.1 $PKG/usr/share/man/man8/chroot.8
 		sed -i 's/\"1\"/\"8\"/1' "$PKG/usr/share/man/man8/chroot.8"
 		mv -v $PKG/usr/bin/{head,nice,sleep,touch} $PKG/bin
+
+
+
+#		mkdir -vp $PKG/bin $PKG/usr/sbin $PKG/usr/share/man/man8
+#		mv -v $PKG/usr/bin/chroot $PKG/usr/sbin
+#		mv -v $PKG/usr/share/man/man1/chroot.1 $PKG/usr/share/man/man8/chroot.8
+#		sed -i 's/"1"/"8"/' $PKG/usr/share/man/man8/chroot.8
 	popd
 
 	checketc "$PKG"

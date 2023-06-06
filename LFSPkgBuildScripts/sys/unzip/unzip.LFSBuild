@@ -17,6 +17,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://downloads.sourceforge.net/infozip/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/11.3/${PKGNAME}-${VERSION}-consolidated_fixes-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
@@ -24,6 +25,7 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "unzip60"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-consolidated_fixes-1.patch
 		make -f unix/Makefile generic
 		make -f unix/Makefile prefix=$PKG/usr MANDIR=/usr/share/man/man1 install || exit 100
 	popd

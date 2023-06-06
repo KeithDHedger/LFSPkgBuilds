@@ -31,14 +31,11 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		mkdir -v build||true
 		cd build
-		../configure --prefix=/usr  LD=ld --enable-languages=c,c++,objc,obj-c++ --disable-multilib --disable-bootstrap --with-system-zlib --enable-install-libiberty
+		../configure --prefix=/usr  LD=ld --enable-languages=c,c++,objc,obj-c++ --enable-default-pie --enable-default-ssp --disable-multilib --disable-bootstrap --with-system-zlib --enable-install-libiberty
 		make $MAKEFLAGS||make -j1||true
 		make install DESTDIR="$PKG" || exit 100
-		rm -rf $PKG/usr/lib/gcc/$(gcc -dumpmachine)/${VERSION}/include-fixed/bits/||true
-		chown -v -R root:root ${PKG}/usr/lib/gcc/*linux-gnu*/${VERSION}/include{,-fixed}
-		mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib $PKG/usr/lib/bfd-plugins
-		ln -sfv ../usr/bin/cpp $PKG/lib
-		ln -sfv gcc $PKG/usr/bin/cc
+		mkdir -vp $PKG/usr/lib/bfd-plugins/ $PKG/lib
+		ln -sfv /usr/bin/cpp $PKG/lib/cpp
 		ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/${VERSION}/liblto_plugin.so $PKG/usr/lib/bfd-plugins/
 		mkdir -pv $PKG/usr/share/gdb/auto-load/usr/lib||true
 		mv -v $PKG/usr/lib*/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib

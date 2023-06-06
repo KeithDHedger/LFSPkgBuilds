@@ -27,9 +27,9 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i /ARPD/d Makefile
 		rm -fv man/man8/arpd.8
-		sed -i 's/m_ipt.o//' tc/Makefile
-		make $MAKEFLAGS||make|| exit
-		make LIBDIR=/usr/lib${LIBDIRSUFFIX}/ DESTDIR=$PKG DOCDIR=/usr/share/doc/${PKGNAME}-${VERSION} MANDIR=/usr/share/man install || exit
+		#sed -i 's/m_ipt.o//' tc/Makefile
+		make $MAKEFLAGS NETNS_RUN_DIR=/run/netns||make NETNS_RUN_DIR=/run/netns|| exit
+		make SBINDIR=/usr/sbin LIBDIR=/usr/lib${LIBDIRSUFFIX}/ DOCDIR=/usr/share/doc/${PKGNAME}-${VERSION} MANDIR=/usr/share/man install DESTDIR=$PKG|| exit
 	popd
 
 	checketc "$PKG"

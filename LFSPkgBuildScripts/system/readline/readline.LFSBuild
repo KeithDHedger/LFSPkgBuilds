@@ -33,6 +33,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/MV.*old/d' Makefile.in
 		sed -i '/{OLDSUFF}/c:' support/shlib-install
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-upstream_fix-1.patch
 		./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-curses $BUILDSTATIC
 		make $MAKEFLAGS SHLIB_LIBS="-lncursesw"||make SHLIB_LIBS="-lncursesw"|| exit 100
 		if [ "X$ENABLESTATIC" != "X" ];then

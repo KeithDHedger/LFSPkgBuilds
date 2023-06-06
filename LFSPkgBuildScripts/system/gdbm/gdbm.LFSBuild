@@ -25,7 +25,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -r -i '/^char.*parseopt_program_(doc|args)/d' src/parseopt.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --enable-libgdbm-compat
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

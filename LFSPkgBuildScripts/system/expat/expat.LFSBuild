@@ -21,15 +21,13 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 
-echo $DELETEDOCS
-exit 100
-
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make || exit 100
 		make install DESTDIR=$PKG || exit 100
+		install -v -m644 doc/*.{html,css} $PKG/usr/share/doc/${PKGNAME}-${VERSION} || exit 100
 	popd
 
 	checketc $PKG

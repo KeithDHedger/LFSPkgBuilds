@@ -25,15 +25,15 @@ scriptLog "${PKGNAME}-${VERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --bindir=/bin --with-rootlibdir=/lib${LIBDIRSUFFIX} --with-xz --with-zlib --with-zstd
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --with-openssl --with-xz --with-zstd --with-zlib
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
-		mkdir -vp $PKG/sbin $PKG/bin||true
+		mkdir -vp $PKG/sbin $PKG/usr/sbin $PKG/bin $PKG/usr/bin||true
 		for target in depmod insmod modinfo modprobe rmmod
 			do
-				ln -sv ../bin/kmod $PKG/sbin/$target
+				ln -sv ../bin/kmod $PKG/usr/sbin/$target
 			done
-		ln -sv kmod $PKG/bin/lsmod
+		ln -sv kmod $PKG/usr/bin/lsmod
 	popd
 
 	checketc "$PKG"
