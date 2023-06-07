@@ -25,7 +25,7 @@ LFSVERSION=11.3
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
 BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
-KERNELVERSION=5.10.17
+KERNELVERSION=6.1.11
 USESYSTEMD=0
 
 export LFS
@@ -37,7 +37,7 @@ export KERNELVERSION
 export USESYSTEMD
 
 #Own the files ( If needed ):
-[sudo -E] chown -R $USER:$USER $LFS/LFSPkgBuilds
+sudo -E chown -R $USER:$USER $LFS/LFSPkgBuilds
 
 3)
 #cd into the LFSScripts folder
@@ -46,7 +46,7 @@ cd $LFS/LFSScripts
 #Set up config files !!IMPORTANT!!
 #You can just press 'Return' to accept the default.
 #Run:
-[sudo -E] ./LFSSetUp
+sudo -E ./LFSSetUp
 
 #To check config:
 ./ShowSystemData
@@ -55,17 +55,17 @@ cd $LFS/LFSScripts
 
 4)
 #make sure normal user owns $LFS ( if you are using a dedicated user change $USER if needed ).
-[sudo -E] chown $USER $LFS
+sudo -E chown $USER $LFS
 #Run BuildTools script:
 ./BuildTools1
 
 5)
 #Run BuildFileSystem script:
-[sudo -E ] ./BuildFileSystem
+sudo -E ./BuildFileSystem
 
 6)
 #Enter chroot
-[sudo] ./Chroot
+sudo ./Chroot
 cd /LFSScripts
 
 7)
@@ -80,10 +80,10 @@ exit
 #tar MUST be run as root to preserve permissions.
 #change ${HOME}/tools-${LFSVERSION}.tar.xz to suit.
 #make sure all virtual file systems etc are unmounted, including /LFSSourceArchives etc if you have mounted an extern drive there.
-#If you did NOT bind an external disk to /LFSSourceArchives, you may want to add --exclude="./LFSSourceArchives" to the tar command below, ( no real need to include the source archives into the tools archive ).
+#If you did NOT bind an external disk to /LFSSourceArchives, you may want to add --exclude="./LFSSourceArchives" and --exclude="./LFSBuiltPackages" to the tar command below, ( no real need to include the source archives into the tools archive ).
 
 cd $LFS
-[sudo -E] tar --one-file-system --exclude="./LFSPkgBuilds" --exclude="./LFSScripts" --exclude="./LFSPkgBuildScripts" -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
+sudo -E tar --one-file-system --exclude="./LFSPkgBuilds" --exclude="./LFSScripts" --exclude="./LFSPkgBuildScripts" -apcv -f ${HOME}/tools-${LFSVERSION}.tar.xz .
 
 9)
 #make sure you are back in the lfsscripts folder.
@@ -100,7 +100,7 @@ fi
 
 10)
 #You may/will have to re-own/set perms the various folders etc, so:
-[sudo -E ] chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
+sudo -E chown -R $USER:$USER $LFS/LFSPkgBuilds $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 chmod -R 755 $LFS/LFSSourceArchives/$LFSVERSION $LFS/LFSBuiltPackages/$LFSVERSION
 
 11)
@@ -123,7 +123,7 @@ cd $LFS/LFSScripts
 screen
 
 #Chroot into temporary system:
-[sudo] ./Chroot
+sudo ./Chroot
 
 14)
 #You should now be in the chroot
@@ -170,7 +170,7 @@ exit
 18)
 #Re-enter the chroot:
 cd $LFS/LFSScripts
-[sudo -E] ./Chroot
+sudo -E ./Chroot
 
 19)
 #You MUST rebuild lfspkg after completeing the the basic system and removing the tools folder.
@@ -284,7 +284,10 @@ grub-mkfont -o /boot/grub/unicode.pf2  /usr/share/fonts/unifont/unifont.pcf
 cp /boot/grub/unicode.pf2 /boot/grub/fonts
 
 22)
-#Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot.
+#Before building the X server now is a good time to quickly boot into your new system and make sure all is OK, you can then reboot back to the host and continue building in the chroot or build in the 'real' system, the choice is yours but this HowTo assumes all building is done in the chroot, ie:
+cd $LFS/LFSScripts
+sudo ./Chroot 
+
 #Build xorg:
 cd /LFSPkgBuildScripts/xorg/xorg-meta/
 ./xorg-meta.LFSBuild install

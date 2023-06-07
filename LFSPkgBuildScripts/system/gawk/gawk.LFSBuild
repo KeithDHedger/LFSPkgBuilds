@@ -31,7 +31,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 100
 		mkdir -pv $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v doc/{awkforai.txt,*.{eps,pdf,jpg}} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		#rm -f "/usr/bin/${PKGNAME}-${VERSION}"
 		rm -f "$PKG/usr/bin/${PKGNAME}-${VERSION}"
 		ln -sv gawk $PKG/usr/bin/${PKGNAME}-${VERSION} || exit 100
 	popd

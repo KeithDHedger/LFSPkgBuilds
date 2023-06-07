@@ -29,8 +29,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -p $PKG/bin
-	#	mv -v $PKG/usr/bin/fuser $PKG/bin
-	#	mv -v $PKG/usr/bin/killall $PKG/bin
 	popd
 
 	checketc "$PKG"

@@ -280,13 +280,14 @@ swapline="$(lsblk -no UUID $SWAP 2>/dev/null)"  && swapline="UID=$(lsblk -no UUI
 #file system					mount-point	type		options			dump	fsck order
 
 UUID=$(findmnt -no UUID $LFS)	/		$ROOTFSTYPE		defaults		1		1
-$swapline	swap		swap		pri=1			0		0
 
-proc						/proc		proc		nosuid,noexec,nodev	0		0
-sysfs						/sys		sysfs		nosuid,noexec,nodev	0		0
-devpts						/dev/pts	devpts		gid=5,mode=620		0		0
-tmpfs						/run		tmpfs		defaults		0		0
-devtmpfs					/dev		devtmpfs	mode=0755,nosuid	0		0
+$swapline	swap			swap			pri=1				0		0
+proc			/proc		proc			nosuid,noexec,nodev	0		0
+sysfs		/sys			sysfs		nosuid,noexec,nodev	0		0
+devpts		/dev/pts		devpts		gid=5,mode=620		0		0
+tmpfs		/run			tmpfs		defaults				0		0
+devtmpfs		/dev			devtmpfs		mode=0755,nosuid		0		0
+tmpfs		/dev/shm		tmpfs    	nosuid,nodev			0		0
 
 # End /etc/fstab
 EOF
@@ -320,7 +321,8 @@ l6:6:wait:/etc/rc.d/init.d/rc 6
 
 ca:12345:ctrlaltdel:/sbin/shutdown -t1 -a -r now
 
-su:S016:once:/sbin/sulogin
+su:S06:once:/sbin/sulogin
+s1:1:respawn:/sbin/sulogin
 
 1:2345:respawn:/sbin/agetty --noclear tty1 9600
 2:2345:respawn:/sbin/agetty tty2 9600

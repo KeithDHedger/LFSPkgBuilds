@@ -29,8 +29,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/lib${LIBDIRSUFFIX}  $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig|| true
 
-		#mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so.6* $PKG/lib${LIBDIRSUFFIX}
-		#ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so) $PKG/usr/lib${LIBDIRSUFFIX}/libncursesw.so
 		for lib in ncurses form panel menu
 			do
 				rm -vf $PKG/usr/lib${LIBDIRSUFFIX}/lib${lib}.so

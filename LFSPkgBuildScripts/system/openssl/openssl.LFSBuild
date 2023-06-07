@@ -31,11 +31,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make MANSUFFIX=ssl install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
 		cp -vfr doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
-		#PKG_CONFIG_PATH not set when building base system. ?Fixed?
-		#move misplaced .pc files.
-		#mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig||true
-		#mv $PKG/lib${LIBDIRSUFFIX}/pkgconfig/*.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
-		#rmdir $PKG/lib${LIBDIRSUFFIX}/pkgconfig||true
 	popd
 
 	checketc $PKG

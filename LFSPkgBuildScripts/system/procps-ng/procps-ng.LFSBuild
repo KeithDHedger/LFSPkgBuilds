@@ -30,13 +30,10 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#./configure $CONFIGOPTIONS --exec-prefix= --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-kill $SYSTEMDOPTS
 		./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-kill $SYSTEMDOPTS
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR="$PKG" || exit
 		mkdir -vp $PKG/lib${LIBDIRSUFFIX} || exit	
-	#	mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libprocps.so.* $PKG/lib${LIBDIRSUFFIX}
-	#	ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/libprocps.so) $PKG/usr/lib${LIBDIRSUFFIX}/libprocps.so
 	popd
 
 	checketc "$PKG"

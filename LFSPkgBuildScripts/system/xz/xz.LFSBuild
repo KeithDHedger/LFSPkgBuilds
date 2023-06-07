@@ -28,11 +28,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-
-		#mkdir -vp $PKG/bin $PKG/lib${LIBDIRSUFFIX}||true
-		#mv -v $PKG/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $PKG/bin
-		#mv -v $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so.* $PKG/lib${LIBDIRSUFFIX}
-		#ln -svf ../../lib${LIBDIRSUFFIX}/$(readlink $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so) $PKG/usr/lib${LIBDIRSUFFIX}/liblzma.so
 	popd
 
 	checketc "$PKG"

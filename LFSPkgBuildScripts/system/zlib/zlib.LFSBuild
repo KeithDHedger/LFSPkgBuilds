@@ -29,9 +29,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -p $PKG/lib||true
-		#mv -v $PKG/usr/lib/libz.so.* $PKG/lib
-		#ln -sfv ../../lib/$(readlink $PKG/usr/lib/libz.so) $PKG/usr/lib/libz.so
-		#static lib is needed for eg qemu static
 		mv -v $PKG/usr/lib/libz.a $PKG/lib
 		ln -sfv /lib/libz.a $PKG/usr/lib/libz.a
 	popd
