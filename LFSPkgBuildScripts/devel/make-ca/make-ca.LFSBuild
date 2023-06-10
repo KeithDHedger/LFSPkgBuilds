@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="p11-kit-0.23.22"
+DEPENDS="p11-kit-0.24.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="make-ca"
 TARNAME="$PKGNAME"
-VERSION="1.7"
+VERSION="1.12"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -27,12 +27,17 @@ gettar "https://github.com/lfs-book/make-ca/releases/download/v${VERSION}/${TARB
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	chown -R root:root "${TARNAME}-${VERSION}" #//TODO//
+	#chown -R root:root "${TARNAME}-${VERSION}" #//TODO//
 	pushd "${TARNAME}-${VERSION}"
-		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local||true
-		ln -sfv /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.crt
-		ln -sfv /etc/pki/tls/certs/ca-bundle.crt $PKG/etc/ssl/ca-bundle.crt
+		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local $PKG/etc/cron.weekly/||true
+		#ln -sfv /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.crt
+		#ln -sfv /etc/pki/tls/certs/ca-bundle.crt $PKG/etc/ssl/ca-bundle.crt
 		make install DESTDIR=$PKG
+		cat > $PKG/etc/cron.weekly/update-pki.sh << "EOF"
+#!/bin/bash
+/usr/sbin/make-ca -g
+EOF
+	chmod 754 $PKG/etc/cron.weekly/update-pki.sh
 	popd
 
 	packageclean "$PKG" "$CWD"

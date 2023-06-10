@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libtasn1-4.16.0"
+DEPENDS="libtasn1-4.19.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="p11-kit"
 TARNAME="$PKGNAME"
-VERSION="0.23.22"
+VERSION="0.24.1"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -38,9 +38,16 @@ pushd $COMPILEAT 2>/dev/null||true
 /usr/sbin/make-ca -f -g
 EOF
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-trust-paths=/etc/pki/anchors
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir p11-build
+		cd p11-build
+
+		meson $MESONCONFIGOPTIONS -Dtrust_paths=/etc/pki/anchors
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install||exit 100
+
+		#CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-trust-paths=/etc/pki/anchors
+		#make $MAKEFLAGS||make|| exit 100
+		#make install DESTDIR=$PKG || exit 100
 		mkdir -p $PKG/usr/bin $PKG/usr/lib${LIBDIRSUFFIX} || true
 		ln -sfv /usr/libexec/p11-kit/trust-extract-compat $PKG/usr/bin/update-ca-certificates
 		ln -sfv ./pkcs11/p11-kit-trust.so $PKG/usr/lib${LIBDIRSUFFIX}/libnssckbi.so

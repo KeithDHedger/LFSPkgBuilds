@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libXau-1.0.9 xcb-proto-1.14"
+DEPENDS="libXau-1.0.11 xcb-proto-1.15.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libxcb"
 TARNAME="$PKGNAME"
-VERSION="1.14"
+VERSION="1.15"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -29,8 +29,9 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -e "s/pthread-stubs//" -i configure
-		CFLAGS="$LFSFLAGS -Wno-error=format-extra-args" CXXFLAGS="$LFSFLAGS -Wno-error=format-extra-args" ./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --without-doxygen
+		#sed -e "s/pthread-stubs//" -i configure
+		#CFLAGS="$LFSFLAGS -Wno-error=format-extra-args" CXXFLAGS="$LFSFLAGS -Wno-error=format-extra-args" ./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --without-doxygen
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure $XORG_CONFIG --without-doxygen --docdir='${datadir}'/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

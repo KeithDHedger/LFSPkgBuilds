@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#©keithhedger Wed 7 Jun 15:53:21 BST 2023 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+rm -f $XORG_PREFIX/lib${LIBDIRSUFFIX}/pkgconfig/xcb-proto.pc||true

@@ -4,16 +4,11 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Which-2.21 libpng-1.6.39"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="freetype"
+PKGNAME="libxcvt"
 TARNAME="$PKGNAME"
-VERSION="2.13.0"
-BUILD=${BUILD:-1}
-SECTION="LIBS"
+VERSION="0.1.2"
+BUILD=1
+SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -21,28 +16,25 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/freetype/${TARBALL}" $SECTION
-gettar "https://downloads.sourceforge.net/freetype/${PKGNAME}-doc-${VERSION}.tar.xz"  $SECTION
+gettar "https://www.x.org/pub/individual/lib/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		tar -xf ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-doc-${VERSION}.tar.xz --strip-components=2 -C docs
-		sed -ri "s:.*(AUX_MODULES.*valid):\1:" modules.cfg
-		sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" -i include/freetype/config/ftoption.h
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-freetype-config --disable-static
-		make $MAKEFLAGS||make || exit
-		make install DESTDIR="$PKG" || exit 100
-		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		cp -v -R docs/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		rm -v $PKG/usr/share/doc/${PKGNAME}-${VERSION}/freetype-config.1
-#		mkdir -p $PKG/usr/bin||true
-#		cp builds/unix/freetype-config $PKG/usr/bin
+		mkdir build || true
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=$XORG_PREFIX --buildtype=release ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

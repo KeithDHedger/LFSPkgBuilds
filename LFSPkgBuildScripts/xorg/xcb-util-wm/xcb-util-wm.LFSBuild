@@ -4,21 +4,21 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libxcb-1.14"
+DEPENDS="libxcb-1.15"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xcb-util-wm"
 TARNAME="$PKGNAME"
-VERSION="0.4.1"
+VERSION="0.4.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
+gettar "https://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

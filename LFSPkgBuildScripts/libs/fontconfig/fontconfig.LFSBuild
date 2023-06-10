@@ -4,31 +4,31 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="FreeType-2.10.4"
+DEPENDS="FreeType-2.13.0 HarfBuzz-7.0.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="fontconfig"
 TARNAME="$PKGNAME"
-VERSION="2.13.1"
+VERSION="2.14.2"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.freedesktop.org/software/fontconfig/release/${TARBALL}" $SECTION
+gettar "https://www.freedesktop.org/software/fontconfig/release/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		rm -f src/fcobjshash.h
+	#	rm -f src/fcobjshash.h
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-docs
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100

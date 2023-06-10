@@ -1,0 +1,3 @@
+http://www.linuxfromscratch.org/blfs/view/stable/x/libxcvt.html
+libxcvt is a library providing a standalone version of the X server implementation of the VESA CVT standard timing modelines generator.
+It is meant to be a direct replacement to the version formerly provided by the Xorg server.

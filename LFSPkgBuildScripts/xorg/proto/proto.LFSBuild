@@ -4,18 +4,18 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="util-macros-1.19.3"
+DEPENDS="util-macros-1.20.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="proto"
 TARNAME="xorg${PKGNAME}"
-VERSION="2020.1"
+VERSION="2022.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -34,8 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX -Dlegacy=true ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
-		install -vdm 755 $XORG_PREFIX/share/doc/${PKGNAME}-${VERSION}
-		install -vm 644 ../[^m]*.txt ../PM_spec $XORG_PREFIX/share/doc/${PKGNAME}-${VERSION}
+		mv -v ${PKG}${XORG_PREFIX}/share/doc/xorgproto{,-2022.2}
 	popd
 
 	checketc $PKG

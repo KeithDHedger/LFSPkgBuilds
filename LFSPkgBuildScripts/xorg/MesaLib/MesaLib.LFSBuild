@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="xorg-libs-10.1 libdrm-2.4.104 Mako-1.1.4 libvdpau-1.2 LLVM-11.1.0"
+DEPENDS="xorg-libs-11.3 libdrm-2.4.115 Mako-1.2.4 libvdpau-1.5 LLVM-15.0.7"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="MesaLib"
 TARNAME="mesa"
-VERSION="20.3.4"
+VERSION="22.3.5"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://mesa.freedesktop.org/archive/${TARBALL}" $SECTION
-gettar "http://www.linuxfromscratch.org/patches/blfs/10.1/${TARNAME}-${VERSION}-add_xdemos-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-add_xdemos-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -30,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-add_xdemos-1.patch"
-		GALLIUM="r300,r600,radeonsi,freedreno,nouveau,swrast,virgl,zink,etnaviv,kmsro,lima,panfrost,tegra,v3d,vc4"
+		#GALLIUM="r300,r600,radeonsi,freedreno,nouveau,swrast,virgl,zink,etnaviv,kmsro,lima,panfrost,tegra,v3d,vc4"
 		rm -rf build||true
 		mkdir build||true
 		if [[ $PIBUILD -eq 1 ]];then #TODO split files for pi/x86
@@ -65,11 +65,12 @@ pushd $COMPILEAT 2>/dev/null||true
     		$MESON_OPT ..
 		else
 			cd build
-			DRI_DRIVERS="i965,nouveau"
-			GALLIUM_DRV="i915,nouveau,r600,radeonsi,svga,swrast,virgl"
+#			DRI_DRIVERS="i965,nouveau"
+#			GALLIUM_DRV="i915,nouveau,r600,radeonsi,svga,swrast,virgl"
 			#PLATFORMS=${PLATFORMS:-"x11,surfaceless,drm"}
 			PLATFORMS=${PLATFORMS:-"x11"}
-			meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false -Dplatforms=$PLATFORMS ..
+			#meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false -Dplatforms=$PLATFORMS ..
+			meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX --buildtype=release -Dplatforms=$PLATFORMS -Dgallium-drivers=auto -Dvalgrind=disabled  -Dlibunwind=disabled -Dvulkan-drivers="" ..
 		fi
 
 		ninja $MAKEFLAGS||ninja -j1||exit 100
