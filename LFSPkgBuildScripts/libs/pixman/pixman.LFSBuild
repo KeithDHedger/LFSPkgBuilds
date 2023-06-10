@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="pixman"
 TARNAME="$PKGNAME"
-VERSION="0.40.0"
+VERSION="0.42.2"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -16,14 +16,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://cairographics.org/releases/${TARBALL}" $SECTION
+gettar "https://www.cairographics.org/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build
+		mkdir -p build
 		cd build
 		meson $MESONCONFIGOPTIONS
 		ninja $MAKEFLAGS||ninja -j1||exit 100

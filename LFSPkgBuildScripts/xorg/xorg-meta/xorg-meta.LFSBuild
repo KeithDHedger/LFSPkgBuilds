@@ -32,11 +32,11 @@ xbitmaps-1.1.2
 x-apps-11.3
 xcursor-themes-1.0.6
 x-fonts-11.3
+xkeyboard-config-2.38
+Xorg-Server-21.1.7
 "
 
 
-#xkeyboard-config-2.32
-#Xorg-Server-1.20.10
 #xorg-drivers-10.1
 #twm-1.0.11
 #xterm-366

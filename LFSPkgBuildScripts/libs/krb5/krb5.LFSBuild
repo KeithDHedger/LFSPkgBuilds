@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="krb5"
 TARNAME="$PKGNAME"
-VERSION="1.19.1"
+VERSION="1.20.1"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -25,30 +25,29 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${TARNAME}-${VERSION}
 		cd src
-		sed -e '/eq 0/{N;s/12 //}' -i plugins/kdb/db2/libdb2/test/run.test
-		sed -e 's@\^u}@^u cols 300}@' -i tests/dejagnu/config/default.exp
+		sed -i -e '/eq 0/{N;s/12 //}' plugins/kdb/db2/libdb2/test/run.test
+		sed -i '/t_kadm5.py/d' lib/kadm5/Makefile.in
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --runstatedir=/run --with-system-et --with-system-ss --with-system-verto=no --enable-dns-for-realm --localstatedir=/var/lib
-
 		make $MAKEFLAGS||make||exit 100
 		make install DESTDIR=$PKG || exit 100
 
-		for LIBRARY in gssapi_krb5 gssrpc k5crypto kadm5clnt kadm5srv kdb5 kdb_ldap krad krb5 krb5support verto
-		do
-			[ -e  $PKG/usr/lib/lib$LIBRARY.so ] && chmod -v 755 $PKG/usr/lib/lib$LIBRARY.so
-		done
-
-		mkdir -vp $PKG/lib${LIBDIRSUFFIX} $PKG/bin||true
-		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5.so.3* $PKG/lib${LIBDIRSUFFIX}
-		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libk5crypto.so.3* $PKG/lib${LIBDIRSUFFIX}
-		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5support.so.0* $PKG/lib${LIBDIRSUFFIX}
-
-		ln -v -sf ../../lib${LIBDIRSUFFIX}/libkrb5.so.3.3 $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5.so
-		ln -v -sf ../../lib${LIBDIRSUFFIX}/libk5crypto.so.3.1 $PKG/usr/lib${LIBDIRSUFFIX}/libk5crypto.so
-		ln -v -sf ../../lib${LIBDIRSUFFIX}/libkrb5support.so.0.1 $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5support.so
-
-		mv -v $PKG/usr/bin/ksu $PKG/bin
-		chmod -v 755 $PKG/bin/ksu
+#		for LIBRARY in gssapi_krb5 gssrpc k5crypto kadm5clnt kadm5srv kdb5 kdb_ldap krad krb5 krb5support verto
+#		do
+#			[ -e  $PKG/usr/lib/lib$LIBRARY.so ] && chmod -v 755 $PKG/usr/lib/lib$LIBRARY.so
+#		done
+#
+#		mkdir -vp $PKG/lib${LIBDIRSUFFIX} $PKG/bin||true
+#		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5.so.3* $PKG/lib${LIBDIRSUFFIX}
+#		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libk5crypto.so.3* $PKG/lib${LIBDIRSUFFIX}
+#		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5support.so.0* $PKG/lib${LIBDIRSUFFIX}
+#
+#		ln -v -sf ../../lib${LIBDIRSUFFIX}/libkrb5.so.3.3 $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5.so
+#		ln -v -sf ../../lib${LIBDIRSUFFIX}/libk5crypto.so.3.1 $PKG/usr/lib${LIBDIRSUFFIX}/libk5crypto.so
+#		ln -v -sf ../../lib${LIBDIRSUFFIX}/libkrb5support.so.0.1 $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5support.so
+#
+#		mv -v $PKG/usr/bin/ksu $PKG/bin
+#		chmod -v 755 $PKG/bin/ksu
 
 		install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -vfr ../doc/*  $PKG/usr/share/doc/${PKGNAME}-${VERSION}
