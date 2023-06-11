@@ -27,11 +27,8 @@ gettar "https://github.com/lfs-book/make-ca/releases/download/v${VERSION}/${TARB
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	#chown -R root:root "${TARNAME}-${VERSION}" #//TODO//
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local $PKG/etc/cron.weekly/||true
-		#ln -sfv /etc/pki/tls/certs/ca-bundle.crt /etc/ssl/ca-bundle.crt
-		#ln -sfv /etc/pki/tls/certs/ca-bundle.crt $PKG/etc/ssl/ca-bundle.crt
 		make install DESTDIR=$PKG
 		cat > $PKG/etc/cron.weekly/update-pki.sh << "EOF"
 #!/bin/bash

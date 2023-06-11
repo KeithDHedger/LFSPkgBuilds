@@ -25,7 +25,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -p build
 		cd build
-		meson $MESONCONFIGOPTIONS
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

@@ -33,7 +33,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir build
 		cd build
 
-		meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX -Dudev=true -Dvalgrind=disabled
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX -Dudev=true -Dvalgrind=disabled
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 	popd

@@ -29,8 +29,6 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#sed -e "s/pthread-stubs//" -i configure
-		#CFLAGS="$LFSFLAGS -Wno-error=format-extra-args" CXXFLAGS="$LFSFLAGS -Wno-error=format-extra-args" ./configure $XORG_CONFIG --docdir='${datadir}'/doc/${PKGNAME}-${VERSION} --without-doxygen
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure $XORG_CONFIG --without-doxygen --docdir='${datadir}'/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100

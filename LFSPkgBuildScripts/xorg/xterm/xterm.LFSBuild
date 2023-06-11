@@ -11,14 +11,14 @@ fi
 
 PKGNAME="xterm"
 TARNAME="$PKGNAME"
-VERSION="366"
+VERSION="379"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tgz"
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://invisible-mirror.net/archives/xterm/${TARBALL}" $SECTION
+gettar "https://invisible-mirror.net/archives/xterm/${TARBALL}" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 

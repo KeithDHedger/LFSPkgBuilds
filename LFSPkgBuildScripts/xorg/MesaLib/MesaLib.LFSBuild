@@ -70,7 +70,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			#PLATFORMS=${PLATFORMS:-"x11,surfaceless,drm"}
 			PLATFORMS=${PLATFORMS:-"x11"}
 			#meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX -Ddri-drivers=$DRI_DRIVERS -Dgallium-drivers=$GALLIUM_DRV -Dgallium-nine=false -Dglx=dri -Dosmesa=gallium -Dvalgrind=false -Dplatforms=$PLATFORMS ..
-			meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX --buildtype=release -Dplatforms=$PLATFORMS -Dgallium-drivers=auto -Dvalgrind=disabled  -Dlibunwind=disabled -Dvulkan-drivers="" ..
+			CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX --buildtype=release -Dplatforms=$PLATFORMS -Dgallium-drivers=auto -Dvalgrind=disabled  -Dlibunwind=disabled -Dvulkan-drivers="" ..
 		fi
 
 		ninja $MAKEFLAGS||ninja -j1||exit 100

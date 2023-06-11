@@ -28,7 +28,6 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-	#	rm -f src/fcobjshash.h
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-docs
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -39,7 +38,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		install -v -m644 doc/fonts-conf.5 $PKG/usr/share/man/man5
 		install -v -m644 doc/fontconfig-devel/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}/fontconfig-devel
 		#full docs
-		#	install -v -m644 doc/*.{pdf,sgml,txt,html} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		install -v -m644 doc/*.html $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
 

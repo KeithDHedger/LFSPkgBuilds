@@ -21,7 +21,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xorg.freedesktop.org/archive/individual/driver/${TARBALL}" $SECTION
+gettar "https://www.x.org/pub/individual/driver/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

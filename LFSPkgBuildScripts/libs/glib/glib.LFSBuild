@@ -20,7 +20,6 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-#OPTIONS=${OPTIONS:-"-Ddoc=true -Dman=true -Dgtk_doc=true"}
 OPTIONS=${OPTIONS:-"-Dman=true -Dgtk_doc=true"}
 
 scriptLog "${PKGNAME}-${VERSION}"
@@ -33,11 +32,9 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-skip_warnings-1.patch
-		mkdir build||true
+		mkdir -p build
 		cd build
-		#CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dselinux=disabled --default-library=both ${OPTIONS} ..
-		#CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dselinux=disabled --default-library=both ${OPTIONS} ..
-		meson --prefix=/usr --buildtype=release  -Dman=true ..    
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --buildtype=release  -Dman=true ..    
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}

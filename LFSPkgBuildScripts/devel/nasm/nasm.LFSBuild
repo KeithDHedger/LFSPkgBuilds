@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="nasm"
 TARNAME="$PKGNAME"
-VERSION="2.15.05"
+VERSION="2.16.01"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -16,7 +16,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.nasm.us/pub/nasm/releasebuilds/${VERSION}/${TARBALL}" $SECTION
+gettar "https://www.nasm.us/pub/nasm/releasebuilds/${VERSION}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

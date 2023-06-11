@@ -78,9 +78,6 @@ EOF
 					tar --no-same-owner -xf ${SOURCEARCHIVES}/${SECTION}/xorg-libs/$package || exit 100
 					pushd $packagedir
 						case $packagedir in
-							#libICE*)
-							#	./configure $XORG_CONFIG ICE_LIBS=-lpthread
-							#	;;
 							libXfont-[0-9]*)
 								./configure $XORG_CONFIG --disable-devel-docs || exit 100
 								;;

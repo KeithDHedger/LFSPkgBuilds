@@ -21,7 +21,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://github.com/anholt/libepoxy/releases/download/${VERSION%.?*}/${TARBALL}" $SECTION
 gettar "https://download.gnome.org/sources/libepoxy/${VERSION%.?*}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
@@ -32,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build
-		meson $MESONCONFIGOPTIONS
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

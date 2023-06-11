@@ -32,23 +32,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make||exit 100
 		make install DESTDIR=$PKG || exit 100
 
-#		for LIBRARY in gssapi_krb5 gssrpc k5crypto kadm5clnt kadm5srv kdb5 kdb_ldap krad krb5 krb5support verto
-#		do
-#			[ -e  $PKG/usr/lib/lib$LIBRARY.so ] && chmod -v 755 $PKG/usr/lib/lib$LIBRARY.so
-#		done
-#
-#		mkdir -vp $PKG/lib${LIBDIRSUFFIX} $PKG/bin||true
-#		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5.so.3* $PKG/lib${LIBDIRSUFFIX}
-#		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libk5crypto.so.3* $PKG/lib${LIBDIRSUFFIX}
-#		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5support.so.0* $PKG/lib${LIBDIRSUFFIX}
-#
-#		ln -v -sf ../../lib${LIBDIRSUFFIX}/libkrb5.so.3.3 $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5.so
-#		ln -v -sf ../../lib${LIBDIRSUFFIX}/libk5crypto.so.3.1 $PKG/usr/lib${LIBDIRSUFFIX}/libk5crypto.so
-#		ln -v -sf ../../lib${LIBDIRSUFFIX}/libkrb5support.so.0.1 $PKG/usr/lib${LIBDIRSUFFIX}/libkrb5support.so
-#
-#		mv -v $PKG/usr/bin/ksu $PKG/bin
-#		chmod -v 755 $PKG/bin/ksu
-
 		install -v -dm755 $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -vfr ../doc/*  $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 

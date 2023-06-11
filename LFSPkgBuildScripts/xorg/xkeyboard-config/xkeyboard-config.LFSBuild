@@ -38,10 +38,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
-
-#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-xkb-rules-symlink=xorg ${OPTIONS}
-#		make $MAKEFLAGS||make || exit 100
-#		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

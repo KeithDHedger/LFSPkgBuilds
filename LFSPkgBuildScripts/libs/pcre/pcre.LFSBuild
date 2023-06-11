@@ -16,7 +16,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://downloads.sourceforge.net/pcre/${TARBALL}" $SECTION
 gettar "https://sourceforge.net/projects/${TARNAME}/files/${TARNAME}/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

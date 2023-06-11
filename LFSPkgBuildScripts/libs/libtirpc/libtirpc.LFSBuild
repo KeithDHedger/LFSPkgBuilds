@@ -31,11 +31,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-gssapi
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-
-#		mkdir -vp $PKG/lib${LIBDIRSUFFIX}||true
-#		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libtirpc.so.* $PKG/lib${LIBDIRSUFFIX}
-#		ln -sfv ../../lib${LIBDIRSUFFIX}/libtirpc.so.3.0.0 $PKG/usr/lib${LIBDIRSUFFIX}/libtirpc.so
-#		rm $PKG/usr/lib${LIBDIRSUFFIX}/libtirpc.a||true
 	popd
 
 	checketc $PKG

@@ -41,7 +41,7 @@ EOF
 		mkdir p11-build
 		cd p11-build
 
-		meson $MESONCONFIGOPTIONS -Dtrust_paths=/etc/pki/anchors
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS -Dtrust_paths=/etc/pki/anchors
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 

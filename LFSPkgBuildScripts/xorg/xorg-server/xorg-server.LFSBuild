@@ -26,7 +26,6 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 if [ $USESYSTEMD -eq 0 ];then
-	#SYSTEMDOPTS="--disable-systemd --disable-systemd-logind"
 	SYSTEMDOPTS="-Dsystemd_logind=false"
 fi
 
@@ -41,12 +40,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS --prefix=$XORG_PREFIX --localstatedir=/var -Dsuid_wrapper=true -Dxkb_output_dir=/var/lib/xkb -Dxephyr=true $SYSTEMDOPTS
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
-
-
-#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --enable-glamor --enable-install-setuid --enable-suid-wrapper $SYSTEMDOPTS --with-xkb-output=/var/lib/xkb --enable-dmx --enable-kdrive $LISTENTCP
-#		make $MAKEFLAGS||make || exit 100
-#		make install DESTDIR=$PKG || exit 100
-#		chmod u+s ${PKG}/$XORG_PREFIX/libexec/Xorg
 	popd
 
 	checketc $PKG

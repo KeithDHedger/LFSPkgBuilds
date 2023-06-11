@@ -21,7 +21,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://xmlsoft.org/sources/${TARBALL}" $SECTION
 gettar "https://download.gnome.org/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -29,11 +28,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#sed -i s/3000/5000/ libxslt/transform.c doc/xsltproc.{1,xml}
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} PYTHON=/usr/bin/python3 --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
-	#	sed -e 's@http://cdn.docbook.org/release/xsl@https://cdn.docbook.org/release/xsl-nons@' -e 's@\$Date\$@31 October 2019@' -i doc/xsltproc.xml
-	#	xsltproc/xsltproc --nonet doc/xsltproc.xml -o doc/xsltproc.1
 		make install DESTDIR=$PKG || exit 100
 	popd
 

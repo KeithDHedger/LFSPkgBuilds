@@ -18,7 +18,6 @@ SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.src.tar.xz"
 
 CMAKETARBALL="llvm-cmake-${VERSION}.src.tar.xz"
-
 CLANGTARBALL="clang-${VERSION}.src.tar.xz"
 COMPILERTARBALL=compiler-rt-${VERSION}.src.tar.xz
 
@@ -26,12 +25,9 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${TARBALL}" $SECTION
 
 gettar "https://anduin.linuxfromscratch.org/BLFS/llvm/$CMAKETARBALL" $SECTION
-
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$CLANGTARBALL" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/blfs/11.3/clang-15.0.7-enable_default_ssp-1.patch" $SECTION
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$COMPILERTARBALL" $SECTION
-
-#https://anduin.linuxfromscratch.org/BLFS/llvm/llvm-cmake-15.0.7.src.tar.xz
+gettar "https://www.linuxfromscratch.org/patches/blfs/11.3/clang-15.0.7-enable_default_ssp-1.patch" $SECTION
 
 PKG="${OUTPUT}/${PKGNAME}"
 
