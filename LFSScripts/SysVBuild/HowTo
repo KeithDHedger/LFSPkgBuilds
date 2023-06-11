@@ -304,6 +304,7 @@ cd /LFSPkgBuildScripts/net/wpa-supplicant
 ./wpa-supplicant.LFSBuild install
 
 #Install a binary jdk, this is circular dependency for openjdk and set up jdk environment ( assumes jdk is in /opt change to suit ).
+mkdir -vp /etc/profile.d/
 cat > /etc/profile.d/openjdk.sh << "EOF"
 # Begin /etc/profile.d/openjdk.sh
 
@@ -336,6 +337,7 @@ export JAVA_HOME
 unset AUTO_CLASSPATH_DIR dir jar
 
 # End /etc/profile.d/openjdk.sh
+
 EOF
 
 mkdir -vp /etc/sudoers.d/

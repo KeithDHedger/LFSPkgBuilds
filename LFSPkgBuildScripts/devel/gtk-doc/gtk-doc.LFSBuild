@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="docbook-xml-4.5 docbook-xsl-1.79.2 Itstool-2.0.6 libxslt-1.1.37 Pygments-2.14.0"
+DEPENDS="docbook-xml-4.5 Itstool-2.0.7 libxslt-1.1.37 Pygments-2.14.0 docbook-xsl-1.79.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -21,7 +21,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/gtk-doc/${VERSION%.?*}/${TARBALL}" $SECTION
+#gettar "ftp://ftp.gnome.org/pub/gnome/sources/gtk-doc/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
