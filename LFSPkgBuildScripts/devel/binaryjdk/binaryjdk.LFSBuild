@@ -22,11 +22,9 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 case $ARCH in
 	x86_64)
-		#gettar "https://download.java.net/java/GA/jdk${VERSION}/0d1cfde4252546c6931946de8db48ee2/7/GPL/openjdk-${VERSION}_linux-x64_bin${TARSUFFIX}" $SECTION "${PKGNAME}${TARSUFFIX}"
 		gettar "https://anduin.linuxfromscratch.org/BLFS/OpenJDK/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+7-x86_64-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	i?86)
-		#gettar "http://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}${MINORVERSION}-i686-bin${TARSUFFIX}" $SECTION "${PKGNAME}${TARSUFFIX}"
 		gettar "https://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+7-i686-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	arm*)

@@ -21,7 +21,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "ftp://ftp.gnome.org/pub/gnome/sources/gtk-doc/${VERSION%.?*}/${TARBALL}" $SECTION
 gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
