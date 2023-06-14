@@ -21,7 +21,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://people.freedesktop.org/~hughsient/releases/${TARBALL}" $SECTION
 gettar "https://github.com/hughsie/${TARNAME}/releases/download/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

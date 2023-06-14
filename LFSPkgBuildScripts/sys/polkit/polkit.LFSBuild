@@ -21,9 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://www.freedesktop.org/software/polkit/releases/${TARBALL}" $SECTION
 gettar "https://gitlab.freedesktop.org/${TARNAME}/${TARNAME}/-/archive/${VERSION}/${TARBALL}" $SECTION
-#gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -31,10 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		if [ $USESYSTEMD -eq 0 ];then
-			#patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fix_elogind_detection-1.patch
-			#autoreconf -fi
-			#SYSTEMDOPTS="--enable-libsystemd-login=no
-			SYSTEMDOPTS=""-Dsystemdsystemunitdir=/tmp"
+			SYSTEMDOPTS="-Dsystemdsystemunitdir=/tmp"
 		else
 			sed -i "s:/sys/fs/cgroup/systemd/:/sys:g" configure
 		fi
@@ -42,13 +37,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -p build
 		cd build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS -Dman=false -Dsession_tracking=libelogind -Djs_engine=mozjs $SYSTEMDOPTS ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS -Dman=false -Djs_engine=mozjs $SYSTEMDOPTS ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
-
-#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var $SYSTEMDOPTS --disable-static --disable-gtk-doc --with-os-type=LFS --with-authfw=shadow --enable-libelogind=no -Djs_engine=mozjs
-#		make $MAKEFLAGS||make|| exit 100
-#		make install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

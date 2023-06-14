@@ -33,13 +33,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make $MAKEFLAGS||make|| exit 100
 		install -v -m755 -d ${PKG}/etc/pam.d
 		make install DESTDIR=$PKG || exit 100
-		chmod -v 4755 ${PKG}/sbin/unix_chkpwd
-#
-#		for file in pam pam_misc pamc
-#			do
-#				mv -v ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so.* ${PKG}/lib${LIBDIRSUFFIX}
-#				ln -sfv ../../lib${LIBDIRSUFFIX}/$(readlink ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so) ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${file}.so
-#			done
+		chmod -v 4755 ${PKG}/usr/sbin/unix_chkpwd
 	popd
 
 	checketc "$PKG"

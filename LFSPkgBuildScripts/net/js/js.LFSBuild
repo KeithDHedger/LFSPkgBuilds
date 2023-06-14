@@ -8,7 +8,6 @@ DEPENDS="NSPR-4.21 Python-2.7.18 Zip-3.0 icu-72.1 Rustc-1.67.1 Which-2.21 xorg-l
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
-#DEPENDS="NSPR-4.21 Python-2.7.18 Zip-3.0 autoconf213-2.13 icu-68.2 Rustc-1.47.0 Which-2.21 xorg-libs-10.1"
 
 PKGNAME="js"
 VERSION="102.8.0"
@@ -80,11 +79,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 100
 		rm -v $PKG/usr/lib/libjs_static.ajs
 		sed -i '/@NSPR_CFLAGS@/d' $PKG/usr/bin/js102-config
-
-#		mkdir mozjs-build||true
-#		cd mozjs-build
-#
-#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure $OPTIONS
 	popd
 
 	checketc $PKG

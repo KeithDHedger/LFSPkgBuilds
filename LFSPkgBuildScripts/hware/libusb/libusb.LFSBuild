@@ -16,7 +16,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://downloads.sourceforge.net/libusb/${TARBALL}" $SECTION
 gettar "https://github.com/${TARNAME}/${TARNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -24,7 +23,6 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		#sed -i "s/^PROJECT_LOGO/#&/" doc/doxygen.cfg.in
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make|| exit 100
 		make install DESTDIR=$PKG || exit 100

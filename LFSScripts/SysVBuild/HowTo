@@ -373,7 +373,7 @@ cd /LFSPkgBuildScripts/devel/doxygen
 #If you do you are on your won, good luck!
 
 #Install cups and gtk.
-#Gtk2 has a 'soft' dependency on cups but is a dep of the previous build so ( optional ) remove gtk2 first:
+#Gtk2 has a 'soft' dependency on cups but is a dep of the previous build so ( optional ) remove gtk2 first ( make sure you remove the right package ):
 lfspkg -r gtk
 
 cd /LFSPkgBuildScripts/print/cups

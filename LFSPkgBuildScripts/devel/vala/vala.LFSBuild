@@ -21,7 +21,6 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://ftp.gnome.org/pub/gnome/sources/vala/${VERSION%.?*}/${TARBALL}" $SECTION
 gettar "ftp://ftp.acc.umu.se/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
