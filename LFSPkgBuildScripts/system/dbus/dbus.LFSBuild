@@ -6,19 +6,20 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="dbus"
 TARNAME="$PKGNAME"
-VERSION="1.12.20"
+VERSION="1.14.6"
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
-
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://dbus.freedesktop.org/releases/dbus/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
-scriptLog "${PKGNAME}-${VERSION}"
 
 USESYSTEMD=${USESYSTEMD:-0}
 if [ $USESYSTEMD -eq 0 ];then

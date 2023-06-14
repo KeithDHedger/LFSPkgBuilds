@@ -39,8 +39,8 @@ pushd $LFS
 	if [[ $MOUNTEXTFOLDERS -eq 1 ]];then
 		if ! mountpoint $LFS/${PKGARCHIVES} && ! mountpoint $LFS/${SOURCEARCHIVES} ;then
 			if [ "X$EXTFOLDER" != "X" ];then
-				sudo mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
-				sudo mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
+				mount --bind $EXTFOLDER/${PKGARCHIVES} $LFS/${PKGARCHIVES}
+				mount --bind $EXTFOLDER/${SOURCEARCHIVES} $LFS/${SOURCEARCHIVES}
 			fi
 		fi
 	fi

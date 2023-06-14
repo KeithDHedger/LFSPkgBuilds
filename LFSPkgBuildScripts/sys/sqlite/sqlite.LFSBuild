@@ -6,8 +6,8 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="sqlite"
 TARNAME="sqlite-autoconf"
-VERSION="3.34.1"
-MINORVERSION="3340100"
+VERSION="3.40.1"
+MINORVERSION="3400100"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -17,7 +17,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://sqlite.org/2021/${TARBALL}" $SECTION
+gettar "https://sqlite.org/2022/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"

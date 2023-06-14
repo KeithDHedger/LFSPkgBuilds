@@ -4,13 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="NSPR-4.21 Python-2.7.18 Zip-3.0 autoconf213-2.13 icu-68.2 Rustc-1.47.0 Which-2.21 xorg-libs-10.1"
+DEPENDS="NSPR-4.21 Python-2.7.18 Zip-3.0 icu-72.1 Rustc-1.67.1 Which-2.21 xorg-libs-11.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
+#DEPENDS="NSPR-4.21 Python-2.7.18 Zip-3.0 autoconf213-2.13 icu-68.2 Rustc-1.47.0 Which-2.21 xorg-libs-10.1"
 
 PKGNAME="js"
-VERSION="78.10.1"
+VERSION="102.8.0"
 TARNAME="firefox-${VERSION}esr.source"
 BUILD=${BUILD:-1}
 SECTION="NET"
@@ -50,12 +51,14 @@ if [ "$PIBUILD" -eq 1 ];then
 	export NM=nm
 	export RANLIB=ranlib
 else
-	OPTIONS="--prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc"
+	OPTIONS="--prefix=/usr --enable-readline --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc --disable-debug-symbols"
 fi
 
+mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "firefox-${VERSION}"
+		grep -rl \"rU\" | xargs sed -i 's/"rU"/"r"/'
 		if [ "$PIBUILD" -eq 1 ];then
 #thx to archarm for patches
 			patch -p1 -i "${CWD}/arm.patch"||true
@@ -64,15 +67,24 @@ pushd $COMPILEAT 2>/dev/null||true
 # Fix build with Rust 1.48
 			patch -Np1 -i "${CWD}/0002-Bug-1667736-Update-packed_simd-to-compile-on-Rust-1.patch"||true
 		fi
+
 		export SHELL=/bin/bash
 		. /etc/profile
 		. /etc/profile.d/rustc.sh
-		mkdir mozjs-build||true
-		cd mozjs-build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure $OPTIONS
+		mkdir -p obj
+		cd obj
+
+		sh ../js/src/configure.in $OPTIONS # --prefix=/usr --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc --disable-debug-symbols --enable-readline
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		rm -v $PKG/usr/lib/libjs_static.ajs
+		sed -i '/@NSPR_CFLAGS@/d' $PKG/usr/bin/js102-config
+
+#		mkdir mozjs-build||true
+#		cd mozjs-build
+#
+#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../js/src/configure $OPTIONS
 	popd
 
 	checketc $PKG

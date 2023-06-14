@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libusb-1.0.22 gobject-introspection-1.66.1 Vala-0.44.7"
+DEPENDS="libusb-1.0.26 JSON-GLib-1.6.6 gobject-introspection-1.74.0 Vala-0.56.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libgusb"
 TARNAME="$PKGNAME"
-VERSION="0.3.0"
+VERSION="0.4.5"
 BUILD=${BUILD:-1}
 SECTION="HWARE"
 SUFFIX="LFSPKG"
@@ -21,7 +21,8 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://people.freedesktop.org/~hughsient/releases/${TARBALL}" $SECTION
+#gettar "http://people.freedesktop.org/~hughsient/releases/${TARBALL}" $SECTION
+gettar "https://github.com/hughsie/${TARNAME}/releases/download/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -30,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr --libdir=/usr/lib${LIBDIRSUFFIX} -Ddocs=false
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS -Ddocs=false
 		ninja||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 	popd

@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libunistring-0.9.10 Nettle-3.7.1 p11-kit-0.23.22 libtasn1-4.16.0"
+DEPENDS="libunistring-1.1 Nettle-3.8.1 p11-kit-0.24.1 libtasn1-4.19.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gnutls"
 TARNAME="$PKGNAME"
-VERSION="3.7.0"
+VERSION="3.8.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -21,14 +21,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.gnutls.org/gcrypt/gnutls/v${VERSION%.?*}/${TARBALL}" $SECTION
+#gettar "ftp://ftp.gnutls.org/gcrypt/gnutls/v${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "ftp://ftp.gnupg.org/gcrypt/${TARNAME}/v${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-guile --enable-openssl-compatibility --disable-guile --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+#		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-guile --enable-openssl-compatibility --disable-guile --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --with-default-trust-store-pkcs11="pkcs11:" --enable-openssl-compatibility
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

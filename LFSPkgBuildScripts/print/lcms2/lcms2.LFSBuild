@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="lcms2"
 TARNAME="$PKGNAME"
-VERSION="2.12"
+VERSION="2.14"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -16,15 +16,14 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/lcms/${TARBALL}" $SECTION
+gettar "https://downloads.sourceforge.net/lcms/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/AX_APPEND/s/^/#/' configure.ac
-		autoreconf
+		sed '/BufferSize < TagSize/,+1 s/goto Error/TagSize = BufferSize/' -i src/cmsio0.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-static
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

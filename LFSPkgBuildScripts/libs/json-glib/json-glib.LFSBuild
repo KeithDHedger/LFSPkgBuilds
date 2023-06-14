@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="glib-2.66.7"
+DEPENDS="glib-2.74.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="json-glib"
 TARNAME="$PKGNAME"
-VERSION="1.6.2"
+VERSION="1.6.6"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"

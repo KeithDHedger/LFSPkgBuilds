@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="cmake-3.19.5"
+DEPENDS="cmake-3.25.2 libjpeg-turbo-2.1.5.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="jasper"
 TARNAME="$PKGNAME"
-VERSION="2.0.25"
+VERSION="4.0.0"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -28,8 +28,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-version-${VERSION}"
-		mkdir build||true
-		cd  build
+		mkdir buildx||true
+		cd  buildx
 		cmake $CMAKEOPTIONS -DCMAKE_SKIP_INSTALL_RPATH=YES -DJAS_ENABLE_DOC=NO -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/${PKGNAME}-${VERSION} ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

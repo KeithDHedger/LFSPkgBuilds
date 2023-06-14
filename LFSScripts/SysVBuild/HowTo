@@ -368,11 +368,18 @@ cd /LFSPkgBuildScripts/devel/gtk-doc
 cd /LFSPkgBuildScripts/devel/doxygen
 ./doxygen.LFSBuild install
 
+#Doxygen pulls in a LOT of dependencies so be patient, alternatively if you want to install your own deps, do so then run:
+#NODEPS=1 ./doxygen.LFSBuild install
+#If you do you are on your won, good luck!
+
 #Install cups and gtk.
-#Gtk2 has a 'soft' dependency on cups so best to buils cups first.
+#Gtk2 has a 'soft' dependency on cups but is a dep of the previous build so ( optional ) remove gtk2 first:
+lfspkg -r gtk
+
 cd /LFSPkgBuildScripts/print/cups
 ./cups.LFSBuild install
 
+#install/reinstall gtk2
 cd /LFSPkgBuildScripts/gtk/gtk
 ./gtk.LFSBuild install
 

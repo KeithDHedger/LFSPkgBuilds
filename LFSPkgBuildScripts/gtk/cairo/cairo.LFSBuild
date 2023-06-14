@@ -4,34 +4,34 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libpng-1.6.37 glib-2.66.7 Pixman-0.40.0 gtk-doc-1.33.2"
+DEPENDS="libpng-1.6.39 glib-2.74.5 Pixman-0.42.2 gtk-doc-1.33.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cairo"
 TARNAME="$PKGNAME"
-VERSION="1.17.2"
+VERSION="1.17.6"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}+f93fc72c03e.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://cairographics.org/releases/${TARBALL}" $SECTION
-gettar "http://anduin.linuxfromscratch.org/BLFS/cairo/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}+f93fc72c03e"
-		autoreconf -fv
-		CFLAGS="$LFSFLAGS -ffat-lto-objects" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-xlib-xcb --enable-tee
+	pushd "${TARNAME}-${VERSION}"
+		sed 's/PTR/void */' -i util/cairo-trace/lookup-symbol.c
+		sed -e "/@prefix@/a exec_prefix=@exec_prefix@" -i util/cairo-script/cairo-script-interpreter.pc.in
+		CFLAGS="$LFSFLAGS -ffat-lto-objects" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-xlib-xcb --enable-tee --enable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
@@ -58,5 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}+f93fc72c03e"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

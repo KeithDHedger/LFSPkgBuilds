@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="sqlite-3.34.1"
+DEPENDS="sqlite-3.40.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -4,14 +4,15 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="ATK-2.36.0 gdk-pixbuf-2.42.2 Pango-1.48.2 hicolor-icon-theme-0.17 at-spi2-atk-2.38.0 libepoxy-1.5.5"
+DEPENDS="at-spi2-core-2.46.0 gdk-pixbuf-2.42.10 libepoxy-1.5.10 Pango-1.50.12 hicolor-icon-theme-0.17 libxkbcommon-1.5.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
+#DEPENDS="ATK-2.36.0 gdk-pixbuf-2.42.2 Pango-1.48.2 at-spi2-atk-2.38.0 libepoxy-1.5.5"
 
 PKGNAME="gtk3"
 TARNAME="gtk+"
-VERSION="3.24.25"
+VERSION="3.24.36"
 BUILD=1
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -21,16 +22,19 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-wayland-backend --enable-broadway-backend --enable-x11-backend --enable-gtk2-dependency  --disable-cups
-		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		mkdir -p build
+		cd build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup $MESONCONFIGOPTIONS -Dman=false -Dbroadway_backend=true -Dwayland_backend=false -Dtracker3=false -Dgtk_doc=true ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc "$PKG"

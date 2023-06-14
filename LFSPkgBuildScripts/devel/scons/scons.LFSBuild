@@ -4,14 +4,9 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Python-2.7.14"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
 PKGNAME="scons"
-TARNAME="$PKGNAME"
-VERSION="3.0.0"
+TARNAME="SCons"
+VERSION="4.5.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -22,13 +17,23 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://downloads.sourceforge.net/scons/${TARBALL}" $SECTION
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		python setup.py install --prefix=${PKG}/usr --standard-lib --optimize=1 --install-data=$PKG/usr/share
+		sed -i 's/env python/&3/' SCons/Utilities/*.py
+		python3 setup.py install --prefix=${PKG}/usr --optimize=1
+
+		mkdir -p $PKG/usr/share/man/man1
+		mv -v $PKG/usr/lib/python3.11/site-packages/${TARNAME}-${VERSION}-py3.11.egg/*.1 $PKG/usr/share/man/man1
+
+		mv ${PKG}/usr/lib/python3.11/site-packages/${TARNAME}-${VERSION}-py3.11.egg/${TARNAME} ${PKG}/usr/lib/python3.11/site-packages
+		mv ${PKG}/usr/lib/python3.11/site-packages/${TARNAME}-${VERSION}-py3.11.egg/EGG-INFO ${PKG}/usr/lib/python3.11/site-packages/${TARNAME}-${VERSION}.dist-info
+		mv ${PKG}/usr/lib/python3.11/site-packages/${TARNAME}-${VERSION}.dist-info/PKG-INFO ${PKG}/usr/lib/python3.11/site-packages/${TARNAME}-${VERSION}.dist-info/METADATA
+		rmdir ${PKG}/usr/lib/python3.11/site-packages/${TARNAME}-${VERSION}-py3.11.egg
 	popd
 
 	checketc $PKG

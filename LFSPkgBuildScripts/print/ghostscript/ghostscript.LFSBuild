@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="FreeType-2.10.4 libjpeg-turbo-2.0.6 openjpeg-2.4.0 libpng-1.6.37 LibTIFF-4.2.0 lcms2-2.12 gtk3-3.24.25"
+DEPENDS="FreeType-2.13.0 libjpeg-turbo-2.1.5.1 openjpeg-2.5.0 libpng-1.6.39 LibTIFF-4.5.0 lcms2-2.14 gtk3-3.24.36 jasper-4.0.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="ghostscript"
 TARNAME="$PKGNAME"
-VERSION="9.55.0"
+VERSION="10.0.0"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -21,8 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9550/${TARBALL}" $SECTION
-#gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-freetype_fix-1.patch" $SECTION
+gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs${VERSION//./}/${TARBALL}" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/gnu-gs-fonts-other-6.0.tar.gz" $SECTION
 rm -rf "$PKG" || true
@@ -32,10 +31,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		rm -rf freetype lcms2mt jpeg libpng openjpeg||true
-#		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-freetype_fix-1.patch
-		sed -i 's/gscms_transformm_color_const/gscms_transform_color_const/' base/gsicc_lcms2.c
 		rm -rf zlib||true
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-compile-inits --enable-dynamic --with-system-libtiff
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-compile-inits --with-system-libtiff
 		make $MAKEFLAGS||make|| exit 100
 		make $MAKEFLAGS so||make so|| exit 100
 		make install DESTDIR=$PKG || exit 100
