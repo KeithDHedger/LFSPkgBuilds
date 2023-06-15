@@ -383,6 +383,10 @@ cd /LFSPkgBuildScripts/print/cups
 cd /LFSPkgBuildScripts/gtk/gtk
 ./gtk.LFSBuild install
 
+#Multi media
+cd /LFSPkgBuildScripts/mm/mm-meta
+./mm-meta.LFSBuild install
+
 #Development stuff
 cd /LFSPkgBuildScripts/devel/development-meta
 ./development-meta.LFSBuild install
@@ -395,9 +399,6 @@ cd /LFSPkgBuildScripts/desktop/gimp
 cd /LFSPkgBuildScripts/print/printing-meta
 ./printing-meta.LFSBuild install
 
-#Multi media
-cd /LFSPkgBuildScripts/mm/mm-meta
-./mm-meta.LFSBuild install
 
 #The big one! build a complete desktop
 #This meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!

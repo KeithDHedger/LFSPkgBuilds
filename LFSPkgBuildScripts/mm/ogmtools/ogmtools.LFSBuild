@@ -17,12 +17,16 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.bunkus.org/videotools/ogmtools/${TARBALL}" $SECTION
+gettar "https://slackbuilds.org/slackbuilds/15.0/audio/ogmtools/gcc11.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+#thanks to slackbuilds for this:
+#https://slackbuilds.org/repository/15.0/audio/ogmtools/?search=ogmtools
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/gcc11.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="harfbuzz-2.7.4 FreeType-2.10.4 FriBidi-1.0.9 Fontconfig-2.13.1 NASM-2.15.05"
+DEPENDS="harfbuzz-7.0.0 FreeType-2.13.0 FriBidi-1.0.12 Fontconfig-2.14.2 NASM-2.16.01"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libass"
 TARNAME="$PKGNAME"
-VERSION="0.15.0"
+VERSION="0.17.0"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"

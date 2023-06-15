@@ -4,34 +4,35 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="abs-guide-10.1
+DEPENDS="abs-guide-11.3
 bazaar-2.7.0
-ctags-5.8
+ctags-6.0.0
 libglade-2.6.4
-Ruby-3.0.0
-CMake-3.19.5
-extra-cmake-modules-5.79.0
-Qt5-5.15.2
-OpenJDK-15.0.2
-apache-ant-1.10.9
-orc-0.4.32
-astyle-3.1
-gtk3-3.24.25
-webkitgtk-2.30.5
-gtksourceview-2.10.5
-gtksourceview3-3.24.11
-ManPageEditor-0.1.5
-dialog-1.3
-gtkdialog-0.8.3
-help2man-1.48.3
-man2html-1.6
-meld-1.8.6
-yad-0.38.1
-xforms-1.2.4
-ddd-3.3.12
-autobook-1.5
-Subversion-1.14.1
-Git-2.30.1"
+Ruby-3.2.1
+CMake-3.25.2
+extra-cmake-modules-5.103.0
+Qt5-5.15.8"
+
+#OpenJDK-15.0.2
+#apache-ant-1.10.9
+#orc-0.4.32
+#astyle-3.1
+#gtk3-3.24.25
+#webkitgtk-2.30.5
+#gtksourceview-2.10.5
+#gtksourceview3-3.24.11
+#ManPageEditor-0.1.5
+#dialog-1.3
+#gtkdialog-0.8.3
+#help2man-1.48.3
+#man2html-1.6
+#meld-1.8.6
+#yad-0.38.1
+#xforms-1.2.4
+#ddd-3.3.12
+#autobook-1.5
+#Subversion-1.14.1
+#Git-2.30.1"
 
 #devhelp-2.32.0"
 

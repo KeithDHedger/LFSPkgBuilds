@@ -4,18 +4,18 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="cmake-3.19.5"
+DEPENDS="cmake-3.25.2 NASM-2.16.01"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="x265"
 TARNAME="$PKGNAME"
-VERSION="3.4"
+VERSION="20230215"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}_${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -31,10 +31,10 @@ fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}_${VERSION}"
+	pushd "${TARNAME}-${VERSION}"
 		mkdir build || true
 		cd  build
-		cmake $CMAKEOPTIONS ../source
+		cmake $CMAKEOPTIONS -DGIT_ARCHETYPE=1 ../source
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		rm -vf $PKG/usr/lib${LIBDIRSUFFIX}/libx265.a 
@@ -62,5 +62,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}_${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
