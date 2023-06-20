@@ -5,24 +5,24 @@
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="astyle"
-VERSION="3.1"
-TARNAME="${PKGNAME}_${VERSION}_linux"
+VERSION="3.3.1"
+TARNAME="${PKGNAME}"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/astyle/${TARBALL}" $SECTION
+gettar "https://sourceforge.net/projects/astyle/files/astyle/astyle 3.3/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${PKGNAME}"
+	pushd "${TARNAME}-${VERSION}"
 		cd build/gcc
 		make release shared|| exit 100
 		USER=0 make install prefix=$PKG/usr/ SYSCONF_PATH=$PKG/usr/doc/${PKGNAME}-${VERSION}|| exit 100
@@ -50,5 +50,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${PKGNAME}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

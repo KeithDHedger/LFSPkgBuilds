@@ -4,31 +4,34 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="xorg-libs-11.3 alsa-lib-1.2.8 DBus-1.14.6 MesaLib-22.3.5 libxkbcommon-1.5.0 xcb-util-image-0.4.1 xcb-util-keysyms-0.4.1 xcb-util-renderutil-0.3.10 xcb-util-wm-0.4.2 pulseaudio-16.1 pciutils-3.7.0 NSS-3.61"
+DEPENDS="xorg-libs-11.3 alsa-lib-1.2.8 DBus-1.14.6 MesaLib-22.3.5 libxkbcommon-1.5.0 xcb-util-image-0.4.1 xcb-util-keysyms-0.4.1 xcb-util-renderutil-0.3.10 xcb-util-wm-0.4.2 pulseaudio-16.1 pciutils-3.9.0 NSS-3.88.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qt5"
-TARNAME="qt-everywhere-src"
+TARNAME="qt-everywhere"
 VERSION="5.15.8"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-opensource-src-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/archive/qt/${VERSION%.?*}/${VERSION}/single/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/11.3/qt-everywhere-opensource-src-5.15.8-kf5-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd ${TARNAME}-${VERSION}
-		sed -i 's/python /python3 /' qtdeclarative/qtdeclarative.pro qtdeclarative/src/3rdparty/masm/masm.pri
+	pushd ${TARNAME}-src-${VERSION}
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/qt-everywhere-opensource-src-5.15.8-kf5-1.patch
+		mkdir -pv qtbase/.git
+
 		export QT5PREFIX=${QT5PREFIX:-/usr}
 		export QT5BINDIR=$QT5PREFIX/bin
 		export QT5LIBS=${QT5PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
@@ -48,10 +51,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		find ${PKG}${QT5PREFIX}/ -name *.prl -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
 
 		install -v -dm755 $PKG/usr/share/pixmaps/ $PKG/usr/share/applications $PKG/etc/profile.d
-		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/assistant/assistant/images/assistant-128.png $PKG/usr/share/pixmaps/assistant-qt5.png
-		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/designer/src/designer/images/designer.png $PKG/usr/share/pixmaps/designer-qt5.png
-		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/linguist/linguist/images/icons/linguist-128-32.png $PKG/usr/share/pixmaps/linguist-qt5.png
-		install -v -Dm644 ../${TARNAME}-${VERSION}/qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png $PKG/usr/share/pixmaps/qdbusviewer-qt5.png
+		install -v -Dm644 qttools/src/assistant/assistant/images/assistant-128.png $PKG/usr/share/pixmaps/assistant-qt5.png
+		install -v -Dm644 qttools/src/designer/src/designer/images/designer.png $PKG/usr/share/pixmaps/designer-qt5.png
+		install -v -Dm644 qttools/src/linguist/linguist/images/icons/linguist-128-32.png $PKG/usr/share/pixmaps/linguist-qt5.png
+		install -v -Dm644 qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png $PKG/usr/share/pixmaps/qdbusviewer-qt5.png
 		install -dm755 $PKG/usr/share/applications
 
 		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
@@ -142,5 +145,5 @@ EOF
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-src-${VERSION}"
 popd 2>/dev/null||true

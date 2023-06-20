@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="GTK3-3.24.25"
+DEPENDS="GTK3-3.24.36"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

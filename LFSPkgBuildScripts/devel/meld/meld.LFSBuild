@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="PyGTK-2.24.0 pygtksourceview-2.10.1 pygobject-2.28.7 Python-2.7.16"
+DEPENDS="PyGTK-2.24.0 pygtksourceview-2.10.1 pygobject-2.28.7 Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

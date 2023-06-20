@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="make-ca-1.7 alsa-lib-1.2.4 giflib-5.2.1 cpio-2.13 Cups-2.3.3 UnZip-6.0 Wget-1.20.3 Which-2.21 xorg-libs-10.1 Zip-3.0 libjpeg-turbo-2.0.6"
+DEPENDS="make-ca-1.12 alsa-lib-1.2.8 giflib-5.2.1 cpio-2.13 Cups-2.4.2 UnZip-6.0 Which-2.21 xorg-libs-11.3 Zip-3.0 libjpeg-turbo-2.1.5.1"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -12,7 +12,7 @@ fi
 
 PKGNAME="OpenJDK"
 TARNAME="${PKGNAME,,}"
-VERSION="15.0.2"
+VERSION="19.0.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -20,7 +20,7 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-TARROOTPKGNAME="jdk15u"
+TARROOTPKGNAME="jdk19u"
 TARROOTPKGSUBVERSION="+7"
 
 RESULT=$(which java 2>&1|grep 'no java')||true

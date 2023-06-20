@@ -4,11 +4,9 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-#lfspkg -r freetype||true
 pushd /LFSPkgBuilds/LFSPkgBuildScripts/libs/freetype
 	./freetype.LFSBuild up
 popd
-#lfspkg -B "freetype-2.13.0"||true
 
 exit 0
 
