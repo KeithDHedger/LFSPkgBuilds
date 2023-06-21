@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="dbus-1.12.20 glib-2.66.7 libusb-1.0.24 libsecret-0.20.4 libsoup-2.72.0 polkit-0.118"
+DEPENDS="dbus-1.14.6 glib-2.74.5 libusb-1.0.26 libsecret-0.20.5 libsoup3-3.2.2 polkit-122 libarchive-3.6.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gvfs"
 TARNAME="$PKGNAME"
-VERSION="1.46.2"
+VERSION="1.50.3"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"

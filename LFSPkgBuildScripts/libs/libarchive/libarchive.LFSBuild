@@ -22,17 +22,16 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/libarchive/libarchive/releases/download/v${VERSION}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed '/linux\/fs\.h/d' -i libarchive/archive_read_disk_posix.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		sed -i "s/iconv //" $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/libarchive.pc
 	popd
 
 	checketc $PKG

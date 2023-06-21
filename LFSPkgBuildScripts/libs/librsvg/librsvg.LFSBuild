@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gdk-pixbuf-2.42.2 Pango-1.48.2 cairo-1.17.2 gobject-introspection-1.66.1 gtk-doc-1.33.2 rustc-1.47.0 vala-0.50.3"
+DEPENDS="gdk-pixbuf-2.42.10 Pango-1.50.12 cairo-1.17.6 gobject-introspection-1.74.0 gtk-doc-1.33.2 rustc-1.67.1 vala-0.56.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="librsvg"
 TARNAME="$PKGNAME"
-VERSION="2.50.3"
+VERSION="2.54.5"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -31,7 +31,7 @@ export PATH="${PATH}:/opt/rust/bin"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --enable-vala --disable-static
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --enable-vala --disable-static --disable-gtk-doc
 		make $MAKEFLAGS||make||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

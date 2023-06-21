@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="exiv2-0.27.3"
+DEPENDS="exiv2-0.27.6 pygobject3-3.42.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gexiv2"
 TARNAME="$PKGNAME"
-VERSION="0.12.2"
+VERSION="0.14.0"
 BUILD=1
 SECTION="GNOME"
 SUFFIX="LFSPKG"

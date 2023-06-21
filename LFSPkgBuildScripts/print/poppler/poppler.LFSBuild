@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.19.5 Fontconfig-2.13.1 gobject-introspection-1.66.1 Cairo-1.17.2 libjpeg-turbo-2.0.6 libpng-1.6.37 OpenJPEG-2.4.0"
+DEPENDS="CMake-3.25.2 Fontconfig-2.14.2 gobject-introspection-1.74.0 Cairo-1.17.6 libjpeg-turbo-2.1.5.1 libpng-1.6.39 OpenJPEG-2.5.0 boost-1.81.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="poppler"
 TARNAME="$PKGNAME"
-VERSION="21.02.0"
+VERSION="23.02.0"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -32,7 +32,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build
+		mkdir -p build
 		cd build
 
 		cmake $CMAKEOPTIONS -DTESTDATADIR=$PWD/testfiles -DENABLE_UNSTABLE_API_ABI_HEADERS=ON ..                   

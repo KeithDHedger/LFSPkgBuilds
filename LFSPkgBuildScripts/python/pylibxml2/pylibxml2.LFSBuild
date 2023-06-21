@@ -4,33 +4,34 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libxml2-2.9.10 Python-2.7.18"
+DEPENDS="libxml2-2.10.3 Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="pylibxml2"
 TARNAME="libxml2"
-VERSION="2.9.10"
+VERSION="2.10.3"
 BUILD=1
 SECTION="PYTHON"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://xmlsoft.org/sources/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/libxml2/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		cd python             &&
-		python setup.py build
-		python setup.py install --optimize=1 --root=$PKG||exit 100
+		./configure PYTHON=python2
+		cd python
+		python2 setup.py build
+		python2 setup.py install --optimize=1 --root=$PKG||exit 100
 	popd
 
 	checketc "$PKG"
