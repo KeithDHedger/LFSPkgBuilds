@@ -14,6 +14,7 @@ Ruby-3.2.1
 CMake-3.25.2
 extra-cmake-modules-5.103.0
 Qt5-5.15.8
+qtwebengine-5.15.2
 OpenJDK-19.0.2
 apache-ant-1.10.13
 orc-0.4.32

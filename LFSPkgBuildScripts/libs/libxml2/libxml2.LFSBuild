@@ -4,6 +4,11 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
+DEPENDS="icu-72.1"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="libxml2"
 TARNAME="$PKGNAME"
 VERSION="2.10.3"
@@ -17,7 +22,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.gnome.org/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
