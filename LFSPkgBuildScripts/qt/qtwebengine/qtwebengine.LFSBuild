@@ -45,6 +45,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		export NINJAJOBS="${MAKEFLAGS/-j/}"
 		mkdir -p build
 		cd build
+
+#This is a BIG build so be patient.
+#If you have a low power/resource machine you may want to adjust the MAKEFLAGS var downwards, eg MAKEFLAGS="-j1", this will slow down the build but help stop lockups due to lack of resources.  
+
 		qmake .. -- -system-ffmpeg -proprietary-codecs -webengine-icu
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
