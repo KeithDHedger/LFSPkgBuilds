@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Cups-2.3.3 glib-2.66.7 ghostscript-9.53.3 lcms2-2.12 MuPDF-1.18.0 Poppler-21.02.0 Qpdf-8.4.2"
+DEPENDS="Cups-2.4.2 glib-2.74.5 libexif-0.6.24 ghostscript-10.0.0 lcms2-2.14 MuPDF-1.21.1 Poppler-23.02.0 Qpdf-11.2.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cups-filters"
 TARNAME="$PKGNAME"
-VERSION="1.28.12"
+VERSION="1.28.16"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"

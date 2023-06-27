@@ -16,8 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
-
+gettar "https://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

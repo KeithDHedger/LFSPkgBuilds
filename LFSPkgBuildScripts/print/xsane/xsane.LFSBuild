@@ -22,7 +22,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "ftp://anduin.linuxfromscratch.org/BLFS/${PKGNAME}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

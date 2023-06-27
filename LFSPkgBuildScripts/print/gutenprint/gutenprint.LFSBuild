@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Cups-2.3.3"
+DEPENDS="Cups-2.4.2 "
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -22,7 +22,6 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://downloads.sourceforge.net/gimp-print/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

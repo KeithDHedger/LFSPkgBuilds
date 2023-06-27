@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="xorg-libs-10.1 OpenJPEG-2.4.0 GLU-9.0.1"
+DEPENDS="xorg-libs-11.3 OpenJPEG-2.5.0 GLU-9.0.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="mupdf"
 TARNAME="$PKGNAME"
-VERSION="1.18.0"
+VERSION="1.21.1"
 BUILD=1
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.mupdf.com/downloads/archive/${TARBALL}" $SECTION
+gettar "https://www.mupdf.com/downloads/archive/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

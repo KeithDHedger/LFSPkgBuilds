@@ -5,22 +5,22 @@
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 DEPENDS="DejaVu-font-2.37
-Cups-2.3.3
-ghostscript-9.53.3
+Cups-2.4.2
+ghostscript-10.0.0
 cups-filters-1.28.7
-Gutenprint-5.3.3
+Gutenprint-5.3.4
 sane-backends-1.0.32
 sane-frontends-1.0.14
 GTK-2.24.33
 XSane-0.999
-hplip-3.21.2"
+hplip-3.23.5"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="printing-meta"
-VERSION="10.1"
+VERSION="11.3"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
