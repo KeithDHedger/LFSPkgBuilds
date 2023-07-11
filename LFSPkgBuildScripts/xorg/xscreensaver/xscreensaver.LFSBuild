@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libglade-2.6.4 x-apps-10.1 GLU-9.0.1 gdk-pixbuf-2.42.2 gdk-pixbuf-xlib-3116"
+DEPENDS="libglade-2.6.4 x-apps-11.3 GLU-9.0.1 gdk-pixbuf-2.42.2 gdk-pixbuf-xlib-3116"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xscreensaver"
 TARNAME="$PKGNAME"
-VERSION="6.02"
+VERSION="6.06"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -21,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.jwz.org/xscreensaver/${TARBALL}" $SECTION
+gettar "https://www.jwz.org/xscreensaver/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -33,8 +33,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		#sed -i '0,/if (whine)/s/if (whine)/if(FALSE)/' driver/splash.c
 		sed -i 's/\(make_splash_dialog.*\)/\/\*\1\*\//' driver/xscreensaver.c
 		sed -i 's/-lsystemd/-lelogind/' driver/Makefile.in
+		sed -i 's/-lsystemd/-lelogind/' driver/Makefile.in
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-gtk --with-setuid-hacks --libexecdir=/usr/lib$LIBDIRSUFFIX
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-gtk --with-setuid-hacks --libexecdir=/usr/lib$LIBDIRSUFFIX
 		make $MAKEFLAGS||make|| exit 100
 		make install_prefix=$PKG install-strip || exit 100
 	popd

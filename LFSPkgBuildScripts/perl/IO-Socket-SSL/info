@@ -1,0 +1,2 @@
+https://www.linuxfromscratch.org/blfs/view/stable/general/perl-modules.html#perl-io-socket-ssl
+IO::Socket::SSL makes using SSL/TLS much easier by wrapping the necessary functionality into the familiar IO::Socket interface and providing secure defaults whenever possible.

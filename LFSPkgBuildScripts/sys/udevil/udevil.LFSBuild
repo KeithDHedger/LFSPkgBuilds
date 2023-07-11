@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="glib-2.66.7"
+DEPENDS="glib-2.74.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -18,7 +18,8 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-gettar "https://nodeload.github.com/IgnorantGuru/udevil/zip/master" ${SECTION} ${PKGNAME}.zip
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/IgnorantGuru/udevil/archive/refs/heads/master.zip" ${SECTION} ${PKGNAME}.zip
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -1,0 +1,78 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+DEPENDS="libbsd-0.11.7"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+PKGNAME="hfsprogs"
+TARNAME="diskdev_cmds"
+VERSION="332.25"
+BUILD=1
+SECTION="HWARE"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://opensource.apple.com/tarballs/diskdev_cmds/${TARBALL}" $SECTION
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+rm -r  "/tmp/diskdev_cmds-diskdev_cmds-${VERSION}"
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "diskdev_cmds-diskdev_cmds-${VERSION}"
+		for patch in $CWD/patches/*.patch; do
+			patch -Np1 < $patch
+		done
+		sed -i '/#include.*sys\/sysctl\.h/d' */*.c
+		CFLAGS="$LFSFLAGS"
+		CXXFLAGS="$LFSFLAGS"
+		make $MAKEFLAGS -f Makefile.lnx||make -j1 -f Makefile.lnx|| exit 100
+
+# Copy executable files
+		install -m 755 -d $PKG/sbin
+		install -s -m 755 newfs_hfs.tproj/newfs_hfs $PKG/sbin/mkfs.hfsplus
+		install -s -m 755 fsck_hfs.tproj/fsck_hfs $PKG/sbin/fsck.hfsplus
+
+# Copy shared data
+		install -m 755 -d $PKG/usr/share/$PKGNAME
+		install -m 644 newfs_hfs.tproj/hfsbootdata.img $PKG/usr/share/$PKGNAME/hfsbootdata
+
+# Copy man pages
+		install -m 755 -d $PKG/usr/man/man8/
+		install -m 644 newfs_hfs.tproj/newfs_hfs.8 $PKG/usr/man/man8/mkfs.hfsplus.8
+		install -m 644 fsck_hfs.tproj/fsck_hfs.8 $PKG/usr/man/man8/fsck.hfsplus.8
+
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -r "$PKG" "diskdev_cmds-diskdev_cmds-${VERSION}"
+popd 2>/dev/null||true

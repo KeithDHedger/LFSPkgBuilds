@@ -2,6 +2,8 @@
 
 #©keithhedger Tue 10 Feb 19:40:20 GMT 2015 kdhedger68713@gmail.com
 
+exit 0
+
 mkdir -vp /etc/pango ||true
 /usr/bin/gdk-pixbuf-query-loaders --update-cache
 fc-cache -f

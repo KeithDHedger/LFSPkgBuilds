@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS=" libnotify3-0.7.9 libxfce4ui-4.16.0 xfce4-panel-4.16.2"
+DEPENDS=" libnotify3-0.8.1 libxfce4ui-4.18.2 xfce4-panel-4.18.2 xfce4-dev-tools-4.18.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-notifyd"
 TARNAME="$PKGNAME"
-VERSION="0.6.2"
+VERSION="0.8.1"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
@@ -21,16 +21,16 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://archive.xfce.org/src/apps/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		if [ $USESYSTEMD -eq 0 ];then
-			sed -e "s/^systemd_user_in_files =.*/systemd_user_in_files =/" -i Makefile.in
-		fi
+#		if [ $USESYSTEMD -eq 0 ];then
+#			sed -e "s/^systemd_user_in_files =.*/systemd_user_in_files =/" -i Makefile.in
+#		fi
 
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100

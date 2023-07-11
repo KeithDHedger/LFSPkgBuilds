@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libwnck-3.36.0 libxfce4ui-4.16.0 Which-2.21 x-apps-10.1 Xfdesktop-4.16.0"
+DEPENDS="libwnck-43.0 libxfce4ui-4.18.2 Which-2.21 x-apps-11.3 Xfdesktop-4.18.1 XScreenSaver-6.0 desktop-file-utils-0.266"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-session"
 TARNAME="$PKGNAME"
-VERSION="4.16.0"
+VERSION="4.18.1"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"

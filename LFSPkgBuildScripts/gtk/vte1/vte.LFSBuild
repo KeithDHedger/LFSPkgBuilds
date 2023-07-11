@@ -8,7 +8,6 @@ DEPENDS="GTK-2.24.32 libglade-2.6.4 gobject-introspection-1.66.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
-#DEPENDS="GTK-2.24.32 gtk-doc-1.33.2 libglade-2.6.4 gobject-introspection-1.66.1 PyGTK-2.24.0"
 
 PKGNAME="vte1"
 TARNAME="vte"

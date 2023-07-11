@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="dbus-glib-0.110 glib-2.66.7"
+DEPENDS="dbus-glib-0.112 glib-2.74.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="tumbler"
 TARNAME="$PKGNAME"
-VERSION="4.16.0"
+VERSION="4.18.0"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"

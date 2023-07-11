@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Exo-4.16.0 Garcon-4.16.1 libwnck-3.36.0 libxfce4ui-4.16.0 cairo-1.17.2"
+DEPENDS="Exo-4.18.0 Garcon-4.18.0 libwnck-43.0 cairo-1.17.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-panel"
 TARNAME="$PKGNAME"
-VERSION="4.16.2"
+VERSION="4.18.2"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"

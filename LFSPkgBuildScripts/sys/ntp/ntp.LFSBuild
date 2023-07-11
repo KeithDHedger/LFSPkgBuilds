@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libedit-3.1"
+DEPENDS="libedit-3.1 IO-Socket-SSL-2.081"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -22,7 +22,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/${TARNAME}-${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/${TARNAME}-${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -32,6 +32,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	${CWD}/preinstall
 	pushd "${TARNAME}-${VERSION}${MINORREVISION}"
 		sed -e 's/"(\\S+)"/"?([^\\s"]+)"?/' -i scripts/update-leap/update-leap.in
+		sed -e 's/#ifndef __sun/#if !defined(__sun) \&\& !defined(__GLIBC__)/' -i libntp/work_thread.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/usr/sbin --sysconfdir=/etc --enable-linuxcaps --with-lineeditlibs=readline --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

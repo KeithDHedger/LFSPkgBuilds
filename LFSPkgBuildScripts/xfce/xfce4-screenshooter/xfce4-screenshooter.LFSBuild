@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libsoup-2.72.0 xfce4-panel-4.16.2 libxfcegui4-4.10.0"
+DEPENDS="libsoup2-2.74.3 xfce4-panel-4.18.2 libxfcegui4-4.10.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="xfce4-screenshooter"
 TARNAME="$PKGNAME"
-VERSION="1.9.8"
+VERSION="1.9.9"
 BUILD=${BUILD:-1}
 SECTION="XFCE"
 SUFFIX="LFSPKG"
