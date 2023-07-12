@@ -4,42 +4,35 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.25.2 cairo-dock-3.4.1"
-
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="cairo-dock-plugins"
-TARNAME="cairo-dock-plug-ins"
-VERSION="3.4.1"
-BUILD=${BUILD:-1}
-SECTION="DESKTOP"
+PKGNAME="json-perl"
+TARNAME="JSON"
+VERSION="4.10"
+BUILD=1
+SECTION="PERL"
 SUFFIX="LFSPKG"
-TARBALL="${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/Cairo-Dock/${TARNAME}/archive/${TARBALL}" $SECTION ${TARNAME}.tar.gz
+gettar "https://www.cpan.org/authors/id/I/IS/ISHIGAKI/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARNAME}.tar.gz"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${CWD}/cairo-dock-plugins-3.4.1-gcc10-extern.patch
-		patch -Np1 -i ${CWD}/cairo-dock-plugins-3.4.1-time_h-confict.patch
-		rm -rf build || true
-   		mkdir -p build || true
-		cd build
-		cmake $CMAKEOPTIONS -Denable-alsa-mixer=NO -Denable-sound-effects=NO ..
+		perl Makefile.PL
 		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR="$PKG" || exit 100
+		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc $PKG
+	checketc "$PKG"
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"

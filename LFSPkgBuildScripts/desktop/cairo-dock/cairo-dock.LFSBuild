@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.19.5"
+DEPENDS="CMake-3.25.2"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -12,26 +12,26 @@ fi
 
 PKGNAME="cairo-dock"
 TARNAME="$PKGNAME"
-VERSION="3.3.2"
+VERSION="3.4.1"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://launchpad.net/cairo-dock-core/${VERSION%.?*}/${VERSION}/+download/${TARBALL}" $SECTION
+gettar "https://github.com/Cairo-Dock/${TARNAME}-core/archive/${TARBALL}" $SECTION ${TARNAME}-core-${VERSION}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}"
-		mkdir build || true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-core-${VERSION}"
+	pushd "${TARNAME}-core-${VERSION}"
+		mkdir -p build || true
 		cd build
-		cmake $CMAKEOPTIONS -Dforce-gtk2=ON ..
+		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR="$PKG" || exit 100
 	popd
@@ -58,5 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-core-${VERSION}"
 popd 2>/dev/null||true
