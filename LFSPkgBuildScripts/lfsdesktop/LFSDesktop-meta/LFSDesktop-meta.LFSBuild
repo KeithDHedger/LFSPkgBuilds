@@ -58,18 +58,12 @@ xscreensaver-6.06
 libreoffice-7.5.0
 "
 
-###UDisks-2.1.8
-###ConsoleKit2-1.2.2
-###claws-mail-3.99.0
-###KKEdit-0.4.6
-
-
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="LFSDesktop-meta"
-VERSION="10.1"
+VERSION="11.1"
 BUILD=1
 SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"
