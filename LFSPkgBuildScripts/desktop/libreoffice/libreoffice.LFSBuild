@@ -4,11 +4,10 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="openldap-2.6.4 Gperf-3.1 Archive-Zip-1.68 UnZip-6.0 Wget-1.21.3 Which-2.21 Zip-3.0 clucene-2.3.3.4 Boost-1.81.0.0 GLU-9.0.2 serf-1.3.10 gst-plugins-base-1.22.3"
+DEPENDS="openldap-2.6.4 Gperf-3.1 Archive-Zip-1.68 UnZip-6.0 Wget-1.21.3 Which-2.21 Zip-3.0 clucene-2.3.3.4 Boost-1.81.0.0 GLU-9.0.2 serf-1.3.10 gst-plugins-base-1.22.3 libwebp-1.3.0 libtiff-4.5.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
-# neon-0.31.2 NPAPI-SDK-0.27.2
 
 PKGNAME="libreoffice"
 TARNAME="$PKGNAME"
@@ -49,10 +48,8 @@ pushd $COMPILEAT 2>/dev/null||true
 		ln -snvf src/libreoffice-translations-${VERSION}${MINORREV}/translations/
 
 		export LO_PREFIX=/usr
-		export ac_cv_lib_gpgmepp_progress_callback=yes
 		sed -e "/gzip -f/d" -e "s|.1.gz|.1|g" -i bin/distro-install-desktop-integration ||true
 		sed -e "/distro-install-file-lists/d" -i Makefile.in||true
-		#sed -e '/JAVA_SOURCE_VER/s/6/7/' -e '/JAVA_TARGET_VER/s/6/7/' -i configure.ac
 
 		./autogen.sh	--prefix=$LO_PREFIX					\
 						--sysconfdir=/etc				\
@@ -87,16 +84,10 @@ pushd $COMPILEAT 2>/dev/null||true
 						--disable-firebird-sdbc			\
 						--disable-postgresql-sdbc		\
 						--disable-skia					\
+						--disable-gpgmepp				\
+						--with-system-libtiff			\
+						--with-system-libwebp			\
 						--with-parallelism=${MAKEFLAGS/-j/}
-
-#						--with-system-harfbuzz			\
-#						--with-system-boost				\
-#						--with-parallelism=$(($(getconf _NPROCESSORS_ONLN)-1))
-#
-#						--with-system-apr				\
-#						--with-system-neon				\
-#						--with-system-serf				\
-#						--disable-gtk3					\
 
 		sed -i 's/.check-if-root./ /g;' Makefile
 		sed -i 's/\(--progress=dot:mega\)/\1 -c/' Makefile.fetch
@@ -155,5 +146,5 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}${MINORREV}"
 	rm "${EXTERNALTARBALLS}/fetch.log"
-	find "$EXTERNALTARBALLS" -maxdepth 1 -mindepth 1 -type d -delete
+	find "$EXTERNALTARBALLS" -maxdepth 1 -mindepth 1 -type d -exec rm -r "{}" \;
 popd 2>/dev/null||true

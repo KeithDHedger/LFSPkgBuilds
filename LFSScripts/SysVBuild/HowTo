@@ -399,7 +399,6 @@ cd /LFSPkgBuildScripts/desktop/gimp
 cd /LFSPkgBuildScripts/print/printing-meta
 ./printing-meta.LFSBuild install
 
-
 #The big one! build a complete desktop
 #This meta packagage includes other meta packages and takes a LOOOooooonnnnggggg time to build!
 #This is for an xfce4 desktop.
