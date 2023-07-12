@@ -416,7 +416,7 @@ cd /LFSPkgBuildScripts/xfce/xfce4-meta
 #Extra odd stuff
 #Browsers
 #Chromium chromium takes a LOT of resouces to build, so I would suggest the oficial chrome build.
-cd /LFSPkgBuildScripts/desktop/chromium
+#cd /LFSPkgBuildScripts/desktop/chromium
 
 #Chrome binary
 #NOTE this is an x86_64 ONLY package from the 'official' chrome deb.
