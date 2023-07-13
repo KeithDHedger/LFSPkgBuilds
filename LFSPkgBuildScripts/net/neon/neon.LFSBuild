@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libxml2-2.9.10"
+DEPENDS="libxml2-2.10.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="neon"
 TARNAME="$PKGNAME"
-VERSION="0.31.2"
+VERSION="0.32.5"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"

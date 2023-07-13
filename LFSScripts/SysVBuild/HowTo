@@ -453,8 +453,9 @@ cd /LFSPkgBuildScripts/net/sshfs
 cd /LFSPkgBuildScripts/net/davfs2
 ./davfs2.LFSBuild install
 
-cd /LFSPkgBuildScripts/net/curlftpfs
-./curlftpfs.LFSBuild install
+#broken for now
+#cd /LFSPkgBuildScripts/net/curlftpfs
+#./curlftpfs.LFSBuild install
 
 #Qemu builds both static and dynamically linked versions
 cd /LFSPkgBuildScripts/hware/qemu
