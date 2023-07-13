@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Autoconf-2.13 Cbindgen-0.17.0 dbus-glib-0.110 GTK3-3.24.25 GTK-2.24.33 LLVM-11.1.0 alsa-lib-1.2.4 nodejs-14.16.0 Python3-3.9.2 startup-notification-0.12 Zip-3.0 UnZip-6.0 yasm-1.3.0 ICU-68.2 libevent-2.1.12 NASM-2.15.05 NSPR-4.29 NSS-3.61"
+DEPENDS="autoconf213-2.13 Cbindgen-0.24.3 dbus-glib-0.112 GTK3-3.24.36 LLVM-15.0.7 alsa-lib-1.2.8 nodejs-18.14.1 startup-notification-0.12 Zip-3.0 UnZip-6.0 nasm-2.16.01 ICU-72.1 libevent-2.1.12 NSPR-4.35 NSS-3.88 libvpx-1.13.0 sqlite-3.40.1"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
@@ -12,7 +12,7 @@ fi
 
 PKGNAME="thunderbird"
 TARNAME="$PKGNAME"
-VERSION="78.8.0"
+VERSION="102.8.0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -22,25 +22,36 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${VERSION}/source/${TARBALL}" $SECTION
+#gettar "https://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${VERSION}/source/${TARBALL}" $SECTION
+gettar "https://archive.mozilla.org/pub/thunderbird/releases/${VERSION}/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 mountpoint -q /dev/shm || sudo mount -t tmpfs devshm /dev/shm
 
+#rebuild for modules
+pushd ${BUILDSCRIPTS}/system-upgrades/python-upgrade
+	./python3.LFSBuild install
+popd
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"||true
 	pushd ${PKGNAME}-${VERSION}
 		cp $CWD/mozconfig.thunderbird mozconfig
+		sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h
+
 #		#set the lib suffix in the config file
 		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
 #		#set make flags
-		sed -i "s/MOZ_MAKE_FLAGS=\"-j.*\"/MOZ_MAKE_FLAGS=\"${MAKEFLAGS:-J1}\"/" mozconfig
+		sed -i "s/MOZ_MAKE_FLAGS=\"-j.*\"/MOZ_MAKE_FLAGS=\"${MAKEFLAGS:-j1}\"/" mozconfig
 
-		export CC=gcc CXX=g++
+		export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none
+		export MOZBUILD_STATE_PATH=./mozbuild
+		export SHELL=/bin/sh
+		export MOZ_MAKE_FLAGS="$MAKEFLAGS"
 		./mach configure|| exit 100
 		./mach build|| exit 100
-		DESTDIR=$PKG ./mach install || exit 100
+		MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none DESTDIR=$PKG ./mach install || exit 100
 
 		mkdir -pv $PKG/usr/share/applications $PKG/usr/share/pixmaps
 		ln -sfv ../lib${LIBDIRSUFFIX}/${PKGNAME}/${PKGNAME} $PKG/usr/bin

@@ -427,6 +427,17 @@ cd /LFSPkgBuildScripts/desktop/google-chrome
 cd /LFSPkgBuildScripts/qt/falkon/
 ./falkon.LFSBuild install
 
+#Seamonkey for web dev
+cd /LFSPkgBuildScripts/net/seamonkey
+./seamonkey.LFSBuild install
+
+#Mail clients
+#claws mail is broken for gmail
+
+#Thnderbird
+cd /LFSPkgBuildScripts/desktop/thunderbird
+./thunderbird.LFSBuild install
+
 #Cairo-dock-plugins pulls in cairo-dock as a dependency
 cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins
 ./cairo-dock-plugins.LFSBuild install
@@ -448,10 +459,6 @@ cd /LFSPkgBuildScripts/net/curlftpfs
 #Qemu builds both static and dynamically linked versions
 cd /LFSPkgBuildScripts/hware/qemu
 ./qemu.LFSBuild install
-
-#Seamonkey for web dev
-cd /LFSPkgBuildScripts/net/seamonkey
-./seamonkey.LFSBuild install
 
 #If you are building in chroot you will pobably have to rerun the postinstall script for this package AFTER booting to the 'real' system.
 cd /LFSPkgBuildScripts/admin/mariadb

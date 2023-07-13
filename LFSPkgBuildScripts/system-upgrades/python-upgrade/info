@@ -1,0 +1,5 @@
+https://www.linuxfromscratch.org/blfs/view/stable/general/python3.html
+The Python 3 package contains the Python development environment. It is useful for object-oriented programming, writing scripts, prototyping large programs or developing entire applications.
+Python 3 was installed in LFS. The only reason to rebuild it here is if optional modules are needed, or to upgrade this package.
+
+Use this script to upgrade python3 to include etras like the sqlite module and idle
