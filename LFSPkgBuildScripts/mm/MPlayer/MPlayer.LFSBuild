@@ -4,9 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
+DEPENDS="yasm-1.3.0"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="MPlayer"
 TARNAME="$PKGNAME"
-VERSION="1.4"
+VERSION="1.5"
 BUILD=1
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -17,15 +22,25 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.mplayerhq.hu/MPlayer/releases/${TARBALL}" $SECTION
+gettar "https://mplayerhq.hu/MPlayer/skins/Clearlooks-2.0.tar.bz2" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-static --confdir=/etc/mplayer --enable-dynamic-plugins --enable-menu --disable-x264
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-static --confdir=/etc/mplayer --enable-dynamic-plugins --enable-menu --disable-libmpeg2-internal --disable-ffmpeg_a --enable-menu --enable-runtime-cpudetection --enable-gui
+
+		make doc $MAKEFLAGS||make doc|| exit 100
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/pixmaps $PKG/usr/share/doc${PKGNAME}-${VERSION}
+		ln -svf ../icons/hicolor/48x48/apps/mplayer.png $PKG/usr/share/pixmaps/mplayer.png
+		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		install -v -m644 DOCS/HTML/en/* $PKG/usr/share/doc${PKGNAME}-${VERSION}
+		install -v -m644 etc/*.conf $PKG/etc/mplayer
+		tar -xvf  ${SOURCEARCHIVES}/${SECTION}/Clearlooks-2.0.tar.bz2 -C $PKG/usr/share/mplayer/skins
+		ln  -sfvn Clearlooks $PKG/usr/share/mplayer/skins/default	
 	popd
 
 	checketc "$PKG"

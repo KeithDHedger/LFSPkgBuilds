@@ -116,7 +116,7 @@
 ./devel/help2man/help2man.LFSBuild
 ./devel/html-xml-utils/html-xml-utils.LFSBuild
 ./devel/imake/imake.LFSBuild
-./devel/json/json.LFSBuild
+./devel/json-c/json-c.LFSBuild
 ./devel/lesstif/lesstif.LFSBuild
 ./devel/libtasn1/libtasn1.LFSBuild
 ./devel/libtermkey/libtermkey.LFSBuild
@@ -578,6 +578,7 @@
 ./perl/HTML-Parser/HTML-Parser.LFSBuild
 ./perl/Image-ExifTool/Image-ExifTool.LFSBuild
 ./perl/IO-Socket-SSL/IO-Socket-SSL.LFSBuild
+./perl/JSON/JSON.LFSBuild
 ./perl/libwww-perl/libwww-perl.LFSBuild
 ./perl/Module-Build/Module-Build.LFSBuild
 ./perl/Net-SSLeay/Net-SSLeay.LFSBuild
@@ -648,6 +649,7 @@
 ./qt/qt5-docs/qt5-docs.LFSBuild
 ./qt/qt5/qt5.LFSBuild
 ./qt/qt6/qt6.LFSBuild
+./qt/qt-creator-llvm/qt-creator-llvm.LFSBuild
 ./qt/qt-creator/qt-creator.LFSBuild
 ./qt/qterminal/qterminal.LFSBuild
 ./qt/qtermwidget/qtermwidget.LFSBuild
@@ -786,7 +788,8 @@
 ./system/tar/tar.LFSBuild
 ./system/tcl/tcl.LFSBuild
 ./system/texinfo/texinfo.LFSBuild
-./system-upgrades/meson-upgrade.LFSBuild
+./system-upgrades/meson-upgrade/meson-upgrade.LFSBuild
+./system-upgrades/python-upgrade/python3.LFSBuild
 ./system/util-linux/util-linux.LFSBuild
 ./system/vim/vim.LFSBuild
 ./system/Wheel/Wheel.LFSBuild

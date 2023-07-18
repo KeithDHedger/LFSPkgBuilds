@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="slang"
 TARNAME="$PKGNAME"
-VERSION="2.3.2"
+VERSION="2.3.3"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -26,6 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-readline=gnu 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/slang/v2/modules/*.so
 	popd
 
 	checketc "$PKG"

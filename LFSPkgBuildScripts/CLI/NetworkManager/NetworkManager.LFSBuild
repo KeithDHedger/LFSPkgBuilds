@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libndp-1.8 newt-0.52.21"
+DEPENDS="jansson-2.14  libndp-1.8 newt-0.52.23 GTK-Doc-1.33.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="NetworkManager"
 TARNAME="$PKGNAME"
-VERSION="1.38.4"
+VERSION="1.42.0"
 BUILD=1
 SECTION="CLI"
 SUFFIX="LFSPKG"
@@ -21,34 +21,35 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.gnome.org/sources/NetworkManager/1.38/${TARBALL}" $SECTION
+gettar "https://download.gnome.org/sources/NetworkManager/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 if [ $USESYSTEMD -eq 0 ];then
-	:
+	SYSTEMDOPTS="-Dsystemdsystemunitdir=no -Dsystemd_journal=false"
 fi
-#
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		grep -rl '^#!.*python$' | xargs sed -i '1s/python/&3/'
 		mkdir build || true
 		cd build
-		CFLAGS="$LFSFLAGS -O2 -fPIC" CXXFLAGS="$LFSFLAGS -O2 -fPIC" meson ${MESONCONFIGOPTIONS} -Dlibaudit=no              \
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dlibaudit=no \
 		-Dlibpsl=false \
 		-Dnmtui=true \
 		-Dovs=false \
 		-Dppp=false \
 		-Dselinux=false \
 		-Dmodem_manager=false \
-		-Dsystemdsystemunitdir=no \
-		-Dsystemd_journal=false \
 		-Dsession_tracking=no \
 		-Dqt=false \
+		-Ddocs=true \
+		$SYSTEMDOPTS \
 		..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
+		mv -v $PKG/usr/share/doc/NetworkManager{,-1.42.0}
 	popd
 
 	checketc "$PKG"

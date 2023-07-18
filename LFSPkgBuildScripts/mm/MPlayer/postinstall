@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#©keithhedger Wed 11 Feb 15:18:13 GMT 2015 kdhedger68713@gmail.com
+
+
+. /usr/share/LFSPkg/LFSFunctions
+
+gtk-update-icon-cache -qtf /usr/share/icons/hicolor||true
+update-desktop-database -q||true
+
+exit 0

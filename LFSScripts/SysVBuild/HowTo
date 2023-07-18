@@ -493,6 +493,10 @@ cd /LFSPkgBuildScripts/qt/qt-creator
 cd /LFSPkgBuildScripts/desktop/gkrellm
 ./gkrellm.LFSBuild install
 
+#Network manager
+cd /LFSPkgBuildScripts/CLI/NetworkManager
+./NetworkManager.LFSBuild install
+
 #TODO
 
 cd /LFSPkgBuildScripts/net/libcddb
