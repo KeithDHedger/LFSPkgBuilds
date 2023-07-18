@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="libatomic_ops"
 TARNAME="${PKGNAME}"
-VERSION="7.6.10"
+VERSION="7.6.14"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -16,7 +16,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.ivmaisoft.com/_bin/atomic_ops//${TARBALL}" $SECTION
+gettar "https://github.com/ivmai/${TARNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

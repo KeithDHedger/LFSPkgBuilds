@@ -1,8 +1,5 @@
 #!/bin/bash -e
 
-echo "Broken ... :("
-exit 100
-
 . /usr/share/LFSPkg/LFSFunctions
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
@@ -26,10 +23,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-	#	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} INIT_D_PATH=/tmp/init.d
-		
-	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" UDEV_RULES_PATH=/usr/lib/udev/rules.d MOUNT_FUSE_PATH=/usr/bin ./configure --prefix=/usr --libdir=/usr/lib --enable-lib --enable-util --disable-example
-
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} INIT_D_PATH=/tmp/init.d --disable-example --enable-lib
+		sed -i 's/static int closefrom/void closefrom/' util/ulockmgr_server.c
 
 		make $MAKEFLAGS||make|| exit 1
 		make install DESTDIR=$PKG || exit 1
@@ -63,6 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			echo "*** Unknown command ***"
 			exit 1
 	esac
-
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

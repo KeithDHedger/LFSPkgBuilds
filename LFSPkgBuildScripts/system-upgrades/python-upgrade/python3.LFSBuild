@@ -70,3 +70,9 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
+
+echo -e "${RED}WARNING!WARNING!WARNING!${NORMAL}"
+echo -e "${RED}You MAY need to reinstall some pkgs that install python modules${NORMAL}"
+echo -e "${RED}See also https://www.linuxfromscratch.org/blfs/view/stable/general/python3.html${NORMAL}"
+echo -e "${RED}Upgrade at your own peril.${NORMAL}"
+echo -e "${BLUE}Depending on the version and what modules have been installed you MAY want to do an install rather than an upgrade.${NORMAL}"

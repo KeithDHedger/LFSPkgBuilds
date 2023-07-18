@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="glib-2.66.7 nasm-2.15.05"
+DEPENDS="glib-2.74.5 nasm-2.16.01"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -21,9 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "http://download.qemu-project.org/${TARBALL}" $SECTION
 gettar "https://download.qemu.org/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

@@ -4,39 +4,48 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="curl-7.88.1 fuse2-2.9.9"
+DEPENDS="qt5-5.15.8"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
-# fuse2-2.9.8"
 
-PKGNAME="curlftpfs"
+PKGNAME="qt-creator-llvm"
 TARNAME="$PKGNAME"
-VERSION="0.9.2"
-BUILD=${BUILD:-1}
-SECTION="NET"
+VERSION="13.0.0"
+MINORREV="_d7b669b"
+BUILD=1
+SECTION="QT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}${MINORREV}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://netcologne.dl.sourceforge.net/project/${PKGNAME}/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
-gettar "https://gitlab.archlinux.org/archlinux/packaging/packages/curlftpfs/-/raw/main/ioerror.patch" $SECTION
-gettar "https://gitlab.archlinux.org/archlinux/packaging/packages/curlftpfs/-/raw/main/no-verify-hostname.patch" $SECTION
+gettar "https://ponce.cc/slackware/sources/repo/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/ioerror.patch
-		patch -p1 -i ${SOURCEARCHIVES}/${SECTION}/no-verify-hostname.patch
+		mv clang-tools-extra clang/tools/extra
+		mv clang llvm/tools/clang
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		cd llvm
+		mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/{clang,clang-tools-extra}
+		mkdir -p $PKG/install
+
+		mkdir build || true
+		cd  build
+		cmake $CMAKEOPTIONS -DCMAKE_C_FLAGS:STRING="$LFSFLAGS" -DCMAKE_CXX_FLAGS:STRING="$LFSFLAGS" -DCMAKE_INSTALL_PREFIX=/usr/libexec/qtcreator/clang -DLLVM_LIBDIR_SUFFIX= -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_LINK_LLVM_DYLIB=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_ASSERTIONS=OFF ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+
+		cd ..
+		find $PKG/usr/libexec/qtcreator/clang/bin -mindepth 1 -not \( -name clang  -o -name clang-[0-9]\*    -o -name clang-tidy -o -name clangd -o -name llvm-config \) -exec rm {} \;
+		rm -rf $PKG/usr/libexec/qtcreator/clang/libexec
+		rm -rf $PKG/usr/libexec/qtcreator/clang/share
 	popd
 
 	checketc "$PKG"

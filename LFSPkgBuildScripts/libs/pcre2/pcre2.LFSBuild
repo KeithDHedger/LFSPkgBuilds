@@ -23,7 +23,8 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-unicode --enable-jit --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline
+#build static lib as well needed by eg qemu
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-unicode --enable-jit --enable-pcre2-16 --enable-pcre2-32 --enable-pcre2grep-libz --enable-pcre2grep-libbz2 --enable-pcre2test-libreadline --enable-static
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

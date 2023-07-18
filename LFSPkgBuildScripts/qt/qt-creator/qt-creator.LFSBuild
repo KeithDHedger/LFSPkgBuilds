@@ -4,9 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
+DEPENDS="qt5-5.15.8 qt-creator-llvm-13.0.0"
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
 PKGNAME="qt-creator"
 TARNAME="${PKGNAME}-opensource-src"
-VERSION="5.0.2"
+VERSION="5.0.3"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -17,15 +22,46 @@ CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/official_releases/qtcreator/${VERSION%.?*}/${VERSION}/${TARBALL}" $SECTION
+gettar "https://slackbuilds.org/slackbuilds/15.0/development/qt-creator/add-mime-types.patch" $SECTION
+gettar "https://slackbuilds.org/slackbuilds/15.0/development/qt-creator/remove-w-error-unguarded-availability-new.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		qmake
+		sed -i "s|share/doc/qtcreator|doc/$PKGNAME-$VERSION|g"  qtcreator.pri || exit 100
+		sed -i "s|share/doc/qtcreator|doc/$PKGNAME-$VERSION|g"  doc/qtcreatordev/src/qtcreator-documentation.qdoc || exit 100
+		sed -i "s|share/doc/\${IDE_ID}|doc/$PKGNAME-$VERSION|g" cmake/QtCreatorAPI.cmake || exit 100
+		patch -p0 -i ${SOURCEARCHIVES}/$SECTION/remove-w-error-unguarded-availability-new.patch
+		patch -p0 -i ${SOURCEARCHIVES}/$SECTION/add-mime-types.patch
+
+		QMAKE_LFLAGS="$QMAKE_LFLAGS -L/usr/lib$LIBDIRSUFFIX"
+		LLVM_INSTALL_ROOT=/usr/libexec/qtcreator/clang
+		QMAKE_LFLAGS=-L${LLVM_INSTALL_ROOT}/lib
+		export QTC_ENABLE_CLANG_LIBTOOLING=1
+
+		qmake -r qtcreator.pro					\
+		QMAKE_CXXFLAGS="$LFSFLAGS"				\
+		QMAKE_LFLAGS="$QMAKE_LFLAGS"				\
+		QTC_PREFIX=/usr							\
+		IDE_LIBRARY_BASENAME=lib$LIBDIRSUFFIX	\
+		LLVM_INSTALL_DIR=$LLVM_INSTALL_ROOT		\
+		QBS_INSTALL_DIR=/usr						\
+		DEFINES+=QBS_ENABLE_PROJECT_FILE_UPDATES
+
 		make $MAKEFLAGS||make|| exit 100
-		make install INSTALL_ROOT=$PKG/usr
+		make install INSTALL_ROOT=$PKG
+
+		if which qdoc &>/dev/null; then
+			make docs
+			make install_docs INSTALL_ROOT=$PKG
+		else
+			echo "qdoc not found.  Docs won't be built nor installed."
+		fi
+
+		mkdir -p $PKG/usr/share/mime/packages
+		cat $CWD/qt-creator.xml > $PKG/usr/share/mime/packages/qt-creator.xml
 	popd
 
 	checketc "$PKG"
