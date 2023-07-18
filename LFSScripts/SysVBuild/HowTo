@@ -497,14 +497,13 @@ cd /LFSPkgBuildScripts/desktop/gkrellm
 cd /LFSPkgBuildScripts/CLI/NetworkManager
 ./NetworkManager.LFSBuild install
 
-#TODO
-
 cd /LFSPkgBuildScripts/net/libcddb
 ./libcddb.LFSBuild install
 
 cd /LFSPkgBuildScripts/desktop/epdfview
 ./epdfview.LFSBuild install
 
+#TODO
 
 
 

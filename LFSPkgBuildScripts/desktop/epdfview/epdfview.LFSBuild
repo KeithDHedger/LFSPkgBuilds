@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Poppler-21.02.0 GTK-2.24.33 Cups-2.4.1"
+DEPENDS="Poppler-23.02.0 GTK-2.24.33 Cups-2.4.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -21,18 +21,24 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/sources/BLFS/conglomeration/epdfview/${TARBALL}" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${PKGNAME}-${VERSION}-fixes-1.patch" $SECTION
+gettar "https://anduin.linuxfromscratch.org/sources/BLFS/conglomeration/${PKGNAME}/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${TARNAME}-${VERSION}-fixes-2.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fixes-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-fixes-2.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+
+		for size in 24 32 48
+			do
+				mkdir -vp $PKG/usr/share/icons/hicolor/${size}x${size}/apps
+				ln -svf ../../../../epdfview/pixmaps/icon_epdfview-$size.png $PKG/usr/share/icons/hicolor/${size}x${size}/apps
+			done
 	popd
 
 	checketc $PKG
