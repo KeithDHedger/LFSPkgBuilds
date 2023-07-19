@@ -6,17 +6,17 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="iptables"
 TARNAME="$PKGNAME"
-VERSION="1.8.7"
+VERSION="1.8.9"
 BUILD=1
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.netfilter.org/projects/${TARNAME}/files/${TARBALL}" $SECTION
+gettar "https://www.netfilter.org/projects/${TARNAME}/files/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

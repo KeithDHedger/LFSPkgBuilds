@@ -8,6 +8,7 @@ export CHECKETC=0
 
 DEPENDS="dbus-glib-0.112
 compton-11.3
+qt5ct-0.41
 PyCairo-1.18.1
 pygobject-2.28.7
 pygobject3-3.42.2

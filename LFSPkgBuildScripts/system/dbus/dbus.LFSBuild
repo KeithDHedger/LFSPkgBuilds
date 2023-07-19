@@ -23,14 +23,35 @@ mkdir -p "$PKG"
 
 USESYSTEMD=${USESYSTEMD:-0}
 if [ $USESYSTEMD -eq 0 ];then
-	SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir=no --with-systemdsystemunitdir=no --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
+	#SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir=no --with-systemdsystemunitdir=no --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
+	SYSTEMDOPTS="--with-systemdsystemunitdir=no --with-systemdsystemunitdir=no --with-system-pid-file=/run/dbus/pid --with-system-socket=/run/dbus/system_bus_socket"
 fi
+
+#echo $SYSTEMDOPTS
+#exit 100
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+#
+#echo $TMP
+#exit
+unset TMP
+#./configure --prefix=/usr                        \
+#            --sysconfdir=/etc                    \
+#            --localstatedir=/var                 \
+#            --runstatedir=/run                   \
+#            --enable-user-session                \
+#            --disable-doxygen-docs               \
+#            --disable-xml-docs                   \
+#            --disable-static                     \
+#            --with-systemduserunitdir=no         \
+#            --with-systemdsystemunitdir=no       \
+#            --docdir=/usr/share/doc/dbus-1.14.6  \
+#            --with-system-socket=/run/dbus/system_bus_socket--with-test-socket-dir=/run
+            # --with-test-socket-dir=/run
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --with-console-auth-dir=/run/console --disable-doxygen-docs --disable-xml-docs --docdir=/usr/share/doc/${PKGNAME}-${VERSION} $SYSTEMDOPTS
-
+#exit 100
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 		if [ $USESYSTEMD -eq 0 ];then

@@ -442,6 +442,10 @@ cd /LFSPkgBuildScripts/desktop/thunderbird
 cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins
 ./cairo-dock-plugins.LFSBuild install
 
+#NFS
+cd /LFSPkgBuildScripts/net/nfs-utils
+./nfs-utils.LFSBuild install
+
 #Samba
 cd /LFSPkgBuildScripts/net/samba
 ./samba.LFSBuild install
