@@ -20,7 +20,7 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-OPTIONS=${OPTIONS:-"-Ddoc=true -Dman=true -Dgtk_doc=true"}
+OPTIONS=${OPTIONS:-"-Dman=true -Dgtk_doc=true"}
 
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://ftp.gnome.org/pub/gnome/sources/glib/${VERSION%.?*}/${TARBALL}" $SECTION
@@ -37,10 +37,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dselinux=disabled --default-library=both ${OPTIONS} ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
-		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		cp -r ../docs/reference/{NEWS,gio,glib,gobject} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		#mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		#cp -r ../docs/reference/{NEWS,gio,glib,gobject} $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 	popd
-
+exit 100
 	checketc $PKG
 	packageclean "$PKG" "$CWD"
 

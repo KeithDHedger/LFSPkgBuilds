@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Exo-4.16.1 libxfce4ui-4.16.0 libexif-0.6.22 hicolor-icon-theme-0.17"
+DEPENDS="Exo-4.16.0 libxfce4ui-4.16.0 libexif-0.6.22 hicolor-icon-theme-0.17"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -58,6 +58,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			echo "*** Unknown command ***"
 			exit 1
 	esac
-
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

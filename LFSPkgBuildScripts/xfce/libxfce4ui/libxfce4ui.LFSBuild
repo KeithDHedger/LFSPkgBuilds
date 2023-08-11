@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="GTK-2.24.33 gtk3-3.24.25 Xfconf-4.16.0 startup-notification-0.12"
+DEPENDS="gtk3-3.24.25 Xfconf-4.16.0 startup-notification-0.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -54,6 +54,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			echo "*** Unknown command ***"
 			exit 1
 	esac
-
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

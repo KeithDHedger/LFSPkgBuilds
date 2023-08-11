@@ -54,6 +54,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			echo "*** Unknown command ***"
 			exit 1
 	esac
-
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

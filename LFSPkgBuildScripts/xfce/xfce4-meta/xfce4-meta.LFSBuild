@@ -4,7 +4,9 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="gobject-introspection-1.66.1
+DEPENDS="
+libnotify3-0.7.9
+gobject-introspection-1.66.1
 gtk-xfce-engine-3.2.0
 libxfce4util-4.16.0
 Xfconf-4.16.0
