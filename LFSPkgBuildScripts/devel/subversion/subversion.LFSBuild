@@ -29,22 +29,29 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		site_packages=$(python -c "import site; print(site.getsitepackages()[0])")
 		grep -rl '^#!.*python$' | xargs sed -i '1s/python/&3/'
 		sed -e 's/File.exists?/File.exist?/' -i subversion/bindings/swig/ruby/svn/util.rb subversion/bindings/swig/ruby/test/test_wc.rb
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure $CONFIGOPTIONS --with-apache-libexecdir --with-lz4=internal --with-utf8proc=internal --enable-javahl
-		make $MAKEFLAGS||make|| exit 100
-		make javahl
-		make swig-pl
-		make swig-py swig_pydir=/usr/lib/python3.11/site-packages/libsvn swig_pydir_extra=/usr/lib/python3.11/site-packages/svn
-		make swig-rb
-		make install DESTDIR=$PKG || exit 100
-		install -v -m755 -d $PKG/usr/share/doc/${PKGNAME}-${VERSION}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure --prefix=/usr --disable-static --with-apache-libexecdir --with-lz4=internal --with-utf8proc=internal --enable-javahl
+		sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
+		make $MAKEFLAGS||make -j1|| exit 100
+		make DESTDIR="${PKG}" install|| exit 100
+
+		make -j1 javahl
+		make $MAKEFLAGS swig-pl||make -j1 swig-pl|| exit 100
+		make $MAKEFLAGS swig_pydir=${site_packages}/libsvn swig_pydir_extra=${site_packages}/svn swig-py||make -j1 swig_pydir=${site_packages}/libsvn swig_pydir_extra=${site_packages}/svn swig-py|| exit 100
+		make $MAKEFLAGS swig-rb||make -j1 swig-rb || exit 100
+
+		export LD_LIBRARY_PATH="${PKG}"/usr/lib${LIBDIRSUFFIX}:${LD_LIBRARY_PATH}
+		make DESTDIR="${PKG}" install-javahl
+		make DESTDIR="${PKG}" install-swig-pl || exit 100
+		make DESTDIR="${PKG}" swig_pydir=${site_packages}/libsvn swig_pydir_extra=${site_packages}/svn install-swig-py || exit 100
+		make DESTDIR="${PKG}" install-swig-rb || exit 100
+		
+		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}
-		make install-javahl DESTDIR=$PKG || exit 100
-		make install-swig-pl DESTDIR=$PKG || exit 100
-		make install-swig-py swig_pydir=/usr/lib/python3.11/site-packages/libsvn swig_pydir_extra=/usr/lib/python3.11/site-packages/svn DESTDIR=$PKG || exit 100
-		make install-swig-rb DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG
@@ -71,4 +78,3 @@ pushd $COMPILEAT 2>/dev/null||true
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
-

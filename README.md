@@ -18,7 +18,7 @@ ln -sfvn LFSPkgBuilds/LFSScripts/SysVBuild LFSScripts<br>
 ln -sfvn LFSPkgBuilds/LFSPkgBuildScripts LFSPkgBuildScripts<br>
 
 For convienience you may want to also make a symlink to the HowTo, EG:<br>
-ln -sfvn LFSScripts/HowTo-EFI HowTo
+ln -sfvn LFSScripts/HowTo HowTo
 
 Follow the instructions in LFSScripts/HowTo
 

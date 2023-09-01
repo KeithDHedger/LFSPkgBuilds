@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libconfig-1.7.2 asciidoc-10.2.0 dbus-1.14.6"
+DEPENDS="libconfig-1.7.2 asciidoc-10.2.0 dbus-1.14.6 pcre-8.45"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

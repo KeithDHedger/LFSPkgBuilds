@@ -4,25 +4,18 @@
 
 . /usr/share/LFSPkg/LFSFunctions
 
-QT5DIR=${QT5DIR:-/usr/lib${LIBDIRSUFFIX}/qt5}
+QT5PREFIX=${QT5PREFIX:-/usr}
 
 cat > /etc/profile.d/qt5.sh << EOF
 # Begin /etc/profile.d/qt5.sh
 
-QT5DIR=${QT5DIR}
-export QT5DIR
-QT5PREFIX=/usr
+QT5PREFIX=${QT5PREFIX}
 export QT5PREFIX
 
-pathappend ${QT5PREFIX}/bin
+pathappend \${QT5PREFIX}/bin
 
 # End /etc/profile.d/qt5.sh
 EOF
-
-if [ ! "$(grep -i "${QT5DIR}" /etc/ld.so.conf)" ];then
-	echo "${QT5DIR}" >> /etc/ld.so.conf
-	ldconfig||true
-fi
 
 mkdir -vp /etc/pango ||true
 /usr/bin/gdk-pixbuf-query-loaders --update-cache||true

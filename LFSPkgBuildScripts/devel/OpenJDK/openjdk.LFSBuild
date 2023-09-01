@@ -49,6 +49,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		unset JAVA_HOME
 		bash configure --enable-unlimited-crypto --disable-warnings-as-errors --with-stdc++lib=dynamic --with-giflib=system --with-lcms=system --with-libjpeg=system --with-libpng=system --with-zlib=system --with-version-build="7" --with-version-pre="" --with-version-opt="" --with-cacerts-file=/etc/pki/tls/java/cacerts --with-jvm-variants=$_variants --with-jobs=$(($(nproc)-1))
 
+		unset MAKEFLAGS
 		make images
 		install -vdm755 $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}
 		cp -Rpv build/*/images/jdk/* $PKG/opt/jdk-${VERSION}${TARROOTPKGSUBVERSION}

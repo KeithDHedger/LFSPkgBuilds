@@ -1,4 +1,4 @@
-#SysVInit Version
+#SysVInit/LFSInitBuild Version
 
 1)
 
@@ -72,7 +72,6 @@ cd /LFSScripts
 #finish building tempory tools.
 ./BuildTools2
 exit
-
 
 #Make sure you are no longer in the chroot. !IMPORTANT!
 
@@ -182,6 +181,19 @@ cd /LFSPkgBuildScripts/admin/LFSPkg
 ./LFSPkg.LFSBuild
 #rerun setup if needed, ( probably best to set "Check /etc For Possible Config File Clashes" to 1 now.
 lfspkg --setup
+
+19.5)
+#I f you want to use distributed builds you can now install distcc.
+cd /LFSPkgBuildScripts/devel/distcc/
+#No gtk or xlib yet.
+USEGTK=no ./distcc.LFSBuild install
+#Now you should set up /root/.distcc/hosts
+#See the distcc documentation .
+pathprepend /usr/lib/distcc/
+export PATH
+#New MAKEFLAGS for instance.
+export MAKEFLAGS="-j10"
+
 
 20)
 #Configure and build the kernel:
@@ -370,7 +382,7 @@ cd /LFSPkgBuildScripts/devel/doxygen
 
 #Doxygen pulls in a LOT of dependencies so be patient, alternatively if you want to install your own deps, do so then run:
 #NODEPS=1 ./doxygen.LFSBuild install
-#If you do you are on your won, good luck!
+#If you do you are on your own, good luck!
 
 #Install cups and gtk.
 #Gtk2 has a 'soft' dependency on cups but is a dep of the previous build so ( optional ) remove gtk2 first ( make sure you remove the right package ):

@@ -11,7 +11,7 @@ fi
 
 PKGNAME="falkon"
 TARNAME="$PKGNAME"
-VERSION="22.12.2"
+VERSION="23.04.3"
 BUILD=2
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -29,8 +29,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		rm -rf po/
-		sed -i '/#include <QSettings>/a#include <QFile>' src/plugins/VerticalTabs/verticaltabsplugin.cpp
-		sed -i '/#include <QPainter>/a #include <QPainterPath>' src/lib/tools/qztools.cpp
+		#sed -i '/#include <QSettings>/a#include <QFile>' src/plugins/VerticalTabs/verticaltabsplugin.cpp
+		#sed -i '/#include <QPainter>/a #include <QPainterPath>' src/lib/tools/qztools.cpp
 		mkdir build||true
 		cd  build
 		cmake $CMAKEOPTIONS -DBUILD_TESTING=OFF -Wno-dev ..

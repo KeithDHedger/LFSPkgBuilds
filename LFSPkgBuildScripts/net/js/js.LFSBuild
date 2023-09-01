@@ -66,14 +66,10 @@ pushd $COMPILEAT 2>/dev/null||true
 # Fix build with Rust 1.48
 			patch -Np1 -i "${CWD}/0002-Bug-1667736-Update-packed_simd-to-compile-on-Rust-1.patch"||true
 		fi
-
-		export SHELL=/bin/bash
-		. /etc/profile
 		. /etc/profile.d/rustc.sh
 
 		mkdir -p obj
 		cd obj
-
 		sh ../js/src/configure.in $OPTIONS # --prefix=/usr --with-intl-api --with-system-zlib --with-system-icu --disable-jemalloc --disable-debug-symbols --enable-readline
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

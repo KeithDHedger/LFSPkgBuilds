@@ -1,0 +1,6 @@
+#!/bin/bash
+#©keithhedger Sat  9 Oct 15:22:20 BST 2021
+
+. /usr/share/LFSPkg/LFSFunctions
+
+update-distcc-symlinks &>/dev/null||true

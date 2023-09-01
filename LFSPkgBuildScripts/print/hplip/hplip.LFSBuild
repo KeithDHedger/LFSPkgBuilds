@@ -23,9 +23,10 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --with-hpppddir=/usr/share/ppd/HP --disable-libusb01_build --enable-doc-build --enable-cups-ppd-install --disable-foomatic-drv-install --disable-foomatic-ppd-install --disable-hpijs-install --disable-udev_sysfs_rules --disable-policykit --disable-cups-drv-install --enable-hpcups-install --disable-network-build --enable-dbus-build --disable-fax-build
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --enable-qt5 --disable-qt4 --enable-hpcups-install --enable-cups-drv-install --disable-imageProcessor-build --enable-pp-build --disable-network-build
+		sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		make -j1 install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc $PKG

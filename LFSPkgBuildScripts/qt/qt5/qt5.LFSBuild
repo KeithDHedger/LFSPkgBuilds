@@ -33,17 +33,13 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -pv qtbase/.git
 
 		export QT5PREFIX=${QT5PREFIX:-/usr}
-		export QT5BINDIR=$QT5PREFIX/bin
-		export QT5LIBS=${QT5PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
-		export QT5INCLUDES=${QT5PREFIX}/include/${PKGNAME}
-		export QT5DATA=${QT5PREFIX}/share/${PKGNAME}
 		export QT5DOCS=${QT5PREFIX}/share/doc/${PKGNAME}
-		export QT5TRANSLATIONS=${QT5PREFIX}/share/${PKGNAME}/translations
+		export QT5INCLUDES=${QT5PREFIX}/include/${PKGNAME}
+		export QT5ARCHDATADIR=${QT5PREFIX}/lib${LIBDIRSUFFIX}/${PKGNAME}
+		export QT5DATADIR=${QT5PREFIX}/share/${PKGNAME}
 		export QT5EXAMPLES=${QT5PREFIX}/share/doc/${PKGNAME}/examples
-		export QT5IMPORTS=${QT5LIBS}/imports
-		export QT5PLUGINS=${QT5LIBS}/plugins
 
-		./configure -prefix ${QT5PREFIX} -sysconfdir /etc/xdg -bindir $QT5BINDIR -headerdir ${QT5INCLUDES} -libdir ${QT5LIBS} -archdatadir ${QT5LIBS} -datadir ${QT5DATA} -docdir ${QT5DOCS} -translationdir ${QT5TRANSLATIONS} -examplesdir ${QT5EXAMPLES} -confirm-license -opensource -dbus-linked -openssl-linked -system-sqlite -system-harfbuzz -plugindir ${QT5PLUGINS} -importdir ${QT5IMPORTS} -no-rpath -skip qtwebengine
+		./configure -confirm-license -opensource -v -prefix $QT5PREFIX -docdir $QT5DOCS -headerdir $QT5INCLUDES -archdatadir $QT5ARCHDATADIR -datadir $QT5DATADIR  -sysconfdir /etc/xdg -examplesdir $QT5EXAMPLES -system-sqlite -openssl-linked -no-rpath -dbus-linked -system-harfbuzz -skip qtwebengine
 
 		make $MAKEFLAGS||make|| exit 100
 		make install INSTALL_ROOT=$PKG || exit 100
@@ -57,15 +53,10 @@ pushd $COMPILEAT 2>/dev/null||true
 		install -v -Dm644 qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png $PKG/usr/share/pixmaps/qdbusviewer-qt5.png
 		install -dm755 $PKG/usr/share/applications
 
-		mkdir -vp $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
-		pushd $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig
-			ln -sv ../qt5/pkgconfig/*.pc .
-		popd
-
-		pushd ${PKG}/${QT5BINDIR}
+		pushd ${PKG}/${QT5PREFIX}/bin
 			for file in moc uic rcc qmake lconvert lrelease lupdate
 				do
-					ln -svf $file $file-qt5
+					ln -sfrvn $file $file-qt5
 				done
 		popd
 	popd

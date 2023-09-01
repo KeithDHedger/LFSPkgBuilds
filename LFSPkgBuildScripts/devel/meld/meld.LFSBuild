@@ -21,7 +21,7 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/GNOME/sources/meld/1.8/${TARBALL}" $SECTION
+gettar "https://ftp.gnome.org/pub/GNOME/sources/meld/1.8/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 
@@ -34,6 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		sed -i 's/$(MAKE) -C po//' Makefile
 		make PYTHON=/usr/bin/python2 prefix=/usr
 		make PYTHON=/usr/bin/python2 prefix=/usr DESTDIR="${PKG}" install
+		sed -i 's/#! \/usr\/bin\/env python/#!\/usr\/bin\/python2/' ${PKG}/usr/bin/meld
 	popd
 
 	checketc "$PKG"
