@@ -35,7 +35,7 @@ pushd $COMPILEAT 2>/dev/null||true
 #set path to g++/gcc ( cant use symlink! stupid python! )
 		export CXX=${CXX:-$(readlink -e "$(which g++)")}
 		export CC=${CC:-$(readlink -e "$(which gcc)")}
-		LDFLAGS=" -lgcov --coverage " CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --with-ensurepip=yes --enable-shared --with-system-expat --with-system-ffi -with-dbmliborder=bdb:gdbm:ndbm --enable-optimizations
+		LDFLAGS=" -lgcov --coverage " CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-shared --with-system-expat --with-system-ffi -with-dbmliborder=bdb:gdbm:ndbm --enable-optimizations
 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

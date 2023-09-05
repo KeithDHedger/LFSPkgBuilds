@@ -446,9 +446,16 @@ cd /LFSPkgBuildScripts/net/seamonkey
 #Mail clients
 #claws mail is broken for gmail
 
+#rebuild python for modules
+#pushd /LFSPkgBuildScripts/system-upgrades/python-upgrade
+#	./python3.LFSBuild install
+#popd
+
 #Thnderbird
+#Thunderbird takes a stupid amount of time and system resources ( 8G+ to link! ) so use a prebuilt version ( i*86 or x86_64 only ).
 cd /LFSPkgBuildScripts/desktop/thunderbird
-./thunderbird.LFSBuild install
+#./thunderbird.LFSBuild install
+./thunderbird-packaged.LFSBuild install
 
 #Cairo-dock-plugins pulls in cairo-dock as a dependency
 cd /LFSPkgBuildScripts/desktop/cairo-dock-plugins

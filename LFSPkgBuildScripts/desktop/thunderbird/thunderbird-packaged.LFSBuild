@@ -1,0 +1,77 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+PKGNAME="thunderbird"
+TARNAME="$PKGNAME"
+VERSION="102.8.0"
+BUILD=${BUILD:-1}
+SECTION="DESKTOP"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+case "$ARCH" in
+	"i*86")
+		gettar "https://ftp.mozilla.org/pub/${PKGNAME}/releases/${VERSION}/linux-i686/en-GB/${TARBALL}" $SECTION
+		;;
+	"x86_64")
+		gettar "https://ftp.mozilla.org/pub/${PKGNAME}/releases/${VERSION}/linux-x86_64/en-GB/${TARBALL}" $SECTION
+		;;
+	"*")
+		echo "$ARCH not supported ..."
+		exit 100
+		;;
+esac
+
+rm -rf "$PKG" || true
+mkdir -vp "${PKG}/opt/"
+
+cd "${PKG}/opt/"
+extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"||true
+mkdir -vp ${PKG}/usr/share/applications
+mkdir -vp ${PKG}/usr/share/pixmaps
+mkdir -vp ${PKG}/usr/bin
+
+ln -sv /opt/thunderbird/chrome/icons/default/default256.png ${PKG}/usr/share/pixmaps/thunderbird.png
+ln -sv /opt/thunderbird/thunderbird ${PKG}/usr/bin/thunderbird
+
+cat > ${PKG}/usr/share/applications/thunderbird.desktop << EOF
+[Desktop Entry]
+Encoding=UTF-8
+Name=Thunderbird Mail
+Comment=Send and receive mail with Thunderbird
+GenericName=Mail Client
+Exec=/opt/thunderbird/thunderbird
+Terminal=false
+Type=Application
+Icon=thunderbird
+Categories=Application;Network;Email;
+MimeType=application/xhtml+xml;text/xml;application/xhtml+xml;application/xml;application/rss+xml;x-scheme-handler/mailto;
+StartupNotify=true
+EOF
+
+pushd "$PKG"
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+
+rm -r "$PKG"
