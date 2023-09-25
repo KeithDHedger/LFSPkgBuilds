@@ -13,24 +13,24 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$glibc_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-fhs-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/glibc-2.38-memalign_fix-1.patch
 		sed '/width -=/s/workend - string/number_length/' -i stdio-common/vfprintf-process-arg.c
 		mkdir -v build || true
 		cd build
 		echo "rootsbindir=/usr/sbin" > configparms
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --disable-werror --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --disable-werror --libdir=/usr/lib${LIBDIRSUFFIX} --enable-kernel=4.14 --enable-stack-protector=strong --with-headers=/usr/include libc_cv_slibdir=/lib${LIBDIRSUFFIX}
 		make $MAKEFLAGS||make
 		touch /etc/ld.so.conf
 		sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
@@ -98,3 +98,4 @@ pushd $COMPILEAT 2>/dev/null||true
 	#read -t 30 -p "check out " ||true
 	rm -v dummy.c a.out dummy.log
 popd 2>/dev/null||true
+

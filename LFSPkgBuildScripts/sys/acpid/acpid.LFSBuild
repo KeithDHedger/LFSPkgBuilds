@@ -11,16 +11,14 @@ BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sourceforge.net/acpid2/${TARBALL}" $SECTION
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://downloads.sourceforge.net/acpid2/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

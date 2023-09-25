@@ -21,11 +21,11 @@ cp LFSPkgBuildScripts/pkgoptions/* /etc/pkgoptions
 #Set some env vars to make it easier to copy and paste these instructions.
 #Folders should be pre created, change paths to suit,
 LFS=/mnt/LFS
-LFSVERSION=11.3
+LFSVERSION=12.0
 SOURCEARCHIVES=/LFSSourceArchives/$LFSVERSION
 BUILTPACKAGES=/LFSBuiltPackages/$LFSVERSION
 EXTFOLDER=
-KERNELVERSION=6.1.11
+KERNELVERSION=6.4.12
 USESYSTEMD=0
 
 export LFS
@@ -55,7 +55,7 @@ sudo -E ./LFSSetUp
 
 4)
 #make sure normal user owns $LFS ( if you are using a dedicated user change $USER if needed ).
-sudo -E chown $USER $LFS
+sudo -E chown -R $USER $LFS
 #Run BuildTools script:
 ./BuildTools1
 
@@ -527,6 +527,9 @@ cd /LFSPkgBuildScripts/desktop/epdfview
 ./epdfview.LFSBuild install
 
 #TODO
+
+
+
 
 
 

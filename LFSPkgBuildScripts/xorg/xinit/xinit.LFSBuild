@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="twm-1.0.11 xclock-1.0.9 xterm-366"
+DEPENDS="twm-1.0.12 xclock-1.1.1 xterm-384"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,12 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.x.org/pub/individual/app/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://www.x.org/pub/individual/app/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -33,6 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $XORG_CONFIG --with-xinitdir=/etc/X11/app-defaults
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
+		chmod u+s /${XORG_PREFIX}/bin/Xorg
 		sed -i '/$serverargs $vtarg/ s/serverargs/: #&/' ${PKG}/${XORG_PREFIX}/bin/startx
 	popd
 

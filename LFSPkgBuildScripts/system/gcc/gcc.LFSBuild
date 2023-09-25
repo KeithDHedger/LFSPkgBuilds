@@ -13,13 +13,12 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$gcc_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -31,7 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		mkdir -v build||true
 		cd build
-		../configure --prefix=/usr  LD=ld --enable-languages=c,c++,objc,obj-c++ --enable-default-pie --enable-default-ssp --disable-multilib --disable-bootstrap --with-system-zlib --enable-install-libiberty
+		../configure --prefix=/usr  LD=ld --enable-languages=c,c++,objc,obj-c++ --enable-default-pie --enable-default-ssp --disable-multilib --disable-bootstrap --disable-fixincludes --with-system-zlib --enable-install-libiberty
 		make $MAKEFLAGS||make -j1||true
 		make install DESTDIR="$PKG" || exit 100
 		mkdir -vp $PKG/usr/lib/bfd-plugins/ $PKG/lib
@@ -64,17 +63,15 @@ pushd $COMPILEAT 2>/dev/null||true
 	esac
 
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
+popd 2>/dev/null||true
 
+pushd /tmp
 	echo 'int main(){}' > dummy.c
 	cc dummy.c -v -Wl,--verbose &> dummy.log
-	readelf -l a.out | grep ': /lib'
-	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
-	grep -B4 '^ /usr/include' dummy.log
-	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
-	grep "/lib.*/libc.so.6 " dummy.log
-	grep found dummy.log
-
-	sleep 30
-	#read -t 30 -p "check out " ||true
-	rm -v dummy.c a.out dummy.log ||true
-popd 2>/dev/null||true
+	readelf -l a.out | grep ': /lib' &> check.log
+	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log &>> check.log
+	grep -B4 '^ /usr/include' dummy.log &>> check.log
+	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' &>> check.log
+	grep "/lib.*/libc.so.6 " dummy.log &>> check.log
+	grep found dummy.log &>> check.log
+popd

@@ -13,13 +13,12 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$bzip2_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -31,13 +30,13 @@ pushd $COMPILEAT 2>/dev/null||true
 		make -f Makefile-libbz2_so || exit
 		make clean
 		make $MAKEFLAGS||make|| exit
-		mkdir -p $PKG/bin $PKG/lib${LIBDIRSUFFIX} $PKG $PKG/usr/lib${LIBDIRSUFFIX}
 		make install PREFIX="$PKG/usr" || exit
-		cp -v bzip2-shared $PKG/bin/bzip2
-		cp -av libbz2.so* $PKG/lib${LIBDIRSUFFIX}
-		ln -sv ../../lib${LIBDIRSUFFIX}/libbz2.so.1.0 $PKG/usr/lib${LIBDIRSUFFIX}/libbz2.so
-		ln -sfv bzip2 $PKG/bin/bunzip2
-		ln -sfv bzip2 $PKG/bin/bzcat
+		cp -av libbz2.so* $PKG/usr/lib
+		ln -sv libbz2.so.1.0.8 $PKG/usr/lib/libbz2.so
+		cp -v bzip2-shared $PKG/usr/bin/bzip2
+		ln -sfv bzip2 $PKG/usr/bin/bunzip2
+		ln -sfv bzip2 $PKG/usr/bin/bzcat
+		rm -fv $PKG/usr/lib/*.a
 	popd
 
 	checketc "$PKG"

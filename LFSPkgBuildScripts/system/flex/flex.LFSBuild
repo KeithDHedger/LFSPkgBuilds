@@ -13,13 +13,12 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$flex_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -30,6 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/bin||true
 		ln -sv flex $PKG/usr/bin/lex
+		ln -sv flex.1 $PKG/usr/share/man/man1/lex.1
 	popd
 
 	checketc "$PKG"

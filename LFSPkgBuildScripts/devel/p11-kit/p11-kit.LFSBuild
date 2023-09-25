@@ -11,7 +11,7 @@ fi
 
 PKGNAME="p11-kit"
 TARNAME="$PKGNAME"
-VERSION="0.24.1"
+VERSION="0.25.0"
 BUILD=1
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -20,28 +20,28 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/p11-glue/p11-kit/releases/download/${VERSION}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/p11-glue/p11-kit/releases/download/${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed 's/if (gi/& \&\& gi != C_GetInterface/' -i p11-kit/modules.c
 		sed '20,$ d' -i trust/trust-extract-compat
 		cat >> trust/trust-extract-compat << "EOF"
 # Copy existing anchor modifications to /etc/ssl/local
 /usr/libexec/make-ca/copy-trust-modifications
 
 # Generate a new trust store
-/usr/sbin/make-ca -f -g
+/usr/sbin/make-ca -r
 EOF
 
 		mkdir p11-build
 		cd p11-build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS -Dtrust_paths=/etc/pki/anchors
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup $MESONCONFIGOPTIONS -Dtrust_paths=/etc/pki/anchors
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 

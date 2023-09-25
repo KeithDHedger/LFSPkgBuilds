@@ -1,0 +1,85 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+. ../PkgVersions
+
+PKGNAME="udev"
+TARNAME="$PKGNAME"
+VERSION=$systemd_version
+BUILD=${BUILD:-1}
+SECTION="SYSTEM"
+SUFFIX="LFSPKG"
+TARBALL="systemd-$systemd_version.$systemd_arctype"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+
+UDEVLFS=udev-lfs-$udev_lfs_version
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "systemd-$systemd_version"
+		sed -i -e 's/GROUP="render"/GROUP="video"/' -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
+		sed '/systemd-sysctl/s/^/#/' -i rules.d/99-systemd.rules.in
+
+		mkdir -vp build
+		cd build
+
+		meson setup --prefix=/usr --buildtype=release -Dmode=release -Ddev-kvm-mode=0660 -Dlink-udev-shared=false ..
+		ninja udevadm systemd-hwdb $(grep -o -E "^build (src/libudev|src/udev|rules.d|hwdb.d)[^:]*" build.ninja | awk '{ print $2 }') $(realpath libudev.so --relative-to .)
+		rm rules.d/90-vconsole.rules
+
+		mkdir -vp $PKG/sbin $PKG/lib${LIBDIRSUFFIX} $PKG/bin $PKG/sbin $PKG/etc $PKG/etc/udev/hwdb.d $PKG/etc/udev/rules.d $PKG/usr/include $PKG/lib${LIBDIRSUFFIX}/udev/rules.d $PKG/lib${LIBDIRSUFFIX}/udev/hwdb.d/ $PKG/usr/lib/pkgconfig $PKG/usr/share/pkgconfig/
+		mkdir -vp $PKG/lib${LIBDIRSUFFIX}/udev/devices/pts
+
+		install -vm755 udevadm $PKG/sbin/
+		install -vm755 systemd-hwdb $PKG/bin/udev-hwdb
+		ln -svfn  udevadm $PKG/sbin/udevd
+		cp -av    libudev.so{,*[0-9]} $PKG/lib${LIBDIRSUFFIX}/
+		install -vm644 ../src/libudev/libudev.h $PKG/usr/include/
+		install -vm644 src/libudev/*.pc $PKG/usr/lib/pkgconfig/
+		install -vm644 src/udev/*.pc $PKG/usr/share/pkgconfig/
+		install -vm644 ../src/udev/udev.conf $PKG/etc/udev/
+		install -vm644 rules.d/* ../rules.d/{*.rules,README} $PKG/lib${LIBDIRSUFFIX}/udev/rules.d/
+		install -vm644 hwdb.d/*  ../hwdb.d/{*.hwdb,README} $PKG/lib${LIBDIRSUFFIX}/udev/hwdb.d/
+		install -vm755 $(find src/udev -type f | grep -F -v ".") $PKG/lib${LIBDIRSUFFIX}/udev
+
+		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.$udev_lfs_arctype
+		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 100
+
+		mkdir -vp $PKG/usr/share/man
+		tar -xf ${SOURCEARCHIVES}/${SECTION}/systemd-man-pages-254.tar.xz --no-same-owner --strip-components=1 -C $PKG/usr/share/man --wildcards '*/udev*' '*/libudev*' '*/systemd-'{hwdb,udevd.service}.8
+		make -f ${UDEVLFS}/Makefile.lfs DESTDIR=$PKG install
+		rm  $PKG/usr/share/man/man8/systemd-*.8
+	popd
+
+	checketc "$PKG"
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+	rm -r "$PKG" "systemd-$systemd_version"
+popd 2>/dev/null||true

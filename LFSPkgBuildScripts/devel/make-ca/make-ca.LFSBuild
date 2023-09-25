@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="p11-kit-0.24.1"
+DEPENDS="p11-kit-0.25.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -30,6 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -vp $PKG/usr/sbin $PKG/usr/share/man $PKG/etc/ssl/local $PKG/etc/cron.weekly/||true
 		make install DESTDIR=$PKG
+		mkdir -vp $PKG/etc/ssl/local
 		cat > $PKG/etc/cron.weekly/update-pki.sh << "EOF"
 #!/bin/bash
 /usr/sbin/make-ca -g

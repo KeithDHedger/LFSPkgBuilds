@@ -26,6 +26,8 @@ pushd $LFS
 
 	if [ -h $LFS/dev/shm ]; then
 		mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+	else
+		mount -t tmpfs -o nosuid,nodev tmpfs $LFS/dev/shm
 	fi
 
 #extra folders from the host can be mounted either from here or from the chroot environment

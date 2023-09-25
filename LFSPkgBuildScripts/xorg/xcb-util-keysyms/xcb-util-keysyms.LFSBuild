@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libxcb-1.15"
+DEPENDS="libxcb-1.16"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -16,16 +16,14 @@ BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://xcb.freedesktop.org/dist/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

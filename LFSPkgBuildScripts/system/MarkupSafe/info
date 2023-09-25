@@ -1,0 +1,3 @@
+MarkupSafe (unicode subclass)
+MarkupSafe implements a unicode subclass that supports HTML strings.
+Homepage: https://pypi.python.org/pypi/MarkupSafe

@@ -11,7 +11,7 @@ if [ $USESYSTEMD -eq 0 ];then
 	sed -i 's@/bin/udevadm@/sbin/udevadm@g' "/etc/rc.d/init.d/udev"
 	sed -i 's@/bin/udevadm@/sbin/udevadm@g' "/etc/rc.d/init.d/udev_retry"
 	sed -i 's@/lib/udev/udevd@/sbin/udevd@g' "/etc/rc.d/init.d/udev"
-	/sbin/udevadm hwdb --update
+	/usr/bin/udevadm hwdb --update
 	chmod +x /lib/udev/init-net-rules.sh
 	/lib/udev/init-net-rules.sh
 else

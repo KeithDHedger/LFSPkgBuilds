@@ -6,25 +6,30 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 . ../PkgVersions
 
-PKGNAME="pkg-config"
+PKGNAME="libxcrypt"
 TARNAME="$PKGNAME"
-VERSION=$pkg_config_version
-BUILD=${BUILD:-1}
+VERSION=$libxcrypt_version
+BUILD=1
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.$pkg_config_arctype"
+TARBALL="${TARNAME}-${VERSION}.$libxcrypt_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "./${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-scriptLog "${PKGNAME}-${VERSION}"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --with-internal-glib --disable-host-tool --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-hashes=strong,glibc --enable-obsolete-api=no --disable-failure-tokens
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

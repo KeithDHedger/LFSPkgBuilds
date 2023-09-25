@@ -48,6 +48,8 @@ if [ "X$TOOLNUM" = "X" ];then
 	echo $TOOLNUM > ${SYSTEMSOURCE}/toolnum2
 fi
 
+USRCONFIGOPTIONS="-prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --disable-nls --disable-static"
+
 while [ $TOOLNUM != "DONE" ]
 do
 	cd "$SYSTEMSOURCE"
@@ -57,7 +59,7 @@ do
 			VERSION=$gettext_version
 			tar -xvf ${NAME}-${VERSION}.$gettext_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --disable-shared
+				./configure $USRCONFIGOPTIONS --disable-shared
 				make $MAKEFLAGS||make
 				cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
 			popd
@@ -70,7 +72,7 @@ do
 			VERSION=$bison_version
 			tar -xvf ${NAME}-${VERSION}.$bison_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --docdir=/usr/share/doc/bison-${VERSION}
+				./configure $USRCONFIGOPTIONS --docdir=/usr/share/doc/bison-${VERSION}
 				make $MAKEFLAGS||make
 				make install
 			popd
@@ -96,7 +98,7 @@ do
 			VERSION=$python_version
 			tar -xvf ${NAME}-${VERSION}.$python_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --enable-shared --without-ensurepip
+				./configure $USRCONFIGOPTIONS--enable-shared --without-ensurepip
 				make $MAKEFLAGS||make
 				make install
 			popd
@@ -109,7 +111,7 @@ do
 			VERSION=$texinfo_version
 			tar -xvf ${NAME}-${VERSION}.$texinfo_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr
+				./configure $USRCONFIGOPTIONS
 				make $MAKEFLAGS||make
 				make install
 			popd
@@ -123,7 +125,7 @@ do
 			tar -xvf ${NAME}-${VERSION}.$util_linux_arctype
 			mkdir -pv /var/lib/hwclock
 			pushd ${NAME}-${VERSION}
-				./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --docdir=/usr/share/doc/util-linux-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run
+				./configure ADJTIME_PATH=/var/lib/hwclock/adjtime $USRCONFIGOPTIONS --runstatedir=/run --docdir=/usr/share/doc/util-linux-${VERSION} --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python
 				make $MAKEFLAGS||make
 				make install
 			popd

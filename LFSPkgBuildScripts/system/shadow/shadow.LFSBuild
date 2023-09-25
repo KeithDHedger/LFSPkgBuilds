@@ -13,13 +13,12 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$shadow_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -32,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 
 		sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' -e 's@#\(SHA_CRYPT_..._ROUNDS 5000\)@\100@' -e 's@/var/spool/mail@/var/mail@' -i etc/login.defs
 		touch /usr/bin/passwd
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --with-group-name-max-length=32
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --with-{b,yes}crypt --with-group-name-max-length=32
 		make $MAKEFLAGS||make|| exit
 		make install exec_prefix=/usr DESTDIR="$PKG" || exit
 		make -C man install-man DESTDIR="$PKG"|| exit

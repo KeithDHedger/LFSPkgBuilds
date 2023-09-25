@@ -17,7 +17,7 @@
 #You should have received a copy of the GNU General Public License
 #along with LFSPkgBuilds.  If not, see <http://www.gnu.org/licenses/>.
 #
-#Version 11.3
+#Version 12.0
 
 #Sanitize env
 
@@ -50,7 +50,15 @@ SYSTEMSOURCE="${LFS}${SOURCEARCHIVES}/SYSTEM"
 NETSOURCE="${LFS}${SOURCEARCHIVES}/NET"
 mkdir -vp "$SYSTEMSOURCE" "$NETSOURCE"|| true
 
-mkdir -pv $LFS/{bin,etc,lib${LIBDIRSUFFIX},sbin,usr,var,tmp,usr/lib${LIBDIRSUFFIX}}
+mkdir -pv $LFS/{bin,etc,lib${LIBDIRSUFFIX},sbin,usr,var,tmp,usr/lib${LIBDIRSUFFIX},usr/bin,usr/sbin}
+case $(uname -m) in
+  x86_64)
+ 	ln -sfnv lib${LIBDIRSUFFIX} $LFS/lib||true
+  	ln -sfnv lib${LIBDIRSUFFIX} $LFS/usr/lib||true
+  	;;
+esac
+
+#mkdir -pv $LFS/{bin,etc,lib${LIBDIRSUFFIX},sbin,usr,var,tmp,usr/lib${LIBDIRSUFFIX}}
 case $(uname -m) in
   x86_64)
  	ln -sfnv lib${LIBDIRSUFFIX} $LFS/lib
@@ -62,8 +70,9 @@ mkdir -pv $LFS/tools
 
 sudo -p "Enter admin PW to set ownership of $LFS/*: " chown -v $USER $LFS/{usr,lib${LIBDIRSUFFIX},var,etc,bin,sbin,tools,tmp,usr/lib${LIBDIRSUFFIX}}
 
+
 cp ./SystemData* $SYSTEMSOURCE
-WGET_version=1.21.3
+WGET_version=1.21.4
 
 WGETTAR="https://ftp.gnu.org/gnu/wget/wget-$WGET_version.tar.gz"
 
@@ -85,8 +94,12 @@ fi
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
 MAKEFLAGS="-j$(($(nproc)-1))"
+SYSTEMCONFIGOPTIONS="--prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --bindir=/bin --sbindir=/sbin --disable-nls --disable-static"
+USRCONFIGOPTIONS="-prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --libdir=/usr/lib${LIBDIRSUFFIX} --disable-nls --disable-static"
 
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+
+echo $PATH $LFS $LC_ALL $LFS_TGT $CONFIG_SITE
 
 if [ ! -e "${SYSTEMSOURCE}/gotsystem" ];then
 	if [ "$USESYSTEMD" -eq 1 ];then
@@ -152,9 +165,10 @@ do
 			tar -xvf ${NAME}-${VERSION}.$binutils_arctype
 			pushd ${NAME}-${VERSION}
 				rm -rf build
-				mkdir -v build
+				mkdir -vp build
 				cd build
-				../configure --prefix=$LFS/tools --with-sysroot=$LFS --target=$LFS_TGT --disable-nls --disable-werror
+				#../configure --prefix=$LFS/tools --with-sysroot=$LFS --target=$LFS_TGT --disable-nls --enable-gprofng=no --disable-werror
+				../configure --prefix=$LFS/tools --with-sysroot=$LFS --target=$LFS_TGT --disable-nls --enable-gprofng=no --disable-werror
 				make $MAKEFLAGS||make
 				make install
 			popd
@@ -168,52 +182,43 @@ do
 			VERSION=$gcc_version
 			tar -xvf ${NAME}-${VERSION}.$gcc_arctype
 			pushd ${NAME}-${VERSION}
-				case $(uname -m) in
-					armv*)
-						patch -Np1 -i ../gcc-9.1.0-rpi$PIVERS-cpu-default.patch
-						;;
-					x86_64)
-						sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
-						;;
-				esac
-
 				tar -Jxf ../mpfr-${mpfr_version}.$mpfr_arctype
 				mv -v mpfr-$mpfr_version mpfr
 				tar -Jxf ../gmp-${gmp_version}.$gmp_arctype
 				mv -v gmp-$gmp_version gmp
 				tar -zxf ../mpc-${mpc_version}.$mpc_arctype
 				mv -v mpc-$mpc_version mpc
+	
+				case $(uname -m) in
+					armv*)
+						patch -Np1 -i ../gcc-9.1.0-rpi$PIVERS-cpu-default.patch
+						;;
+					*)
+						sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+						;;
+				esac
 
 				rm -rf build
-				mkdir -v build
+				mkdir -vp build
 				cd build
-				../configure --target=$LFS_TGT --prefix=$LFS/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --enable-initfini-array --disable-nls --disable-shared --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
-				make -j1
+				../configure --target=$LFS_TGT --prefix=$LFS/tools --with-glibc-version=2.38 --with-sysroot=$LFS --with-newlib --without-headers --enable-default-pie  --enable-default-ssp --disable-nls --disable-shared --disable-multilib --disable-threads --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
+				make $MAKEFLAGS||make -j1
 				make install
 				cd ..
-				cat gcc/limitx.h gcc/glimits.h gcc/limity.h > $(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/install-tools/include/limits.h
+				cat gcc/limitx.h gcc/glimits.h gcc/limity.h > $(dirname $($LFS_TGT-gcc -print-libgcc-file-name))/include/limits.h
 			popd
 			rm -rf ${NAME}-${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
 		3)
-#TODO rpi odd version string
-			if [ "$PIBUILD" -eq 1 ];then
-#	wget https://github.com/raspberrypi/linux/archive/rpi-5.10.y.tar.gz
-				NAME=rpi
-				VERSION=$PIKERNELVERSION
-				linux_arctype=tar.gz
-			else
-				NAME=linux
-				VERSION=$linux_version
-			fi
-			(mkdir ${NAME}-${VERSION}||true;tar -C ${NAME}-${VERSION} -xvf ${NAME}-${VERSION}.$linux_arctype --strip-components=1)
+			NAME=linux
+			VERSION=$linux_version
+			tar -xvf ${NAME}-${VERSION}.$linux_arctype
 			pushd ${NAME}-${VERSION}
 				make mrproper
 				make headers
-				find usr/include -name '.*' -delete
-				rm usr/include/Makefile
+				find usr/include -type f ! -name '*.h' -delete
 				cp -rv usr/include $LFS/usr
 			popd
 			rm -rf ${NAME}-${VERSION}
@@ -234,23 +239,23 @@ do
 					;;
 				esac
 				patch -Np1 -i ../${NAME}-${VERSION}-fhs-1.patch
-				rm -rf build
-				mkdir -v build
+				rm -rf build||true
+				mkdir -vp build
 				cd build
-				../configure --prefix=/usr --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=3.2 --with-headers=$LFS/usr/include libc_cv_slibdir=/lib
+				echo "rootsbindir=/usr/sbin" > configparms
+#				../configure --prefix=/usr --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=4.14 --with-headers=$LFS/usr/include libc_cv_slibdir=/usr/lib
+				../configure $SYSTEMCONFIGOPTIONS --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=4.14 --with-headers=$LFS/usr/include libc_cv_slibdir=/lib
 				make $MAKEFLAGS||make -j1|| exit 100
 				make DESTDIR=$LFS install
+				sed '/RTLDLIST=/s@/usr@@g' -i $LFS/bin/ldd
 			popd
-			if [ "$PIBUILD" -eq 1 ];then
-				ln -sv ld-2.33.so $LFS/tools/lib/ld-linux.so.3
-			fi
 			rm -rf ${NAME}-${VERSION}
 			echo 'int main(){}' > dummy.c
 			$LFS_TGT-gcc dummy.c
 			readelf -l a.out | grep '/ld-linux'
 			read -t 30 -p "check out " ||true
 			rm -v dummy.c a.out
-			$LFS/tools/libexec/gcc/$LFS_TGT/$gcc_version/install-tools/mkheaders
+			#$LFS/tools/libexec/gcc/$LFS_TGT/$gcc_version/install-tools/mkheaders
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
 			;;
 
@@ -263,9 +268,11 @@ do
 				rm -rf build
 				mkdir -pv build
 				cd build
-				../libstdc++-v3/configure --host=$LFS_TGT --build=$(../config.guess) --prefix=/usr --disable-multilib --disable-nls --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/${VERSION}
+				../libstdc++-v3/configure $SYSTEMCONFIGOPTIONS --host=$LFS_TGT --build=$(../config.guess) --disable-multilib --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/${VERSION}
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
+				rm -v $LFS/usr/lib/lib{stdc++,stdc++fs,supc++}.la
+				#rm -v $LFS/lib/lib{stdc++,stdc++fs,supc++}.la||exit 100
 			popd
 			rm -rf ${NAME}-${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
@@ -276,7 +283,7 @@ do
 			VERSION=$m4_version
 			tar -xvf ${NAME}-${VERSION}.$m4_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(build-aux/config.guess)
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(build-aux/config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -290,14 +297,14 @@ do
 			tar -xvf  ${NAME}-${VERSION}.$ncurses_arctype
 			pushd  ${NAME}-${VERSION}
 				sed -i s/mawk// configure
-				rm -rf build
+				rm -rf build||true
 				mkdir build
 				pushd build
 					../configure
 					make -C include
 					make -C progs tic
 				popd
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess) --mandir=/usr/share/man --with-manpage-format=normal --with-shared --without-debug --without-ada --without-normal --enable-widec --with-cxx-shared --disable-stripping
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(./config.guess) --mandir=/usr/share/man --with-manpage-format=normal --with-shared --without-debug --without-ada --without-normal --enable-widec --with-cxx-shared --disable-stripping --enable-widec
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
 				echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
@@ -311,10 +318,10 @@ do
 			VERSION=$bash_version
 			tar -xvf ${NAME}-${VERSION}.$bash_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --build=$(support/config.guess) --host=$LFS_TGT --without-bash-malloc
+				./configure  $SYSTEMCONFIGOPTIONS --build=$(sh support/config.guess) --host=$LFS_TGT --without-bash-malloc
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
-				mv $LFS/usr/bin/bash $LFS/bin/bash
+				#mv $LFS/usr/bin/bash $LFS/bin/bash||exit 100
 				ln -sfnv bash $LFS/bin/sh
 			popd
 			rm -rf ${NAME}-${VERSION}
@@ -326,10 +333,10 @@ do
 			VERSION=$coreutils_version
 			tar -xvf ${NAME}-${VERSION}.$coreutils_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(build-aux/config.guess) --enable-install-program=hostname --enable-no-install-program=kill,uptime
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(build-aux/config.guess) --enable-install-program=hostname --enable-no-install-program=kill,uptime gl_cv_macro_MB_CUR_MAX_good=y
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
-				mv -v $LFS/usr/bin/chroot $LFS/bin
+				mv -v $LFS/usr/bin/chroot $LFS/sbin
 				mkdir -pv $LFS/usr/share/man/man8
 				mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
 				sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
@@ -343,7 +350,7 @@ do
 			VERSION=$diffutils_version
 			tar -xvf ${NAME}-${VERSION}.$diffutils_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(./build-aux/config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -356,21 +363,21 @@ do
 			VERSION=$file_version
 			tar -xvf ${NAME}-${VERSION}.$file_arctype
 			pushd ${NAME}-${VERSION}
-				rm -rf build
+				rm -rf build||true
 				mkdir build
 				pushd build
 					../configure --disable-bzlib --disable-libseccomp --disable-xzlib --disable-zlib
 					make
 				popd
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess)
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(./config.guess)
 				make FILE_COMPILE=$(pwd)/build/src/file
 				make DESTDIR=$LFS install
+				rm -v $LFS/usr/lib/libmagic.la
 				#hack
 				if [ "$USESYSTEMD" -eq 1 ];then
 					mv -v $LFS/usr/lib/libmagic.so.* $LFS/lib
 					ln -sfv ../../lib/$(readlink /usr/lib/libmagic.so) $LFS/usr/lib/libmagic.so
 				fi
-				rm -v $LFS/usr/lib/libmagic.la
 			popd
 			rm -rf ${NAME}-${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
@@ -381,7 +388,7 @@ do
 			VERSION=$findutils_version
 			tar -xvf ${NAME}-${VERSION}.$findutils_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --localstatedir=/var/lib/locate --host=$LFS_TGT --build=$(build-aux/config.guess)
+				./configure $USRCONFIGOPTIONS --localstatedir=/var/lib/locate --host=$LFS_TGT --build=$(build-aux/config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -395,7 +402,7 @@ do
 			tar -xvf ${NAME}-${VERSION}.$gawk_arctype
 			pushd ${NAME}-${VERSION}
 				sed -i 's/extras//' Makefile.in
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess)
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(./config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -408,7 +415,7 @@ do
 			VERSION=$grep_version
 			tar -xvf ${NAME}-${VERSION}.$grep_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT --bindir=/bin
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(./build-aux/config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -421,7 +428,7 @@ do
 			VERSION=$gzip_version
 			tar -xvf ${NAME}-${VERSION}.$gzip_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT
+				./configure $SYSTEMCONFIGOPTIONS --host=$LFS_TGT
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -434,8 +441,8 @@ do
 			VERSION=$make_version
 			tar -xvf ${NAME}-${VERSION}.$make_arctype
 			pushd ${NAME}-${VERSION}
-				sed -e '/ifdef SIGPIPE/,+2 d' -e '/undef  FATAL_SIG/i FATAL_SIG (SIGPIPE);' -i src/main.c
-				./configure --prefix=/usr --without-guile --host=$LFS_TGT --build=$(build-aux/config.guess)
+				#sed -e '/ifdef SIGPIPE/,+2 d' -e '/undef  FATAL_SIG/i FATAL_SIG (SIGPIPE);' -i src/main.c
+				./configure $USRCONFIGOPTIONS --without-guile --host=$LFS_TGT --build=$(build-aux/config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -448,7 +455,7 @@ do
 			VERSION=$patch_version
 			tar -xvf ${NAME}-${VERSION}.$patch_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(build-aux/config.guess)
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT --build=$(build-aux/config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -461,7 +468,7 @@ do
 			VERSION=$sed_version
 			tar -xvf ${NAME}-${VERSION}.$sed_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT --bindir=/bin
+				./configure $USRCONFIGOPTIONS --host=$LFS_TGT
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -474,7 +481,7 @@ do
 			VERSION=$tar_version
 			tar -xvf ${NAME}-${VERSION}.$tar_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(build-aux/config.guess)
+				./configure $SYSTEMCONFIGOPTIONS --host=$LFS_TGT --build=$(build-aux/config.guess)
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 			popd
@@ -487,7 +494,7 @@ do
 			VERSION=$xz_version
 			tar -xvf${NAME}-${VERSION}.$xz_arctype
 			pushd ${NAME}-${VERSION}
-				./configure --prefix=/usr --host=$LFS_TGT --build=$(build-aux/config.guess) --disable-static --docdir=/usr/share/doc/xz-${VERSION}
+				./configure $SYSTEMCONFIGOPTIONS --host=$LFS_TGT --build=$(build-aux/config.guess) --docdir=/usr/share/doc/xz-${VERSION}
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 				rm -v $LFS/usr/lib/liblzma.la
@@ -506,10 +513,10 @@ do
 				rm -rf build
 				mkdir -v build
 				cd build
-				../configure --prefix=/usr --build=$(../config.guess) --host=$LFS_TGT --disable-nls --enable-shared --enable-gprofng=no --disable-werror --enable-64-bit-bfd
+				../configure $USRCONFIGOPTIONS --build=$(../config.guess) --host=$LFS_TGT --enable-shared --enable-gprofng=no --disable-werror --enable-64-bit-bfd
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
-				rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.{a,la}
+				rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.la
 			popd
 			rm -rf ${NAME}-${VERSION}
 			echo "$((++ TOOLNUM))" > ${SYSTEMSOURCE}/toolnum
@@ -522,9 +529,6 @@ do
 			tar -xvf ${NAME}-${VERSION}.$gcc_arctype
 			pushd ${NAME}-${VERSION}
 				case $(uname -m) in
-					armv*)
-						patch -Np1 -i ../gcc-9.1.0-rpi$PIVERS-cpu-default.patch
-						;;
 					x86_64)
 						sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
 						;;
@@ -543,7 +547,7 @@ do
 				cd build
 				mkdir -pv $LFS_TGT/libgcc
 				ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
-				../configure --build=$(../config.guess) --host=$LFS_TGT --target=$LFS_TGT  LDFLAGS_FOR_TARGET=-L$PWD/$LFS_TGT/libgcc --prefix=/usr --with-build-sysroot=$LFS --enable-default-pie --enable-default-ssp --disable-nls --disable-multilib --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --enable-languages=c,c++
+				../configure $USRCONFIGOPTIONS --build=$(../config.guess) --host=$LFS_TGT --target=$LFS_TGT  LDFLAGS_FOR_TARGET=-L$PWD/$LFS_TGT/libgcc --with-build-sysroot=$LFS --enable-default-pie --enable-default-ssp --disable-multilib --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libsanitizer --disable-libssp --disable-libvtv --enable-languages=c,c++
 				make $MAKEFLAGS||make
 				make DESTDIR=$LFS install
 				ln -sfnv gcc $LFS/usr/bin/cc
@@ -553,12 +557,13 @@ do
 			;;
 
 		23)
-			sudo -p "Enter admin PW to set ownership of $LFS/* back to root: " chown -R root:root $LFS/{usr,lib,var,etc,bin,sbin,tools}
+			sudo -p "Enter admin PW to set ownership of $LFS/* back to root: " chown -R root:root $LFS/{usr,lib${LIBDIRSUFFIX},var,etc,bin,sbin,tools}
 			echo "DONE" > ${SYSTEMSOURCE}/toolnum
 			TOOLNUM="DONE"
 			;;
 	esac
 done
+
 
 
 

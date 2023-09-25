@@ -13,8 +13,9 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$util_linux_arctype"
-
 DOWHAT=${1:-"build"}
+PKG="${OUTPUT}/${PKGNAME}"
+CWD=$(pwd)
 
 BUILDSTATIC="--disable-static"
 if [ "X$ENABLESTATIC" != "X" ];then
@@ -22,22 +23,17 @@ if [ "X$ENABLESTATIC" != "X" ];then
 	PKGNAME="util-linux-static"
 fi
 
-PKG="${OUTPUT}/${PKGNAME}"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
-USESYSTEMD=${USESYSTEMD:-0}
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS=" --without-systemd --without-systemdsystemunitdir"
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		if [ $USESYSTEMD -eq 0 ];then
-			SYSTEMDOPTS=" --without-systemd --without-systemdsystemunitdir"
-#		else
-#			rm -vf /usr/include/{blkid,libmount,uuid}||true
-		fi
 		mkdir -pv $PKG/var/lib/hwclock
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --disable-gtk-doc ADJTIME_PATH=/var/lib/hwclock/adjtime --bindir=/bin --libdir=/lib${LIBDIRSUFFIX} --sbindir=/sbin --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --without-python --docdir=/usr/share/doc/${PKGNAME}-${VERSION}  $SYSTEMDOPTS $BUILDSTATIC
 		make $MAKEFLAGS||make|| exit 100

@@ -13,13 +13,12 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}${VERSION}-src.$tcl_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
@@ -27,7 +26,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}${VERSION}"
 		SRCDIR=$(pwd)
 		cd unix
-		./configure $CONFIGOPTIONS --mandir=/usr/share/man # $([ "$(uname -m)" = x86_64 ] && echo --enable-64bit)
+		./configure $CONFIGOPTIONS --mandir=/usr/share/man
 		make $MAKEFLAGS||make || exit 100
 		sed -e "s|$SRCDIR/unix|/usr/lib|" -e "s|$SRCDIR|/usr/include|" -i tclConfig.sh
 		sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.5|/usr/lib/tdbc1.1.5|" -e "s|$SRCDIR/pkgs/tdbc1.1.5/generic|/usr/include|" -e "s|$SRCDIR/pkgs/tdbc1.1.5/library|/usr/lib/tcl8.6|" -e "s|$SRCDIR/pkgs/tdbc1.1.5|/usr/include|" -i pkgs/tdbc1.1.5/tdbcConfig.sh

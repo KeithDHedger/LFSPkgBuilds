@@ -11,7 +11,7 @@ fi
 
 PKGNAME="proto"
 TARNAME="xorg${PKGNAME}"
-VERSION="2022.2"
+VERSION="2023.2"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
@@ -22,7 +22,6 @@ CWD=$(pwd)
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://xorg.freedesktop.org/archive/individual/proto/${TARBALL}" $SECTION
 

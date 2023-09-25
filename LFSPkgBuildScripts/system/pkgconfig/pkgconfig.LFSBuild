@@ -4,28 +4,31 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-PKGNAME="MarkupSafe"
+. ../PkgVersions
+
+PKGNAME="pkgconf"
 TARNAME="$PKGNAME"
-VERSION="1.1.1"
-BUILD=1
-SECTION="PYTHON"
+VERSION=$pkgconf_version
+BUILD=${BUILD:-1}
+SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.$pkgconf_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://files.pythonhosted.org/packages/source/M/MarkupSafe/${TARBALL}" $SECTION
+CWD=$(pwd)
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		python3 setup.py build
-		python3 setup.py install --optimize=1 --root=$PKG
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		make $MAKEFLAGS||make|| exit 100
+		make install DESTDIR=$PKG || exit 100
+		ln -sv pkgconf $PKG/usr/bin/pkg-config
+		ln -sv pkgconf.1 $PKG/usr/share/man/man1/pkg-config.1
 	popd
 
 	checketc "$PKG"

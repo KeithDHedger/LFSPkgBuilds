@@ -6,21 +6,19 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="xcb-proto"
 TARNAME="${PKGNAME}"
-VERSION="1.15.2"
+VERSION="1.16.0"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://xorg.freedesktop.org/archive/individual/proto/${TARBALL}" $SECTION
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://xorg.freedesktop.org/archive/individual/proto/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

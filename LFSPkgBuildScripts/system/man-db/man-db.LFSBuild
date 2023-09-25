@@ -13,25 +13,21 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.$man_db_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
 
-USESYSTEMD=${USESYSTEMD:-0}
+if [ $USESYSTEMD -eq 0 ];then
+	SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir="
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		if [ $USESYSTEMD -eq 0 ];then
-			SYSTEMDOPTS="--with-systemdtmpfilesdir= --with-systemdsystemunitdir="
-#		else
-#			sed -i '/find/s@/usr@@' init/systemd/man-db.service.in
-		fi
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --disable-setuid --enable-cache-owner=bin --with-browser=/usr/bin/links --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap $SYSTEMDOPTS
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

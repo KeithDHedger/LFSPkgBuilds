@@ -13,13 +13,12 @@ BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
 TARBALL="${PKGNAME}-${VERSION}.$binutils_arctype"
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
 
@@ -31,6 +30,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure $CONFIGOPTIONS --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --with-system-zlib --enable-64-bit-bfd
 		make $MAKEFLAGS tooldir=/usr||make tooldir=/usr|| exit 100
 		make $MAKEFLAGS tooldir=/usr install DESTDIR=$PKG||make tooldir=/usr install DESTDIR=$PKG|| exit 100
+		rm -fv $PKG/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 	popd
 
 	checketc "$PKG"

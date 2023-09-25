@@ -4,63 +4,72 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.25.2"
+DEPENDS="CMake-3.27.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="llvm"
 TARNAME="$PKGNAME"
-VERSION="15.0.7"
+VERSION="16.0.5"
 BUILD=${BUILD:-1}
 SECTION="XORG"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.src.tar.xz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
 
-CMAKETARBALL="llvm-cmake-${VERSION}.src.tar.xz"
+CMAKETARBALL="llvm-cmake.src.tar.xz"
+THIRDPARYTARBALL=llvm-third-party.src.tar.xz
 CLANGTARBALL="clang-${VERSION}.src.tar.xz"
 COMPILERTARBALL=compiler-rt-${VERSION}.src.tar.xz
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${TARBALL}" $SECTION
-
-gettar "https://anduin.linuxfromscratch.org/BLFS/llvm/$CMAKETARBALL" $SECTION
-gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$CLANGTARBALL" $SECTION
-gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$COMPILERTARBALL" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/blfs/11.3/clang-15.0.7-enable_default_ssp-1.patch" $SECTION
-
-PKG="${OUTPUT}/${PKGNAME}"
-
-DOWHAT=${1:-"build"}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${TARBALL}" $SECTION
+gettar "https://anduin.linuxfromscratch.org/BLFS/llvm/$CMAKETARBALL" $SECTION
+#		https://anduin.linuxfromscratch.org/BLFS/llvm/llvm-cmake.src.tar.xz
+gettar "https://anduin.linuxfromscratch.org/BLFS/llvm/$THIRDPARYTARBALL" $SECTION
+gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$CLANGTARBALL" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/clang-${VERSION}-enable_default_ssp-1.patch" $SECTION
+gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$COMPILERTARBALL" $SECTION
+
+
+
 
 if [ "$(echo $ARCH|grep -i "arm*")" != "" ];then
 	TARGETS=${TARGETS:-"host"}
 else
-	TARGETS=${TARGETS:-"host;AMDGPU"}
+	TARGETS=${TARGETS:-"host;AMDGPU;BPF"}
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}.src"
-
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/$CMAKETARBALL
-		sed '/LLVM_COMMON_CMAKE_UTILS/s@../cmake@cmake-15.0.7.src@' -i CMakeLists.txt
+		tar -xf ${SOURCEARCHIVES}/${SECTION}/$THIRDPARYTARBALL
+		sed '/LLVM_COMMON_CMAKE_UTILS/s@../cmake@llvm-cmake.src@' -i CMakeLists.txt
+		sed '/LLVM_THIRD_PARTY_DIR/s@../third-party@llvm-third-party.src@' -i cmake/modules/HandleLLVMOptions.cmake
+
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/$CLANGTARBALL -C tools
 		mv tools/clang-${VERSION}.src tools/clang
+
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL -C projects
-		mv projects/compiler-rt-${VERSION}.src projects/compiler-rt
-
-
-		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$CLANGTARBALL" -C tools
-		mv tools/clang-${VERSION}.src tools/clang
-		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL" -C projects
 		mv projects/compiler-rt-${VERSION}.src projects/compiler-rt
 
 		grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
 		patch -Np2 -d tools/clang < ${SOURCEARCHIVES}/${SECTION}/clang-${VERSION}-enable_default_ssp-1.patch
+		sed 's/clang_dfsan/& -fno-stack-protector/' -i projects/compiler-rt/test/dfsan/origin_unaligned_memtrans.c
+
+
+#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$CLANGTARBALL" -C tools
+#		mv tools/clang-${VERSION}.src tools/clang
+#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL" -C projects
+#		mv projects/compiler-rt-${VERSION}.src projects/compiler-rt
+
+#		grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
 
 		mkdir build || true
 		pushd build

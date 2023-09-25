@@ -6,35 +6,30 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 . ../PkgVersions
 
-PKGNAME="eudev"
+PKGNAME="Jinja2"
 TARNAME="$PKGNAME"
-VERSION=$eudev_version
+VERSION=$jinja2_version
 BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.$eudev_arctype"
-
-UDEVLFS=udev-lfs-$udev_lfs_version
-
+TARBALL="${TARNAME}-${VERSION}.$jinja2_arctype"
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
 scriptLog "${PKGNAME}-${VERSION}"
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/udevdir/a udev_dir=${udevdir}' src/udev/udev.pc.in
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --bindir=/usr/sbin --sbindir=/sbin --libexecdir=/lib${LIBDIRSUFFIX} --with-rootprefix= --with-rootlibdir=/lib${LIBDIRSUFFIX} --enable-manpages
-		make $MAKEFLAGS||make || exit 100
-		mkdir -pv $PKG/lib/udev/rules.d
-		mkdir -pv $PKG/etc/udev/rules.d
-		make install DESTDIR=$PKG || exit 100
-		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.$udev_lfs_arctype
-		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 100
+		python3 setup.py build
+		python3 setup.py install --root=$PKG
 	popd
 
 	checketc "$PKG"
@@ -58,5 +53,6 @@ pushd $COMPILEAT 2>/dev/null||true
 			echo "*** Unknown command ***"
 			exit 1
 	esac
+
 	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
