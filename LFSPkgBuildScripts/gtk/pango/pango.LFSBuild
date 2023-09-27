@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Fontconfig-2.14.2 Cairo-1.17.6 Harfbuzz-7.0.0 FriBidi-1.0.12 glib-2.74.5 xorg-libs-11.3"
+DEPENDS="Fontconfig-2.14.2 Cairo-1.17.6 Harfbuzz-8.1.1 FriBidi-1.0.12 glib-2.76.4 xorg-libs-12.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="pango"
 TARNAME="$PKGNAME"
-VERSION="1.50.12"
+VERSION="1.50.14"
 BUILD=${BUILD:-1}
 SECTION="GTK"
 SUFFIX="LFSPKG"
@@ -24,17 +24,18 @@ if [ "$(lfspkg -S 5 Fontconfig)" == false ];then
 	lfspkg -B "fontconfig-2.13.1"
 fi
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://ftp.gnome.org/pub/gnome/sources/pango/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://ftp.gnome.org/pub/gnome/sources/pango/${VERSION%.?*}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		sed -i '/array-bounds/d' meson.build
 		mkdir build || true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} --buildtype=release --wrap-mode=nofallback ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} --buildtype=release --wrap-mode=nofallback ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

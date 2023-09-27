@@ -6,14 +6,15 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="BinaryJDK"
 TARNAME="OpenJDK"
-VERSION="19.0.2"
+VERSION="20.0.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
-MINORVERSION="+7"
+
+MINORVERSION="9"
 TARSUFFIX=".tar.xz"
 
 rm -rf "$PKG" || true
@@ -22,10 +23,10 @@ scriptLog "${PKGNAME}-${VERSION}"
 
 case $ARCH in
 	x86_64)
-		gettar "https://anduin.linuxfromscratch.org/BLFS/OpenJDK/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+7-x86_64-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
+		gettar "https://anduin.linuxfromscratch.org/BLFS/OpenJDK/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+${MINORVERSION}-x86_64-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	i?86)
-		gettar "https://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+7-i686-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
+		gettar "https://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARNAME}-${VERSION}/${TARNAME}-${VERSION}+${MINORVERSION}-i686-bin.tar.xz" $SECTION "${PKGNAME}${TARSUFFIX}"
 		;;
 	arm*)
 #TODO

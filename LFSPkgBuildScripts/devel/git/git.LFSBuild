@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="curl-7.88.1 pcre2-10.42 Subversion-1.14.2 asciidoc-10.2.0 xmlto-0.0.28"
+DEPENDS="curl-8.2.1 pcre2-10.42 Subversion-1.14.2 asciidoc-10.2.0 xmlto-0.0.28"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="git"
 TARNAME="$PKGNAME"
-VERSION="2.39.2"
+VERSION="2.41.0"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -20,11 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.kernel.org/pub/software/scm/git/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://www.kernel.org/pub/software/scm/git/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -32,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --with-gitconfig=/etc/gitconfig --with-python=python3
 		make html
 		make man
-		make perllibdir=/usr/lib/perl5/5.36/site_perl install DESTDIR=$PKG || exit 100
+		make perllibdir=/usr/lib/perl5/5.38/site_perl install DESTDIR=$PKG || exit 100
 		make install-man DESTDIR=$PKG || exit 100
 		make htmldir=/usr/share/doc/${PKGNAME}-${VERSION} install-html DESTDIR=$PKG || exit 100
 

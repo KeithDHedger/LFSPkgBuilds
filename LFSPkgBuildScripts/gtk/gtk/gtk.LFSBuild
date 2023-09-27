@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="ATK-2.36.0 gdk-pixbuf-2.42.2 Pango-1.48.2 hicolor-icon-theme-0.17 gtk-doc-1.33.2"
+DEPENDS="at-spi2-core-2.48.3 gdk-pixbuf-2.42.10 Pango-1.48.2 hicolor-icon-theme-0.17 gtk-doc-1.33.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,11 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://ftp.gnome.org/pub/gnome/sources/gtk+/${VERSION%.?*}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://ftp.gnome.org/pub/gnome/sources/gtk+/${VERSION%.?*}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

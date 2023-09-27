@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="FreeType-2.13.0 libjpeg-turbo-2.1.5.1 openjpeg-2.5.0 libpng-1.6.39 LibTIFF-4.5.0 lcms2-2.14 gtk3-3.24.36 jasper-4.0.0"
+DEPENDS="FreeType-2.13.1 libjpeg-turbo-3.0.0 openjpeg-2.5.0 libpng-1.6.40 LibTIFF-4.5.1 lcms2-2.14 gtk3-3.24.38"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
-
+#### jasper-4.0.0
 PKGNAME="ghostscript"
 TARNAME="$PKGNAME"
-VERSION="10.0.0"
+VERSION="10.01.2"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -20,12 +20,12 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs${VERSION//./}/${TARBALL}" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz" $SECTION
 gettar "http://downloads.sourceforge.net/gs-fonts/gnu-gs-fonts-other-6.0.tar.gz" $SECTION
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

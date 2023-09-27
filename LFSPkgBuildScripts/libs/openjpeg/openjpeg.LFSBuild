@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.25.2"
+DEPENDS="CMake-3.27.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,11 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/uclouvain/openjpeg/archive/v${VERSION}.tar.gz" $SECTION "${TARNAME}-${VERSION}.tar.gz"
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/uclouvain/openjpeg/archive/v${VERSION}.tar.gz" $SECTION "${TARNAME}-${VERSION}.tar.gz"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

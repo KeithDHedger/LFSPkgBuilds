@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="xorg-libs-11.3 xkeyboard-config-2.38"
+DEPENDS="xorg-libs-12.0 xkeyboard-config-2.39"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -21,17 +21,17 @@ DOWHAT=${1:-"build"}
 CWD=$(pwd)
 OPTIONS=${OPTIONS:-""}
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://xkbcommon.org/download/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://xkbcommon.org/download/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Denable-docs=false -Denable-wayland=false ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} -Denable-docs=false -Denable-wayland=false ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install||exit 100
 	popd

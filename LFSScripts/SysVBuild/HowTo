@@ -194,7 +194,6 @@ export PATH
 #New MAKEFLAGS for instance.
 export MAKEFLAGS="-j10"
 
-
 20)
 #Configure and build the kernel:
 cd /LFSPkgBuildScripts/kernel

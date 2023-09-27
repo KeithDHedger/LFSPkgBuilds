@@ -21,7 +21,6 @@ scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://www.nasm.us/pub/nasm/releasebuilds/${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
-
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}

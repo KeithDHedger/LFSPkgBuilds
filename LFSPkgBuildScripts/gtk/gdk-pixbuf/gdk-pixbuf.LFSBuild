@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="glib-2.74.5 libjpeg-turbo-2.1.5.1 libpng-1.6.39 LibTIFF-4.5.0 gobject-introspection-1.74.0 shared-mime-info-2.2 gtk-doc-1.33.2 xorg-libs-11.3"
+DEPENDS="glib-2.76.4 libjpeg-turbo-3.0.0 libpng-1.6.40 gobject-introspection-1.76.1 libtiff-4.5.1 shared-mime-info-2.2 gtk-doc-1.33.2 xorg-libs-12.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,22 +20,21 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${VERSION%.?*}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${VERSION%.?*}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir -p build
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dgtk_doc=false -Dman=false --wrap-mode=nofallback ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} -Dman=false --wrap-mode=nofallback ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd
-
+# -Dgtk_doc=false
 	checketc $PKG
 	packageclean "$PKG" "$CWD"
 

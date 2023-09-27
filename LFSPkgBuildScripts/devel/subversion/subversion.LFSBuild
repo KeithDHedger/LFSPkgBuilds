@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Ruby-3.2.1 Apr-Util-1.6.3 SQLite-3.40.1 Serf-1.3.10 SWIG-4.1.1 py3c-1.4"
+DEPENDS="Ruby-3.2.2 Apr-Util-1.6.3 SQLite-3.42.0 Serf-1.3.10 SWIG-4.1.1 py3c-1.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,11 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://archive.apache.org/dist/subversion/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://archive.apache.org/dist/subversion/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -36,19 +35,18 @@ pushd $COMPILEAT 2>/dev/null||true
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python3 ./configure --prefix=/usr --disable-static --with-apache-libexecdir --with-lz4=internal --with-utf8proc=internal --enable-javahl
 		sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
-		make $MAKEFLAGS||make -j1|| exit 100
-		make DESTDIR="${PKG}" install|| exit 100
+		make $MAKEFLAGS||make -j1 || exit 100
+		make -j1 DESTDIR="${PKG}" install || exit 100
 
 		make -j1 javahl
 		make $MAKEFLAGS swig-pl||make -j1 swig-pl|| exit 100
 		make $MAKEFLAGS swig_pydir=${site_packages}/libsvn swig_pydir_extra=${site_packages}/svn swig-py||make -j1 swig_pydir=${site_packages}/libsvn swig_pydir_extra=${site_packages}/svn swig-py|| exit 100
 		make $MAKEFLAGS swig-rb||make -j1 swig-rb || exit 100
-
 		export LD_LIBRARY_PATH="${PKG}"/usr/lib${LIBDIRSUFFIX}:${LD_LIBRARY_PATH}
-		make DESTDIR="${PKG}" install-javahl
-		make DESTDIR="${PKG}" install-swig-pl || exit 100
-		make DESTDIR="${PKG}" swig_pydir=${site_packages}/libsvn swig_pydir_extra=${site_packages}/svn install-swig-py || exit 100
-		make DESTDIR="${PKG}" install-swig-rb || exit 100
+		make -j1 DESTDIR="${PKG}" install-javahl
+		make -j1 DESTDIR="${PKG}" install-swig-pl || exit 100
+		make -j1 DESTDIR="${PKG}" swig_pydir=${site_packages}/libsvn swig_pydir_extra=${site_packages}/svn install-swig-py || exit 100
+		make -j1 DESTDIR="${PKG}" install-swig-rb || exit 100
 		
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}
 		cp -v -R doc/* $PKG/usr/share/doc/${PKGNAME}-${VERSION}

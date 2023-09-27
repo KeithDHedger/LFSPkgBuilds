@@ -30,14 +30,10 @@ mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${TARBALL}" $SECTION
 gettar "https://anduin.linuxfromscratch.org/BLFS/llvm/$CMAKETARBALL" $SECTION
-#		https://anduin.linuxfromscratch.org/BLFS/llvm/llvm-cmake.src.tar.xz
 gettar "https://anduin.linuxfromscratch.org/BLFS/llvm/$THIRDPARYTARBALL" $SECTION
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$CLANGTARBALL" $SECTION
 gettar "https://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/clang-${VERSION}-enable_default_ssp-1.patch" $SECTION
 gettar "https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/$COMPILERTARBALL" $SECTION
-
-
-
 
 if [ "$(echo $ARCH|grep -i "arm*")" != "" ];then
 	TARGETS=${TARGETS:-"host"}
@@ -62,14 +58,6 @@ pushd $COMPILEAT 2>/dev/null||true
 		grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
 		patch -Np2 -d tools/clang < ${SOURCEARCHIVES}/${SECTION}/clang-${VERSION}-enable_default_ssp-1.patch
 		sed 's/clang_dfsan/& -fno-stack-protector/' -i projects/compiler-rt/test/dfsan/origin_unaligned_memtrans.c
-
-
-#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$CLANGTARBALL" -C tools
-#		mv tools/clang-${VERSION}.src tools/clang
-#		tar -xvf "${SOURCEARCHIVES}/${SECTION}/$COMPILERTARBALL" -C projects
-#		mv projects/compiler-rt-${VERSION}.src projects/compiler-rt
-
-#		grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'
 
 		mkdir build || true
 		pushd build

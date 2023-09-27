@@ -11,8 +11,7 @@ fi
 
 PKGNAME="ruby"
 TARNAME="$PKGNAME"
-VERSION="3.2.1"
-
+VERSION="3.2.2"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -21,15 +20,15 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://cache.ruby-lang.org/pub/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://cache.ruby-lang.org/pub/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-shared --without-valgrind
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${TARNAME}-${VERSION} --enable-shared --without-valgrind --without-baseruby
 		make $MAKEFLAGS||make|| exit 100
 		make capi|| exit 100
 		make install DESTDIR=$PKG || exit 100

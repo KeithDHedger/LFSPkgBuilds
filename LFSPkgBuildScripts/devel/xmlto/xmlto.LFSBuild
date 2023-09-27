@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="docbook-xml-4.5 docbook-xsl-1.79.2 libxslt-1.1.34"
+DEPENDS="docbook-xml-4.5 docbook-xsl-nons-1.79.2 libxslt-1.1.38 libxml2-2.10.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,11 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://releases.pagure.org/xmlto/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://releases.pagure.org/xmlto/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
