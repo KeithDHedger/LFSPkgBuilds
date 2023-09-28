@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Colord-1.4.6 dbus-1.14.6 libusb-1.0.26 xdg-utils-1.1.3 GnuTLS-3.8.0"
+DEPENDS="Colord-1.4.6 dbus-1.14.8 libusb-1.0.26 xdg-utils-1.1.3 GnuTLS-3.8.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="cups"
 TARNAME="$PKGNAME"
-VERSION="2.4.2"
+VERSION="2.4.6"
 BUILD=${BUILD:-1}
 SECTION="PRINT"
 SUFFIX="LFSPKG"
@@ -22,11 +22,10 @@ CWD=$(pwd)
 
 ./preinstall||true
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/OpenPrinting/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/OpenPrinting/cups/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="--disable-systemd"
@@ -35,7 +34,7 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc CXX=g++ ./configure --libdir=/usr/lib${LIBDIRSUFFIX} $SYSTEMDOPTS --with-rcdir=/tmp/cupsinit --with-docdir=/usr/share/cups/doc/${PKGNAME}-${VERSION} --with-system-groups=lpadmin
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" CC=gcc CXX=g++ ./configure --libdir=/usr/lib${LIBDIRSUFFIX} $SYSTEMDOPTS --with-rcdir=/tmp/cupsinit --with-rundir=/run/cups --with-docdir=/usr/share/cups/doc/${PKGNAME}-${VERSION} --with-system-groups=lpadmin
 		make $MAKEFLAGS||make|| exit 100
 		make install BUILDROOT=$PKG || exit 100
 

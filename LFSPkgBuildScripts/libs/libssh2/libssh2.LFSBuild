@@ -15,18 +15,16 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.libssh2.org/download/${TARBALL}" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${TARNAME}-${VERSION}-upstream_fix-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://www.libssh2.org/download/${TARBALL}" $SECTION
+#gettar "https://www.linuxfromscratch.org/patches/blfs/$LFSVERSION/${TARNAME}-${VERSION}-upstream_fix-1.patch" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/libssh2-1.10.0-upstream_fix-1.patch
-
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-docker-tests
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

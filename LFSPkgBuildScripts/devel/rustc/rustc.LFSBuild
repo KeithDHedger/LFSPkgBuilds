@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="cURL-7.88.1 CMake-3.25.2 libssh2-1.10.0 LLVM-15.0.7"
+DEPENDS="cURL-8.2.1 CMake-3.27.2 libssh2-1.10.0 LLVM-16.0.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -12,7 +12,7 @@ fi
 PKGNAME="rustc"
 TARNAME="rust"
 VERSION="1.67.1"
-BUILD=1
+BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
 PKG="${OUTPUT}/${PKGNAME}"
@@ -36,10 +36,10 @@ case $ARCH in
 esac
 TARBALL="${TARNAME}-${VERSION}-$TUPLE.tar.gz"
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://static.rust-lang.org/dist/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://static.rust-lang.org/dist/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

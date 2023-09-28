@@ -6,24 +6,24 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="Module-Build"
 TARNAME="$PKGNAME"
-VERSION="0.42"
+VERSION="0.4232"
 BUILD=1
 SECTION="PERL"
 SUFFIX="LFSPKG"
-MINORVERSION="30"
-TARBALL="${TARNAME}-${VERSION}_${MINORVERSION}.tar.gz"
+MINORVERSION=""
+TARBALL="${TARNAME}-${VERSION}${MINORVERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://cpan.metacpan.org/authors/id/L/LE/LEONT/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://cpan.metacpan.org/authors/id/L/LE/LEONT/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-${VERSION}_${MINORVERSION}"
+	pushd "${TARNAME}-${VERSION}${MINORVERSION}"
 		perl Makefile.PL
 		make $MAKEFLAGS||make|| exit
 		make install DESTDIR=$PKG || exit
@@ -51,7 +51,7 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}_${MINORVERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}${MINORVERSION}"
 popd 2>/dev/null||true
 
 

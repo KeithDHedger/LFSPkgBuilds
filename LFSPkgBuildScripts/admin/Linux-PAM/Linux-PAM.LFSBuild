@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="Linux-PAM"
 TARNAME="$PKGNAME"
-VERSION="1.5.2"
+VERSION="1.5.3"
 BUILD=1
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -15,10 +15,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/linux-pam/linux-pam/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/linux-pam/linux-pam/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 if [ $USESYSTEMD -eq 0 ];then
 	:

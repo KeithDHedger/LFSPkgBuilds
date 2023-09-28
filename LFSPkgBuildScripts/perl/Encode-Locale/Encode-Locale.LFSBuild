@@ -15,10 +15,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://cpan.metacpan.org/authors/id/G/GA/GAAS/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://cpan.metacpan.org/authors/id/G/GA/GAAS/${TARBALL}" $SECTION
 
 if [ $USESYSTEMD -eq 0 ];then
 	:
