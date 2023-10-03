@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="JSON-C-0.15 glib-2.74.5  gobject-introspection-1.74.0"
+DEPENDS="JSON-C-0.17 glib-2.76.4 gobject-introspection-1.76.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/mypaint/libmypaint/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/mypaint/libmypaint/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

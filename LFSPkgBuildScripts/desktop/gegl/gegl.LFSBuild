@@ -4,16 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-#Graphviz-2.40.1
-
-DEPENDS="babl-0.1.98 Cairo-1.17.6 gdk-pixbuf-2.42.10 libjpeg-turbo-2.1.5.1 libpng-1.6.39 Pango-1.50.12 Python-2.7.18 gobject-introspection-1.74.0 Vala-0.56.4 json-glib-1.6.6"
+DEPENDS="babl-0.1.106 Cairo-1.17.6 gdk-pixbuf-2.42.10 libjpeg-turbo-3.0.0 libpng-1.6.40 Pango-1.50.14 Python-2.7.18 gobject-introspection-1.76.1 Vala-0.56.11 json-glib-1.6.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gegl"
 TARNAME="$PKGNAME"
-VERSION="0.4.40"
+VERSION="0.4.46"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -22,17 +20,17 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.gimp.org/pub/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.gimp.org/pub/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

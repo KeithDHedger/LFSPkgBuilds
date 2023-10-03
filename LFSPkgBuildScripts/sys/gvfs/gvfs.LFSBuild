@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="dbus-1.14.6 glib-2.74.5 libusb-1.0.26 libsecret-0.20.5 libsoup3-3.2.2 polkit-122 libarchive-3.6.2"
+DEPENDS="dbus-1.14.8 glib-2.76.4 libusb-1.0.26 libsecret-0.21.0 libsoup3-3.4.2 polkit-123 libarchive-3.7.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gvfs"
 TARNAME="$PKGNAME"
-VERSION="1.50.3"
+VERSION="1.50.6"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.gnome.org/sources/${PKGNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="-Dsystemduserunitdir=no -Dtmpfilesdir=no -Dlogind=false"
@@ -34,7 +34,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dfuse=false -Dgphoto2=false -Dafc=false -Dbluray=false -Dnfs=false -Dmtp=false -Dsmb=false -Ddnssd=false -Dgoa=false -Dgoogle=false $SYSTEMDOPTS -Dgcrypt=false -Dgcr=false -Dudisks2=false  -Dcdda=false -Dsftp=false ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} -Dfuse=false -Dgphoto2=false -Dafc=false -Dbluray=false -Dnfs=false -Dmtp=false -Dsmb=false -Ddnssd=false -Dgoa=false -Dgoogle=false $SYSTEMDOPTS -Dgcrypt=false -Dgcr=false -Dudisks2=false  -Dcdda=false -Dsftp=false ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd
