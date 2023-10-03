@@ -15,17 +15,16 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://downloads.sourceforge.net/mad/${TARBALL}" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/libmad-0.15.1b-fixes-1.patch" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://downloads.sourceforge.net/mad/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}b-fixes-1.patch" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}b"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/libmad-0.15.1b-fixes-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}b-fixes-1.patch
 		sed "s@AM_CONFIG_HEADER@AC_CONFIG_HEADERS@g" -i configure.ac
 		touch NEWS AUTHORS ChangeLog
 		autoreconf -fi

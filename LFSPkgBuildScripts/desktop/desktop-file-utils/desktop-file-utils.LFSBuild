@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="glib-2.74.5"
+DEPENDS="glib-2.76.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,19 +20,21 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://freedesktop.org/software/${TARNAME}/releases/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://freedesktop.org/software/${TARNAME}/releases/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/12.0/${TARNAME}-${VERSION}-update_standard-1.patch" $SECTION
 
 rm -fv /usr/bin/desktop-file-edit &>/dev/null||true
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/desktop-file-utils-0.26-update_standard-1.patch
 		mkdir build
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

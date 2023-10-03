@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="NSS-3.88.1 Python-2.7.18 PulseAudio-16.1 qt5-5.15.8 x264-20230215 libwebp-1.3.0 ffmpeg-5.1.2 Opus-1.3.1 nodejs-18.14.1"
+DEPENDS="NSS-4.35 Python-2.7.18 PulseAudio-16.1 qt5-5.15.10 x264-20230215 libwebp-1.3.0 ffmpeg-6.0 Opus-1.3.1 nodejs-18.17.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="qtwebengine"
 TARNAME="${PKGNAME}"
-VERSION="5.15.12"
+VERSION="5.15.15"
 BUILD=1
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -20,12 +20,12 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://anduin.linuxfromscratch.org/BLFS/${TARNAME}/${TARBALL}" $SECTION
 gettar "https://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-build_fixes-1.patch" $SECTION
 gettar "https://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${TARNAME}-${VERSION}-ffmpeg5_fixes-1.patch" $SECTION
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -33,7 +33,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-build_fixes-1.patch
 		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-ffmpeg5_fixes-1.patch
 		mkdir -pv .git src/3rdparty/chromium/.git
-		sed -e '/^MODULE_VERSION/s/5.*/5.15.8/' -i .qmake.conf
+		sed -e '/^MODULE_VERSION/s/5.*/5.15.10/' -i .qmake.conf
 		find -type f -name "*.pr[io]" | xargs sed -i -e 's|INCLUDEPATH += |&$$QTWEBENGINE_ROOT/include |'
 		sed -e '/link_pulseaudio/s/false/true/' -i src/3rdparty/chromium/media/media_options.gni
 		sed -e 's/\^(?i)/(?i)^/' -i src/3rdparty/chromium/tools/metrics/ukm/ukm_model.py

@@ -6,27 +6,25 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="cpio"
 TARNAME="$PKGNAME"
-VERSION="2.13"
+VERSION="2.14"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.bz2"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://ftp.gnu.org/pub/gnu/cpio/${TARBALL}" $SECTION
-
 PKG="${OUTPUT}/${PKGNAME}"
-
 DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-CWD=$(pwd)
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://ftp.gnu.org/pub/gnu/cpio/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		sed -i '/The name/,+2 d' src/global.c
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --bindir=/bin --libexecdir=/tmp --enable-mt --with-rmt=/usr/sbin/rmt
+		#sed -i '/The name/,+2 d' src/global.c
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --enable-mt --with-rmt=/usr/libexec/rmt
 		make $MAKEFLAGS||make|| exit 100
 		makeinfo --html -o doc/html doc/cpio.texi
 		makeinfo --html --no-split -o doc/cpio.html doc/cpio.texi

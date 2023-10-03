@@ -11,7 +11,7 @@ fi
 
 PKGNAME="yad"
 TARNAME="$PKGNAME"
-VERSION="0.40.0"
+VERSION="13.0"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sf.net/yad-dialog/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/v1cont/yad/releases/download/v13.0/yad-13.0.tar.xz" $SECTION
 
 USEGTKVERSION=${USEGTKVERSION:-2}
 
@@ -36,6 +36,8 @@ pushd $COMPILEAT 2>/dev/null||true
 	fi
 
 	pushd "${TARNAME}-${VERSION}"
+		autoreconf -vif
+		intltoolize
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/libexec --disable-nls --enable-icon-browser $HTML --with-gtk=gtk${USEGTKVERSION} --with-rgb=/usr/share/X11/rgb.txt
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100

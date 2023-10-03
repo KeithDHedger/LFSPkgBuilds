@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Which-2.21 icu-72.1 python3-3.11.2"
+DEPENDS="Which-2.21 icu-73.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="boost"
 TARNAME="$PKGNAME"
-VERSION="1.81.0"
+VERSION="1.83.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -20,17 +20,17 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://boostorg.jfrog.io/artifactory/main/release/${VERSION}/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://boostorg.jfrog.io/artifactory/main/release/${VERSION}/source/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}_${VERSION//./_}"
 		sed -i '/#include.*phoenix.*tuple.hpp.*/d' boost/phoenix/stl.hpp
 		./bootstrap.sh --prefix=$PKG/usr --with-python=python3|| exit 
-		./b2 $MAKEFLAGS stage threading=multi link=shared || true 
+		./b2 stage $MAKEFLAGS threading=multi link=shared || true 
 		./b2 $MAKEFLAGS install threading=multi link=shared || true
 		mkdir -vp $PKG/usr/include/boost/uuid || true
 	popd

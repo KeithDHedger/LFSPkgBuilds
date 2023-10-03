@@ -15,10 +15,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.sourceforge.net/lame/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://downloads.sourceforge.net/lame/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -29,9 +29,9 @@ pushd $COMPILEAT 2>/dev/null||true
 				;;
 		esac
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-mp3rtp --enable-nasm
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-mp3rtp
 		mkdir -vp $PKG/usr/share/doc/${PKGNAME}-${VERSION}||true
-		make || exit 100
+		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG pkghtmldir=$PKG/usr/share/doc/${PKGNAME}-${VERSION}|| exit 100
 	popd
 

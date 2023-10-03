@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="aspell-0.60.8 GLib-2.74.5"
+DEPENDS="aspell-0.60.8 GLib-2.76.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="enchant"
 TARNAME="$PKGNAME"
-VERSION="2.3.3"
+VERSION="2.5.0"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -20,22 +20,22 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/AbiWord/${PKGNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/AbiWord/${PKGNAME}/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir /usr/share/doc/${PKGNAME}-${VERSION}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
-		rm -rf $PKG/usr/include/enchant
-		ln -sfv enchant-2 $PKG/usr/include/enchant
-		ln -sfv enchant-2 $PKG/usr/bin/enchant
-		ln -sfv libenchant-2.so $PKG/usr/lib${LIBDIRSUFFIX}/libenchant.so
-		ln -sfv enchant-2.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/enchant.pc
+#		rm -rf $PKG/usr/include/enchant
+#		ln -sfv enchant-2 $PKG/usr/include/enchant
+#		ln -sfv enchant-2 $PKG/usr/bin/enchant
+#		ln -sfv libenchant-2.so $PKG/usr/lib${LIBDIRSUFFIX}/libenchant.so
+#		ln -sfv enchant-2.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/enchant.pc
 	popd
 
 	checketc "$PKG"

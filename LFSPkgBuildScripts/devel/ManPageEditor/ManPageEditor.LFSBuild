@@ -19,10 +19,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/ManPageEditor/archive/master.zip" $SECTION ${PKGNAME}-${VERSION}.zip
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/KeithDHedger/ManPageEditor/archive/master.zip" $SECTION ${PKGNAME}-${VERSION}.zip
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}.zip" "zip"

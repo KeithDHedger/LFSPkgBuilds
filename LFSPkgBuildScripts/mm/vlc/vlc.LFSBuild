@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="alsa-lib-1.2.8 FFmpeg-5.1.2 liba52-0.7.4 libgcrypt-1.10.1 libmad-0.15.1 lua524-5.2.4"
+DEPENDS="alsa-lib-1.2.9 FFmpeg-6.0 liba52-0.7.4 libgcrypt-1.10.2 libmad-0.15.1 lua524-5.2.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.videolan.org/vlc/${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.videolan.org/vlc/${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -31,7 +31,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		export LUAC=/usr/bin/luac5.2
 		export LUA_LIBS="$(pkg-config --libs lua52)"
 		export CFLAGS="$LFSFLAGS $(pkg-config --cflags lua52)"
-		BUILDCC=gcc CXXFLAGS="$CFLAGS" ./configure ${CONFIGOPTIONS} --disable-opencv --disable-vpx
+		BUILDCC=gcc CXXFLAGS="$CFLAGS" ./configure ${CONFIGOPTIONS} --disable-opencv --disable-vpx --disable-libva
 		make $MAKEFLAGS||make|| exit 100
 		make docdir=/usr/share/doc/${PKGNAME}-${VERSION} install DESTDIR=$PKG || exit 100
 	popd

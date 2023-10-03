@@ -20,11 +20,11 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/${PKGNAME}/${TARBALL}" $SECTION
 gettar "https://gitweb.gentoo.org/repo/gentoo.git/plain/x11-misc/gtkdialog/files/${PKGNAME}-${VERSION}-fno-common.patch" $SECTION
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

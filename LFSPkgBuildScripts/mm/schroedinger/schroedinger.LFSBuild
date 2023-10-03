@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://pkgs.fedoraproject.org/repo/pkgs/schroedinger/${TARBALL}/da6af08e564ca1157348fb8d92efc891/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://pkgs.fedoraproject.org/repo/pkgs/schroedinger/${TARBALL}/da6af08e564ca1157348fb8d92efc891/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

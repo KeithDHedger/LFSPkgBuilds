@@ -24,7 +24,7 @@ if [ $USESYSTEMD -eq 0 ];then
 	:
 fi
 
-if [ "X$USEGTK" = "X" ];then
+if [ ${USEGTK:-0} -eq 1 ];then
 	WITHGTK="--with-gtk"
 else
 	WITHGTK=""

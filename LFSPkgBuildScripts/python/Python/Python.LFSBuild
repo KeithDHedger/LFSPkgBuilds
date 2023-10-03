@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="sqlite-3.40.1"
+DEPENDS="sqlite-3.42.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -24,14 +24,18 @@ rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://www.python.org/ftp/python/${VERSION}/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/12.0/${TARNAME}-${VERSION}-security_fixes-1.patch" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i '/2to3/d' ./setup.py
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/Python-2.7.18-security_fixes-1.patch
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-shared --with-system-expat --with-system-ffi --enable-unicode=ucs4
 		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		make altinstall DESTDIR=$PKG || exit 100
+		ln -s python2.7 $PKG/usr/bin/python2
+		ln -s python2.7-config $PKG/usr/bin/python2-config
 		chmod -v 755 $PKG/usr/lib${LIBDIRSUFFIX}/libpython2.7.so.1.0||true
 	popd
 

@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="OpenJDK-19.0.2 glib-2.74.5"
+DEPENDS="OpenJDK-20.0.2 glib-2.76.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="apache-ant"
 TARNAME="$PKGNAME"
-VERSION="1.10.13"
+VERSION="1.10.14"
 BUILD=${BUILD:-1}
 SECTION="DEVEL"
 SUFFIX="LFSPKG"
@@ -20,17 +20,17 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://archive.apache.org/dist/ant/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://archive.apache.org/dist/ant/source/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		. /etc/profile.d/openjdk.sh
 		./bootstrap.sh
-		sed -e 's|ftp.software.ibm.com|anduin.linuxfromscratch.org|' -e 's|software/awdtools/netrexx|BLFS/apache-ant|' -i fetch.xml 
+		#sed -e 's|ftp.software.ibm.com|anduin.linuxfromscratch.org|' -e 's|software/awdtools/netrexx|BLFS/apache-ant|' -i fetch.xml 
 		bootstrap/bin/ant -f fetch.xml -Ddest=optional
 		mkdir -vp $PKG/opt/ant-${VERSION}||true
 		./build.sh -Ddist.dir=$(pwd)/ant-${VERSION} dist

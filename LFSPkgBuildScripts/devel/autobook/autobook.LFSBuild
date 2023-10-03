@@ -15,10 +15,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://sourceware.org/$PKGNAME/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -vp "${PKG}/usr/doc"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://sourceware.org/$PKGNAME/${TARBALL}" $SECTION
 
 pushd "${PKG}/usr/doc"
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

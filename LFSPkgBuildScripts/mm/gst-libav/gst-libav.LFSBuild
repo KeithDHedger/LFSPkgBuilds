@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="FFmpeg-6.0 gst-plugins-base-1.22.3 yasm-1.3.0"
+DEPENDS="FFmpeg-6.0 gst-plugins-base-1.22.5 yasm-1.3.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="gst-libav"
 TARNAME="${PKGNAME}"
-VERSION="1.22.3"
+VERSION="1.22.5"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -20,17 +20,17 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://gstreamer.freedesktop.org/src/${PKGNAME}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build||true
 		cd build
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dpackage-origin="http://www.linuxfromscratch.org/blfs/view/svn/" -Dpackage-name="GStreamer ${VERSION} BLFS" ..
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson ${MESONCONFIGOPTIONS} -Dpackage-origin="http://www.linuxfromscratch.org/blfs/view/${LFSVERSION}/" -Dpackage-name="GStreamer ${VERSION} BLFS" ..
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 	popd

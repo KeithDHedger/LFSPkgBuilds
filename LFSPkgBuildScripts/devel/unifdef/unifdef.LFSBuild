@@ -4,18 +4,13 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="make-ca-1.13 libunistring-1.1 Nettle-3.9.1 p11-kit-0.25.0 libtasn1-4.19.0"
-if ! lfspkg -B "$DEPENDS";then
-	exit 100
-fi
-
-PKGNAME="gnutls"
+PKGNAME="unifdef"
 TARNAME="$PKGNAME"
-VERSION="3.8.1"
-BUILD=${BUILD:-1}
-SECTION="LIBS"
+VERSION="2.12"
+BUILD=1
+SECTION="DEVEL"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -23,14 +18,17 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "ftp://ftp.gnupg.org/gcrypt/${TARNAME}/v${VERSION%.?*}/${TARBALL}" $SECTION
+gettar "https://dotat.at/prog/unifdef/${TARBALL}" $SECTION
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}  --docdir=/usr/share/doc/${TARNAME}-${VERSION} --with-default-trust-store-pkcs11="pkcs11:" --enable-openssl-compatibility #--disable-gtk-doc
 		make $MAKEFLAGS||make|| exit 100
-		make install DESTDIR=$PKG || exit 100
+		make prefix=/usr install DESTDIR=$PKG || exit 100
 	popd
 
 	checketc "$PKG"

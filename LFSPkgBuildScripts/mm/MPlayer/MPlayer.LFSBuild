@@ -20,15 +20,20 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.mplayerhq.hu/MPlayer/releases/${TARBALL}" $SECTION
-gettar "https://mplayerhq.hu/MPlayer/skins/Clearlooks-2.0.tar.bz2" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://www.mplayerhq.hu/MPlayer/releases/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/12.0/ffmpeg-6.0-binutils_2.41-1.patch" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/12.0/${TARNAME}-${VERSION}-upstream_ffmpg6_fixes-1.patch" $SECTION
+gettar "https://mplayerhq.hu/MPlayer/skins/Clearlooks-2.0.tar.bz2" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		patch -Np1 -d ffmpeg -i ${SOURCEARCHIVES}/${SECTION}/ffmpeg-6.0-binutils_2.41-1.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-upstream_ffmpg6_fixes-1.patch
+
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --disable-static --confdir=/etc/mplayer --enable-dynamic-plugins --enable-menu --disable-libmpeg2-internal --disable-ffmpeg_a --enable-menu --enable-runtime-cpudetection --enable-gui
 
 		make doc $MAKEFLAGS||make doc|| exit 100

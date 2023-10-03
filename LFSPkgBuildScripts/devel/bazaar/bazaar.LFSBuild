@@ -20,17 +20,16 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://launchpad.net/bzr/${VERSION%.?*}/${VERSION}/+download/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://launchpad.net/bzr/${VERSION%.?*}/${VERSION}/+download/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i -e 's|man/man1|share/&|' setup.py
-		python setup.py install --root=$PKG || exit 100
+		python2 setup.py install --root=$PKG || exit 100
 	popd
 
 	checketc $PKG

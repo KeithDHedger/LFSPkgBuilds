@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="make-ca-1.12 Net-SSLeay-1.92"
+DEPENDS="make-ca-1.13 Net-SSLeay-1.92"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+#©keithhedger Tue 3 Oct 13:22:45 BST 2023 kdhedger68713@gmail.com
+
+. /usr/share/LFSPkg/LFSFunctions
+
+glib-compile-schemas /usr/share/glib-2.0/schemas||true
+gdk-pixbuf-query-loaders > /etc/gtk-2.0/gdk-pixbuf.loaders||true
+gtk-update-icon-cache -f /usr/share/icons/hicolor||true
+
+exit 0

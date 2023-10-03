@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="alsa-lib-1.2.8"
+DEPENDS="alsa-lib-1.2.9"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="alsa-utils"
 TARNAME="$PKGNAME"
-VERSION="1.2.8"
+VERSION="1.2.9"
 BUILD=${BUILD:-1}
 SECTION="MM"
 SUFFIX="LFSPKG"
@@ -28,6 +28,7 @@ mkdir -p "$PKG"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
+		echo '' > alsactl/init_sysdeps.c
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-alsaconf --disable-bat --disable-xmlto --with-curses=ncursesw
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
