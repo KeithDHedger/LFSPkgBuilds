@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Cups-2.4.2 glib-2.74.5 libexif-0.6.24 ghostscript-10.0.0 lcms2-2.14 MuPDF-1.21.1 Poppler-23.02.0 Qpdf-11.2.0"
+DEPENDS="Cups-2.4.6 glib-2.76.4 libexif-0.6.24 ghostscript-10.01.2 lcms2-2.14 MuPDF-1.22.2 Poppler-23.08.0 Qpdf-11.5.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,15 +20,18 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.openprinting.org/download/cups-filters/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://www.openprinting.org/download/cups-filters/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/${LFSVERSION}/${PKGNAME}-${VERSION}-security_fix-1.patch" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --without-rcdir --with-gs-path=/usr/bin/gs --with-pdftops-path=/usr/bin/gs --disable-avahi
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/cups-filters-1.28.16-security_fix-1.patch
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS -std=c++17" ./configure ${CONFIGOPTIONS} --docdir=/usr/share/doc/${PKGNAME}-${VERSION} --without-rcdir --disable-avahi
+# --with-gs-path=/usr/bin/gs --with-pdftops-path=/usr/bin/gs 
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

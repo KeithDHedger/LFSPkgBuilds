@@ -6,49 +6,48 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 export CHECKETC=0
 
-DEPENDS="dbus-glib-0.112
+DEPENDS="
+dbus-glib-0.112
 compton-11.3
-qt5ct-0.41
-PyCairo-1.18.1
-pygobject-2.28.7
+qt5ct-1.7
+pycairo-1.18.2
+pygobject2-2.28.7
 pygobject3-3.42.2
-PyGTK-2.24.0
-URI-5.17
-printing-meta-11.3
-mm-meta-11.3
+pygtk-2.24.0
+uri-5.17
+printing-meta-12.0
+mm-meta-12.0
 vte1-0.28.2
-vte2-0.70.3
-libnotify3-0.8.1
+vte2-0.72.2
+libnotify3-0.8.2
 startup-notification-0.12
-NSPR-4.35
+nspr-4.35
 zip-3.0
-JS-102.8.0
-Polkit-122
-transmission-4.0.1
+js-102.13.0
+polkit-123
+transmission-4.0.3
 gnome-icon-theme-3.12.0
-Sudo-1.9.13
+sudo-1.9.14
 gtksourceview-2.10.5
 gtksourceview3-3.24.11
-leafpad-0.8.18.1
+leafpad-0.8.19
 shared-mime-info-2.2
-OpenSSH-9.2
+openssh-9.4
 ntp-4.2.8
 xdg-utils-1.1.3
 desktop-file-utils-0.26
-Gimp-2.10.32
-gtkmm-2.24.5
-gtkmm3-3.24.7
-ImageMagick-7.1.1
+gimp-2.10.34
+imagemagick-7.1.1
 spacefm-1.0.6
-ManPageEditor-0.1.5
-AspellGUI-0.0.9
-KKEditQT-1.0.0
-xarchiver-0.5.4.20
-ClipboardViewer-2.2.2
-GtkSu-0.1.6
+manpageeditor-0.1.5
+aspellgui-0.0.9
+kkeditqt-1.0.0
+xarchiver-0.5.4.21
+clipboardviewer-2.2.2
+gtksu-0.1.6
 xscreensaver-6.06
 xfce-meta-4.18.0
-libreoffice-7.5.0
+libreoffice-7.6.0
 "
 
 if ! lfspkg -B "$DEPENDS";then
@@ -56,7 +55,7 @@ if ! lfspkg -B "$DEPENDS";then
 fi
 
 PKGNAME="desktop-meta"
-VERSION="11.3"
+VERSION="12.0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"

@@ -20,15 +20,15 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://anduin.linuxfromscratch.org/BLFS/sane/$TARBALL" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://anduin.linuxfromscratch.org/BLFS/sane/$TARBALL" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" sg scanner -c "./configure ${CONFIGOPTIONS} --with-docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-group=scanner --with-lockdir=/var/lock --enable-libusb_1_0"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" sg scanner -c "./configure ${CONFIGOPTIONS} --localstatedir=/var --with-docdir=/usr/share/doc/${PKGNAME}-${VERSION} --with-group=scanner --with-lockdir=/var/lock --enable-libusb_1_0"
 		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc/udev/rules.d $PKG/var/lock/sane

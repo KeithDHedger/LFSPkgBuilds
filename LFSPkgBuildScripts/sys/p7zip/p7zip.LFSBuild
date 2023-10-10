@@ -15,18 +15,17 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://netix.dl.sourceforge.net/project/${PKGNAME}/${PKGNAME}/${VERSION}/${TARBALL}" $SECTION
-#gettar "https://github.com/jinfeihan57/p7zip/archive/v${VERSION}/${TARBALL}" $SECTION
-gettar "https://github.com/p7zip-project/p7zip/archive/v${VERSION}/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/p7zip-project/p7zip/archive/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed '/^gzip/d' -i install.sh
+		sed -i '160a if(_buffer == nullptr || _size == _pos) return E_FAIL;' CPP/7zip/Common/StreamObjects.cpp
+
 		make all3
 		make DEST_HOME=/usr DEST_MAN=/usr/share/man DEST_SHARE_DOC=/usr/share/doc/${PKGNAME}-${VERSION} DEST_DIR=$PKG DEST_SHARE=/usr/lib$LIBDIRSUFFIX/${PKGNAME}  install || exit 100
 	popd

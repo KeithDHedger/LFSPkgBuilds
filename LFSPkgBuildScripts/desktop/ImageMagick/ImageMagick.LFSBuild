@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libjpeg-turbo-2.1.5.1 OpenJPEG-2.5.0"
+DEPENDS="libjpeg-turbo-3.0.0 OpenJPEG-2.5.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -15,16 +15,16 @@ VERSION="7.1.1"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
-MINORVERSION=12
+MINORVERSION=15
 TARBALL="${TARNAME}-${VERSION}-${MINORVERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-gettar "https://download.imagemagick.org/archive/releases//${TARBALL}" $SECTION
-scriptLog "${PKGNAME}-${LATESTVERSION}"
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+gettar "https://download.imagemagick.org/archive/releases//${TARBALL}" $SECTION
+scriptLog "${PKGNAME}-${LATESTVERSION}"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

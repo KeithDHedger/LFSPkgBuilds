@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libedit-3.1 IO-Socket-SSL-2.081"
+DEPENDS="libedit-3.1 IO-Socket-SSL-2.083"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -12,7 +12,7 @@ fi
 PKGNAME="ntp"
 TARNAME="$PKGNAME"
 VERSION="4.2.8"
-MINORREVISION=p15
+MINORREVISION=p17
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
@@ -21,10 +21,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/${TARNAME}-${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/${TARNAME}-${VERSION%.?*}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

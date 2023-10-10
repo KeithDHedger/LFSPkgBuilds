@@ -42,6 +42,8 @@ seer-1.17
 #devhelp-2.32.0
 #webkitgtk3-2.38.5
 #webkitgtk2-2.4.11
+#gtkmm-2.24.5
+#gtkmm3-3.24.7
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100

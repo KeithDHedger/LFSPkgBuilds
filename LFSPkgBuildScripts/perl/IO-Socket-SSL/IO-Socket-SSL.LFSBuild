@@ -11,7 +11,7 @@ fi
 
 PKGNAME="IO-Socket-SSL"
 TARNAME="$PKGNAME"
-VERSION="2.081"
+VERSION="2.083"
 BUILD=1
 SECTION="PERL"
 SUFFIX="LFSPKG"
@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.cpan.org/authors/id/S/SU/SULLR/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://www.cpan.org/authors/id/S/SU/SULLR/${TARBALL}" $SECTION
 
 if [ $USESYSTEMD -eq 0 ];then
 	:
@@ -32,7 +32,7 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		perl Makefile.PL
+		yes | perl Makefile.PL
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd

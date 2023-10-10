@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="extra-cmake-modules-5.103.0 qt5-5.15.8 qtwebengine-5.15.12 karchive-5.103.0"
+DEPENDS="extra-cmake-modules-5.109.0 qt5-5.15.10 qtwebengine-5.15.15 karchive-5.109.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="falkon"
 TARNAME="$PKGNAME"
-VERSION="23.04.3"
+VERSION="23.08.0"
 BUILD=2
 SECTION="QT"
 SUFFIX="LFSPKG"
@@ -20,21 +20,19 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.kde.org/stable/release-service/${VERSION}/src/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.kde.org/stable/release-service/${VERSION}/src/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		rm -rf po/
-		#sed -i '/#include <QSettings>/a#include <QFile>' src/plugins/VerticalTabs/verticaltabsplugin.cpp
-		#sed -i '/#include <QPainter>/a #include <QPainterPath>' src/lib/tools/qztools.cpp
 		mkdir build||true
 		cd  build
 		cmake $CMAKEOPTIONS -DBUILD_TESTING=OFF -Wno-dev ..
-		make $MAKEFLAGS||make|| exit 100
+		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 

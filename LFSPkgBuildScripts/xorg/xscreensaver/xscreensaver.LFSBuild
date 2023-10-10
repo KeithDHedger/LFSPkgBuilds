@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libglade-2.6.4 x-apps-11.3 GLU-9.0.1 gdk-pixbuf-2.42.2 gdk-pixbuf-xlib-3116"
+DEPENDS="gtk3-3.24.38 libglade-2.6.4 x-apps-12,9 glu-9.0.3"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,17 +20,16 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://www.jwz.org/xscreensaver/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://www.jwz.org/xscreensaver/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 #dont re enable splash screen if app is to old
 #see also the authors comments in driver/prefs.c -> decrepit_p and please honer his request to not distribute this app with the warning removed.
-		#sed -i '0,/if (whine)/s/if (whine)/if(FALSE)/' driver/splash.c
 		sed -i 's/\(make_splash_dialog.*\)/\/\*\1\*\//' driver/xscreensaver.c
 		sed -i 's/-lsystemd/-lelogind/' driver/Makefile.in
 		sed -i 's/-lsystemd/-lelogind/' driver/Makefile.in

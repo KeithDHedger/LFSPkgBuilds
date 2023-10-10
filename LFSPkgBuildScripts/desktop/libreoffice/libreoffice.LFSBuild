@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="openldap-2.6.4 Gperf-3.1 Archive-Zip-1.68 UnZip-6.0 Wget-1.21.3 Which-2.21 Zip-3.0 clucene-2.3.3.4 Boost-1.81.0.0 GLU-9.0.2 serf-1.3.10 gst-plugins-base-1.22.3 libwebp-1.3.0 libtiff-4.5.0"
+DEPENDS="openldap-2.6.6 Gperf-3.1 Archive-Zip-1.68 UnZip-6.0 Wget-1.21.3 Which-2.21 Zip-3.0 clucene-2.3.3.4 Boost-1.83.0.0 GLU-9.0.3 serf-1.3.10 gst-plugins-base-1.22.5 libwebp-1.3.1 libtiff-4.5.1"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="libreoffice"
 TARNAME="$PKGNAME"
-VERSION="7.5.0"
+VERSION="7.6.0"
 MINORREV=".3"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
@@ -25,13 +25,13 @@ CWD=$(pwd)
 EXTERNALTARBALLS="${EXTERNALTARBALLS:-${SOURCEARCHIVES}/${SECTION}/libreoffice-tarballs}"
 mkdir -vp "$EXTERNALTARBALLS"||true
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://download.documentfoundation.org/libreoffice/src/${VERSION}/${TARBALL}" $SECTION
 gettar "http://download.documentfoundation.org/libreoffice/src/${VERSION}/libreoffice-dictionaries-${VERSION}${MINORREV}.tar.xz" $SECTION
 gettar "http://download.documentfoundation.org/libreoffice/src/${VERSION}/libreoffice-help-${VERSION}${MINORREV}.tar.xz" $SECTION
-gettar "http://download.documentfoundation.org/libreoffice/src/${VERSION}/libreoffice-translations-${VERSION}${MINORREV}.tar.xz" $SECTION
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
+#gettar "http://download.documentfoundation.org/libreoffice/src/${VERSION}/libreoffice-translations-${VERSION}${MINORREV}.tar.xz" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --no-overwrite-dir
@@ -39,23 +39,24 @@ pushd $COMPILEAT 2>/dev/null||true
 		pushd ${EXTERNALTARBALLS}
 			ln -snfv ../libreoffice-dictionaries-${VERSION}${MINORREV}.tar.xz
 			ln -snfv ../libreoffice-help-${VERSION}${MINORREV}.tar.xz
-			ln -snfv ../libreoffice-translations-${VERSION}${MINORREV}.tar.xz
+			#ln -snfv ../libreoffice-translations-${VERSION}${MINORREV}.tar.xz
 		popd
 
 		ln -snvf "$EXTERNALTARBALLS" external/tarballs
 		ln -snvf src/libreoffice-help-${VERSION}${MINORREV}/helpcontent2/
 		ln -snvf src/libreoffice-dictionaries-${VERSION}${MINORREV}/dictionaries/
-		ln -snvf src/libreoffice-translations-${VERSION}${MINORREV}/translations/
+#		ln -snvf src/libreoffice-translations-${VERSION}${MINORREV}/translations/
 
 		export LO_PREFIX=/usr
 		sed -e "/gzip -f/d" -e "s|.1.gz|.1|g" -i bin/distro-install-desktop-integration ||true
 		sed -e "/distro-install-file-lists/d" -i Makefile.in||true
 
+		sed -i 's/\$(PARALLELISM_OPTION)/$(MAKEFLAGS)/g' Makefile.in
+
 		./autogen.sh	--prefix=$LO_PREFIX					\
 						--sysconfdir=/etc				\
 						--libdir=/usr/lib$LIBDIRSUFFIX	\
 						--with-vendor="BLFS"				\
-						--with-lang="en-GB"				\
 						--with-help						\
 						--with-myspell-dicts				\
 						--without-junit					\
@@ -86,13 +87,13 @@ pushd $COMPILEAT 2>/dev/null||true
 						--disable-skia					\
 						--disable-gpgmepp				\
 						--with-system-libtiff			\
-						--with-system-libwebp			\
-						--with-parallelism=${MAKEFLAGS/-j/}
+						--with-system-libwebp
+
+#						--with-lang="en-GB"
 
 		sed -i 's/.check-if-root./ /g;' Makefile
 		sed -i 's/\(--progress=dot:mega\)/\1 -c/' Makefile.fetch
-		#make build-nocheck
-		make build
+		make ${MAKEFLAGS} build||export MAKEFLAGS="-j1"; make ${MAKEFLAGS} build||exit 100
 		make DESTDIR=$PKG distro-pack-install
 		rm -v $PKG/gid_Module*
 

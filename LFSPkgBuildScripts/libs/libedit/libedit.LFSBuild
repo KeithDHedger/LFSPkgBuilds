@@ -10,20 +10,19 @@ VERSION="3.1"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-20221030-${VERSION}.tar.gz"
+TARBALL="${TARNAME}-20230828-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "http://thrysoee.dk/editline/${TARBALL}" $SECTION
 
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
-
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-20221030-${VERSION}"
+	pushd "${TARNAME}-20230828-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
@@ -51,5 +50,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-20221030-${VERSION}"
+	rm -r "$PKG" "${TARNAME}-20230828-${VERSION}"
 popd 2>/dev/null||true

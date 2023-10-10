@@ -4,34 +4,48 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="glib-2.74.5"
+DEPENDS="glib-2.76.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="udevil"
+TARNAME="$PKGNAME"
 VERSION="0.4.4"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
+TARBALL=""
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/IgnorantGuru/udevil/archive/refs/heads/master.zip" ${SECTION} ${PKGNAME}.zip
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+mkdir -p ${SOURCEARCHIVES}/GITREPOS
+pushd ${SOURCEARCHIVES}/GITREPOS
+	if [[ ! -e ${TARNAME} ]];then
+		git clone https://github.com/IgnorantGuru/${TARNAME}.git
+		cd ${TARNAME}
+		git reset --hard 77a61806fadbf19f02072df1aa67191fc375c35d
+		git clean -df
+	else
+		if [ "X${DOWHAT:0:2}" = "Xup" ];then
+			cd ${TARNAME}
+			git pull
+		fi
+	fi
+popd
 
 if [ $USESYSTEMD -eq 0 ];then
-	SYSTEMDOPTS="--disable-systemd"
+	:
 fi
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}.zip" "zip"
-	pushd "udevil-master"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} $SYSTEMDOPTS --with-setfacl-prog="/bin/setfacl"
-		make $MAKEFLAGS||make|| exit 100
+	pushd "${SOURCEARCHIVES}/GITREPOS/${TARNAME}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/etc ||true
 		cp $CWD/udevil.conf $PKG/etc/udevil
@@ -41,7 +55,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d "$SECTION" -b "$BUILD" -s "$SUFFIX" -m
 	popd
 
 	case $DOWHAT in
@@ -59,5 +73,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "udevil-master"
+	rm -rf "$PKG"
 popd 2>/dev/null||true

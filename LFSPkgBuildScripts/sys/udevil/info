@@ -6,4 +6,4 @@ ssh:// URLs, and tmpfs/ramfs filesystems.
 udevil is highly configurable, requires no daemon running, and depends
 only on udev and glib. To use it, just prefix a normal mount command
 with 'udevil'.
-homepage: http://ignorantguru.github.com/udevil/
+homepage: https://ignorantguru.github.com/udevil/

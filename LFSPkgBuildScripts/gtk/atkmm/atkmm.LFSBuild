@@ -4,10 +4,12 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="ATK-2.36.0 GLibmm-2.66.5"
+DEPENDS="at-spi2-core-2.48.3 GLibmm-2.66.5"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
+
+#ATK-2.36.0
 
 PKGNAME="atkmm"
 TARNAME="$PKGNAME"
@@ -20,10 +22,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://download.gnome.org/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.gnome.org/sources/${TARNAME}/${VERSION%.?*}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
