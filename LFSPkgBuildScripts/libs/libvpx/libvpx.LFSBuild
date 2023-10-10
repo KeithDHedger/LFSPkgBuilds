@@ -20,16 +20,16 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/webmproject/${TARNAME}/archive/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/webmproject/${TARNAME}/archive/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		sed -i 's/cp -p/cp/' build/make/Makefile
-		mkdir libvpx-build
+		mkdir -p libvpx-build
 		cd libvpx-build
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ../configure --prefix=/usr --enable-shared --disable-static
 		make $MAKEFLAGS||make|| exit 100

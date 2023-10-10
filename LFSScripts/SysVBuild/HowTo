@@ -448,6 +448,7 @@ cd /LFSPkgBuildScripts/net/seamonkey
 #claws mail is broken for gmail
 
 #rebuild python for modules
+#dont be tempted to use update rather than install as this fubars some modules.
 #pushd /LFSPkgBuildScripts/system-upgrades/python-upgrade
 #	./python3.LFSBuild install
 #popd
