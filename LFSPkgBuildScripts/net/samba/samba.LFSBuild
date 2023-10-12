@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libtirpc-1.3.3 Jansson-2.14 lmdb-0.9.29 rpcsvc-proto-1.4.3 Linux-PAM-1.5.2 GnuTLS-3.8.0 Parse-Yapp-1.21 json-perl-4.10 libarchive-3.6.2 openldap-2.6.4"
+DEPENDS="libtirpc-1.3.3 Jansson-2.14 lmdb-0.9.31 rpcsvc-proto-1.4.4 Linux-PAM-1.5.3 GnuTLS-3.8.1 Parse-Yapp-1.21 json-perl-4.10 libarchive-3.7.1 openldap-2.6.6"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="samba"
 TARNAME="$PKGNAME"
-VERSION="4.17.5"
+VERSION="4.18.6"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.samba.org/pub/samba/stable/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://ftp.samba.org/pub/samba/stable/${TARBALL}" $SECTION
 
 if [ $USESYSTEMD -eq 0 ];then
 	SYSTEMDOPTS="--without-systemd"
@@ -34,10 +34,11 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CPPFLAGS="-I/usr/include/tirpc" LDFLAGS="-ltirpc" ./configure --prefix=/usr --sysconfdir=/etc --with-piddir=/run/samba --with-pammodulesdir=/lib/security --enable-fhs --without-ad-dc $SYSTEMDOPTS --with-shared-modules=!vfs_snapper
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --with-piddir=/run/samba --with-pammodulesdir=/lib/security --enable-fhs --without-ad-dc $SYSTEMDOPTS
 
 		make $MAKEFLAGS||make|| exit 100
 		sed '1s@^.*$@#!/usr/bin/python3@' -i ./bin/default/source4/scripting/bin/samba-gpupdate.inst
+		rm -rf /usr/lib/python3.11/site-packages/samba||true
 		make install DESTDIR=$PKG || exit 100
 
 		mkdir -vp $PKG/lib $PKG/etc/samba||true

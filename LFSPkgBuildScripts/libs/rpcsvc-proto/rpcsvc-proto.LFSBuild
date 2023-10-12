@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="rpcsvc-proto"
 TARNAME="$PKGNAME"
-VERSION="1.4.3"
+VERSION="1.4.4"
 BUILD=1
 SECTION="LIBS"
 SUFFIX="LFSPKG"
@@ -15,10 +15,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/thkukuk/rpcsvc-proto/releases/download/v${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/thkukuk/rpcsvc-proto/releases/download/v${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

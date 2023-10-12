@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.25.2 libevent-2.1.12"
+DEPENDS="CMake-3.27.2 libevent-2.1.12"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="mariadb"
 TARNAME="$PKGNAME"
-VERSION="10.6.12"
+VERSION="10.11.4"
 BUILD=${BUILD:-1}
 SECTION="ADMIN"
 SUFFIX="LFSPKG"
@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://downloads.mariadb.com/MariaDB/${TARNAME}-${VERSION}/source/${TARBALL}" ${SECTION}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://downloads.mariadb.com/MariaDB/${TARNAME}-${VERSION}/source/${TARBALL}" ${SECTION}
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

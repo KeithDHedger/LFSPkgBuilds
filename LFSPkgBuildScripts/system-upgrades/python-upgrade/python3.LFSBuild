@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="SQLite-3.40.1 berkeley-db-5.3.28 valgrind-3.15.0 Tk-8.6.13"
+DEPENDS="SQLite-3.42.0 berkeley-db-5.3.28 valgrind-3.21.0 Tk-8.6.13"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
 PKGNAME="python3"
 TARNAME="Python"
-VERSION=3.11.2
+VERSION=3.11.4
 BUILD=${BUILD:-1}
 SECTION="SYSTEM-UPDGRADE"
 SUFFIX="LFSPKG"

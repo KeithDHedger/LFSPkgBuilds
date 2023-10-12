@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="qt5-5.15.8 qt-creator-llvm-13.0.0"
+DEPENDS="qt5-5.15.10 qt-creator-llvm-13.0.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,12 +20,12 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://download.qt.io/official_releases/qtcreator/${VERSION%.?*}/${VERSION}/${TARBALL}" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/15.0/development/qt-creator/add-mime-types.patch" $SECTION
 gettar "https://slackbuilds.org/slackbuilds/15.0/development/qt-creator/remove-w-error-unguarded-availability-new.patch" $SECTION
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

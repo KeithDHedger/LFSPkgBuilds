@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Fuse-3.13.1 glib-2.74.5 OpenSSH-9.2"
+DEPENDS="Fuse-3.16.1 glib-2.76.4 OpenSSH-9.4"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,19 +20,19 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/libfuse/${PKGNAME}/releases/download/${PKGNAME}-${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/libfuse/${PKGNAME}/releases/download/${PKGNAME}-${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		mkdir build
 		cd build
-		meson ${MESONCONFIGOPTIONS} ..
-		ninja
-		DESTDIR=$PKG ninja install || exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 	popd
 
 	checketc $PKG

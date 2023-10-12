@@ -6,19 +6,19 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="fuse"
 TARNAME="$PKGNAME"
-VERSION="3.13.1"
+VERSION="3.16.1"
 BUILD=${BUILD:-1}
 SECTION="SYS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/libfuse/libfuse/releases/download/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://github.com/libfuse/libfuse/releases/download/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -27,9 +27,9 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir build
 		cd build
 
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson --prefix=/usr ..
-		ninja|| exit 100
-		DESTDIR=$PKG ninja install|| exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson setup ${MESONCONFIGOPTIONS} ..
+		ninja $MAKEFLAGS||ninja -j1||exit 100
+		DESTDIR=$PKG ninja install
 
 		mkdir -vp $PKG/lib${LIBDIRSUFFIX} $PKG/bin $PKG/sbin $PKG/usr/share/doc $PKG/usr/share/man/man{1,8}||true
 		mv -v $PKG/usr/lib${LIBDIRSUFFIX}/libfuse3.so.3* $PKG/lib${LIBDIRSUFFIX}
