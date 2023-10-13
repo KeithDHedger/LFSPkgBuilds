@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Imlib2-1.4.10"
+DEPENDS="Imlib2-1.12.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -12,32 +12,45 @@ fi
 PKGNAME="XDecorations"
 TARNAME="$PKGNAME"
 VERSION="0.1.10"
-BUILD=1
+BUILD=${BUILD:-1}
 SECTION="GAMES"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
+TARBALL=""
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/XDecorations/archive/master.zip" $SECTION  ${TARBALL}
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+mkdir -p ${SOURCEARCHIVES}/GITREPOS
+pushd ${SOURCEARCHIVES}/GITREPOS
+	if [[ ! -e ${TARNAME} ]];then
+		git clone https://github.com/KeithDHedger/${TARNAME}.git
+	else
+		if [ "X${DOWHAT:0:2}" = "Xup" ];then
+			cd ${TARNAME}
+			git pull
+		fi
+	fi
+popd
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" "zip"
-	pushd "${TARNAME}-master"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}
-		make $MAKEFLAGS||make|| exit 100
+	pushd "${SOURCEARCHIVES}/GITREPOS/${TARNAME}"
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh ${CONFIGOPTIONS}
+		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc "$PKG"
+	checketc $PKG
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d "$SECTION" -b "$BUILD" -s "$SUFFIX" -m
 	popd
 
 	case $DOWHAT in
@@ -55,5 +68,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-master"
+	rm -rf "$PKG"
 popd 2>/dev/null||true
