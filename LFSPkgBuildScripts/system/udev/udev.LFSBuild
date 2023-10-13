@@ -51,12 +51,17 @@ pushd $COMPILEAT 2>/dev/null||true
 		install -vm644 hwdb.d/*  ../hwdb.d/{*.hwdb,README} $PKG/lib${LIBDIRSUFFIX}/udev/hwdb.d/
 		install -vm755 $(find src/udev -type f | grep -F -v ".") $PKG/lib${LIBDIRSUFFIX}/udev
 
+#hash fix perm rulles so members of tty group can use /dev/tty*
+		sed -i '/"tty\[0-9\]/s/0620/0660/' ${PKG}/lib${LIBDIRSUFFIX}/udev/rules.d/50-udev-default.rules
+#fix bad install location for init scripts
+		ln -sv /sbin/udevadm ${PKG}/bin/udevadm
+
 		tar -xvf ${SOURCEARCHIVES}/${SECTION}/${UDEVLFS}.$udev_lfs_arctype
 		make -f ${UDEVLFS}/Makefile.lfs install DESTDIR=$PKG || exit 100
 
 		mkdir -vp $PKG/usr/share/man
 		tar -xf ${SOURCEARCHIVES}/${SECTION}/systemd-man-pages-254.tar.xz --no-same-owner --strip-components=1 -C $PKG/usr/share/man --wildcards '*/udev*' '*/libudev*' '*/systemd-'{hwdb,udevd.service}.8
-		make -f ${UDEVLFS}/Makefile.lfs DESTDIR=$PKG install
+		#make -f ${UDEVLFS}/Makefile.lfs DESTDIR=$PKG install
 		rm  $PKG/usr/share/man/man8/systemd-*.8
 	popd
 

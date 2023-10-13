@@ -6,32 +6,44 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="Init-For-LFS"
 TARNAME="$PKGNAME"
-VERSION="0.0.5"
-BUILD=1
+VERSION="0.1.12"
+BUILD=${BUILD:-1}
 SECTION="SYSTEM"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.zip"
-
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/KeithDHedger/Init-For-LFS/archive/master.zip" $SECTION $TARBALL
-
+TARBALL=""
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+mkdir -p ${SOURCEARCHIVES}/GITREPOS
+pushd ${SOURCEARCHIVES}/GITREPOS
+	if [[ ! -e ${TARNAME} ]];then
+		git clone https://github.com/KeithDHedger/${TARNAME}.git
+	else
+		if [ "X${DOWHAT:0:2}" = "Xup" ];then
+			cd ${TARNAME}
+			git pull
+		fi
+	fi
+popd
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" "zip"
-	pushd "${TARNAME}-master"
+	pushd "${SOURCEARCHIVES}/GITREPOS/${TARNAME}"
 		make install DESTDIR=$PKG || exit 100
 	popd
 
+	checketc $PKG
 	packageclean "$PKG" "$CWD"
 
-	cp ./info "$PKG" &>/dev/null || true
 	pushd "$PKG"
-		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d "$SECTION" -b "$BUILD" -s "$SUFFIX" -m
 	popd
 
 	case $DOWHAT in
@@ -49,5 +61,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-master"
+	rm -rf "$PKG"
 popd 2>/dev/null||true
