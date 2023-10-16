@@ -59,9 +59,9 @@ c179daa707f5f432f1bc13977e5bb329  libXfont2-2.0.6.tar.xz
 faa74f7483074ce7d4349e6bdc237497  libxshmfence-1.3.2.tar.xz
 ca5b5017987d2eee289485b54506ff5c  libdmx-1.1.5.tar.xz
 562cc729034de3442d860f1c50508c8b  libXfont-1.5.4.tar.gz
+b33a4418563ef84e28008b70902b74bb libXaw3d-1.6.5.tar.gz
 EOF
 
-#6f156fe180d3c26dbc9ff95033b02362  libXaw3d-1.6.tar.gz
 	pushd "${SOURCEARCHIVES}/${SECTION}/xorg-libs"
 		grep -v '^#' ${PKGNAME}-${VERSION}.md5 | awk '{print $2}' | wget --no-check-certificate -i- -c -B https://www.x.org/pub/individual/lib/ -P ${SOURCEARCHIVES}/${SECTION}/xorg-libs
 		if ! md5sum -c ${PKGNAME}-${VERSION}.md5;then

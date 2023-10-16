@@ -15,7 +15,7 @@ VERSION="3.0.9"
 BUILD=${BUILD:-1}
 SECTION="LIBS"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
@@ -23,13 +23,14 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://ftp.gnu.org/pub/gnu/guile/${TARBALL}" $SECTION
-
+#gettar "https://ftp.gnu.org/pub/gnu/guile/${TARBALL}" $SECTION
+gettar "https://ftp.gnu.org/pub/gnu/$TARNAME/$TARBALL" $SECTION
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS}- -docdir=/usr/share/doc/${PKGNAME}-${VERSION}
-		make $MAKEFLAGS||make|| exit 100
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --disable-error-on-warning- -docdir=/usr/share/doc/${PKGNAME}-${VERSION}
+		sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+		make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 		mkdir -vp $PKG/usr/share/gdb/auto-load/usr/lib||true
 		mv $PKG/usr/lib${LIBDIRSUFFIX}/libguile-*-gdb.scm $PKG/usr/share/gdb/auto-load/usr/lib
