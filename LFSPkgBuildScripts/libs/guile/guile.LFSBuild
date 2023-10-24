@@ -23,7 +23,6 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://ftp.gnu.org/pub/gnu/guile/${TARBALL}" $SECTION
 gettar "https://ftp.gnu.org/pub/gnu/$TARNAME/$TARBALL" $SECTION
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

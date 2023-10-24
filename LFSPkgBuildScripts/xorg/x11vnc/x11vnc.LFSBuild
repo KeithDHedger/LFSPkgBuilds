@@ -20,14 +20,13 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/LibVNC/x11vnc/archive/${VERSION}/${TARBALL}" $SECTION
 gettar "https://github.com/LibVNC/x11vnc/commit/95a10ab64c2d.patch" $SECTION "010-x11vnc-xfc-null-ptr.patch"
 gettar "https://github.com/LibVNC/x11vnc/commit/a48b0b1cd887.patch" $SECTION "020-x11vnc-gcc10-fix.patch"
 gettar "https://github.com/LibVNC/x11vnc/commit/69eeb9f7baa1.patch" $SECTION "030-x11vnc-scan-limit-access-to-shared-memory"
-
-rm -rf "$PKG" || true
-mkdir -p "$PKG"
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

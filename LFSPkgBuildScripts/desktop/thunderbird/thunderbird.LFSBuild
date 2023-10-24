@@ -12,7 +12,7 @@ fi
 
 PKGNAME="thunderbird"
 TARNAME="$PKGNAME"
-VERSION="102.9.0"
+VERSION="115.2.0"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
 SUFFIX="LFSPKG"
@@ -21,36 +21,31 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-#gettar "https://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/${VERSION}/source/${TARBALL}" $SECTION
-gettar "https://archive.mozilla.org/pub/thunderbird/releases/${VERSION}/source/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://archive.mozilla.org/pub/thunderbird/releases/${VERSION}/source/${TARBALL}" $SECTION
 
 mountpoint -q /dev/shm || sudo mount -t tmpfs devshm /dev/shm
-
-#rebuild for modules
-#pushd ${BUILDSCRIPTS}/system-upgrades/python-upgrade
-#	./python3.LFSBuild install
-#popd
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"||true
 	pushd ${PKGNAME}-${VERSION}
 		cp $CWD/mozconfig.thunderbird mozconfig
-		sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h
-
-#		#set the lib suffix in the config file
+		#set the lib suffix in the config file
 		sed -i "s/libLIBDIRSUFFIX/lib${LIBDIRSUFFIX}/" mozconfig
 #		#set make flags
 		sed -i "s/MOZ_MAKE_FLAGS=\"-j.*\"/MOZ_MAKE_FLAGS=\"${MAKEFLAGS:-j1}\"/" mozconfig
 
+		sed -e '/<exception>/i#include <cstdint>' -i comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h
+
 		export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none
 		export MOZBUILD_STATE_PATH=./mozbuild
 		export SHELL=/bin/sh
-		export MOZ_MAKE_FLAGS="$MAKEFLAGS"
+		. /etc/profile
+		. /etc/profile.d/rustc.sh
 		./mach configure|| exit 100
-		./mach build|| exit 100
+		./mach build $MAKEFLAGS|| exit 100
 		MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none DESTDIR=$PKG ./mach install || exit 100
 
 		mkdir -pv $PKG/usr/share/applications $PKG/usr/share/pixmaps

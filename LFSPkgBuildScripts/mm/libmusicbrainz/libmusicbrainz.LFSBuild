@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="expat-2.2.5 Python-2.7.14"
+DEPENDS="expat-2.5.0 Python-2.7.18"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,12 +20,11 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.musicbrainz.org/pub/musicbrainz/historical/${TARBALL}" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${TARNAME}-${VERSION}-missing-includes-1.patch" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "http://ftp.musicbrainz.org/pub/musicbrainz/historical/${TARBALL}" $SECTION
+gettar "https://www.linuxfromscratch.org/patches/blfs/12.0/${TARNAME}-${VERSION}-missing-includes-1.patch" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 tar -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
@@ -33,9 +32,9 @@ pushd "${TARNAME}-${VERSION}"
 	patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-${VERSION}-missing-includes-1.patch
 	CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS -std=c++98" ./configure ${CONFIGOPTIONS}
 	make $MAKEFLAGS||make|| exit 100
-	(cd python && python setup.py build)
+	(cd python && python2 setup.py build)
 	make install DESTDIR=$PKG || exit 100
-	(cd python && python setup.py install --root=$PKG)
+	(cd python && python2 setup.py install --root=$PKG)
 popd
 
 checketc $PKG

@@ -4,13 +4,13 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.27.2 cairo-dock-3.4.1"
+DEPENDS="CMake-3.27.2 cairo-dock-gtk3-3.4.1"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="cairo-dock-plugins"
+PKGNAME="cairo-dock-plugins-gtk3"
 TARNAME="cairo-dock-plug-ins"
 VERSION="3.4.1"
 BUILD=${BUILD:-1}
@@ -24,17 +24,21 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/Cairo-Dock/${TARNAME}/archive/${TARBALL}" $SECTION ${TARNAME}.tar.gz
+gettar "https://github.com/Cairo-Dock/${TARNAME}/archive/${TARBALL}" $SECTION "${PKGNAME}-${TARBALL}"
+gettar "https://raw.githubusercontent.com/archlinux/svntogit-community/packages/cairo-dock-plug-ins/trunk/cairo-dock-plugins-3.4.1-gcc10-extern.patch" $SECTION
+gettar "https://raw.githubusercontent.com/archlinux/svntogit-community/packages/cairo-dock-plug-ins/trunk/cairo-dock-plugins-3.4.1-time_h-confict.patch" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARNAME}.tar.gz"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		patch -Np1 -i ${CWD}/cairo-dock-plugins-3.4.1-gcc10-extern.patch
-		patch -Np1 -i ${CWD}/cairo-dock-plugins-3.4.1-time_h-confict.patch
-		rm -rf build || true
-   		mkdir -p build || true
+		#Thanks to Arch for the patches.
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/cairo-dock-plugins-3.4.1-gcc10-extern.patch
+		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/cairo-dock-plugins-3.4.1-time_h-confict.patch
+		sed 's/gmcs/mcs/' -i CMakeLists.txt
+
+		mkdir build || true
 		cd build
-		cmake $CMAKEOPTIONS -Denable-alsa-mixer=NO -Denable-sound-effects=NO ..
+		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR="$PKG" || exit 100
 	popd

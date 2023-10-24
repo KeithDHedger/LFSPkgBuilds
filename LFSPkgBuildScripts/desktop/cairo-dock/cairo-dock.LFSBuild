@@ -4,14 +4,14 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="CMake-3.27.2"
+DEPENDS="CMake-3.27.2 gtk3-3.24.38 librsvg-2.56.3"
 
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="cairo-dock"
-TARNAME="$PKGNAME"
+PKGNAME="cairo-dock-gtk3"
+TARNAME="cairo-dock"
 VERSION="3.4.1"
 BUILD=${BUILD:-1}
 SECTION="DESKTOP"
@@ -24,12 +24,12 @@ CWD=$(pwd)
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://github.com/Cairo-Dock/${TARNAME}-core/archive/${TARBALL}" $SECTION ${TARNAME}-core-${VERSION}
+gettar "https://github.com/Cairo-Dock/cairo-dock-core/archive/${TARBALL}" $SECTION "${PKGNAME}-${TARBALL}"
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARNAME}-core-${VERSION}"
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${TARBALL}"
 	pushd "${TARNAME}-core-${VERSION}"
-		mkdir -p build || true
+		mkdir build || true
 		cd build
 		cmake $CMAKEOPTIONS ..
 		make $MAKEFLAGS||make|| exit 100
