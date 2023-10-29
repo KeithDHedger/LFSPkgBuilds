@@ -20,10 +20,10 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://releases.pagure.org/newt/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://releases.pagure.org/newt/${TARBALL}" $SECTION
 
 if [ $USESYSTEMD -eq 0 ];then
 	:

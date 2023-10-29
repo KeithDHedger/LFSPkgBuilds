@@ -6,29 +6,29 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="net-tools"
 TARNAME="$PKGNAME"
-VERSION="20101030"
+VERSION="2.10"
 BUILD=${BUILD:-1}
 SECTION="NET"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-CVS_${VERSION}.tar.gz"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://anduin.linuxfromscratch.org/sources/BLFS/svn/n/${TARBALL}" $SECTION
-gettar "https://www.linuxfromscratch.org/patches/downloads/${PKGNAME}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://downloads.sourceforge.net/project/${TARNAME}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
-	pushd "${TARNAME}-CVS_${VERSION}"
-		patch -Np1 -i ${SOURCEARCHIVES}/${SECTION}/${TARNAME}-CVS_${VERSION}-remove_dups-1.patch
-		sed -i '/#include <netinet\/ip.h>/d' iptunnel.c
-		yes "" | make config
-		make $MAKEFLAGS||make|| exit 100
+	pushd "${TARNAME}-${VERSION}"
+		yes "" | make -j1
 		make install DESTDIR=$PKG || exit 100
+		rm ${PKG}/bin/{nis,yp}domainname
+		rm ${PKG}/bin/{hostname,dnsdomainname,domainname,ifconfig}
+		rm -r ${PKG}/usr/share/man/man1
+		rm ${PKG}/usr/share/man/man8/ifconfig.8
 	popd
 
 	checketc "$PKG"
@@ -53,5 +53,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-CVS_${VERSION}"
+	rm -r "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true

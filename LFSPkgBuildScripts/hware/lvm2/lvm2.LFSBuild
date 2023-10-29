@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="libaio-0.3.112"
+DEPENDS="libaio-0.3.113"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -20,20 +20,20 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "https://sourceware.org/ftp/lvm2/${TARBALL}" $SECTION
-
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://sourceware.org/ftp/lvm2/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}.${VERSION}"
 		SAVEPATH=$PATH
 		PATH=$PATH:/sbin:/usr/sbin
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --exec-prefix= --with-confdir=/etc --enable-applib --enable-cmdlib --enable-pkgconfig --enable-udev_sync
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --enable-cmdlib --enable-pkgconfig --enable-udev_sync
 		make $MAKEFLAGS||make|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		rm -fv ${PKG}/usr/lib/udev/rules.d/69-dm-lvm.rules
 		PATH=$SAVEPATH
 		unset SAVEPATH
 	popd

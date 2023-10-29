@@ -6,19 +6,20 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="libaio"
 TARNAME="${PKGNAME}"
-VERSION="0.3.112"
+VERSION="0.3.113"
 BUILD=1
 SECTION="HWARE"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}_${VERSION}.orig.tar.xz"
+TARBALL="${TARNAME}-${VERSION}.tar.gz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://ftp.de.debian.org/debian/pool/main/liba/libaio/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+#gettar "http://ftp.de.debian.org/debian/pool/main/liba/libaio/${TARBALL}" $SECTION
+gettar "https://pagure.io/${TARNAME}/archive/${TARNAME}-${VERSION}/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

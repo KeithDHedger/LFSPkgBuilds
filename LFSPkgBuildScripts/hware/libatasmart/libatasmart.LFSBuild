@@ -15,10 +15,11 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://www.mirrorservice.org/sites/ftp.slackware.com/pub/slackware/slackware64-14.0/source/l/$PKGNAME/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+#gettar "http://www.mirrorservice.org/sites/ftp.slackware.com/pub/slackware/slackware64-14.0/source/l/$PKGNAME/${TARBALL}" $SECTION
+gettar "https://0pointer.de/public/${TARBALL}" $SECTION
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"

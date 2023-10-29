@@ -1,13 +1,15 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #©keithhedger Tue 1 Nov 13:47:50 GMT 2022 kdhedger68713@gmail.com
 
 . /usr/share/LFSPkg/LFSFunctions
 
 PKGNAME="openvpn"
-VERSION="2.4.8"
+VERSION="2.6.6"
 
 chown root:nogroup /etc/openvpn/{certs,keys}
 chmod 750 /etc/openvpn/{certs,keys}
 chown root:root /usr/share/doc/$PKGNAME-$VERSION/sample-config-files/slackware.conf
 chmod 644 /usr/share/doc/$PKGNAME-$VERSION/sample-config-files/slackware.conf
+
+exit 0
