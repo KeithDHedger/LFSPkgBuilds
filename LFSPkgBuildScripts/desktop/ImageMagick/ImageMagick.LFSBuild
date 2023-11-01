@@ -29,7 +29,7 @@ scriptLog "${PKGNAME}-${LATESTVERSION}"
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}-${MINORVERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-hdri -with-modules --with-perl --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-hdri --with-modules --with-perl --with-rsvg --enable-hdri --with-autotrace --with-wmf --with-gvc
 		make $MAKEFLAGS||make|| exit 100
 		make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-${VERSION} install DESTDIR=$PKG || exit 100
 	popd
