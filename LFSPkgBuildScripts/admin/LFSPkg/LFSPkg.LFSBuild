@@ -33,8 +33,7 @@ if [ "X$BOOTSTRAP" != "X" ];then
 		SIMPLEUPDATE=1 lfspkg -U
 	popd
 else
-
-	rm -r "${TARNAME}-master"||true
+	rm -r "${TARNAME}-master.zip"||true
 	wget -c --no-check-certificate "https://github.com/KeithDHedger/$PKGNAME/archive/master.zip" -O $TARBALL||true
 
 	unzip "$TARBALL"
@@ -45,9 +44,6 @@ else
 		mkdir -p "$PKG"
 		make install DESTDIR=$PKG
 	popd
-
-	mkdir -vp "${SOURCEARCHIVES}/${SECTION}" "${OUTPUT}/${SECTION}" 2>/dev/null
-	mv "$TARBALL" "${SOURCEARCHIVES}/${SECTION}"
 
 	CHECKETC=1 checketc "$PKG"
 	packageclean "$PKG" "$CWD"

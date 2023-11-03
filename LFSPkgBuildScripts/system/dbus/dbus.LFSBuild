@@ -28,7 +28,12 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --runstatedir=/run --disable-static --disable-doxygen-docs --disable-xml-docs --docdir=/usr/share/doc/${PKGNAME}-${VERSION} $SYSTEMDOPTS
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure $CONFIGOPTIONS --localstatedir=/var --runstatedir=/run --with-dbus-user=messagebus --with-system-pid-file=/run/dbus/pid \
+		--with-system-socket=/run/dbus/system_bus_socket \
+		--enable-user-session \
+		--with-console-auth-dir=/run/console \
+		--disable-doxygen-docs --disable-xml-docs --docdir=/usr/share/doc/${PKGNAME}-${VERSION} $SYSTEMDOPTS
+
 		make $MAKEFLAGS||make || exit 100
 		make install DESTDIR=$PKG || exit 100
 		if [ $USESYSTEMD -eq 0 ];then

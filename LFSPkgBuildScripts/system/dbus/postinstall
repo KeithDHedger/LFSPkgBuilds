@@ -22,7 +22,8 @@ cat > /etc/dbus-1/session-local.conf << "EOF"
 </busconfig>
 EOF
 
-cat > /usr/lib/systemd/user/dbus.socket << "EOF"
+if [ $USESYSTEMD -eq 0 ];then
+	cat > /usr/lib/systemd/user/dbus.socket << "EOF"
 [Unit]
 Description=D-Bus User Message Bus Socket
 
@@ -35,7 +36,7 @@ WantedBy=sockets.target
 Also=dbus.service
 EOF
 
-cat > /usr/lib/systemd/user/dbus.service << "EOF"
+	cat > /usr/lib/systemd/user/dbus.service << "EOF"
 [Unit]
 Description=D-Bus User Message Bus
 Requires=dbus.socket
@@ -47,3 +48,4 @@ ExecReload=/usr/bin/dbus-send --print-reply --session --type=method_call --dest=
 [Install]
 Also=dbus.socket
 EOF
+fi
