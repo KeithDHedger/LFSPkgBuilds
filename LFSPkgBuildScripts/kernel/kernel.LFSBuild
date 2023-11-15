@@ -21,7 +21,7 @@ TARBALL="${TARNAME}-${VERSION}.$linux_arctype"
 #KERNELCONFIG=${KERNELCONFIG:-"/LFSPkgBuildScripts/configs/kernel/config-${linux_version}-${BUILD}"}
 #KERNELCONFIG=${KERNELCONFIG:-"$(pwd)/allyesconfig"}
 #use config from running kernel -- CAUTION
-mkdir -vp ${TMP}
+#mkdir -vp ${TMP}
 gunzip < /proc/config.gz > "${TMP}/config-${VERSION}"
 KERNELCONFIG=${KERNELCONFIG:-"${TMP}/config-${VERSION}"}
 KERNELSOURCEDIR="${SOURCEARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}_${BUILD}"
@@ -35,7 +35,7 @@ mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 
 pushd "${KERNELSOURCEDIR}"
-	(mkdir -vp "${TARNAME}-${VERSION}"||true;tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
+	#(mkdir -vp "${TARNAME}-${VERSION}"||true;tar -C "${TARNAME}-${VERSION}" -xvf "${SOURCEARCHIVES}/${SECTION}/${TARBALL}" --strip-components=1)
 	pushd "${TARNAME}-${VERSION}"
 		make mrproper
 		cp "$KERNELCONFIG" .config

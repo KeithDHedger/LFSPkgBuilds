@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BUILD=$1
-KERNELVERSION=${2:-"5.10.17"}
+KERNELVERSION=${2:-"$(uname -r)"}
 
 pushd /boot
 	ln -svf config-${KERNELVERSION}-${BUILD} config-${KERNELVERSION}
