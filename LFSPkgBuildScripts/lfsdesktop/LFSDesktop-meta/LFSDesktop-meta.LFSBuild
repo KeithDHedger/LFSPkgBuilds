@@ -4,12 +4,13 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="lfstoolkit-0.5.1
+DEPENDS="lfstoolkit-0.6.0
 lfswm2-1.0.1
 lfsdesktop-0.2.0
 lfsapplications-0.2.0
 lfspanel-0.2.0
 lfssetwallpaper-0.2.0
+lfsdock-0.1.0
 climsg-0.1.1
 dbus-glib-0.112
 compton-11.3

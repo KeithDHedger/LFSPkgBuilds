@@ -20,7 +20,7 @@ PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-OPTIONS=${OPTIONS:-"-Dman=true -Dgtk_doc=true"}
+OPTIONS=${OPTIONS:-"-Dgtk_doc=true"}
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
@@ -35,7 +35,7 @@ pushd $COMPILEAT 2>/dev/null||true
 		mkdir -p build
 		cd build
 #build static lib as well needed by eg qemu
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS -Dman=true --default-library=both ..    
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" meson $MESONCONFIGOPTIONS -Dman=true --default-library=both $OPTIONS ..    
 		ninja $MAKEFLAGS||ninja -j1||exit 100
 		DESTDIR=$PKG ninja install
 		mkdir -p $PKG/usr/share/doc/${PKGNAME}-${VERSION}

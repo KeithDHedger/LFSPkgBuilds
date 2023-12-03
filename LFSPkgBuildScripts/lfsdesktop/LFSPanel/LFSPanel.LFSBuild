@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="LFSToolKit-0.5.1 alsa-lib-1.2.9 libnotify-0.5.2"
+DEPENDS="LFSToolKit-0.6.0 alsa-lib-1.2.9 libnotify-0.5.2"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
@@ -13,7 +13,7 @@ PKGNAME="LFSPanel"
 TARNAME="LFSDesktopProject"
 VERSION="0.2.0"
 BUILD=${BUILD:-1}
-SECTION="LFSPANEL"
+SECTION="LFSDESKTOP"
 SUFFIX="LFSPKG"
 TARBALL=""
 PKG="${OUTPUT}/${PKGNAME}"
