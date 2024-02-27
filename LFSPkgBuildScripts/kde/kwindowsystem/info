@@ -1,0 +1,4 @@
+https://www.linuxfromscratch.org/blfs/view/stable/lxqt/lxqt-kwindowsystem.html
+The kwindowsystem provides information about, and allows interaction with, the windowing system. It provides a high level API that is windowing system independent and has platform specific implementations.
+
+

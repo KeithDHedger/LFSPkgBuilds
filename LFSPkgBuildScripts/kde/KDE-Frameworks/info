@@ -1,0 +1,2 @@
+https://www.linuxfromscratch.org/blfs/view/stable/kde/frameworks5.html
+KDE Frameworks 5 is a collection of libraries based on top of Qt5 and QML derived from the monolithic KDE 4 libraries. They can be used independent of the KDE Display Environment (Plasma 5).

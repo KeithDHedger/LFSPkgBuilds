@@ -1,0 +1,3 @@
+https://www.linuxfromscratch.org/blfs/view/stable/kde/libdbusmenu-qt.html
+This library provides a Qt implementation of the DBusMenu specification that exposes menus via DBus.
+

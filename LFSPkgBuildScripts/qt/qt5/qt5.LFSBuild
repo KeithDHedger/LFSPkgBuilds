@@ -4,7 +4,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="xorg-libs-12.0 alsa-lib-1.2.9 DBus-1.14.8 MesaLib-23.1.6 libxkbcommon-1.5.0 xcb-util-image-0.4.1 xcb-util-keysyms-0.4.1 xcb-util-renderutil-0.3.10 xcb-util-wm-0.4.2 pulseaudio-16.1 pciutils-3.10.0 NSS-3.92"
+DEPENDS="xorg-libs-12.0 alsa-lib-1.2.9 DBus-1.14.8 MesaLib-23.1.6 libxkbcommon-1.5.0 xcb-util-image-0.4.1 xcb-util-keysyms-0.4.1 xcb-util-renderutil-0.3.10 xcb-util-wm-0.4.2 pulseaudio-16.1 pciutils-3.10.0 NSS-3.92 Wayland-1.22.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi

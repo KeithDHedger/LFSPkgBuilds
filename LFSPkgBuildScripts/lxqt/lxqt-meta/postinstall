@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#©keithhedger Mon 26 Feb 20:20:52 GMT 2024 kdhedger68713@gmail.com
+
+ldconfig
+update-mime-database /usr/share/mime
+xdg-icon-resource forceupdate
+update-desktop-database -q

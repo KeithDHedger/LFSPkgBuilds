@@ -1,0 +1,6 @@
+#!/bin/bash
+#©keithhedger Mon 26 Feb 20:29:53 GMT 2024
+
+. /usr/share/LFSPkg/LFSFunctions
+
+xdg-icon-resource forceupdate --theme hicolor

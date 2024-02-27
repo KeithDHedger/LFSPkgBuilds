@@ -11,17 +11,17 @@ fi
 
 PKGNAME="polkit-qt"
 TARNAME="${PKGNAME}-1"
-VERSION="0.112.0"
+VERSION="0.114.0"
 BUILD=${BUILD:-1}
 SECTION="QT"
 SUFFIX="LFSPKG"
-TARBALL="${TARNAME}-${VERSION}.tar.bz2"
+TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
 scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.kde.org/stable/apps/KDE4.x/admin/${TARBALL}" $SECTION
+gettar "https://download.kde.org/stable/${TARNAME}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
 

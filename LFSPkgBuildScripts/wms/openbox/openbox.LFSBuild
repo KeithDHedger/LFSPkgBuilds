@@ -6,7 +6,7 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="Xorg-Server-1.19.6 Pango-1.40.14 Imlib2-1.4.10 startup-notification-0.12 librsvg-2.40.16"
+DEPENDS="Xorg-Server-21.1.8 Pango-1.50.14  Imlib2-1.12.0 startup-notification-0.12 librsvg-2.56.3"
 lfspkg -B "$DEPENDS"
 
 PKGNAME="openbox"

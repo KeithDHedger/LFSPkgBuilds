@@ -1,0 +1,86 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+PKGNAME="lxqt-meta"
+VERSION="12.0"
+BUILD=${BUILD:-1}
+SECTION="XORG"
+SUFFIX="LFSPKG"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+mkdir -vp ${SOURCEARCHIVES}/${SECTION}||true
+export SIMPLEUPDATE=2
+
+DEPENDS="libical-3.0.16
+qca-2.3.7
+qrencode-4.1.1
+phonon-backend-gstreamer-4.10.0
+plasma-wayland-protocols-1.10.0
+lxqt-build-tools-0.13.0
+libqtxdg-3.11.0
+lxqt-menu-data-20230619
+liblxqt-1.3.0
+libsysstat-0.4.6
+qtxdg-tools-3.11.0
+libfm-qt-1.3.0
+lxqt-themes-1.3.0
+lxqt-qtplugin-1.3.0
+lxqt-about-1.3.0
+lxqt-admin-1.3.0
+lxqt-openssh-askpass-1.3.0
+lxqt-sudo-1.3.0
+lxqt-config-1.3.0
+obconf-qt-0.16.2
+lxqt-globalkeys-1.3.0
+lxqt-policykit-1.3.0
+lxqt-session-1.3.0
+pcmanfm-qt-1.3.0
+lxqt-panel-1.3.0
+lxqt-powermanagement-1.3.0
+lxqt-runner-1.3.0
+lximage-qt-1.3.0
+lxqt-archiver-0.8.0
+lxqt-notificationd-1.3.0
+pavucontrol-qt-1.3.0
+qps-2.7.0
+qterminal-1.3.0
+screengrab-2.6.0"
+
+if ! lfspkg -B "$DEPENDS";then
+	exit 100
+fi
+
+exit 0
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+
+checketc $PKG
+packageclean "$PKG" "$CWD"
+
+export SIMPLEUPDATE=0
+
+pushd "$PKG"
+	lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+popd
+
+case $DOWHAT in
+	up*)
+		lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+		;;
+	"install")
+		lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+		;;
+	"build")
+		echo "Just built"
+		;;
+	*)
+		echo "*** Unknown command ***"
+		exit 1
+esac
+
+rm -r "$PKG"

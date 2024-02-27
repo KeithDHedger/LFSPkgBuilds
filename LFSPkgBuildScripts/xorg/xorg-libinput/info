@@ -1,0 +1,2 @@
+https://www.linuxfromscratch.org/blfs/view/stable/x/x7driver.html#xorg-libinput-driver
+The X.Org Libinput Driver is a thin wrapper around libinput and allows for libinput to be used for input devices in X. This driver can be used as drop-in replacement for evdev and synaptics.

@@ -1,0 +1,60 @@
+#!/bin/bash -e
+
+. /usr/share/LFSPkg/LFSFunctions
+
+trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
+
+PKGNAME="libdbusmenu-qt"
+TARNAME="${PKGNAME}"
+VERSION="0.9.3"
+BUILD=${BUILD:-1}
+SECTION="LXQT"
+SUFFIX="LFSPKG"
+TARBALL="${TARNAME}_${VERSION}+16.04.20160218.orig.tar.gz"
+PKG="${OUTPUT}/${PKGNAME}"
+DOWHAT=${1:-"build"}
+CWD=$(pwd)
+
+rm -rf "$PKG" || true
+mkdir -p "$PKG"
+scriptLog "${PKGNAME}_${VERSION}"
+gettar "https://launchpad.net/ubuntu/+archive/primary/+files/${TARBALL}" $SECTION
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
+
+pushd $COMPILEAT 2>/dev/null||true
+	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	pushd "${TARNAME}-${VERSION}+16.04.20160218"
+		mkdir -p build
+		cd  build
+		cmake $CMAKEOPTIONS -DWITH_DOC=OFF ..
+		make $MAKEFLAGS||make -j1|| exit 100
+		make install DESTDIR=$PKG || exit 100
+	popd
+
+	checketc $PKG
+	packageclean "$PKG" "$CWD"
+
+	pushd "$PKG"
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d "$SECTION" -b "$BUILD" -s "$SUFFIX" -m
+	popd
+
+	case $DOWHAT in
+		up*)
+			lfspkg "^${PKGNAME}-[0-9][0-9]*" "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -u
+			;;
+		"install")
+			lfspkg "${PKGARCHIVES}/${SECTION}/${PKGNAME}-${VERSION}-${BUILD}_${SECTION}_${SUFFIX}.tar.gz" -i
+			;;
+		"build")
+			echo "Just built"
+			;;
+		*)
+			echo "*** Unknown command ***"
+			exit 1
+	esac
+
+	rm -rf "$PKG" "${TARNAME}-${VERSION}+16.04.20160218"
+popd 2>/dev/null||true

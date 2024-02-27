@@ -1,0 +1,4 @@
+https://www.linuxfromscratch.org/blfs/view/stable/lxqt/lxqt-desktop.html
+LXQt is an extremely fast-performing and energy-saving desktop environment.
+
+LXQt is a Qt based Desktop Environment. It is focused on being a classic desktop with a modern look and feel. It can customize appearance everywhere. The panel(s) have plugins and settings. It is Window Manager agnostic, has multi-language support and standard keyboard shortcuts. LXQt uses less CPU and less RAM than most other environments. It is especially useful for cloud computers with low hardware specifications, such as netbooks, mobile devices (e.g. MIDs) or older computers, but can be used with modern hardware.

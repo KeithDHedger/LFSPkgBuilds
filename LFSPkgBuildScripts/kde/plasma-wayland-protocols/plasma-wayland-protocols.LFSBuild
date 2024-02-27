@@ -4,42 +4,46 @@
 
 trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
-DEPENDS="extra-cmake-modules-5.109.0 Qt5-5.15.10"
+DEPENDS="extra-cmake-modules-5.109.0"
 if ! lfspkg -B "$DEPENDS";then
 	exit 100
 fi
 
-PKGNAME="kwindowsystem"
+PKGNAME="plasma-wayland-protocols"
 TARNAME="$PKGNAME"
-VERSION="5.109.0"
+VERSION="1.10.0"
 BUILD=${BUILD:-1}
-SECTION="QT"
+SECTION="KDE"
 SUFFIX="LFSPKG"
 TARBALL="${TARNAME}-${VERSION}.tar.xz"
 PKG="${OUTPUT}/${PKGNAME}"
 DOWHAT=${1:-"build"}
 CWD=$(pwd)
 
-scriptLog "${PKGNAME}-${VERSION}"
-gettar "http://download.kde.org/stable/frameworks/${VERSION%.?*}/${TARBALL}" $SECTION
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
+scriptLog "${PKGNAME}-${VERSION}"
+gettar "https://download.kde.org/stable/${TARNAME}/${TARBALL}" $SECTION
+
+if [ $USESYSTEMD -eq 0 ];then
+	:
+fi
 
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
-		mkdir build||true
+		mkdir -p build
 		cd  build
-		cmake $CMAKEOPTIONS -DBUILD_TESTING=OFF ..
-		make $MAKEFLAGS||make|| exit 100
+		cmake $CMAKEOPTIONS ..
+		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 
-	checketc "$PKG"
+	checketc $PKG
 	packageclean "$PKG" "$CWD"
 
 	pushd "$PKG"
-		lfspkg -n "$PKGNAME" -p "$VERSION" -d $SECTION -b $BUILD -s $SUFFIX -m
+		lfspkg -n "$PKGNAME" -p "$VERSION" -d "$SECTION" -b "$BUILD" -s "$SUFFIX" -m
 	popd
 
 	case $DOWHAT in
@@ -57,5 +61,5 @@ pushd $COMPILEAT 2>/dev/null||true
 			exit 1
 	esac
 
-	rm -r "$PKG" "${TARNAME}-${VERSION}"
+	rm -rf "$PKG" "${TARNAME}-${VERSION}"
 popd 2>/dev/null||true
