@@ -29,7 +29,7 @@ pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${TARNAME}-${VERSION}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" PYTHON=python2 ./configure ${CONFIGOPTIONS} --disable-introspection --disable-docs
-		make $MAKEFLAGS||make|| exit 100
+		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 

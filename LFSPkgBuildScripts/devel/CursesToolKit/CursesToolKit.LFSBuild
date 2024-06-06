@@ -42,7 +42,7 @@ fi
 pushd $COMPILEAT 2>/dev/null||true
 	pushd "${SOURCEARCHIVES}/GITREPOS/${TARNAME}"
 		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./autogen.sh ${CONFIGOPTIONS} --disable-sourcehighlight	
-		make $MAKEFLAGS||make -j1|| exit 100
+		make $MAKEFLAGS --output-sync||make -j1 --output-sync|| exit 100
 		make install DESTDIR=$PKG || exit 100
 	popd
 

@@ -22,7 +22,7 @@ CWD=$(pwd)
 
 rm -rf "$PKG" || true
 mkdir -p "$PKG"
-scriptLog "${PKGNAME}-${VERSION}"
+#scriptLog "${PKGNAME}-${VERSION}"
 mkdir -p ${SOURCEARCHIVES}/GITREPOS
 pushd ${SOURCEARCHIVES}/GITREPOS
 	if [[ ! -e ${TARNAME} ]];then

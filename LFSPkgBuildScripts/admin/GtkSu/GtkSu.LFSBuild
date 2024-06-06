@@ -25,11 +25,15 @@ mkdir -p "$PKG"
 scriptLog "${PKGNAME}-${VERSION}"
 gettar "https://github.com/KeithDHedger/GtkSu/archive/master.zip" $SECTION ${TARBALL}
 
+if [[ ${USEQT:0} -eq 1 ]];then
+	XTRAOPTS="--enable-qt5"
+fi
+
 pushd $COMPILEAT 2>/dev/null||true
 	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd "${PKGNAME}-master"
 		./autogen.sh
-		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-ktsuss-link
+		CFLAGS="$LFSFLAGS" CXXFLAGS="$LFSFLAGS" ./configure ${CONFIGOPTIONS} --enable-ktsuss-link $XTRAOPTS
 		make
 		make install DESTDIR=$PKG || exit 100
 	popd
