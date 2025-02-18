@@ -25,12 +25,12 @@ ac_add_options --disable-gconf
 
 # Comment out following options if you have not installed
 # recommended dependencies:
-ac_add_options --with-system-icu
-ac_add_options --with-system-libevent
-ac_add_options --with-system-nspr
-ac_add_options --with-system-nss
+#ac_add_options --with-system-icu
+#ac_add_options --with-system-libevent
+#ac_add_options --with-system-nspr
+#ac_add_options --with-system-nss
 #ac_add_options --with-system-libvpx
-ac_add_options --with-system-webp
+#ac_add_options --with-system-webp
 
 # The elf-hack is reported to cause failed installs (after successful builds)
 # on some machines. It is supposed to improve startup time and it shrinks
@@ -48,7 +48,7 @@ ac_add_options --disable-irc
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
-ac_add_options --enable-application=comm/suite
+#ac_add_options --enable-application=comm/suite
 
 ac_add_options --disable-crashreporter
 ac_add_options --disable-updater
@@ -61,18 +61,18 @@ ac_add_options --disable-rust-simd
 ac_add_options --enable-optimize="-O2"
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
-ac_add_options --enable-official-branding
+#ac_add_options --enable-official-branding
 
 #ac_add_options --enable-gio
 # not recognized since 2.53.1 - ac_add_options --enable-safe-browsing
 # not recognized since 2.53.1 - ac_add_options --enable-url-classifier
 
 # The option to use system cairo was removed in 2.53.9.
-ac_add_options --enable-system-ffi
-ac_add_options --enable-system-pixman
+#ac_add_options --enable-system-ffi
+#ac_add_options --enable-system-pixman
 
-ac_add_options --with-system-bz2
-ac_add_options --with-system-jpeg
-ac_add_options --with-system-png
-ac_add_options --with-system-zlib
+#ac_add_options --with-system-bz2
+#ac_add_options --with-system-jpeg
+#ac_add_options --with-system-png
+#ac_add_options --with-system-zlib
 ac_add_options --libdir=/usr/libLIBDIRSUFFIX

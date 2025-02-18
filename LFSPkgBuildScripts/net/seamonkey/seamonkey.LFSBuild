@@ -30,7 +30,7 @@ gettar "https://archive.mozilla.org/pub/${TARNAME}/releases/${VERSION}/source/${
 mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm
 
 pushd $COMPILEAT 2>/dev/null||true
-	extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
+	#extractarchive "${SOURCEARCHIVES}/${SECTION}/${TARBALL}"
 	pushd ${TARNAME}-${VERSION}
 		cp ${CWD}/seamonkey.mozconfig ./mozconfig
 		#set the lib suffix in the config file
