@@ -6,7 +6,7 @@ trap 'echo -e "$0 ${RED}FAILED${NORMAL} at line ${GREEN}${LINENO}${NORMAL}"' ERR
 
 PKGNAME="imcat"
 TARNAME="$PKGNAME"
-VERSION="12.0"
+VERSION="2.16"
 BUILD=${BUILD:-1}
 SECTION="CLI"
 SUFFIX="LFSPKG"
@@ -30,14 +30,12 @@ pushd ${SOURCEARCHIVES}/GITREPOS
 	fi
 popd
 
-if [ $USESYSTEMD -eq 0 ];then
-	:
-fi
-
 pushd $COMPILEAT 2>/dev/null||true
 	pushd "${SOURCEARCHIVES}/GITREPOS/${TARNAME}"
 		make $MAKEFLAGS||make -j1|| exit 100
 		make install DESTDIR=$PKG || exit 100
+		mkdir -vp $PKG/usr/share/man/man1
+		cp imcat.1 $PKG/usr/share/man/man1/imcat.1
 	popd
 
 	checketc $PKG
